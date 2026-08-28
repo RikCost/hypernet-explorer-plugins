@@ -1,5 +1,14 @@
-0.4.1a
+0.4.3a
+- fixed globally missing biome ID and mismatched biomes on worldmap
+- enemies no longer teleport after fleeing a fight on the procedural map
+- battle log fades and restarts after every full turn rotation
+- square left through a town gate matches the one visited off the world map
+- ocean and beaches now drawn when entering from non procedural map to procedual maps
+- fix liminal walk crashing
 
+0.4.2a
+
+- worldmap tagger can paint biomes on the map itself
 - fly here on the star map boards the starship first
 - npc rumors now cite world lore, and are stranger
 - main menu icons no longer cut off at the cell edge

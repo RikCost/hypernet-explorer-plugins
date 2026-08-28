@@ -47,9 +47,9 @@
  * @default 10
  * 
  * @param Message Speed
- * @desc Battle log display speed
+ * @desc Battle log display speed, in frames held per line (higher = slower)
  * @type number
- * @default 8
+ * @default 14
  * 
  * @param View Duration
  * @desc Battle log display time
@@ -104,7 +104,7 @@
     const CONFIG = {
         logType: params['Log Type'] || '1-line',
         maxLines: 4,
-        messageSpeed: Number(params['Message Speed'] || 8),
+        messageSpeed: Number(params['Message Speed'] || 14),
         fontSize: Number(params['Font Size'] || 18),
         viewDuration: -1,
         waitNewLine: params['Wait New Line?'] === 'true',
@@ -367,8 +367,72 @@
         }
     }();
 
+    // The enemy's own front-facing walk sprite, printed immediately before its
+    // name so a line says at a glance which creature it is about. Every enemy
+    // carries a <Char:> note, and a missing one simply prints no sprite.
+    function enemySpriteTag(enemy) {
+        const info = EnemySpriteCache.getCharInfo(enemy);
+        if (!info || !info.charName) return '';
+        return `\\enemysprite[${info.charName}${info.charIndex ? ',' + info.charIndex : ''}]`;
+    }
+
     // One indent step, shared by every line an action produces after its header.
     const REACTION_INDENT_PX = 26;
+
+    //--- entry retention: begin ---
+    // The board shows the action that just happened and the two before it, and
+    // nothing else. Older entries are not cut off at the top edge, they slide
+    // off to the left and collapse, so the reader is never left with half a line.
+    const MAX_VISIBLE_ENTRIES = 3;
+    const ENTRY_EXIT_MS = 320;
+
+    function isExitingEntry(el) {
+        return !!(el && el.dataset && el.dataset.battlelogExiting === '1');
+    }
+
+    // The entries that still count as shown. One on its way out keeps its box in
+    // the DOM until its animation ends, but it is no longer one of the three.
+    function liveEntries(root) {
+        if (!root || !root.children) return [];
+        return Array.prototype.filter.call(root.children, el => !isExitingEntry(el));
+    }
+
+    function slideEntryOff(el) {
+        if (!el || isExitingEntry(el)) return;
+        if (el.dataset) el.dataset.battlelogExiting = '1';
+        if (el.classList) el.classList.add('battlelog-entry-out');
+        const drop = () => { if (el.parentNode) el.parentNode.removeChild(el); };
+        if (el.addEventListener) el.addEventListener('animationend', drop, { once: true });
+        // The animation never firing (a hidden overlay, a reduced-motion browser)
+        // must not leave the entry standing, so the timer has the last word.
+        setTimeout(drop, ENTRY_EXIT_MS + 120);
+    }
+
+    // Keeps the DOM and the line arrays in step: an entry that slides off is
+    // dropped from _lines in the same breath, so index i means the same entry in
+    // both. Returns how many entries left.
+    function pruneEntries(log) {
+        const root = log && log._htmlBattleLogRoot;
+        if (!root) return 0;
+        const live = liveEntries(root);
+        const excess = live.length - MAX_VISIBLE_ENTRIES;
+        if (excess > 0) {
+            for (let i = 0; i < excess; i++) slideEntryOff(live[i]);
+            if (log._lines) log._lines.splice(0, excess);
+            if (log._lineToast) log._lineToast.splice(0, excess);
+            if (log._lineTurnBreak) log._lineTurnBreak.splice(0, excess);
+            // The rule that used to separate this entry from the one above it has
+            // nothing above it any more.
+            const top = live[excess];
+            if (top && top.style) {
+                top.style.borderTop = '';
+                top.style.paddingTop = '';
+                top.style.marginTop = '';
+            }
+        }
+        return Math.max(0, live.length - Math.max(0, excess));
+    }
+    //--- entry retention: end ---
 
     // \crit[...] wraps a whole damage line, and that line already carries its own
     // bracketed escapes (\c[1], \i[64]), so the closing bracket has to be found by
@@ -398,6 +462,9 @@
         if (!text) return '';
         // Split multi-line entries (action header + per-reaction lines) into separate divs
         const segments = text.split('\n');
+        // One walk sprite per creature per entry: the header introduces the
+        // enemy, the lines under it are already speaking in pronouns.
+        const seenSprites = new Set();
         let result = '';
         for (let i = 0; i < segments.length; i++) {
             let seg = segments[i];
@@ -426,6 +493,9 @@
 
             // Replace enemy sprite codes: \enemysprite[charName]
             seg = seg.replace(/\\enemysprite\[([^\]]+)\]/gi, (match, charName) => {
+                const key = String(charName).trim().toLowerCase();
+                if (seenSprites.has(key)) return '';
+                seenSprites.add(key);
                 return EnemySpriteCache.getSpriteHtml(charName);
             });
 
@@ -468,29 +538,165 @@
             return function() { return proto[prop].apply(this, arguments); };
         }
     };
-    function _getStarIndex(subject) {
-        if (!subject) return 0; // no bound battler (system/log message): use safe default
-        if (subject.isActor && subject.isActor()) {
-          // Map actor IDs to variable IDs
-          const map = { 1: 38, 2: 39, 3: 40 };
-          const varId = map[subject.actorId()] || null;
-          const val = varId ? $gameVariables.value(varId) : 0;
-          return val;
-        }
-        /*
-        if (subject._gender !== undefined) {
-          return subject._gender;
-        }*/
-        return 0; // fallback
+    // Character creation writes a character's gender with Game_Actor.setGender
+    // (ActorCharacterFields.js). The gender variables 38-40 it used to live in
+    // are gone, so nothing here reads a game variable any more. Null means the
+    // battler is not a party member, so it has no gender to read.
+    function _actorGender(battler) {
+        if (!battler || !battler.isActor || !battler.isActor()) return null;
+        return typeof battler.gender === 'function' ? battler.gender() : 0;
+      }
+      function _getStarIndex(subject) {
+        const gender = _actorGender(subject);
+        return gender === null ? 0 : gender;
       }
       function _replaceStars(text, subject) {
         const idx = _getStarIndex(subject);
-        const table = { 0: 'o', 1: 'a', 2: '*' };
+        const table = { 0: 'o', 1: 'a', 2: '*', 3: '*' };
         const ch = table[idx] || 'o';
         return text.replace(/\*/g, ch);
       }
       
       
+    //--- pronouns: begin ---
+    // An entry names a battler once. Every tabbed line under that header calls it
+    // by pronoun instead of repeating the name, which is what makes a block of
+    // six reaction lines readable at a glance.
+    //
+    // Genders are the ids character creation writes: 0 male, 1 female,
+    // 2 non-binary, 3 cocoon. Anything that is not a party member is an it.
+    const GENDER_PRONOUN_KEY = { 0: 'he', 1: 'she', 2: 'they', 3: 'they' };
+    const ENEMY_PRONOUN_KEY = 'it';
+
+    function pronounKeyFor(battler) {
+        if (!battler) return null;
+        const gender = _actorGender(battler);
+        if (gender === null) return ENEMY_PRONOUN_KEY;
+        return GENDER_PRONOUN_KEY[gender] || GENDER_PRONOUN_KEY[2];
+    }
+
+    // form is 'subject', 'object' or 'possessive'. An empty answer means the
+    // language was never given these words, and the name is left standing.
+    function pronounWord(key, form) {
+        if (typeof T !== 'function' || !key) return '';
+        const path = 'BattleLog.pronouns.' + key + '.' + form;
+        if (typeof T.has === 'function' && !T.has(path)) return '';
+        const word = T(path);
+        return (word && word !== path) ? word : '';
+    }
+
+    function capitalizeFirst(text) {
+        return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+    }
+
+    function escapeForRegExp(text) {
+        return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Every name the log may print for a battler still in the fight, longest
+    // first so a name containing a shorter one is matched whole. Rebuilt when the
+    // roster changes, since it is asked for on every reaction line.
+    let _pronounRoster = null;
+    let _pronounRosterSize = -1;
+
+    function clearPronounRoster() {
+        _pronounRoster = null;
+        _pronounRosterSize = -1;
+    }
+
+    function pronounRoster() {
+        const party = (typeof $gameParty !== 'undefined' && $gameParty && $gameParty.battleMembers)
+            ? $gameParty.battleMembers() : [];
+        const troop = (typeof $gameTroop !== 'undefined' && $gameTroop && $gameTroop.members)
+            ? $gameTroop.members() : [];
+        const size = party.length * 1000 + troop.length;
+        if (_pronounRoster && _pronounRosterSize === size) return _pronounRoster;
+
+        const entries = [];
+        const add = (battler, name) => {
+            if (!name || String(name).length <= 1) return;
+            if (entries.some(e => e.name === name)) return;
+            entries.push({ name: String(name), key: pronounKeyFor(battler) });
+        };
+        for (const battler of party.concat(troop)) {
+            if (!battler) continue;
+            const names = [];
+            if (typeof battler.name === 'function') names.push(battler.name());
+            if (typeof battler.originalName === 'function') names.push(battler.originalName());
+            for (const raw of names) {
+                add(battler, raw);
+                if (typeof window.translateText === 'function') add(battler, window.translateText(raw));
+            }
+        }
+        entries.sort((a, b) => b.name.length - a.name.length);
+        _pronounRoster = entries;
+        _pronounRosterSize = size;
+        return entries;
+    }
+
+    // What the entry being written has already named, and how many distinct
+    // battlers each pronoun would stand for inside it.
+    function newEntryMentions() {
+        return { seen: new Map(), byKey: new Map() };
+    }
+
+    // Remembers every roster name this line used, so the next line down knows
+    // which ones it is allowed to shorten.
+    function recordMentions(mentions, text) {
+        if (!mentions || !text) return;
+        for (const entry of pronounRoster()) {
+            if (mentions.seen.has(entry.name)) continue;
+            if (!new RegExp(NAME_EDGE_BEFORE + escapeForRegExp(entry.name) + NAME_EDGE_AFTER).test(text)) continue;
+            mentions.seen.set(entry.name, entry.key);
+            mentions.byKey.set(entry.key, (mentions.byKey.get(entry.key) || 0) + 1);
+        }
+    }
+
+    // A name is a whole word or it is not that battler: an actor called Ash is
+    // not named by the word "Ashes".
+    const NAME_EDGE_BEFORE = '(?<![A-Za-z0-9])';
+    const NAME_EDGE_AFTER = '(?![A-Za-z0-9])';
+
+    // The whole printed token for a name: its walk sprite, its colour escape, the
+    // name, the colour reset, and an English possessive if one follows. Nothing of
+    // the old token may survive the swap, or the line keeps a stray tag.
+    function mentionPattern(name) {
+        return '(?:\\\\enemysprite\\[[^\\]]*\\])?' +
+               '(?:\\\\c\\[[^\\]]*\\])?' +
+               NAME_EDGE_BEFORE + escapeForRegExp(name) + NAME_EDGE_AFTER +
+               '(?:\\\\c\\[0\\])?' +
+               '(?:\'s|’s)?';
+    }
+
+    // Two enemies in one entry both answer to "it", so neither is shortened: a
+    // pronoun is only used while it can point at exactly one battler.
+    function pronounizeLine(text, mentions) {
+        if (!text || !mentions || mentions.seen.size === 0) return text;
+        let out = text;
+        for (const entry of pronounRoster()) {
+            const key = mentions.seen.get(entry.name);
+            if (!key) continue;
+            if ((mentions.byKey.get(key) || 0) > 1) continue;
+            const subject = pronounWord(key, 'subject');
+            if (!subject) continue;
+            const object = pronounWord(key, 'object') || subject;
+            const possessive = pronounWord(key, 'possessive');
+            const source = out;
+            out = out.replace(new RegExp(mentionPattern(entry.name), 'g'), function (match, offset) {
+                // Nothing printed before it on this line: it opens the sentence,
+                // so it is the one acting and it takes a capital.
+                const opens = !/\S/.test(source.slice(0, offset));
+                if (/(?:'s|’s)$/.test(match)) {
+                    if (!possessive) return match;
+                    return opens ? capitalizeFirst(possessive) : possessive;
+                }
+                return opens ? capitalizeFirst(subject) : object;
+            });
+        }
+        return out;
+    }
+    //--- pronouns: end ---
+
     // Optimize: Precompute triangular numbers for common values
     const TRI_CACHE_SIZE = 50;
     const triCache = Array(TRI_CACHE_SIZE).fill(0).map((_, i) => i * (i + 1) / 2);
@@ -824,7 +1030,7 @@
             if (!enemy) return '';
             const name = enemy.name ? enemy.name() : (enemy.name || '');
             const translatedName = typeof window.translateText === 'function' ? window.translateText(name) : name;
-            return `\\c[${CONFIG.colors.enemy}]${translatedName}\\c[0]`;
+            return enemySpriteTag(enemy) + `\\c[${CONFIG.colors.enemy}]${translatedName}\\c[0]`;
         }
         
         getItemName(item) {
@@ -837,6 +1043,7 @@
         
         refresh() {
             this.initialize();
+            clearPronounRoster();
         }
     }();
 
@@ -1057,7 +1264,7 @@
         root.id = 'html-battlelog-overlay';
         root.style.cssText = 
             'position:fixed;display:none;z-index:400;pointer-events:none;' +
-            'box-sizing:border-box;overflow-y:hidden;overflow-x:hidden;' +
+            'box-sizing:border-box;overflow:visible;' +
             'flex-direction:column;justify-content:flex-start;align-items:flex-start;' +
             'background:transparent;' +
             'border:none;' +
@@ -1207,7 +1414,7 @@
             el.style.fontSize = scaledFont + 'px';
             el.innerHTML = parseBattleLogTextToHtml(indentText);
 
-            if (isTurnBreak && this._htmlBattleLogRoot.children.length > 0) {
+            if (isTurnBreak && liveEntries(this._htmlBattleLogRoot).length > 0) {
                 el.style.borderTop = '1px solid rgba(255,255,255,0.22)';
                 el.style.paddingTop = Math.round(4 * sc.sy) + 'px';
                 el.style.marginTop = Math.round(8 * sc.sy) + 'px';
@@ -1215,18 +1422,8 @@
 
             this._htmlBattleLogRoot.appendChild(el);
 
-            // Prune elements if total buffer exceeds 50 lines
-            while (this._htmlBattleLogRoot.children.length > 50) {
-                const firstChild = this._htmlBattleLogRoot.firstElementChild;
-                if (firstChild) {
-                    this._htmlBattleLogRoot.removeChild(firstChild);
-                }
-                if (this._lines.length > 50) {
-                    this._lines.shift();
-                    if (this._lineToast) this._lineToast.shift();
-                    if (this._lineTurnBreak) this._lineTurnBreak.shift();
-                }
-            }
+            // Only the action that just happened and the two before it stay.
+            pruneEntries(this);
 
             this.scrollToBottom();
         }
@@ -1248,11 +1445,17 @@
         }
         if (typeof translateText === 'function') text = translateText(text);
         if (this._currentSubject) text = _replaceStars(text, this._currentSubject);
+        // A tabbed line never repeats a name the entry has already used.
+        if (!this._entryMentions) this._entryMentions = newEntryMentions();
+        text = pronounizeLine(text, this._entryMentions);
+        recordMentions(this._entryMentions, text);
         text = colorizeLimbAndEntityNames(text);
         const indentTag = /\\mx\[/i.test(text) ? '' : '\\mx[28]';
         const lastIndex = this._lines.length - 1;
         this._lines[lastIndex] += '\n' + indentTag + text;
 
+        // Entries on their way out sit at the front, so the last child is still
+        // the entry being written.
         if (this._htmlBattleLogRoot && this._htmlBattleLogRoot.lastElementChild) {
             this._htmlBattleLogRoot.lastElementChild.innerHTML = parseBattleLogTextToHtml(this._lines[lastIndex]);
         }
@@ -1347,12 +1550,19 @@
             _setStyleIfChanged(root, 'left', (sc.ox + this.x * sc.sx) + 'px');
             const hotbarReserve = (window.BattleHotbar && window.BattleHotbar.reservedHeight) || 75;
             const topPx = sc.oy + (this.y + yOffset) * sc.sy;
-            const maxH = Math.max(60, (Graphics.height - hotbarReserve) * sc.sy - topPx - 6);
 
-            _setStyleIfChanged(root, 'top', topPx + 'px');
+            // Nothing is ever clipped: the board is not scrolled and not cut, it
+            // is lifted. When three actions come to more than the room between the
+            // party HUD and the hotbar, the whole block slides up by the overflow
+            // so its last line still lands above the hotbar.
+            const room = Math.max(60, (Graphics.height - hotbarReserve) * sc.sy - topPx - 6);
+            const needed = root.scrollHeight;
+            const lift = needed > room ? Math.min(needed - room, Math.max(0, topPx - sc.oy - 4)) : 0;
+
+            _setStyleIfChanged(root, 'top', (topPx - lift) + 'px');
             _setStyleIfChanged(root, 'width', (this.width * sc.sx) + 'px');
             _setStyleIfChanged(root, 'maxWidth', Math.round(Graphics.width * 0.52 * sc.sx) + 'px');
-            _setStyleIfChanged(root, 'maxHeight', maxH + 'px');
+            _setStyleIfChanged(root, 'maxHeight', 'none');
             _setStyleIfChanged(root, 'height', 'auto');
             _setStyleIfChanged(root, 'padding', Math.round(pad * sc.sy) + 'px ' + Math.round(pad * sc.sx) + 'px');
             _setStyleIfChanged(root, 'display',
@@ -1360,8 +1570,8 @@
             _setStyleIfChanged(root, 'flexDirection', 'column');
             _setStyleIfChanged(root, 'justifyContent', 'flex-start');
             _setStyleIfChanged(root, 'alignItems', 'flex-start');
-            _setStyleIfChanged(root, 'overflowY', 'hidden');
-            _setStyleIfChanged(root, 'overflowX', 'hidden');
+            _setStyleIfChanged(root, 'overflowY', 'visible');
+            _setStyleIfChanged(root, 'overflowX', 'visible');
 
             const bgOpacity = (ConfigManager.battleLogBgOpacity !== undefined ? ConfigManager.battleLogBgOpacity : CONFIG.battleLogBgOpacity) / 100;
             root.style.setProperty('--battlelog-bar-alpha', bgOpacity.toString());
@@ -1370,12 +1580,6 @@
             _setStyleIfChanged(root, 'box-shadow', 'none', true);
             _setStyleIfChanged(root, 'outline', 'none', true);
 
-            if (root.scrollHeight > root.clientHeight) {
-                const targetScrollTop = root.scrollHeight - root.clientHeight;
-                if (Math.abs(root.scrollTop - targetScrollTop) > 50) {
-                    root.scrollTop = targetScrollTop;
-                }
-            }
         }
     };
 
@@ -1406,6 +1610,7 @@
         this._lineToast = [];
         this._lineTurnBreak = [];
         this._pendingTurnBreak = false;
+        this._entryMentions = null;
         if (this._htmlBattleLogRoot) {
             this._htmlBattleLogRoot.innerHTML = '';
             this._htmlBattleLogRoot.scrollTop = 0;
@@ -1506,7 +1711,9 @@
 
     Window_BattleLog.prototype.refreshHtmlLines = function() {
         if (!this._lines || !this._htmlBattleLogRoot) return;
-        const children = this._htmlBattleLogRoot.children;
+        // Index i is the same entry in both lists only once the ones sliding off
+        // are left out, since those were already dropped from _lines.
+        const children = liveEntries(this._htmlBattleLogRoot);
         const sc = _msgGetScale();
         const baseFontSize = CONFIG.fontSize || 18;
         const scaledFont = Math.round(baseFontSize * sc.sy * 0.9);
@@ -1558,7 +1765,11 @@
                 if (!name) continue;
                 const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const regex = new RegExp(`(?<!\\\\c\\[\\d+\\])${escaped}(?!\\\\c\\[0\\])`, 'g');
-                text = text.replace(regex, `\\c[${CONFIG.colors.enemy}]${name}\\c[0]`);
+                const owner = enemies.find(e => e && (
+                    (e.name && e.name() === name) ||
+                    (e.originalName && e.originalName() === name)));
+                const sprite = enemySpriteTag(owner);
+                text = text.replace(regex, `${sprite}\\c[${CONFIG.colors.enemy}]${name}\\c[0]`);
             }
         }
 
@@ -1580,6 +1791,10 @@
         text = translateText(text);
       }
       text = _replaceStars(text, this._currentSubject);
+      // A header opens a new entry, so it starts the name bookkeeping over: it is
+      // allowed to name everyone, and the tabbed lines under it are not.
+      this._entryMentions = newEntryMentions();
+      recordMentions(this._entryMentions, text);
       text = colorizeLimbAndEntityNames(text);
       return _Window_BattleLog_addText.call(this, text, isToast);
     };
@@ -1784,9 +1999,22 @@
         return this._data.length;
     };
 
+    // The history is drawn on a canvas window, which knows none of the escapes
+    // the HTML board renders. Left in, they print as raw brackets, so the walk
+    // sprite, the indent and the crit wrapper are taken off here.
+    Window_PastBattleLog.prototype.stripLogMarkup = function(text) {
+        // replaceCritTags is the one thing that knows where a crit wrapper ends,
+        // so the wrapper is unwrapped with it and its markup taken off after.
+        return replaceCritTags(String(text || ''))
+            .replace(/<[^>]*>/g, '')
+            .replace(/\\enemysprite\[[^\]]*\]/gi, '')
+            .replace(/\\mx\[\d+\]/gi, '')
+            .replace(/\n/g, ' ');
+    };
+
     Window_PastBattleLog.prototype.drawItem = function(index) {
         const rect = this.itemLineRect(index);
-        this.drawTextEx(this._data[index], rect.x, rect.y, rect.width);
+        this.drawTextEx(this.stripLogMarkup(this._data[index]), rect.x, rect.y, rect.width);
     };
 
     Window_PastBattleLog.prototype.refresh = function() {

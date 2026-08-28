@@ -1528,8 +1528,12 @@
     // ============================================================================
 
     Game_System.prototype.getReturnCoordinates = function(_exitDirection) {
-        if (!this._procGenData) return { x: 0, y: 0 };
-        return { x: this._procGenData.originX, y: this._procGenData.originY };
+        const vx = $gameVariables.value(VAR_WORLD_X) || 0;
+        const vy = $gameVariables.value(VAR_WORLD_Y) || 0;
+        if (!this._procGenData) return { x: vx, y: vy };
+        const x = this._procGenData.originX != null ? this._procGenData.originX : vx;
+        const y = this._procGenData.originY != null ? this._procGenData.originY : vy;
+        return { x, y };
     };
 
     Game_System.prototype.getAdjacentWorldCoordinates = function(exitDirection) {
@@ -4222,28 +4226,70 @@
      * Run fn with the world looking like the one 64x64 square `cell` holds.
      * Without a window (or without a cell) it is a plain call, which is what
      * every one of these passes has always been.
+     *
+     * A zero offset is NOT the same question. The window's top-left square sits
+     * at (0, 0) like any single-square map does, but the map around it is still
+     * three squares wide: read as "nothing to shift", a pass run for that corner
+     * scanned the whole window and scattered its chests, its police and its
+     * monsters over all nine squares - which is why walking into the north-west
+     * of a window found the country empty. What decides is whether a window is
+     * standing at all, not where in it the party happens to be.
      */
     function withSquareLocalView(cell, fn) {
-        if (!cell || (cell.ox === 0 && cell.oy === 0)) return fn();
+        if (!cell || !stitchWindow) return fn();
 
         const ox = cell.ox, oy = cell.oy;
+
+        // The engine's tile API is layered, and every layer of it is on the list
+        // above: terrainTag asks isValid and layeredTiles, layeredTiles asks
+        // tileId, isPassable asks checkPassage which asks allTiles which asks
+        // tileEventsXy and layeredTiles again, regionId and isLadder and isBush
+        // all ask isValid first. Shifting each of them in turn shifted a
+        // square-local coordinate once for every layer it fell through, and
+        // handed the narrowed isValid a MAP coordinate it could only answer "no"
+        // to. So on any square the window does not hold at its own corner every
+        // tile reported terrain tag 0, the spawner found not one tile it could
+        // put a monster on and erased all fifteen of them: the square the party
+        // walked into came up empty, every time, which is the bug this guard
+        // exists for.
+        //
+        // Only the OUTERMOST call is shifted. While an engine method is running
+        // the API is itself again, in map coordinates, exactly as it would be
+        // with no window standing at all.
+        let inEngine = 0;
         const savedMap = {};
         for (const name of LOCAL_VIEW_METHODS) {
             const original = $gameMap[name];
             if (typeof original !== 'function') continue;
             savedMap[name] = original;
             $gameMap[name] = function(x, y, ...rest) {
-                return original.call(this, x + ox, y + oy, ...rest);
+                if (inEngine > 0) return original.call(this, x, y, ...rest);
+                inEngine++;
+                try {
+                    return original.call(this, x + ox, y + oy, ...rest);
+                } finally {
+                    inEngine--;
+                }
             };
         }
         // isValid, width and height have to answer for the square, not the map,
         // or a scan written as "for x < $gameMap.width()" would walk the window.
+        // Inside an engine method they answer for the map again, for the same
+        // reason: what is being measured there is a map coordinate.
         const savedIsValid = $gameMap.isValid;
         const savedWidth = $gameMap.width;
         const savedHeight = $gameMap.height;
-        $gameMap.isValid = (x, y) => x >= 0 && x < CELL_W && y >= 0 && y < CELL_H;
-        $gameMap.width = () => CELL_W;
-        $gameMap.height = () => CELL_H;
+        $gameMap.isValid = function(x, y) {
+            return inEngine > 0
+                ? savedIsValid.call(this, x, y)
+                : (x >= 0 && x < CELL_W && y >= 0 && y < CELL_H);
+        };
+        $gameMap.width = function() {
+            return inEngine > 0 ? savedWidth.call(this) : CELL_W;
+        };
+        $gameMap.height = function() {
+            return inEngine > 0 ? savedHeight.call(this) : CELL_H;
+        };
 
         // x and y are prototype getters on Game_CharacterBase; an own getter
         // shadows them for as long as it is there. A getter and not a fixed

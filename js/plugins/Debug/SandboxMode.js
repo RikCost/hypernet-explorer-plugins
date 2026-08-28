@@ -323,6 +323,344 @@
     }
 
     // =========================================================================
+    //  Export Procedural Map (World Generation category)
+    // -------------------------------------------------------------------------
+    //  Writes one PNG per world square into `mapshot/` beside the game, named
+    //  after the square's world coordinates, plus an index.json describing what
+    //  each one is. The folder is gitignored: these are working pictures for
+    //  looking at generation output, not assets.
+    //
+    //  A square is captured the only way a picture of a whole map can be taken:
+    //  it has to be the loaded map. So the export walks the block one square at
+    //  a time, generating and transferring to each in turn, and snapshots after
+    //  the tilemap has drawn. OrangeMapshotMZ owns that drawing (it is what
+    //  "mapshot" means in this project) and is used for it here rather than
+    //  reimplemented.
+    //
+    //  Stitching is switched OFF for the run. A stitched window is up to nine
+    //  squares laid into one map, and a picture of that filed under one square's
+    //  coordinates would be a picture of eight others too.
+    // =========================================================================
+
+    // The block sizes offered, in squares per side. Odd, because the block is
+    // centred on the square the party is standing on.
+    const MAPSHOT_SIZES = [1, 3, 5, 9];
+    let mapshotSize = 3;
+
+    function mapshotSizeLabel() {
+        const n = mapshotSize * mapshotSize;
+        return `Mapshot Area: ${mapshotSize} x ${mapshotSize} (${n} square${n === 1 ? "" : "s"})`;
+    }
+
+    function cycleMapshotSize() {
+        const i = MAPSHOT_SIZES.indexOf(mapshotSize);
+        mapshotSize = MAPSHOT_SIZES[(i + 1) % MAPSHOT_SIZES.length];
+    }
+
+    // `mapshot/` beside the game's own directory, the same root ModManager reads
+    // its mods out of. Null when there is no filesystem to write to (a browser
+    // build), which is the one condition the caller has to refuse on.
+    function mapshotDir() {
+        if (!Utils.isNwjs()) return null;
+        try {
+            const path = require("path");
+            return path.join(path.dirname(process.mainModule.filename), "mapshot");
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // The block of world squares to capture: mapshotSize per side, centred on
+    // the party, clipped to the world map and walked in a boustrophedon so
+    // consecutive squares are always neighbours.
+    function mapshotBlock(centreX, centreY) {
+        const reach = (mapshotSize - 1) / 2;
+        // The world map is 256 squares each way. There is nowhere to read that
+        // off at this point -- $dataMapInfos carries no dimensions and map 315
+        // is not the loaded map -- and the rest of the generator assumes the
+        // same number, so it is spelled once here and clipped against.
+        const WORLD_SIDE = 256;
+
+        const coords = [];
+        for (let dx = -reach; dx <= reach; dx++) {
+            const x = centreX + dx;
+            if (x < 0 || x >= WORLD_SIDE) continue;
+            const column = [];
+            for (let dy = -reach; dy <= reach; dy++) {
+                const y = centreY + dy;
+                if (y < 0 || y >= WORLD_SIDE) continue;
+                column.push({ x, y });
+            }
+            // Serpentine: every other column runs the other way, so the last
+            // square of one column touches the first of the next.
+            if ((dx + reach) % 2 === 1) column.reverse();
+            coords.push(...column);
+        }
+        return coords;
+    }
+
+    // What the index records about a square. Everything here is read off the
+    // procgen record the square was just built from, so it describes the picture
+    // sitting next to it rather than whatever the party walked on afterwards.
+    function mapshotRecord(x, y) {
+        const pg = ($gameSystem && $gameSystem._procGenData) || {};
+        const rec = {
+            x, y,
+            file: `${x},${y}.png`,
+            biome: pg.currentBiome || null,
+            tilesetId: pg.currentBiomeTileset || null,
+            roadDirection: pg.currentRoadDirection || null,
+            underBiome: pg.currentUnderBiome || null,
+            displayAsBeach: !!pg.displayAsBeach,
+            displayAsIsland: !!pg.displayAsIsland,
+        };
+        if (window.BiomeNames && rec.biome) {
+            const shown = window.BiomeNames.display(rec.biome);
+            if (shown && shown !== rec.biome) rec.name = shown;
+        }
+        return rec;
+    }
+
+    // Build the square at (x, y) and make it the loaded map. Answers false when
+    // the generator could not resolve it, which is a square the export skips
+    // rather than a run it abandons.
+    function mapshotGoToSquare(x, y) {
+        if (!$gameSystem.generateProceduralMap) return false;
+        $gameVariables.setValue(43, x);
+        $gameVariables.setValue(44, y);
+        if (!$gameSystem.generateProceduralMap()) return false;
+        const WM = window.WorldMapReturn;
+        const procId = (WM && WM.procMapId) || 636;
+        // The middle of the square, so nothing about where the party stands
+        // depends on which direction the previous square was left in.
+        const U = window.ProcGenUtils;
+        const midX = Math.floor(((U && U.PROC_MAP_WIDTH) || 64) / 2);
+        const midY = Math.floor(((U && U.PROC_MAP_HEIGHT) || 64) / 2);
+        $gamePlayer.reserveTransfer(procId, midX, midY, 2, 0);
+        return true;
+    }
+
+    // Write every layer OrangeMapshotMZ hands back for the current map. One
+    // layer is the whole picture; more than one means the plugin is configured
+    // to split them, and they are suffixed rather than overwriting each other.
+    function mapshotWriteCurrent(dir, x, y, done) {
+        const OM = window.OrangeMapshotMZ;
+        const fs = require("fs");
+        const path = require("path");
+        let snaps = null;
+        try {
+            snaps = OM.getMapshot();
+        } catch (e) {
+            console.error(`[Mapshot] (${x},${y}) could not be drawn:`, e);
+            return done(false);
+        }
+        if (!snaps || !snaps.length) return done(false);
+
+        const ext = OM.fileExtension();
+        const regex = OM.imageRegex();
+        let pending = snaps.length;
+        let ok = true;
+        for (let i = 0; i < snaps.length; i++) {
+            const suffix = snaps.length > 1 ? `_layer${i}` : "";
+            const file = path.join(dir, `${x},${y}${suffix}${ext}`);
+            const data = snaps[i].canvas
+                .toDataURL(OM.imageType(), OM.imageQuality())
+                .replace(regex, "");
+            fs.writeFile(file, data, "base64", (err) => {
+                if (err) {
+                    ok = false;
+                    console.error(`[Mapshot] (${x},${y}) could not be written:`, err);
+                }
+                if (--pending <= 0) done(ok);
+            });
+        }
+    }
+
+    // Is the export able to run at all? Answers the reason it is not, so the
+    // caller can say it rather than failing silently.
+    function mapshotBlocker() {
+        if (!Utils.isNwjs()) return "Mapshots can only be written from the desktop build.";
+        if (!window.OrangeMapshotMZ || !window.OrangeMapshotMZ.getMapshot) {
+            return "OrangeMapshotMZ is not loaded, so no picture can be drawn.";
+        }
+        if (!mapshotDir()) return "The game folder could not be found.";
+        const WM = window.WorldMapReturn;
+        const procId = (WM && WM.procMapId) || 636;
+        if (!$gameMap || $gameMap.mapId() !== procId) {
+            return "Stand on a procedural map first: the export captures world squares.";
+        }
+        return null;
+    }
+
+    // A run is one at a time, and it survives the sandbox menu closing (the menu
+    // is torn down before the first transfer), so its state lives here.
+    let mapshotRun = null;
+
+    function mapshotToast(text) {
+        if (window.ParchmentToast && window.ParchmentToast.show) {
+            window.ParchmentToast.show(text);
+        } else {
+            console.log(`[Mapshot] ${text}`);
+        }
+    }
+
+    // Start an export centred on the party's square. Runs from Scene_Map, one
+    // square per map load, and puts the party back where it started.
+    function startMapshotExport() {
+        const blocked = mapshotBlocker();
+        if (blocked) { mapshotToast(blocked); return false; }
+        if (mapshotRun) { mapshotToast("A mapshot export is already running."); return false; }
+
+        const fs = require("fs");
+        const path = require("path");
+        const dir = mapshotDir();
+        try {
+            fs.mkdirSync(dir, { recursive: true });
+        } catch (e) {
+            mapshotToast("mapshot/ could not be created.");
+            console.error("[Mapshot]", e);
+            return false;
+        }
+
+        const homeX = $gameVariables.value(43);
+        const homeY = $gameVariables.value(44);
+        const coords = mapshotBlock(homeX, homeY);
+        if (!coords.length) { mapshotToast("No world squares in that block."); return false; }
+
+        const Stitch = window.ProcStitch;
+        const wasDisabled = Stitch ? Stitch.isDisabled() : false;
+        if (Stitch) Stitch.setDisabled(true);
+
+        mapshotRun = {
+            dir, coords, index: 0, written: 0, skipped: 0,
+            homeX, homeY, wasDisabled,
+            records: [],
+            startedAt: Date.now(),
+            // Set while a square is being waited on, so the map-loaded hook only
+            // fires for a square this run asked for.
+            awaiting: null,
+        };
+        mapshotToast(`Exporting ${coords.length} square${coords.length === 1 ? "" : "s"} to mapshot/`);
+        mapshotNext();
+        return true;
+    }
+
+    function mapshotNext() {
+        const run = mapshotRun;
+        if (!run) return;
+        if (run.index >= run.coords.length) return mapshotFinish();
+
+        const coord = run.coords[run.index++];
+        run.awaiting = coord;
+        if (!mapshotGoToSquare(coord.x, coord.y)) {
+            run.awaiting = null;
+            run.skipped++;
+            console.warn(`[Mapshot] (${coord.x},${coord.y}) could not be generated; skipped`);
+            mapshotNext();
+        }
+    }
+
+    // Called once the transferred-to square has drawn. The extra frames are the
+    // same wait the FullDebug sweep takes: the tilemap paints over a couple of
+    // frames after the scene reports itself loaded, and a picture taken before
+    // that is a picture of a half-drawn map.
+    function mapshotOnSquareLoaded() {
+        const run = mapshotRun;
+        if (!run || !run.awaiting) return;
+        const coord = run.awaiting;
+        run.awaiting = null;
+        const record = mapshotRecord(coord.x, coord.y);
+        setTimeout(() => {
+            if (!mapshotRun) return;
+            const scene = SceneManager._scene;
+            if (!scene || !scene._spriteset || !scene._spriteset._tilemap) {
+                run.skipped++;
+                console.warn(`[Mapshot] (${coord.x},${coord.y}) had no tilemap; skipped`);
+                return mapshotNext();
+            }
+            mapshotWriteCurrent(run.dir, coord.x, coord.y, (ok) => {
+                if (!mapshotRun) return;
+                if (ok) { run.written++; run.records.push(record); }
+                else run.skipped++;
+                mapshotNext();
+            });
+        }, 300);
+    }
+
+    function mapshotFinish() {
+        const run = mapshotRun;
+        if (!run) return;
+        mapshotRun = null;
+
+        // The index is rewritten whole from what is on disk plus this run, so a
+        // second export over the same folder extends it instead of replacing it.
+        try {
+            const fs = require("fs");
+            const path = require("path");
+            const file = path.join(run.dir, "index.json");
+            let previous = [];
+            if (fs.existsSync(file)) {
+                try {
+                    const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
+                    if (Array.isArray(parsed.squares)) previous = parsed.squares;
+                } catch (e) { previous = []; }
+            }
+            const byCoord = new Map();
+            for (const rec of previous) byCoord.set(`${rec.x},${rec.y}`, rec);
+            for (const rec of run.records) byCoord.set(`${rec.x},${rec.y}`, rec);
+            const squares = [...byCoord.values()].sort((a, b) => a.x - b.x || a.y - b.y);
+            fs.writeFileSync(file, JSON.stringify({
+                worldSeed: (window.ProcGenUtils && window.ProcGenUtils.getWorldSeed)
+                    ? window.ProcGenUtils.getWorldSeed() : null,
+                squares,
+            }, null, 2), "utf8");
+        } catch (e) {
+            console.error("[Mapshot] index.json could not be written:", e);
+        }
+
+        const Stitch = window.ProcStitch;
+        if (Stitch && !run.wasDisabled) Stitch.setDisabled(false);
+
+        const secs = Math.round((Date.now() - run.startedAt) / 100) / 10;
+        console.log(`[Mapshot] ${run.written} written, ${run.skipped} skipped, ${secs}s -> ${run.dir}`);
+        mapshotToast(
+            `Mapshot: ${run.written} written` +
+            (run.skipped ? `, ${run.skipped} skipped` : "") + " to mapshot/"
+        );
+
+        // Home again, on the square the export was started from.
+        mapshotGoToSquare(run.homeX, run.homeY);
+    }
+
+    // The one hook the run needs: every arrival on a procedural square while a
+    // run is waiting for one is the square it was waiting for.
+    const _Mapshot_Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
+    Scene_Map.prototype.onMapLoaded = function () {
+        _Mapshot_Scene_Map_onMapLoaded.call(this);
+        if (mapshotRun && mapshotRun.awaiting) mapshotOnSquareLoaded();
+    };
+
+    // The export, reachable from outside the menu that offers it: the same
+    // entry point a plugin command or the console would want, and the seam
+    // test/test_mapshot_export.js drives.
+    window.SandboxMapshot = {
+        start: startMapshotExport,
+        // Why the export cannot run here, or null when it can.
+        blocker: mapshotBlocker,
+        // Where the pictures go.
+        directory: mapshotDir,
+        // The block of world squares an export centred on (x, y) would capture,
+        // in the order it would walk them.
+        block: mapshotBlock,
+        size() { return mapshotSize; },
+        setSize(n) { if (MAPSHOT_SIZES.includes(n)) mapshotSize = n; return mapshotSize; },
+        sizes: MAPSHOT_SIZES.slice(),
+        cycleSize: cycleMapshotSize,
+        label: mapshotSizeLabel,
+        running() { return !!mapshotRun; },
+    };
+
+    // =========================================================================
     //  NPC Manipulation actions (see Scene_SandboxMenu.applyNpcAction).
     //  A single flat list; each action runs against the current target scope
     //  (single facing NPC or every NPC on the map), toggled by the first entry.
@@ -2084,6 +2422,30 @@
                 this.refreshUIDOM();
                 break;
             case "world_fly":         this.popAndRun('FlySystem', 'Fly', {}); return;
+
+            // Mapshot export. The size row cycles in place; the export itself
+            // has to run from Scene_Map, because every square it captures is a
+            // map load and the overlay would be torn down under it anyway.
+            case "mapshot_size":
+                cycleMapshotSize();
+                SoundManager.playCursor();
+                this.refreshUIDOM();
+                break;
+            case "mapshot_export": {
+                const blocked = mapshotBlocker();
+                if (blocked) {
+                    SoundManager.playBuzzer();
+                    mapshotToast(blocked);
+                    break;
+                }
+                SoundManager.playOk();
+                // Leave the menu first, then start: the run drives map
+                // transfers and needs the map scene to be the live one.
+                this.removeUIContainer();
+                this.popScene();
+                setTimeout(startMapshotExport, 150);
+                return;
+            }
             case "world_dream":       this.popAndRun('DreamSystem', 'StartDream', {}); return;
 
             // Minigame additions
@@ -2581,6 +2943,8 @@
                 { id: "dung_boss", name: "Jump to Boss Floor" },
                 { id: "veh_fuel_max", name: "Infinite Fuel (Max Refill)" },
                 { id: "proc_debugger", name: "Toggle ProcGen Debugger" },
+                { id: "mapshot_size", name: mapshotSizeLabel() },
+                { id: "mapshot_export", name: "Export Procedural Map" },
                 { id: "world_reveal_map", name: "Reveal Entire Map (Fog)" },
                 { id: "world_fly", name: "Toggle Flight" },
                 { id: "world_dream", name: "Enter Dream World" }

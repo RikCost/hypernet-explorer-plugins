@@ -100,6 +100,9 @@
     generateCaveWithDrunkenWalk,
     generateCaveWithCellularAutomata,
     generateCaveWithVoronoi,
+    smoothCaveCeilingMask,
+    reconcileCaveWallsAndCeilings,
+    cleanupOrphanedWallsAndCeilings,
     generateMountainBiomeTerrain,
     generateMountainRangeTerrain,
     getTerrainFeatures,
@@ -1138,32 +1141,22 @@
   function* blendBiomesTerrainOnlySteps(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords = { x: 0, y: 0 }, waterTiles = []) {
     if (!adjacentBiomes) return;
 
-    // Don't blend Ocean biomes at all
-    if (biome.name === "Ocean" || biome.name === "Seabed") return;
+    // Open water is never blended, in either direction: the sea is water end to
+    // end, and land terrain scattered into it -- or its water scattered onto a
+    // shore the coastline pass has already drawn -- is the very seam this avoids.
+    // The sea floor is spelled "SeaBed" in Biomes.json, so it is matched through
+    // isSeabedBiomeName rather than by a literal that never equalled the name.
+    if (biome.name === "Ocean" || isSeabedBiomeName(biome.name)) return;
 
-    // Build expanded allFeatures to include adjacent biomes' features
-    const expandedAllFeatures = { ...allFeatures };
     const allAdjacentBiomes = {};
 
     for (const [direction, biomeName] of Object.entries(adjacentBiomes)) {
-      if (!biomeName || biomeName === "Ocean" || biomeName === "Seabed") continue;
+      if (!biomeName || biomeName === "Ocean" || isSeabedBiomeName(biomeName)) continue;
 
       const adjacentBiome = getBiomeByName(biomeName);
       if (!adjacentBiome) continue;
 
       allAdjacentBiomes[direction] = adjacentBiome;
-
-      // Add tilesets from adjacent biome to expanded features
-      const adjacentTilesetIds = adjacentBiome.tilesetIds || [adjacentBiome.tilesetId];
-      for (const tilesetId of adjacentTilesetIds) {
-        const adjacentFeatures = Utils2.Cache.getTilesetFeatures(tilesetId);
-        for (const [name, tiles] of Object.entries(adjacentFeatures)) {
-          if (!expandedAllFeatures[name]) {
-            expandedAllFeatures[name] = [];
-          }
-          expandedAllFeatures[name] = expandedAllFeatures[name].concat(tiles);
-        }
-      }
     }
 
     const blendScale = 0.02; // Perlin noise scale for smooth gradients
@@ -1204,7 +1197,7 @@
 
         // Blend from the strongest adjacent biome if influence is high enough
         if (influences.length > 0 && rng() < influences[0].value) {
-          blendTerrainTileFromAdjacentBiome(mapData, x, y, influences[0].biome, expandedAllFeatures, width, height, rng, waterTiles);
+          blendTerrainTileFromAdjacentBiome(mapData, x, y, influences[0].biome, allFeatures, width, height, rng, waterTiles);
         }
       }
       if (y % STEP_ROWS === STEP_ROWS - 1) yield;
@@ -1217,7 +1210,7 @@
    * Excludes road-related terrain features (Road, Path, Sidewalk, DashedLine)
    * Skips blending on water and beach tiles to preserve coastlines
    */
-  function blendTerrainTileFromAdjacentBiome(mapData, x, y, adjacentBiome, expandedAllFeatures, width, height, rng, waterTiles = []) {
+  function blendTerrainTileFromAdjacentBiome(mapData, x, y, adjacentBiome, allFeatures, width, height, rng, waterTiles = []) {
     // Skip blending on beach tiles to preserve coastlines
     // Check if current tile matches any protected beach/water tile IDs
     const baseIdx = calculateIndex(x, y, 0, width, height);
@@ -1237,14 +1230,18 @@
 
     if (terrainFeatures.length === 0) return;
 
-    // Filter out road-related terrain features from blending
+    // Filter out road-related terrain features from blending and only allow features present in the current map's tileset
     const excludedTerrains = ["Road", "Path", "Sidewalk", "DashedLine", "DashedLineHorizontal", "DashedLineVertical"];
-    const blendableTerrains = terrainFeatures.filter(f => !excludedTerrains.includes(f.name));
+    const blendableTerrains = terrainFeatures.filter(
+      f => !excludedTerrains.includes(f.name) &&
+           allFeatures[f.name] &&
+           allFeatures[f.name].some(v => v.type === "single" && v.tileId)
+    );
 
     if (blendableTerrains.length === 0) return;
 
-    // Select a random terrain feature from the adjacent biome (excluding road features)
-    const selectedTerrain = getWeightedTerrainFeature(blendableTerrains, expandedAllFeatures, rng);
+    // Select a random terrain feature from the adjacent biome (excluding road features) using current tileset features
+    const selectedTerrain = getWeightedTerrainFeature(blendableTerrains, allFeatures, rng);
     if (!selectedTerrain) return;
 
     // Apply to layer 0 only
@@ -1378,11 +1375,19 @@
 
     // 40% chance to blend terrain (layer 0) - but ONLY on road maps if not on road tile
     if (terrainFeatures.length > 0 && rng() < 0.4) {
-      const selectedTerrain = getWeightedTerrainFeature(terrainFeatures, allFeatures, rng);
-      if (selectedTerrain) {
-        const idx = calculateIndex(x, y, 0, width, height);
-        mapData[idx] = selectedTerrain;
-        return;
+      const excludedTerrains = ["Road", "Path", "Sidewalk", "DashedLine", "DashedLineHorizontal", "DashedLineVertical"];
+      const blendableTerrains = terrainFeatures.filter(
+        f => !excludedTerrains.includes(f.name) &&
+             allFeatures[f.name] &&
+             allFeatures[f.name].some(v => v.type === "single" && v.tileId)
+      );
+      if (blendableTerrains.length > 0) {
+        const selectedTerrain = getWeightedTerrainFeature(blendableTerrains, allFeatures, rng);
+        if (selectedTerrain) {
+          const idx = calculateIndex(x, y, 0, width, height);
+          mapData[idx] = selectedTerrain;
+          return;
+        }
       }
     }
 
@@ -1391,7 +1396,11 @@
 
     // Filter out road-related features from adjacent biomes
     const excludedFeatures = ["Road", "Path", "Sidewalk", "DashedLine", "DashedLineHorizontal", "DashedLineVertical"];
-    const blendableFeatures = regularFeatures.filter(f => !excludedFeatures.includes(f.name));
+    const blendableFeatures = regularFeatures.filter(
+      f => !excludedFeatures.includes(f.name) &&
+           allFeatures[f.name] &&
+           allFeatures[f.name].some(v => v.type === "single" && v.tileId)
+    );
 
     if (blendableFeatures.length > 0) {
       // Only 25% chance to even attempt feature blending (much less dense than original)
@@ -1548,30 +1557,6 @@
     // stray gas-station tile.
     const underBiome = getUnderlyingTerrainBiome(biome);
 
-    // Build expanded allFeatures to include features from adjacent biomes
-    // This allows road biomes to blend terrain from adjacent biomes even if they use different tilesets
-    const expandedAllFeatures = { ...allFeatures };
-    if (adjacentBiomes) {
-      for (const biomeName of Object.values(adjacentBiomes)) {
-        if (!biomeName) continue;
-
-        const adjacentBiome = getBiomeByName(biomeName);
-        if (!adjacentBiome) continue;
-
-        // Add tilesets from adjacent biome to expanded features
-        const adjacentTilesetIds = adjacentBiome.tilesetIds || [adjacentBiome.tilesetId];
-        for (const tilesetId of adjacentTilesetIds) {
-          const adjacentFeatures = Utils2.Cache.getTilesetFeatures(tilesetId);
-          for (const [name, tiles] of Object.entries(adjacentFeatures)) {
-            if (!expandedAllFeatures[name]) {
-              expandedAllFeatures[name] = [];
-            }
-            expandedAllFeatures[name] = expandedAllFeatures[name].concat(tiles);
-          }
-        }
-      }
-    }
-
     // Store adjacent biome terrain data for use AFTER road generation
     // This ensures terrain blending doesn't overwrite the roads themselves
     const adjacentTerrainTiles = {
@@ -1597,10 +1582,12 @@
           // Exclude road-related terrain features from blending
           const excludedTerrains = ["Road", "Path", "Sidewalk", "DashedLine", "DashedLineHorizontal", "DashedLineVertical"];
 
-          // Only include terrain features (not road-related)
-          // Use expandedAllFeatures so we can access tiles from adjacent biomes' tilesets
-          if (isTerrain && !excludedTerrains.includes(featureName) && expandedAllFeatures[featureName]) {
-            for (const variant of expandedAllFeatures[featureName]) {
+          // Only include terrain features (not road-related). Resolved against
+          // the ROAD tileset's own feature table, like everything else drawn on
+          // this square: a neighbour's tile id means nothing under a tileset
+          // that does not hold it, and borrowing one drew stray graphics.
+          if (isTerrain && !excludedTerrains.includes(featureName) && allFeatures[featureName]) {
+            for (const variant of allFeatures[featureName]) {
               if (variant.type === "single" && variant.tileId) {
                 adjacentTerrainTiles[direction].push(variant.tileId);
               }
@@ -1746,11 +1733,11 @@
 
     // Blend terrain from adjacent biomes into road borders
     // Use the actual water tiles to avoid overwriting beaches
-    yield* blendBiomesTerrainOnlySteps(mapData, biome, adjacentBiomes, expandedAllFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
+    yield* blendBiomesTerrainOnlySteps(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray);
 
     // Blend non-terrain features from adjacent biomes (only B sheet tiles)
     // Use the actual water tiles collected from the map after drawWaterEdges
-    yield* blendBiomeBordersSteps(mapData, biome, adjacentBiomes, expandedAllFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray, roadKeepOut);
+    yield* blendBiomeBordersSteps(mapData, biome, adjacentBiomes, allFeatures, width, height, seed, rng, worldCoords, actualWaterTilesArray, roadKeepOut);
 
     // Dress the verges with the underlying biome's own features (trees, rocks,
     // weeds...). Prefabs are deliberately NOT taken from that biome: a road map
@@ -1825,7 +1812,7 @@
 
     if (window.ProcGenDungeon && window.ProcGenDungeon.overgrowMapData) {
       window.ProcGenDungeon.overgrowMapData(
-        mapData, width, height, expandedAllFeatures || allFeatures,
+        mapData, width, height, allFeatures,
         biome && biome.tilesetId, seed);
     }
 
@@ -2237,9 +2224,10 @@
 
     const rng = createSeededRandom(seed);
 
-    // Get CaveFloor and Ceiling tiles
+    // Get CaveFloor, Ceiling and CaveWall tiles
     const caveFloorTiles = allFeatures["CaveFloor"] || [];
-    const caveWallTiles = allFeatures["Ceiling"] || [];
+    const caveCeilingTiles = allFeatures["Ceiling"] || allFeatures["CaveCeiling"] || [];
+    const caveWallFeatureTiles = allFeatures["CaveWall"] || allFeatures["MountainWall"] || allFeatures["DungeonWall"] || [];
 
     // Select a single CaveFloor variant seeded by the world-seeded master seed
     const caveFloorRng = createSeededRandom((seed ^ 0x0caf) >>> 0);
@@ -2249,10 +2237,13 @@
 
     const caveFloorTile = selectedFloorVariant ?
       (selectedFloorVariant.type === "single" ? selectedFloorVariant.tileId : selectedFloorVariant.tiles[0][0]) :
+      1536;
+    const caveCeilingTile = caveCeilingTiles.length > 0 ?
+      (caveCeilingTiles[0].type === "single" ? caveCeilingTiles[0].tileId : caveCeilingTiles[0].tiles[0][0]) :
       0;
-    const caveWallTile = caveWallTiles.length > 0 ?
-      (caveWallTiles[0].type === "single" ? caveWallTiles[0].tileId : caveWallTiles[0].tiles[0][0]) :
-      0;
+    const caveWallTile = caveWallFeatureTiles.length > 0 ?
+      (caveWallFeatureTiles[0].type === "single" ? caveWallFeatureTiles[0].tileId : caveWallFeatureTiles[0].tiles[0][0]) :
+      caveCeilingTile;
 
     // Select cave generation method based on world coordinates
     let caveData;
@@ -2270,7 +2261,7 @@
           0.4,
           seed,
           caveFloorTile,
-          caveWallTile
+          caveCeilingTile
         );
         break;
       case 1:
@@ -2281,7 +2272,7 @@
           width,
           seed,
           caveFloorTile,
-          caveWallTile
+          caveCeilingTile
         );
         break;
       case 2:
@@ -2292,7 +2283,7 @@
           width,
           seed,
           caveFloorTile,
-          caveWallTile
+          caveCeilingTile
         );
         break;
     }
@@ -2300,37 +2291,6 @@
     // Copy cave data to main mapData
     for (let i = 0; i < caveData.length; i++) {
       mapData[i] = caveData[i];
-    }
-
-    // Place CaveWall tiles below each Ceiling (3 tiles south)
-    // Only if Ceiling is directly above CaveFloor
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = calculateIndex(x, y, 0, width, height);
-        // If this is a Ceiling tile
-        if (mapData[idx] === caveWallTile) {
-          // Check if tile directly below is CaveFloor
-          const belowIdx = calculateIndex(x, y + 1, 0, width, height);
-          if (y + 1 < height && mapData[belowIdx] === caveFloorTile) {
-            // Place 3 CaveWall tiles below (south) if they're not Ceiling
-            for (let dy = 1; dy <= 3; dy++) {
-              const wallY = y + dy;
-              if (wallY < height) {
-                const wallIdx = calculateIndex(x, wallY, 0, width, height);
-                // Only place if it's not already a Ceiling
-                if (mapData[wallIdx] !== caveWallTile) {
-                  // Get CaveWall tile from features
-                  const caveWallFeatureTiles = allFeatures["CaveWall"] || [];
-                  const wallTile = caveWallFeatureTiles.length > 0 ?
-                    (caveWallFeatureTiles[0].type === "single" ? caveWallFeatureTiles[0].tileId : caveWallFeatureTiles[0].tiles[0][0]) :
-                    caveWallTile;
-                  mapData[wallIdx] = wallTile;
-                }
-              }
-            }
-          }
-        }
-      }
     }
 
     // Seal cave borders with Ceiling tiles. The passages agreed with the
@@ -2349,10 +2309,13 @@
 
         if (shouldSeal) {
           const idx = calculateIndex(x, y, 0, width, height);
-          mapData[idx] = caveWallTile;
+          mapData[idx] = caveCeilingTile;
         }
       }
     }
+
+    // Smooth cave ceiling mask to remove thin ridges, diagonal strands and fill 1-tile holes
+    smoothCaveCeilingMask(mapData, width, height, caveCeilingTile, caveFloorTile, borderThickness);
 
     // Create safe spawn area in center (7x7 cleared area)
     const centerX = Math.floor(width / 2);
@@ -2404,9 +2367,6 @@
       const sy = currentY < destY ? 1 : -1;
       let err = dx - dy;
 
-      // Store tunnel positions for wall placement
-      const tunnelPositions = [];
-
       while (true) {
         // Carve tunnel with width
         for (let ty = -tunnelWidth; ty <= tunnelWidth; ty++) {
@@ -2416,7 +2376,6 @@
             if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
               const idx = calculateIndex(nx, ny, 0, width, height);
               mapData[idx] = caveFloorTile;
-              tunnelPositions.push({ x: nx, y: ny });
             }
           }
         }
@@ -2434,48 +2393,6 @@
           currentY += sy;
         }
       }
-
-      // Add CaveWall tiles below tunnel ceiling edges (same pattern as rest of cave)
-      // Scan entire tunnel area to find all ceiling tiles that are directly above floor tiles
-      // Then place 3 CaveWall tiles below those floor positions
-      const processedPositions = new Set();
-
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          const idx = calculateIndex(x, y, 0, width, height);
-
-          // If this is a Ceiling tile
-          if (mapData[idx] === caveWallTile) {
-            // Check if tile directly below is CaveFloor (tunnel floor or cave floor)
-            const belowIdx = calculateIndex(x, y + 1, 0, width, height);
-            if (y + 1 < height && mapData[belowIdx] === caveFloorTile) {
-              const posKey = `${x},${y + 1}`;
-
-              // Avoid processing same position multiple times
-              if (!processedPositions.has(posKey)) {
-                processedPositions.add(posKey);
-
-                // Place 3 CaveWall tiles below (south) if they're not Ceiling
-                for (let dy = 1; dy <= 3; dy++) {
-                  const wallY = y + 1 + dy;
-                  if (wallY < height) {
-                    const wallIdx = calculateIndex(x, wallY, 0, width, height);
-                    // Only place if it's not already a Ceiling
-                    if (mapData[wallIdx] !== caveWallTile) {
-                      // Get CaveWall tile from features
-                      const caveWallFeatureTiles = allFeatures["CaveWall"] || [];
-                      const wallTile = caveWallFeatureTiles.length > 0 ?
-                        (caveWallFeatureTiles[0].type === "single" ? caveWallFeatureTiles[0].tileId : caveWallFeatureTiles[0].tiles[0][0]) :
-                        caveWallTile;
-                      mapData[wallIdx] = wallTile;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
 
     // Select which feature variants to use in this cave (1-4 variants per feature type)
@@ -2484,10 +2401,10 @@
 
     // Build list of tiles to block (all cave structure tiles)
     // This ensures features only spawn on CaveFloor tiles
-    const blockedTiles = [caveWallTile];
+    const blockedTiles = [caveCeilingTile, caveWallTile];
 
-    // Add all CaveWall variants
-    for (const variant of caveWallTiles) {
+    // Add all Ceiling variants
+    for (const variant of caveCeilingTiles) {
       if (variant.type === "single") {
         blockedTiles.push(variant.tileId);
       } else if (variant.type === "grid") {
@@ -2499,8 +2416,7 @@
       }
     }
 
-    // Add CaveWall feature tiles
-    const caveWallFeatureTiles = allFeatures["CaveWall"] || [];
+    // Add all CaveWall feature tiles
     for (const variant of caveWallFeatureTiles) {
       if (variant.type === "single") {
         blockedTiles.push(variant.tileId);
@@ -2580,6 +2496,20 @@
       }
     }
 
+    // Reconcile all cave walls and ceilings to guarantee full visual consistency:
+    // - Every south-facing ceiling gets cave walls below it
+    // - No orphaned cave walls (without ceiling above) or orphaned floating ceilings remain
+    reconcileCaveWallsAndCeilings(
+      mapData,
+      width,
+      height,
+      caveCeilingTile,
+      caveWallTile,
+      caveFloorTile,
+      2,
+      allFeatures
+    );
+
     // ===== BORDER PASSAGES =====
     //
     // Cut last, after the wall-face passes and the feature scatter: both of
@@ -2617,7 +2547,7 @@
     // The carve that made the cave is organic and owes the border nothing, so
     // each mouth is joined to the safe spawn area in the middle by a corridor of
     // its own. Without it a passage can open onto solid rock.
-    const carveCorridor = (fromX, fromY, toX, toY, radius) => {
+    const carveCorridor = (fromX, fromY, toX, toY, radius = 2) => {
       let x = fromX, y = fromY;
       const dx = Math.abs(toX - x), dy = Math.abs(toY - y);
       const sx = x < toX ? 1 : -1, sy = y < toY ? 1 : -1;
@@ -2643,16 +2573,16 @@
 
       if (direction === "north") {
         carvePassageRect(opening.start, 0, opening.end, mouthDepth);
-        carveCorridor(mid, mouthDepth, centerX, centerY, 1);
+        carveCorridor(mid, mouthDepth, centerX, centerY, 2);
       } else if (direction === "south") {
         carvePassageRect(opening.start, height - 1 - mouthDepth, opening.end, height - 1);
-        carveCorridor(mid, height - 1 - mouthDepth, centerX, centerY, 1);
+        carveCorridor(mid, height - 1 - mouthDepth, centerX, centerY, 2);
       } else if (direction === "west") {
         carvePassageRect(0, opening.start, mouthDepth, opening.end);
-        carveCorridor(mouthDepth, mid, centerX, centerY, 1);
+        carveCorridor(mouthDepth, mid, centerX, centerY, 2);
       } else {
         carvePassageRect(width - 1 - mouthDepth, opening.start, width - 1, opening.end);
-        carveCorridor(width - 1 - mouthDepth, mid, centerX, centerY, 1);
+        carveCorridor(width - 1 - mouthDepth, mid, centerX, centerY, 2);
       }
     }
 
@@ -2661,6 +2591,18 @@
       ["north", "south", "east", "west"]
         .map((d) => `${d}=${openings[d] ? `${openings[d].start}-${openings[d].end}` : "sealed"}`)
         .join(" ")
+    );
+
+    // Clean up any walls sliced by border passages so no orphaned walls remain
+    cleanupOrphanedWallsAndCeilings(
+      mapData,
+      width,
+      height,
+      caveCeilingTile,
+      caveWallTile,
+      caveFloorTile,
+      2,
+      allFeatures
     );
 
     // Clear any features in forbidden zones (borders and center)
@@ -2697,11 +2639,11 @@
     // Attach region data to map data for $gameMap.regionId() calls
     mapData.regiondata = regiondata;
 
-    // Expose the floor tile this cave instance carved with, so the prefab
-    // placement pass (which runs afterward, outside this function) can carve
-    // adequate open space for any prefab it drops into this organic cave
-    // layout instead of assuming the random carve already opened room for it.
+    // Expose the tiles this cave instance carved with, so prefab placement
+    // and downstream systems know the floor, ceiling and wall types.
     mapData.caveFloorTile = caveFloorTile;
+    mapData.caveCeilingTile = caveCeilingTile;
+    mapData.caveWallTile = caveWallTile;
 
     return mapData;
   }
@@ -4376,6 +4318,18 @@
       }
     }
 
+    // Off map 315 the coordinate cache is the ONLY record of what the world
+    // holds where: the live tile column cannot be read, so a square entered by
+    // walking out of a town's gate resolves its biome, its bridge, its river and
+    // all four of its neighbours out of the snapshot. An empty cache therefore
+    // does not degrade gracefully - it answers "Fields" with no neighbours at
+    // all, which is why the coastal square outside a gate came up as unbroken
+    // grassland running over the sea while the same square visited off the world
+    // map had its beach and its ocean. Every other off-map entry already loads
+    // BiomesMap.json when the save carries no cache (the origin path, the square
+    // resolver); this one did not, so it does now, once, before anything is read.
+    if (!onWorldMap && !alienGrid) ensureBiomeCoordinateCache(this._procGenData);
+
     // A bridge marker on the world map wins over every other classification:
     // the crossing is always a road running along the marker's orientation with
     // a river drawn underneath it.
@@ -4396,15 +4350,24 @@
       biomeName = hardcodedOverride.biome;
       roadDirection = hardcodedOverride.roadDirection || null;
     } else {
-      // Auto-detection reads the LIVE world-map tile column.
+      // Auto-detection prefers the LIVE world-map tile column, because the
+      // coordinate cache can be preloaded from js/db/WorldGen/BiomesMap.json and
+      // that snapshot goes stale whenever map 315 is repainted: a snapshot
+      // listing roads a repaint has moved reports real road tiles as "Fields",
+      // isRoadBiome() says no, and the asphalt-and-centre-line branch never runs.
       //
-      // Do NOT route this through getBiomeFromCache: the coordinate cache can be
-      // preloaded from js/db/WorldGen/BiomesMap.json, which is a snapshot that
-      // goes stale whenever map 315 is repainted. The committed snapshot lists
-      // ~2500 road coordinates for a road network that no longer exists, so real
-      // road tiles came back as "Fields" there, isRoadBiome() said no, and the
-      // road branch (asphalt + dashed centre line) never ran.
-      const worldTileBiome = this.getBiomeFromWorldCoordinates(originX, originY);
+      // But the live column is only legible FROM map 315. Off it, $gameMap is
+      // whichever 64x64 submap the party is standing in, and reading a column out
+      // of that answers with a biome that has nothing to do with the square being
+      // built -- most of its tile ids mean nothing to the world-map palette and
+      // fall through to "Fields". That is why a square entered by walking out of
+      // an authored map came up as open grassland however much sea the world map
+      // had painted there. So off the world map the cache is the only honest
+      // answer, and rawWorldBiomeAt is the shared rule: live column where it can
+      // be read, cache where it cannot, "Fields" only when neither can answer.
+      const worldTileBiome = rawWorldBiomeAt(
+        originX, originY, this._procGenData.biomeCoordinateCache, onWorldMap
+      );
 
       let lookupBiomeName = worldTileBiome;
 
@@ -4413,7 +4376,10 @@
         lookupBiomeName = "Road";
       }
 
-      biomeName = lookupBiomeName;
+      // A cached name can be a special rolled for a DIFFERENT world (the snapshot
+      // is shared across worlds), so it is unwrapped to its parent and rolled
+      // again here, exactly as the square resolver does.
+      biomeName = resolveSpecialBiome(unwrapSpecialBiome(lookupBiomeName), originX, originY);
     }
 
     // Ice biome should become Tundra or Permafrost depending on Y coordinate
@@ -4470,8 +4436,15 @@
     // road generator can dress the verges with that biome's own features instead
     // of leaving bare asphalt-and-grass. Settlements are excluded: a road through
     // a city/village/burg keeps the plain civic look.
+    //
+    // Read off the live column only while that is legible; off map 315 it is the
+    // submap under the party and says nothing about this square, so the scan
+    // stored with the biome cache answers instead (snapshotUnderBiome applies the
+    // same filtering to it).
     let underBiomeName = null;
-    if (isRoadBiome(biomeName)) {
+    if (isRoadBiome(biomeName) && !onWorldMap) {
+      underBiomeName = snapshotUnderBiome(this, biomeName, originX, originY);
+    } else if (isRoadBiome(biomeName)) {
       const under = this.getUnderBiomeFromWorldCoordinates(originX, originY);
       if (
         under &&
@@ -4503,56 +4476,62 @@
     this._procGenData.seed = getWorldSeed();
     const seed = procMapSeed(originX, originY);
 
-    // Adjacency must not depend on which map the player happens to be standing
-    // Adjacency is resolved only while standing on the world map, where the live
-    // tile column is readable. Deriving it from the coordinate cache off the
-    // world map was tried and reverted: that cache can be preloaded from a stale
-    // BiomesMap.json snapshot, which fed the generators neighbours that no longer
-    // exist. Off the world map adjacency stays null, and the generators then run
-    // every axis border to border, which is the behaviour roads had before.
+    // ADJACENCY. What the four squares around this one are, which is what the
+    // coastline pass cuts the sea and lays the sand band against, and what
+    // decides whether a Fields square is shown as a Beach at all.
+    //
+    // It must not depend on the map the party happens to be standing on when
+    // the square is built. It used to: adjacency was read only while standing on
+    // map 315, and a square entered any other way -- walking out of a town, a
+    // door, any authored map that hands the party back to the overland -- was
+    // built with all four neighbours unknown. Unknown neighbours mean no water
+    // on any side, so the same coastal square that has a sea and a beach when
+    // visited off the world map came up as unbroken grassland when left through
+    // a building, and the ocean next to it simply was not drawn.
+    //
+    // So it is read the way the stitched window has always read it (see
+    // resolveSquareUncached): the live tile column while that is legible, and
+    // the coordinate cache otherwise, with the cache winning where the two
+    // disagree because it carries the resolved names (a road painted over
+    // fields reports the road). The cache being a stale BiomesMap.json snapshot
+    // is guarded where it is built rather than here -- a playtest session
+    // rebuilds it from the live tiles (isTestPlayer) -- and a square that no
+    // path can agree on is worse than a square built from a snapshot an edit or
+    // two behind.
+    //
+    // A planet's landing grid is exempt: its (gx, gy) is planet-local and may
+    // coincide with a real Earth coordinate, so none of Earth's caches may be
+    // consulted for it.
     let adjacentBiomes = null;
     let diagonalBiomes = null;
     let cacheInfo = null;
 
-    const coordCache = this._procGenData.biomeCoordinateCache;
+    const coordCache = alienGrid ? null : this._procGenData.biomeCoordinateCache;
     const hasCoordCache = coordCache && Object.keys(coordCache).length > 0;
 
-    if (onWorldMap) {
+    if (onWorldMap && !alienGrid) {
       adjacentBiomes = getAdjacentBiomesOnWorldMap(originX, originY);
+    }
 
-      // Override with cache results to get actual biome assignments (roads placed on fields, etc.)
-      if (hasCoordCache) {
-        const cachedAdjacent = getAdjacentBiomesFromCache(
-          originX,
-          originY,
-          coordCache
-        );
-        // Use cache values if they exist (they're more accurate for overridden biomes)
-        adjacentBiomes.north = cachedAdjacent.north || adjacentBiomes.north;
-        adjacentBiomes.south = cachedAdjacent.south || adjacentBiomes.south;
-        adjacentBiomes.east = cachedAdjacent.east || adjacentBiomes.east;
-        adjacentBiomes.west = cachedAdjacent.west || adjacentBiomes.west;
+    if (hasCoordCache) {
+      // Cache values win: they are the resolved names (roads placed over fields
+      // and so on), where the raw tile column is only what is painted.
+      const cachedAdjacent = getAdjacentBiomesFromCache(originX, originY, coordCache);
+      adjacentBiomes = adjacentBiomes || { north: null, south: null, east: null, west: null };
+      for (const side of ["north", "south", "east", "west"]) {
+        adjacentBiomes[side] = cachedAdjacent[side] || adjacentBiomes[side];
       }
+      cacheInfo = checkAdjacentMapBiomesFromCache(originX, originY, coordCache);
+      diagonalBiomes = checkDiagonalMapBiomesFromCache(originX, originY, coordCache);
+    }
 
+    if (adjacentBiomes) {
       adjacentBiomes = {
         north: normalizeBiomeForEdge(adjacentBiomes.north),
         south: normalizeBiomeForEdge(adjacentBiomes.south),
         east: normalizeBiomeForEdge(adjacentBiomes.east),
         west: normalizeBiomeForEdge(adjacentBiomes.west),
       };
-
-      if (hasCoordCache) {
-        cacheInfo = checkAdjacentMapBiomesFromCache(
-          originX,
-          originY,
-          coordCache
-        );
-        diagonalBiomes = checkDiagonalMapBiomesFromCache(
-          originX,
-          originY,
-          coordCache
-        );
-      }
     }
 
     // Check if Fields biome should display as Beach

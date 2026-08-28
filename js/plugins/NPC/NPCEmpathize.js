@@ -267,6 +267,17 @@
     return db._byId;
   }
   const _rand = arr => (arr && arr.length ? arr[Math.floor(Math.random() * arr.length)] : '');
+  function vary(text) {
+    if (typeof text !== 'string' || text.indexOf('{') < 0) return text;
+    let out = text;
+    let guard = 0;
+    while (guard++ < 64) {
+      const next = out.replace(/\{([^{}]*\|[^{}]*)\}/g, (m, body) => _rand(body.split('|')));
+      if (next === out) break;
+      out = next;
+    }
+    return out;
+  }
 
   // ── Joke grammar ───────────────────────────────────────────────────────────
   // The joke pools hold bare words, not sentences, so anything a template puts
@@ -2329,7 +2340,7 @@
       if (!line) return;
       this._emGreeted = true;
       const npcName = this._targetName();
-      this._chatHistory.push({ role: 'npc', text: String(line).replace(/\{name\}/g, npcName) });
+      this._chatHistory.push({ role: 'npc', text: vary(String(line).replace(/\{name\}/g, npcName)) });
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
     }
 
@@ -2365,7 +2376,7 @@
       if (!line) return;
       this._bubbaGreeted = true;
       const npcName = this._targetName();
-      this._chatHistory.push({ role: 'npc', text: String(line).replace(/\{name\}/g, npcName) });
+      this._chatHistory.push({ role: 'npc', text: vary(String(line).replace(/\{name\}/g, npcName)) });
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
     }
 
@@ -3347,7 +3358,7 @@
       const actorId = actor && actor.actorId();
       const recent  = _countRecentInteractions(profile, 'social_' + id, 3);
       const db      = _socialLines();
-      const fill    = s => String(s || '').replace(/\{name\}/g, npcName).replace(/\{subject\}/g, this._lastSubject || '');
+      const fill    = s => vary(String(s || '').replace(/\{name\}/g, npcName).replace(/\{subject\}/g, this._lastSubject || ''));
 
       let playerLine = '', npcLine = '', delta = 0;
       // Tone bucket of this interaction, for the Em stance pools below. Jokes

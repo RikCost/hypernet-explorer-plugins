@@ -1368,7 +1368,9 @@
 
   /** True while the player is riding a flying vehicle (the Broom). */
   function isPlayerRidingFlying() {
-    return $gamePlayer.isInVehicle() && isFlyingVehicle($gamePlayer.vehicle());
+    if (!$gamePlayer || !$gamePlayer.isInVehicle() || $gamePlayer._vehicleGettingOff) return false;
+    const vehicle = $gamePlayer.vehicle();
+    return !!(vehicle && vehicle._driving && isFlyingVehicle(vehicle));
   }
 
   /**
@@ -1460,8 +1462,10 @@
    * Checks if the player is riding a custom vehicle.
    */
   function isPlayerRidingCustomVehicle() {
-    if (!$gamePlayer.isInVehicle()) return false;
-    return isCustomVehicle($gamePlayer.vehicle());
+    if (!$gamePlayer || !$gamePlayer.isInVehicle() || $gamePlayer._vehicleGettingOff) return false;
+    const vehicle = $gamePlayer.vehicle();
+    if (!vehicle || !vehicle._driving) return false;
+    return isCustomVehicle(vehicle);
   }
 
   // ============================================================================
@@ -2267,11 +2271,27 @@
     vehicle.getOff();
     this.setTransparent(false);
     this._vehicleGettingOff = true;
-    this.setMoveSpeed(4);
+    const onFootSpeed = $gameMap.mapId() === 315
+      ? VehicleConfig.SPEED.map315OnFootSpeed
+      : VehicleConfig.SPEED.onFootBase;
+    this.setMoveSpeed(onFootSpeed);
     this.setThrough(false);
     this.makeEncounterCount();
     this.gatherFollowers();
     return true;
+  };
+
+  const _Game_Player_updateVehicleGetOff_VS = Game_Player.prototype.updateVehicleGetOff;
+  Game_Player.prototype.updateVehicleGetOff = function () {
+    const wasGettingOff = this._vehicleGettingOff;
+    _Game_Player_updateVehicleGetOff_VS.call(this);
+    if (wasGettingOff && !this._vehicleGettingOff) {
+      if ($gameMap.mapId() === 315) {
+        this.setMoveSpeed(VehicleConfig.SPEED.map315OnFootSpeed);
+      } else {
+        this.setMoveSpeed(VehicleConfig.SPEED.onFootBase);
+      }
+    }
   };
 
   // Aquatic camper sprite: crop to the top half so it looks half-submerged while
@@ -4925,9 +4945,56 @@
   const _Spriteset_Map_updateShadow_VS = Spriteset_Map.prototype.updateShadow;
   Spriteset_Map.prototype.updateShadow = function () {
     _Spriteset_Map_updateShadow_VS.call(this);
+
+    const isFlyingBroom = isPlayerRidingFlying();
+    const boat = vehicleManager.getVehicle('boat');
+    const isParkedBroom = !isFlyingBroom && boat && boat._mapId === $gameMap.mapId() &&
+      $gameSystem && $gameSystem._boatType === 'broom' &&
+      !boat._driving && !boat._vsStacked;
+
     if (this._shadowSprite) {
-      this._shadowSprite.opacity = 0;
-      this._shadowSprite.visible = false;
+      if (isFlyingBroom) {
+        if (!this._shadowSprite.bitmap) {
+          this._shadowSprite.bitmap = ImageManager.loadSystem('Shadow1');
+        }
+        this._shadowSprite.x = $gamePlayer.screenX();
+        this._shadowSprite.y = $gamePlayer.screenY();
+        this._shadowSprite.opacity = 255;
+        this._shadowSprite.visible = true;
+      } else if (isParkedBroom) {
+        if (!this._shadowSprite.bitmap) {
+          this._shadowSprite.bitmap = ImageManager.loadSystem('Shadow1');
+        }
+        this._shadowSprite.x = boat.screenX();
+        this._shadowSprite.y = boat.screenY();
+        this._shadowSprite.opacity = 180;
+        this._shadowSprite.visible = true;
+      } else {
+        this._shadowSprite.opacity = 0;
+        this._shadowSprite.visible = false;
+      }
+    }
+
+    if (this._followerShadowSprites) {
+      const followers = ($gamePlayer.followers && typeof $gamePlayer.followers === 'function')
+        ? $gamePlayer.followers().data()
+        : [];
+      for (let i = 0; i < this._followerShadowSprites.length; i++) {
+        const sprite = this._followerShadowSprites[i];
+        const follower = followers[i];
+        if (isFlyingBroom && follower && follower.isVisible() && followerRidingSprite(follower)) {
+          if (!sprite.bitmap) {
+            sprite.bitmap = ImageManager.loadSystem('Shadow1');
+          }
+          sprite.x = follower.screenX();
+          sprite.y = follower.screenY();
+          sprite.opacity = 255;
+          sprite.visible = true;
+        } else {
+          sprite.opacity = 0;
+          sprite.visible = false;
+        }
+      }
     }
   };
 
@@ -4947,6 +5014,19 @@
     for (let i = 0; i < most; i++) {
       const sprite = new Sprite_VehicleRider();
       this._vehicleRiderSprites.push(sprite);
+      this._tilemap.addChild(sprite);
+    }
+    // Follower shadow sprites for portable flying vehicles (Broom)
+    this._followerShadowSprites = [];
+    for (let i = 0; i < 8; i++) {
+      const sprite = new Sprite();
+      sprite.bitmap = ImageManager.loadSystem('Shadow1');
+      sprite.anchor.x = 0.5;
+      sprite.anchor.y = 1;
+      sprite.z = 6;
+      sprite.opacity = 0;
+      sprite.visible = false;
+      this._followerShadowSprites.push(sprite);
       this._tilemap.addChild(sprite);
     }
     // The shadow of the moored Starship. One sprite, made whether or not there

@@ -19538,6 +19538,27 @@ body, canvas {
     }
 }
 
+/* An entry older than the last three does not vanish and does not get cut off
+   at the top edge: it slides out to the left and collapses its own height, so
+   the board below it settles instead of jumping. */
+@keyframes battlelog-entry-off {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    55% {
+        opacity: 0;
+        transform: translateX(-42px);
+        max-height: 40vh;
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-42px);
+        max-height: 0;
+        margin-bottom: 0;
+    }
+}
+
 @keyframes battlelog-crit-shake {
     0%, 100% {
         transform: translate(0, 0) scale(1);
@@ -19569,9 +19590,15 @@ body, canvas {
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
-    margin-bottom: 2px;
+    margin-bottom: 8px;
     width: 100%;
     flex-shrink: 0;
+}
+
+.battlelog-line-container.battlelog-entry-out {
+    animation: battlelog-entry-off 0.32s ease-in forwards;
+    overflow: hidden;
+    pointer-events: none;
 }
 
 .battlelog-bar {
@@ -19589,7 +19616,7 @@ body, canvas {
     border-left: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, calc(var(--battlelog-bar-alpha, 0) * 0.5)), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     transition: opacity 0.15s ease-out;
-    animation: battlelog-entry-slide 0.2s ease-out;
+    animation: battlelog-entry-slide 0.3s ease-out;
 }
 
 .battlelog-bar.accent-crit {

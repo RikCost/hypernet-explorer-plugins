@@ -293,16 +293,30 @@
     return _personalityOf(profile)?.name ?? null;
   }
 
+  // Resolves "{a|b|c}" groups innermost-first, so groups can nest.
+  function vary(text) {
+    if (typeof text !== "string" || text.indexOf("{") < 0) return text;
+    let out = text;
+    let guard = 0;
+    while (guard++ < 64) {
+      const next = out.replace(/\{([^{}]*\|[^{}]*)\}/g, (m, body) => _pickFrom(body.split("|")));
+      if (next === out) break;
+      out = next;
+    }
+    return out;
+  }
+
   // Flavor a shared line with the speaker's voice (I.2): sometimes prepend an
   // opener or append a closer. Pure-emote lines (*does something*) and NPCs
   // without a resolvable personality pass through untouched.
   function applyVoice(text, persName, chance = VOICE_CHANCE_THOUGHT) {
+    let line = vary(text);
     const voice = persName ? PERSONALITY_VOICES()[persName] : null;
-    if (!voice || !text || String(text).startsWith('*')) return text;
-    if (Math.random() >= chance) return text;
+    if (!voice || !line || String(line).startsWith('*')) return line;
+    if (Math.random() >= chance) return line;
     return Math.random() < 0.5
-      ? `${_pickFrom(voice.openers)} ${text}`
-      : `${text} ${_pickFrom(voice.closers)}`;
+      ? `${vary(_pickFrom(voice.openers))} ${line}`
+      : `${line} ${vary(_pickFrom(voice.closers))}`;
   }
 
   // ---------------------------------------------------------------------------
@@ -425,7 +439,7 @@
   }
 
   function _resolveLine(text, aName, bName) {
-    return String(text).replace(/{a}/g, aName).replace(/{b}/g, bName);
+    return vary(String(text).replace(/{a}/g, aName).replace(/{b}/g, bName));
   }
 
   const ConversationManager = {
@@ -672,11 +686,11 @@
     fill(template, ctx) {
       // Fallbacks are words a player reads, so they live with the rest of them.
       const fb = bank('ConvWorld.fallback');
-      return String(template)
+      return vary(String(template)
         .replace(/{group}/g, ctx.group ?? fb.group)
         .replace(/{festival}/g, ctx.festival ?? fb.festival)
         .replace(/{epidemic}/g, ctx.epidemic ?? fb.epidemic)
-        .replace(/{headline}/g, ctx.headline ?? fb.headline);
+        .replace(/{headline}/g, ctx.headline ?? fb.headline));
     },
 
     _pickRaw(ctx) {
@@ -703,7 +717,7 @@
                   : null;
       if (!topic) return null;
       const pool = (persName && topic[persName]) || topic.default;
-      return pool && pool.length ? _pickFrom(pool) : null;
+      return pool && pool.length ? vary(_pickFrom(pool)) : null;
     },
 
     pickWorldThought(profile) {
@@ -725,7 +739,7 @@
   const PoliticsProvider = {
     fill(template, ctx) {
       const fb = bank('ConvPolitics.fallback');
-      return String(template)
+      return vary(String(template)
         .replace(/{party}/g, ctx.partyName ?? fb.party)
         .replace(/{head}/g, ctx.headName ?? fb.head)
         .replace(/{title}/g, ctx.headTitle ?? fb.title)
@@ -737,7 +751,7 @@
         .replace(/{rumorKind}/g, ctx.rumorKind ?? fb.rumorKind)
         .replace(/{winner}/g, ctx.lastWinnerName ?? fb.winner)
         .replace(/{office}/g, ctx.localOffice ?? fb.office)
-        .replace(/{group}/g, ctx.group ?? fb.group);
+        .replace(/{group}/g, ctx.group ?? fb.group));
     },
 
     _pickRaw(ctx) {
@@ -786,14 +800,14 @@
         const w = ($gameScreen && ($gameScreen.weatherType?.() ?? $gameScreen._weatherType)) || 'none';
         if (w === 'rain' || w === 'storm' || w === 'snow') type = w;
         const pool = WEATHER_THOUGHTS()[type];
-        return _pickFrom((persName && pool[persName]) || pool.default);
+        return vary(_pickFrom((persName && pool[persName]) || pool.default));
       }
       const hour = $gameVariables?.value(23) ?? 12;
       const tod  = hour >= 5 && hour < 12 ? 'morning'
                  : hour >= 12 && hour < 17 ? 'afternoon'
                  : hour >= 17 && hour < 21 ? 'evening' : 'night';
       const pool = TIME_THOUGHTS()[tod];
-      return _pickFrom((persName && pool[persName]) || pool.default);
+      return vary(_pickFrom((persName && pool[persName]) || pool.default));
     },
   };
 
@@ -868,7 +882,7 @@
     pickPersonalityCoreThought(profile) {
       const name = _personalityOf(profile)?.name;
       const pool = name ? PERSONALITY_CORE_THOUGHTS()[name] : null;
-      return pool?.length ? _pickFrom(pool) : null;
+      return pool?.length ? vary(_pickFrom(pool)) : null;
     },
 
     // Crime narration with the coveted/stolen item's name baked in.
@@ -1349,6 +1363,7 @@
     get personalityCoreThoughts() { return PERSONALITY_CORE_THOUGHTS(); },
     applyVoice,
     _personalityNameOf,
+    vary,
   };
 
   console.log('[NPCConversation] v2.3.0 loaded, NPC↔NPC dialogues & thought bubbles active.');

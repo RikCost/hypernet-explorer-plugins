@@ -330,15 +330,19 @@
    * Determine random prefab count based on biome type
    */
   function getPrefabCount(rng, biomeName) {
-    if (biomeName && biomeName.toLowerCase().includes("city")) {
+    const lower = (biomeName || "").toLowerCase();
+    if (lower.includes("city")) {
       return 15 + Math.floor(rng() * 6);
-    } else if (biomeName && biomeName.toLowerCase().includes("village")) {
+    } else if (lower.includes("village")) {
       return 8 + Math.floor(rng() * 8);
-    } else if (biomeName && biomeName.toLowerCase().includes("ocean")) {
+    } else if (lower.includes("ocean")) {
       // Islands should be rare, not a landmark on every ocean tile: most ocean
       // maps get none at all, and the ones that do only get a small handful.
       if (rng() >= OCEAN_ISLAND_CHANCE) return 0;
       return 1 + Math.floor(rng() * 3); // 1-3
+    } else if (lower.includes("cave") || lower.includes("grotto") || lower.includes("underground")) {
+      // Cave biomes: 50% less prefabs (1-4 instead of 4-14), leaving plenty of empty natural rooms
+      return 1 + Math.floor(rng() * 4);
     } else {
       return 4 + Math.floor(rng() * 11);
     }
@@ -867,7 +871,7 @@
     const fromY = Math.floor(position.y + position.height / 2);
     const dest = findNearestCaveFloor(mapData, fromX, fromY, floorTile, bufferRect);
 
-    const tunnelRadius = 1; // 3-tile-wide corridor
+    const tunnelRadius = 2; // 5-tile-wide corridor
     let cx = fromX;
     let cy = fromY;
     const dx = Math.abs(dest.x - cx);
@@ -1389,6 +1393,19 @@
         placedFootprints.push({ x: position.x, y: position.y, width: position.width, height: position.height });
       }
       yield;
+    }
+
+    if (isCaveTerrain && Utils2 && Utils2.reconcileCaveWallsAndCeilings) {
+      Utils2.reconcileCaveWallsAndCeilings(
+        mapData,
+        PROC_MAP_WIDTH,
+        PROC_MAP_HEIGHT,
+        mapData.caveCeilingTile,
+        mapData.caveWallTile,
+        caveFloorTile,
+        2,
+        allFeatures
+      );
     }
 
     recordPrefabFootprints(biomeName, worldCoords, placedFootprints);

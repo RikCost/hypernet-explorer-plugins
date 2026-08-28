@@ -1,54 +1,54 @@
 {
   "courtVenues": [
-    "a marble hall that keeps forgetting which century it was built in",
-    "a courtroom the size of a stadium, furnished with exactly one chair",
-    "a cramped office with a filing cabinet where the jury should be",
-    "an amphitheatre carved into the inside of an hourglass",
-    "a waiting room that has been redecorated as a court, badly",
-    "a courtroom balanced on the very tip of the Omega Tower",
-    "a flooded basilica where everyone stands ankle-deep",
-    "a courtroom built entirely of doors, none of which open",
-    "the back room of a bank on Route 666, still smelling of smoke",
-    "what is clearly somebody's kitchen with a gavel left on the counter",
-    "a tram carriage that has not moved since 1992",
-    "a courtroom that is a perfect copy of the one next door, and the one after that"
+    "{a drafty marble hall that keeps forgetting which century it was built in|an ornate courtroom smelling of old polish and unpaid fees|a stone hearing room with peeling gilding and bad lighting}",
+    "{a cavernous courtroom the size of a football stadium, furnished with exactly one folding chair|an oversized hearing chamber with terrible heating|a massive judicial arena with echoing acoustics}",
+    "{a cramped basement office with a rusted filing cabinet sitting where the jury box should be|a broom closet hastily converted into a tribunal|a suffocating back-office court smelling of burnt coffee}",
+    "{an amphitheatre carved into the interior of a giant ticking hourglass|a round auditorium with sand drifting from the ceiling|a stone pit with a bench perched over an abyss}",
+    "{a waiting room that has been redecorated as a court with cheap bunting and zero enthusiasm|a municipal DMV counter pretending to be the Supreme Court|a dreary waiting area with a gavel on the counter}",
+    "{a precarious courtroom balanced on the highest spire of the Omega Tower|a glass hearing box swaying five hundred meters above the clouds|a high-altitude tribunal where the wind howls through the floorboards}",
+    "{a flooded basilica where the judge, bailiff, and defendant all stand ankle-deep in murky water|a sunken cathedral courtroom with floating paperwork|a damp chapel tribunal smelling of wet lime}",
+    "{a courtroom constructed entirely of locked doors, none of which have handles|a labyrinth of doorframes leading nowhere|a room of false exits and brass keyholes}",
+    "{the back room of a bank on Route 666, still smelling of motor oil and smoke|a diner booth converted into a bench with an empty mustard bottle|a roadside tavern backroom where the judge drinks on duty}",
+    "{what is clearly a municipal kitchen with a gavel resting next to a toaster|a cafeteria tribunal with fluorescent hum|a staff lounge where the trial is wedged between coffee breaks}",
+    "{a decommissioned tram carriage that hasn't moved an inch since 1992|a rusty subway car with trial exhibits taped to the windows|a stationary train carriage with flickering lights}",
+    "{a courtroom that is an exact mirror copy of the one next door, down to the coffee stain on the carpet|a duplicate chamber cloned from a bad blueprint|a hearing room stuck on an infinite loop}"
   ],
   "courtGallery": [
-    "a jury of twelve identical clerks, all asleep",
-    "a gallery of judicial ghosts who never blink",
-    "a jury consisting of one extremely serious pigeon",
-    "no jury at all, only a mirror facing the bench",
-    "a gallery packed with people who are, on inspection, all Eris",
-    "a jury of retired gods, none of whom remember their own names",
-    "a gallery of empty coats hung on empty chairs",
-    "a jury of hourglasses, each running at a different speed",
-    "seventy witnesses, every one of them subpoenaed by mistake",
-    "a jury of stray cats, deliberating loudly",
-    "a single defence lawyer who has been dead for some time",
-    "a gallery of your own future selves, taking notes"
+    "{a jury of twelve identical clerks, all sound asleep with their heads on their desks|twelve bored bureaucrats snoring in unison|a jury that hasn't woken up since the morning recess}",
+    "{a gallery of judicial ghosts who never blink and refuse to take notes|a row of spectral observers staring with quiet judgment|a jury of translucent phantoms taking bets on your verdict}",
+    "{a jury consisting of one extremely serious pigeon with an attitude|a single pigeon perched in the jury box, eyeing your shoelaces|a bird in the jury seat that demands breadcrumbs for an acquittal}",
+    "{no jury at all, just a giant mirror facing the defendant's chair|an empty jury box with a sign that says 'JUDGE YOURSELF'|a row of empty chairs staring at you}",
+    "{a gallery packed with thirty people who are, upon closer inspection, all Eris in different outfits|a courtroom audience made entirely of clones of the judge|an audience of Eris cheering for her own rulings}",
+    "{a jury of retired deities, none of whom remember their own names or why they're here|a row of washed-up gods sleeping through the prosecution's opening|a jury of divine retirees complaining about the room temperature}",
+    "{a gallery of empty trench coats hung over empty wooden chairs|a dozen coat racks arranged in a semicircle as an official jury|a crowd of jackets acting as character witnesses}",
+    "{a jury of hourglasses, each running sand at a completely different speed|twelve clocks ticking out of sync on the jury bench|a row of stopwatches timing your excuses}",
+    "{seventy witnesses, every single one of them subpoenaed by a clerical error|a room full of confused bystanders who were just trying to buy groceries|a crowded gallery of people who don't know who you are}",
+    "{a jury of stray cats, meowing and bickering loudly over the evidence|a row of alley cats batting at the court documents|a feline jury that votes based on who smells like fish}",
+    "{a single defence lawyer who has been dead for forty years and charges by the hour|a skeleton with a briefcase and an active bar license|an attorney who communicates entirely via spooky drafts}",
+    "{a gallery full of your own future selves, taking furious notes and shaking their heads|three versions of you from next year looking thoroughly disappointed|your future self facepalming in the front row}"
   ],
   "courtStaff": [
-    "A bailiff with no face reads the case number out twice.",
-    "A clerk stamps every surface within reach, including the defendant.",
-    "A judicial ghost drifts in a straight line through one wall and out the other.",
-    "Someone in a wig takes notes in a language with no vowels.",
-    "The stenographer is a typewriter with nobody behind it.",
-    "A bored angel hands Eris a folder and leaves without a word.",
-    "The bailiff announces the case, gets the name wrong, and does not correct it.",
-    "A pigeon with a USB stick tied to its leg lands on the bench and waits.",
-    "Two clerks argue quietly about whose turn it was to bring the law books."
+    "{A faceless bailiff reads out the case number twice in a monotonous drone.|The bailiff mumbles the charges without looking up from a crossword puzzle.|A towering guard in a ceremonial robe announces the docket.}",
+    "{A clerk stamps every surface within arm's reach, including the defendant's sleeve.|The court clerk aggressively stamps blank papers with 'DENIED' in red ink.|A bored clerk files three motions into the wastebasket.}",
+    "{A judicial ghost drifts in a straight line through the wall, through the bench, and out the window.|A spectral usher floats past, dropping cold drafts on the defendant.|A phantom bailiff shuffles papers with no hands.}",
+    "{Someone in an oversized powdered wig takes notes in a language that has zero vowels.|A stenographer types furiously on a keyboard with all the keycaps missing.|The scribe writes shorthand directly onto the desk.}",
+    "{The stenographer is an antique typewriter clacking away with nobody sitting behind it.|An automated telegraph machine records the transcript in erratic Morse code.|A mechanical typewriter records every cough and sneeze in real time.}",
+    "{A bored angel hands Eris an audit folder, rolls their eyes, and walks out without a word.|A messenger from above drops a stack of subpoenas and sighs.|An angelic courier leaves a memo marked 'URGENT' and gets ignored.}",
+    "{The bailiff announces the case, mangles the defendant's name completely, and refuses to correct it.|The clerk calls out the wrong name three times before giving up.|The usher mispronounces your name with insulting creative flair.}",
+    "{A pigeon with an encrypted USB stick taped to its leg lands on the bench and waits for tribute.|A messenger bird drops an exhibit onto the judge's lap.|A carrier pigeon sits on the gavel, refusing to budge.}",
+    "{Two junior clerks argue in hushed tones about whose turn it was to bring the law books.|The legal assistants realize they brought a cookbook instead of the penal code.|Two clerks bicker over who lost the case file.}"
   ],
   "courtAmbience": [
-    "The gavel is a hammer with a smiley face painted on it.",
-    "Behind the wall, a billion other trials are running at the same time.",
-    "The clock has three hands and none of them agree.",
-    "The scales of justice have been replaced by a pair of dice.",
-    "A wilting golden apple sits where the law books should be.",
-    "The room smells faintly of engine oil and cheap diner coffee.",
-    "Every so often the whole room rewinds one second and repeats itself.",
-    "The flag of no nation hangs behind the bench, upside down.",
-    "Someone has drawn a smiling face in the dust on the witness stand.",
-    "The light comes from nowhere in particular and slightly too much of it."
+    "{The gavel is a rusted ball-peen hammer with a cynical smiley face painted on the head.|The judge's gavel is an oversized meat mallet that shakes the dust off the ceiling.|The gavel is a gold-plated brick with a chip on one corner.}",
+    "{Behind the plaster wall, four billion other concurrent trials are humming like a generator.|You can hear the muffled shouting of ten thousand simultaneous hearings through the vents.|The court walls vibrate with the background noise of infinite litigation.}",
+    "{The wall clock has three hands, all spinning in opposite directions at random speeds.|The chronometer on the wall ticks backwards whenever someone lies.|The clock is permanently frozen at five minutes to midnight.}",
+    "{The scales of justice have been removed and replaced by a pair of loaded six-sided dice.|The balance scales on the bench are clearly weighted with lead on the prosecution's side.|The scales of justice have a rubber duck sitting on one pan.}",
+    "{A wilting golden apple sits on the bench where the case law compendium should be.|A shiny golden apple with a bite taken out of it serves as a paperweight.|A half-eaten golden apple balances precariously on the judge's dossier.}",
+    "{The courtroom smells powerfully of burnt motor oil, ozone, and stale diner coffee.|The air is thick with the scent of old parchment and unwashed bailiffs.|It smells like rain on hot asphalt and bad decisions.}",
+    "{Every sixty seconds, the whole courtroom rewinds three seconds and replays the last sentence.|A temporal hiccup makes the bailiff repeat his last sneeze.|The room buffers like a low-bandwidth video feed.}",
+    "{The flag of a nation that went bankrupt in 1983 hangs upside down behind the judge's chair.|A heraldic banner covered in coffee stains hangs crookedly on the wall.|An unregistered embassy flag is pinned to the bench with a thumbtack.}",
+    "{Someone drew an obscene doodle in the thick dust on the witness stand.|There are sarcastic tally marks scratched into the wood of the defendant's dock.|A graffiti tag on the witness box reads 'JUSTICE IS EXPENSIVE'.}",
+    "{The light in the room comes from nowhere in particular and is entirely too bright for a hangover.|Fluorescent tubes hum with an aggressive sixty-cycle buzz.|The ambient illumination flickers whenever a verdict is reached.}"
   ],
   "precedentParties": [
     "the State of Varlenia",
@@ -1125,6 +1125,14 @@
       ]
     },
     "playfulTrial": {
+      "3": [
+        "42?!",
+        "THE ANSWER TO THE UNIVERSE!",
+        "Oh my god, you got the reference!",
+        "You're PERFECT!",
+        "Or maybe just a nerd.",
+        "Both are acceptable!"
+      ],
       "intro": [
         "Okay okay okay!",
         "I'm BORED of normal trials.",
@@ -1192,17 +1200,22 @@
         "...You're right, it's totally ridiculous.",
         "BUT IT'S FUN!",
         "And that's what matters!"
-      ],
-      "3": [
-        "42?!",
-        "THE ANSWER TO THE UNIVERSE!",
-        "Oh my god, you got the reference!",
-        "You're PERFECT!",
-        "Or maybe just a nerd.",
-        "Both are acceptable!"
       ]
     },
     "boredTrial": {
+      "0": [
+        "Innocent.",
+        "Of course you are.",
+        "Everyone says they're innocent.",
+        "It's so... predictable."
+      ],
+      "3": [
+        "...",
+        "You're silent too?",
+        "Good.",
+        "I appreciate silence.",
+        "It's so rare these days."
+      ],
       "intro": [
         "*yawn*",
         "God, another trial...",
@@ -1262,22 +1275,24 @@
         "Unfortunately the answer is no.",
         "I still have to judge you.",
         "*sigh*"
-      ],
-      "0": [
-        "Innocent.",
-        "Of course you are.",
-        "Everyone says they're innocent.",
-        "It's so... predictable."
-      ],
-      "3": [
-        "...",
-        "You're silent too?",
-        "Good.",
-        "I appreciate silence.",
-        "It's so rare these days."
       ]
     },
     "dramaticTrial": {
+      "0": [
+        "MERCY?!",
+        "YOU BEG FOR MERCY?!",
+        "How... how...",
+        "DRAMATIC!",
+        "I LOVE IT!"
+      ],
+      "3": [
+        "INSANE?!",
+        "YOU CALL ME INSANE?!",
+        "ME?!",
+        "The DIVINE ERIS?!",
+        "...You're right, but that's beside the point!",
+        "HOW DARE YOU?!"
+      ],
       "intro": [
         "SILENCE!",
         "*dramatic echo*",
@@ -1352,21 +1367,6 @@
         "THE IMPUDENCE...",
         "To not fear me?!",
         "MAGNIFICENT!"
-      ],
-      "0": [
-        "MERCY?!",
-        "YOU BEG FOR MERCY?!",
-        "How... how...",
-        "DRAMATIC!",
-        "I LOVE IT!"
-      ],
-      "3": [
-        "INSANE?!",
-        "YOU CALL ME INSANE?!",
-        "ME?!",
-        "The DIVINE ERIS?!",
-        "...You're right, but that's beside the point!",
-        "HOW DARE YOU?!"
       ]
     },
     "chaoticTrial": {

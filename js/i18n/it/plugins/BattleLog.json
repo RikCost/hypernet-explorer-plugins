@@ -14,5 +14,27 @@
   "and": "e",
   "skillNamesOption": "Nomi Abilità",
   "skillName": "Nome Abilità",
-  "skillAction": "Azione Abilità"
+  "skillAction": "Azione Abilità",
+  "pronouns": {
+    "he": {
+      "subject": "lui",
+      "object": "lui",
+      "possessive": "suo"
+    },
+    "she": {
+      "subject": "lei",
+      "object": "lei",
+      "possessive": "suo"
+    },
+    "they": {
+      "subject": "loro",
+      "object": "loro",
+      "possessive": "loro"
+    },
+    "it": {
+      "subject": "esso",
+      "object": "esso",
+      "possessive": "suo"
+    }
+  }
 }

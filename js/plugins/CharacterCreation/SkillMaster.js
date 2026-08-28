@@ -1,6 +1,84 @@
 /*:
  * @target MZ
- * @plugindesc v3.1.0 Unified skill encyclopedia with training, progression, and procedural spell fusion.
+ * @plugindesc v4.0.0 SkillMaster - Complete skill management system with 2D skill tree visualizer, progression, and fusion.
+ * @author Omni-Lex
+ *
+ * @param Variable ID
+ * @desc ID of the variable to store the selected skill ID
+ * @type variable
+ * @default 1
+ *
+ * @param Encyclopedia Command
+ * @desc Command name for the skill system in the menu
+ * @type string
+ * @default Skill Master
+ *
+ * @param Add to Menu
+ * @desc Add the skill system to the main menu?
+ * @type boolean
+ * @on Yes
+ * @off No
+ * @default true
+ *
+ * @param Category Window Width
+ * @desc Width of the category selection window
+ * @type number
+ * @default 300
+ *
+ * @param Skill List Width
+ * @desc Width of the skill list window
+ * @type number
+ * @default 300
+ *
+ * @param Confirmation Message
+ * @desc Confirmation message for skill fusion
+ * @type string
+ * @default Do you want to fuse these skills?
+ *
+ * @param Success Message
+ * @desc Success message for skill fusion
+ * @type string
+ * @default Fusion successful! You learned a new skill!
+ *
+ * @param Battle Progress Points
+ * @desc Points gained after winning a battle with the skill selected
+ * @type number
+ * @min 1
+ * @default 3
+ *
+ * @command openSkillEncyclopedia
+ * @desc Opens the unified skill encyclopedia interface.
+ *
+ * @command openEncyclopedia
+ * @desc Opens the unified skill encyclopedia interface.
+ *
+ * @command openSkillSystem
+ * @desc Opens the unified skill encyclopedia interface.
+ *
+ * @command openWithSkill
+ * @text Open With Skill
+ * @desc Opens the encyclopedia and highlights a specific skill
+ * @arg skillId
+ * @type skill
+ * @text Skill
+ * @desc The skill to highlight in the encyclopedia
+ *
+ * @command increaseSkillProgress
+ * @desc Manually increases the progress of the currently selected skill.
+ * @arg amount
+ * @type number
+ * @text Amount
+ * @desc The amount of progress to add
+ * @default 1
+ * @min 1
+ */
+
+//=============================================================================
+// Module: SkillMasterCore.js
+//=============================================================================
+/*:
+ * @target MZ
+ * @plugindesc v4.0.0 SkillMaster - Core data, Knowledge Points, category affinity, and persistence.
  * @author Omni-Lex
  *
  * @param Variable ID
@@ -45,190 +123,14 @@
  * @desc The amount of progress to add
  * @default 1
  * @min 1
- *
- * @help
- * ============================================================================
- * Skill Master v3.0 - Unified Encyclopedia Interface
- * ============================================================================
- *
- * This plugin provides a comprehensive skill management system with:
- * - Browse all skills organized by category (grid view)
- * - Select skills for training per party member
- * - Track progression individually per actor
- * - Fuse compatible skills to create new ones
- * - Actor-specific category bonuses
- *
- * ============================================================================
- * Actor Bonuses
- * ============================================================================
- *
- * For Actor 1, Primary and Secondary skill categories are defined per class
- * in js/db/Skills/Categories.json under "classSkillCategories" (the single
- * source of truth). Skills from these categories gain progression points at
- * an accelerated rate.
- *
- * Each class id maps to:
- *   "<id>": { "primary": ["Cat1","Cat2","Cat3"], "secondary": ["Cat4","Cat5","Cat6"] }
- *
- * - Primary categories get a 3x multiplier on progression points.
- * - Secondary categories get a 1.5x multiplier on progression points.
- *
- * A class studies only what it studies: the Training encyclopedia lists ONLY
- * the pupil's primary and secondary categories, so a Knight is never offered
- * Necromancy. "All" means the pupil's whole curriculum, not the whole book.
- * A class with no entry in classSkillCategories falls back to every category.
- *
- * ============================================================================
- * The sky of schools
- * ============================================================================
- *
- * A category is not a list, it is a SPHERE GRID in the manner of Final Fantasy
- * X's, hung in the dark as a constellation of coloured spheres. Every skill is
- * a lit sphere and every line between two of them is a skill and the skill it
- * asks for.
- *
- * NOTHING ABOUT THE TREE IS AUTHORED. There is no <Node:> and no <Link:> in any
- * notebox: a school organises ITSELF out of what its skills are, every time the
- * book is opened, so a skill added or rebalanced takes its own place without
- * anybody drawing it a line.
- *
- *   STRAND is the stat a working leans on. Every skill in the book names one
- *   and a floor for it (<StatReq: PSI 6>), and that stat is what a school is
- *   broken into: Martial Arts is a strand of STR, a strand of CON and a strand
- *   of DEX standing side by side, and a school that leans on one stat alone is
- *   split again by what KIND of working it is (its element where it has one,
- *   the job it does where it has not).
- *
- *   RUNG is the floor itself. A strand is a LADDER of the stat that governs it:
- *   every skill asking PSI 6 stands on one rung, everything asking PSI 7 on the
- *   next, and a skill always hangs from one that asks LESS of the same stat.
- *   Power settles nothing but the order inside a rung.
- *
- * So a school is climbed the way a body grows into it. The gate has TWO locks
- * and both must be off:
- *
- *   THE NEIGHBOUR. The rung below has to be walked first: one known skill on it
- *   opens the skill above. The foot of a ladder is free.
- *
- *   THE BODY. The pupil's own BASE stat has to reach the floor the skill names.
- *   What counts is what they permanently are - the class curve, what was spent
- *   at creation, traits, and any augment fitted in the flesh - never a weapon,
- *   a buff or a three-turn state. A pupil stops climbing where their own stat
- *   stops, and the sheet says which stat and by how much they are short.
- *
- * The climb TIGHTENS by itself: nothing has to ask for more prerequisites,
- * because each rung asks for more of the pupil than the rung under it. The
- * price climbs with the rung (KP_TIER_STEP), so the top of a ladder is both the
- * dearest thing the school teaches and the last thing a body grows into. That
- * is the whole progression rule, and it is the same rule in all forty schools.
- *
- * A school's FORBIDDEN workings are on no tier of the climb. They hang beyond
- * its summit, joined to nothing and to each other least of all: the whole
- * school must be known before any of them opens, and then any one of them may
- * be taken first.
- *
- * NOTHING ABOUT A SCHOOL'S FIGURE IS AUTHORED. Every school is laid out by the
- * same rule: each grove is packed as a tidy little tree, and the groves are set
- * side by side with clear sky between them, so what a school looks like follows
- * from what it teaches rather than from a shape written down for it. What IS
- * authored is its colour: SKY_SCHOOLS gives each school a hue, a school with no
- * entry takes one off its own name, and a sphere burns the colour of its element
- * where it has one and of its school where it does not, so one school reads as
- * one family of colours. A skill the pupil knows burns bright, one they could
- * buy glows cooler and breathes, one they cannot reach yet is a cinder that
- * still shows where the figure goes.
- *
- * ONE school hangs at a time: a curriculum of six schools is six skies, not one
- * crowded field. The school is changed with the pager on the header bar, or by
- * walking off the edge of the figure left or right. Dragging turns the figure,
- * the wheel and Shift bring the camera in and out, and choosing a sphere opens
- * its sheet as a bar down the right of the sky. The arrow keys walk the figure
- * by WHERE IT IS ON THE SCREEN, so one set of keys walks forty different
- * figures and keeps working as the figure is turned.
- *
- * A school OUTSIDE the pupil's curriculum is browsable only once they already
- * know a skill in it, has no free entrance (they may only walk outward from
- * what they know), and charges three times the knowledge.
- *
- * There is no graph file and no graph generator. window.SkillGraph works the
- * whole tree out from data/Skills.json itself (the <StatReq:> stat for the
- * strand and its floor for the rung, skillPower only to order a rung) and
- * caches it per school; the school's page then takes that (rung, strand) pair
- * and answers with a place on it. A skill in no category at all is on no
- * ladder and is never blocked by one, though its floor is still asked for.
- *
- * Re-cutting a skill's <StatReq:> MOVES it on its school's ladder, and
- * rebalancing its damage only shuffles it inside its own rung: the tree is a
- * reading of the book rather than a drawing kept beside it.
- *
- * ============================================================================
- * Knowledge cost
- * ============================================================================
- *
- * What a skill costs to teach is what it is worth in a fight, not a flat fee.
- * The MP and TP it asks for is the designer's own verdict on it and is the
- * leading term; skillPower() reads that first, then damage scaling, flat
- * damage, repeats, target breadth and applied effects. The plainest skill in
- * the book costs the base price of 50 KP and everything above it rises as a
- * power of that score, to a few hundred for an ordinary skill and a couple of
- * thousand for the strongest ordinary one.
- *
- * The two occult tags are priced apart from all of that, because they are not a
- * matter of degree: an <Esoteric> skill costs TEN times its score and a
- * <Forbidden> one costs a HUNDRED times (every Forbidden skill is Esoteric too;
- * it takes the larger multiplier, never both). A PRIMARY school then halves the
- * price, a secondary school pays full, and nothing is ever cheaper than 50 KP.
- *
- * ============================================================================
- * Skill Categorization
- * ============================================================================
- *
- * To categorize skills, add a category tag to skill notes:
- * <category:EnhancementMagic>
- *
- * ============================================================================
- * Skill Progression
- * ============================================================================
- *
- * Select a skill in the encyclopedia to track its progression per actor.
- * Each party member can train a different skill simultaneously.
- * Progress is gained by:
- * 1. Winning battles (3 points per battle, per actor)
- * 2. Using skills from the same category in battle (2 points per use)
- * 3. Using the increaseSkillProgress plugin command
- *
- * ============================================================================
- * Fuse Spells (procedural fusion)
- * ============================================================================
- *
- * From the Magic page, "Fuse Spells" opens an editor where a pupil combines a
- * DOMINANT spell with a RECESSIVE component into a brand new ability:
- *   - Dominant slot: a known Spell (Magic). Defines the fusion's behaviour
- *     (damage, scope, hit type, icon).
- *   - Recessive slot: a known Spell OR Skill. If it is a Skill, the fused
- *     result becomes a Skill (listed under Skills); otherwise it stays Magic.
- *   - Animation: any named Effekseer animation, previewable in 3D.
- *
- * The fused ability costs the SUM of the components' MP and AP and can be split
- * back into its parts at any time. Component spells/skills are forgotten when
- * fused. Forging is paid in Knowledge: the sum of what teaching the components
- * would cost, plus a 25% premium (minimum 15 KP). Splitting refunds nothing, so
- * re-fusing pays again.
- *
- * A Preview button in the skill detail view shows a zoomable / draggable 3D
- * preview of any skill's animation over an empty target.
- *
- * ============================================================================
-*/
+ */
 
 (() => {
     'use strict';
 
+    window.SkillMaster = window.SkillMaster || {};
+
     // ── Shared character-switcher hint helper (idempotent across plugins) ──────
-    // Shows controller bumper hints (L / R) around a .companion-tabs-row when a
-    // gamepad is connected, or a single TAB hint otherwise. Also installs a Tab
-    // keyboard shortcut that cycles characters only while no controller is
-    // connected (the bumpers / pageup-pagedown handle it when one is).
     if (!window.CharSwitcher) {
         window.CharSwitcher = {
             isControllerConnected() {
@@ -274,15 +176,20 @@
         };
     }
 
-    const pluginName = "SkillMaster";
-
-    // Plugin parameters
-    const parameters = PluginManager.parameters(pluginName);
+    const pluginName = "SkillMasterCore";
+    const oldPluginName = "SkillMaster";
+    const parameters = PluginManager.parameters(pluginName) || PluginManager.parameters(oldPluginName) || {};
     const variableId = Number(parameters['Variable ID'] || 1);
     const encyclopediaCommand = String(parameters['Encyclopedia Command'] || 'Skill Master');
     const addToMenu = parameters['Add to Menu'] !== 'false';
     const battleProgressPoints = Number(parameters['Battle Progress Points'] || 3);
-    const tr = (en, it) => ConfigManager.language === "it" ? it : en;
+
+    SkillMaster.params = {
+        variableId,
+        encyclopediaCommand,
+        addToMenu,
+        battleProgressPoints
+    };
 
     let _statsI18n = null;
 
@@ -305,9 +212,10 @@
     };
 
     _loadStatsI18n();
+    SkillMaster._si18n = _si18n;
 
     //=============================================================================
-    // Category Data ,  loaded from js/db/Skills/Categories.json
+    // Category Data, loaded from js/db/Skills/Categories.json
     //=============================================================================
 
     let CATEGORY_DATA = {};
@@ -317,12 +225,14 @@
         try {
             const response = await fetch(url);
             CATEGORY_DATA = await response.json();
+            SkillMaster.CATEGORY_DATA = CATEGORY_DATA;
         } catch (e) {
             console.error('SkillMaster: Failed to load Categories.json from ' + url, e);
         }
     };
 
     _loadCategoryData();
+    SkillMaster.CATEGORY_DATA = CATEGORY_DATA;
 
     function uncamelCase(str) {
         if (!str) return '';
@@ -338,21 +248,22 @@
 
     function getCategoryDisplayName(categoryName) {
         const key = 'SkillMaster.category.' + categoryName;
-        if (T.has(key)) return T(key);
-        const data = CATEGORY_DATA[categoryName];
-        if (data) {
-            return T.language() === 'it' ? data.name.it : data.name.en;
+        if (typeof T === 'function' && T.has(key)) return T(key);
+        const data = CATEGORY_DATA[categoryName] || SkillMaster.CATEGORY_DATA[categoryName];
+        if (data && data.name) {
+            const lang = typeof T === 'function' ? T.language() : (ConfigManager.language || 'en');
+            return lang === 'it' ? data.name.it : data.name.en;
         }
         return uncamelCase(categoryName);
     }
 
     function getCategoryIcon(categoryName) {
-        const data = CATEGORY_DATA[categoryName];
+        const data = CATEGORY_DATA[categoryName] || SkillMaster.CATEGORY_DATA[categoryName];
         return data ? data.icon : 245;
     }
 
     function getCategoryIconStyle(categoryName) {
-        const data = CATEGORY_DATA[categoryName];
+        const data = CATEGORY_DATA[categoryName] || SkillMaster.CATEGORY_DATA[categoryName];
         const iconIndex = data ? data.icon : 245;
         const iconSize = 32;
         const cols = 16;
@@ -378,9 +289,6 @@
         return match ? match[1].trim() : null;
     }
 
-    // <MagicSystem:> (gen_magic_system_tags.js) on a skill and <MagicalSystem:>
-    // (gen_class_magic_system_tags.js) on a class: two different tag names on
-    // purpose, one per skill and one per class, read the same way.
     function getSkillMagicSystem(skillId) {
         if (!skillId) return null;
         const skill = $dataSkills[skillId];
@@ -398,27 +306,23 @@
         return match ? match[1].trim() : null;
     }
 
-    // js/db/Skills/MagicalSystems.json (window.Skills.MagicalSystems) is the
-    // single list of every system a class's <MagicalSystem:> tag can name; the
-    // Magical Systems wheel just walks it rather than re-deriving the set from
-    // $dataClasses each time.
     function getAllMagicalSystems() {
         return (window.Skills && Array.isArray(window.Skills.MagicalSystems)) ? window.Skills.MagicalSystems : [];
     }
 
     function getMagicSystemDisplayName(id) {
         const key = 'SkillMaster.magicSystem.systems.' + id + '.name';
-        return T.has(key) ? T(key) : id;
+        return (typeof T === 'function' && T.has(key)) ? T(key) : id;
     }
 
     function getMagicSystemDesc(id) {
         const key = 'SkillMaster.magicSystem.systems.' + id + '.desc';
-        return T.has(key) ? T(key) : '';
+        return (typeof T === 'function' && T.has(key)) ? T(key) : '';
     }
 
-    // Every class whose own <MagicalSystem:> tag names this system, in book order.
     function getClassesForMagicSystem(id) {
         const names = [];
+        if (typeof $dataClasses === 'undefined' || !$dataClasses) return names;
         for (const cls of $dataClasses) {
             if (!cls || !cls.note) continue;
             const match = cls.note.match(/<MagicalSystem:\s*([^>]+)>/i);
@@ -427,17 +331,17 @@
         return names;
     }
 
-    // Every real skill whose own (skill-level) <MagicSystem:> tag names this
-    // system, in book order. Fused spells never carry the tag on their own, so
-    // they are excluded like everywhere else in this file.
     function getSkillsForMagicSystem(id) {
         const list = [];
+        if (typeof $dataSkills === 'undefined' || !$dataSkills) return list;
         for (const skill of $dataSkills) {
             if (!skill || !skill.name || skill._customSpell) continue;
             if (getSkillMagicSystem(skill.id) === id) list.push(skill);
         }
         return list;
     }
+
+    const FUSION_CATEGORY = 'Fusion';
 
     const actorCategoryManager = {
         _primary: [],
@@ -448,8 +352,6 @@
         _foreign: [],
         _foreignKey: '',
 
-        // Switch the manager to a specific pupil so the KP discounts and the
-        // "3.0X / 1.5X KP" badges reflect that actor's class. Recomputes on next use.
         setActor: function (actorId) {
             if (!actorId || actorId === this._actorId) return;
             this._actorId = actorId;
@@ -465,19 +367,13 @@
 
         initialize: function () {
             if (typeof $dataActors === 'undefined' || !$dataActors) return;
-
             const classId = this._classIdFor(this._actorId);
             if (!classId) return;
-            // Re-read whenever the pupil's class changes under us (a class swap,
-            // or the manager still holding a stale table for the same actor id).
             if (this._initialized && this._classId === classId) return;
             this._classId = classId;
 
-            // Primary/secondary skill categories are sourced from
-            // js/db/Skills/Categories.json (classSkillCategories), the single
-            // source of truth, rather than class noteboxes.
-            const map = CATEGORY_DATA && CATEGORY_DATA.classSkillCategories;
-            if (!map) return; // Categories.json not loaded yet; retry on next call.
+            const map = (CATEGORY_DATA && CATEGORY_DATA.classSkillCategories) || (SkillMaster.CATEGORY_DATA && SkillMaster.CATEGORY_DATA.classSkillCategories);
+            if (!map) return;
 
             const entry = map[classId] || map[String(classId)];
             this._primary = (entry && Array.isArray(entry.primary)) ? entry.primary.slice() : [];
@@ -485,8 +381,6 @@
             this._initialized = true;
         },
 
-        // initialize() is a no-op once the pupil's table is current, so every
-        // reader calls it rather than trusting a flag that predates a class swap.
         isPrimary: function (category) {
             this.initialize();
             return this._primary.includes(category);
@@ -497,22 +391,14 @@
             return this._secondary.includes(category);
         },
 
-        // A school the pupil's class does NOT study, but in which they already
-        // know a skill: a Knight who picked up one necromantic trick from a
-        // grimoire, a body part or a level-up can go on down that tree from
-        // where they stand. The tree opens, the ordinary adjacency rule still
-        // applies (so only neighbours of what they know are buyable), and every
-        // skill in it is charged FOREIGN_KP_MULT.
         foreignCategories: function () {
             this.initialize();
             const own = this._primary.concat(this._secondary);
-            if (!own.length) return [];   // no table means the whole book is theirs already
+            if (!own.length) return [];
             const actor = (typeof $gameActors !== 'undefined' && $gameActors)
                 ? $gameActors.actor(this._actorId) : null;
             if (!actor || !actor.skills) return [];
             const known = actor.skills();
-            // Every rendered card asks the price, so answer from a cache and
-            // rebuild it only when the pupil, their class or their skill list moves.
             const key = `${this._actorId}:${this._classId}:${known.length}`;
             if (this._foreignKey === key) return this._foreign;
             const out = [];
@@ -527,20 +413,12 @@
             return out;
         },
 
-        // Is this school open to the pupil only because they already know
-        // something in it? Those skills are charged triple.
         isForeign: function (category) {
             if (!category) return false;
             if (this.isPrimary(category) || this.isSecondary(category)) return false;
             return this.foreignCategories().includes(category);
         },
 
-        // The categories the pupil can browse: primary first, then secondary,
-        // then any school they have a foothold in. The training menu shows
-        // nothing outside this list, so a Knight is never offered Necromancy
-        // unless they already know a necromantic skill. Returns null when the
-        // class has no table at all (or Categories.json has not loaded yet),
-        // which means "no restriction" rather than "nothing to learn".
         allowedCategories: function () {
             this.initialize();
             const list = this._primary.concat(this._secondary);
@@ -550,19 +428,115 @@
 
         getMultiplier: function (skillId) {
             this.initialize();
-
             const category = getSkillCategory(skillId);
             if (!category) return 1;
-
-            if (this.isPrimary(category)) {
-                return 3;
-            }
-            if (this.isSecondary(category)) {
-                return 1.5;
-            }
+            if (this.isPrimary(category)) return 3;
+            if (this.isSecondary(category)) return 1.5;
             return 1;
         }
     };
+
+    function getAllSkillCategories() {
+        const allowed = actorCategoryManager.allowedCategories();
+        const categories = new Set();
+        categories.add("All");
+
+        const MN = window.MagicNature;
+        const filterNature = !!(MN && MN.isFiltering());
+
+        if (typeof $dataSkills !== 'undefined' && $dataSkills) {
+            for (const skill of $dataSkills) {
+                if (!skill) continue;
+                if (skill._customSpell) continue;
+                if (filterNature && !MN.allowsData(skill)) continue;
+                const categoryMatch = skill.note.match(/<category:(.+?)>/i);
+                if (categoryMatch) {
+                    if (allowed && !allowed.includes(categoryMatch[1].trim())) continue;
+                    categories.add(categoryMatch[1]);
+                }
+            }
+        }
+        if (getSkillsByCategory(FUSION_CATEGORY).length) categories.add(FUSION_CATEGORY);
+        return Array.from(categories);
+    }
+
+    function getCategoryType(category) {
+        if (category === 'All') return 'Skill';
+        const data = CATEGORY_DATA[category] || SkillMaster.CATEGORY_DATA[category];
+        return (data && data.type === 'Magic') ? 'Magic' : 'Skill';
+    }
+
+    function getSplitSkillCategories() {
+        const all = getAllSkillCategories();
+        const skills = [];
+        const magic = [];
+        for (const cat of all) {
+            if (cat === 'All') continue;
+            if (getCategoryType(cat) === 'Magic') magic.push(cat);
+            else skills.push(cat);
+        }
+        const byName = (a, b) => getCategoryDisplayName(a).localeCompare(getCategoryDisplayName(b));
+        skills.sort(byName);
+        magic.sort(byName);
+        skills.unshift('All');
+        return { Skill: skills, Magic: magic };
+    }
+
+    function getSkillsByCategory(category) {
+        if (category === FUSION_CATEGORY) {
+            const actorId = (SceneManager._scene && SceneManager._scene._teachActorId) || 0;
+            if (typeof $gameSystem === 'undefined' || !$gameSystem) return [];
+            return $gameSystem.getCustomSpells()
+                .filter(s => s && s.name && s._ownerActorId === actorId)
+                .map(s => $dataSkills[s.id] || s)
+                .filter(Boolean);
+        }
+        const skills = [];
+        const catRegex = category === "All" ? null : new RegExp(`<category:${category}>`, 'i');
+        const allowed = catRegex ? null : actorCategoryManager.allowedCategories();
+        const MN = window.MagicNature;
+        const filterNature = !!(MN && MN.isFiltering());
+
+        if (typeof $dataSkills !== 'undefined' && $dataSkills) {
+            for (const skill of $dataSkills) {
+                if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
+                if (skill._customSpell) continue;
+                if (filterNature && !MN.allowsData(skill)) continue;
+
+                if (catRegex) {
+                    if (catRegex.test(skill.note)) skills.push(skill);
+                    continue;
+                }
+                if (allowed) {
+                    const match = skill.note.match(/<category:(.+?)>/i);
+                    if (!match || !allowed.includes(match[1].trim())) continue;
+                }
+                skills.push(skill);
+            }
+        }
+        return skills;
+    }
+
+    // Export helpers
+    SkillMaster.uncamelCase = uncamelCase;
+    SkillMaster.getCategoryDisplayName = getCategoryDisplayName;
+    SkillMaster.getCategoryIcon = getCategoryIcon;
+    SkillMaster.getCategoryIconStyle = getCategoryIconStyle;
+    SkillMaster.getSkillIconStyle = getSkillIconStyle;
+    SkillMaster.getSkillCategory = getSkillCategory;
+    SkillMaster.getSkillMagicSystem = getSkillMagicSystem;
+    SkillMaster.getActorMagicSystem = getActorMagicSystem;
+    SkillMaster.getAllMagicalSystems = getAllMagicalSystems;
+    SkillMaster.getMagicSystemDisplayName = getMagicSystemDisplayName;
+    SkillMaster.getMagicSystemDesc = getMagicSystemDesc;
+    SkillMaster.getClassesForMagicSystem = getClassesForMagicSystem;
+    SkillMaster.getSkillsForMagicSystem = getSkillsForMagicSystem;
+    SkillMaster.actorCategoryManager = actorCategoryManager;
+    SkillMaster.getAllSkillCategories = getAllSkillCategories;
+    SkillMaster.getCategoryType = getCategoryType;
+    SkillMaster.getSplitSkillCategories = getSplitSkillCategories;
+    SkillMaster.getSkillsByCategory = getSkillsByCategory;
+    SkillMaster.FUSION_CATEGORY = FUSION_CATEGORY;
 
     //=============================================================================
     // Game_System - Shared Knowledge Points
@@ -601,63 +575,30 @@
 
     //=============================================================================
     // Skill power -> Knowledge cost
-    //
-    // A skill is priced by what it does, not by a flat fee, so the gap between a
-    // jab and a world-ending word is a gap in orders of magnitude rather than a
-    // few points. skillPower() scores everything the database actually knows
-    // about a skill and kpTeachCost() raises that score to a power, which is what
-    // turns a linear reading of a skill into an exponential price.
-    //
-    // The MP and TP a skill asks for LEADS that score: it is the one number the
-    // designer set by hand on every skill in the book, and it already separates a
-    // 0 MP jab from a 9999 MP working better than any formula reading can.
-    //
-    //   power 1     -> 50 KP     (the base price: a skill that asks nothing)
-    //   power ~2    -> 170 KP    (an ordinary skill)
-    //   power ~3.5  -> 460 KP
-    //   power ~5    -> 850 KP    (the strongest ordinary skills)
-    //
-    // Over the 1279 untagged skills in the book that reads 61 KP at the bottom,
-    // ~370 median and ~1700 at the very top. The occult tags are then a
-    // multiplier on the finished price rather than a term inside the score:
-    // Esoteric x10 (roughly 1,100-5,000 KP) and Forbidden x100, which is a price
-    // nobody pays by accident.
     //=============================================================================
 
-    const KP_TEACH_BASE = 50;     // the base price: what a power-1 skill costs
-    const KP_TEACH_EXP = 1.75;    // how hard power is punished
-    const KP_TEACH_MIN = 50;      // no skill is ever cheaper than the base price
-    const KP_TEACH_MAX = 250000;  // ceiling, so a broken formula can't price itself out
-
-    // The two occult tags, priced apart from the score. Every <Forbidden> skill
-    // carries <Esoteric> as well and takes the larger of the two, never both.
+    const KP_TEACH_BASE = 50;
+    const KP_TEACH_EXP = 1.75;
+    const KP_TEACH_MIN = 50;
+    const KP_TEACH_MAX = 250000;
     const KP_ESOTERIC_MULT = 10;
     const KP_FORBIDDEN_MULT = 100;
-    // What a school nobody taught them costs: a foothold is not a curriculum.
     const FOREIGN_KP_MULT = 3;
-
-    // A TP point is scarcer than an MP point (TP caps at 100 and is earned in the
-    // fight, MP runs to thousands and is carried into it), so it weighs more.
     const KP_TP_WEIGHT = 4;
-    const KP_RESOURCE_SOFT = 12;  // MP a skill may ask before the price notices
-    const KP_RESOURCE_WEIGHT = 0.35; // lower = less KP asked per point of MP or AP cost
+    const KP_RESOURCE_SOFT = 12;
+    const KP_RESOURCE_WEIGHT = 0.35;
 
-    // Stats a damage formula can scale off, biggest multiplier wins. Compiled
-    // once: a grid prices every node it draws.
     const KP_FORMULA_STATS = ['a.mhp', 'a.mmp', 'a.atk', 'a.def', 'a.mat', 'a.mdf',
         'a.agi', 'a.luk', 'a.level', 'a.hp', 'a.mp', 'a.tp'].map(stat => ({
             stat: stat,
             re: new RegExp(stat.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*\\*\\s*([\\d.]+)')
         }));
 
-    // How much of a threat the target set is, by RMMZ scope id.
     const KP_SCOPE_WEIGHT = {
         0: 0, 1: 0, 2: 0.8, 3: 0.3, 4: 0.45, 5: 0.55, 6: 1.0, 7: 0.15,
         8: 0.6, 9: 0.15, 10: 0.6, 11: 0, 12: 0.6, 13: 0.8, 14: 1.0
     };
 
-    // Reads the damage formula for its steepest stat multiplier and its largest
-    // flat term (the 3000 in "3000 + a.mdf * 8" is most of that skill's worth).
     function kpFormulaWeight(formula) {
         if (!formula) return { multiplier: 0, flat: 0 };
         let multiplier = 0;
@@ -673,14 +614,9 @@
         return { multiplier: multiplier, flat: flat };
     }
 
-    // Everything the score itself reads. The occult tags are NOT in here: they
-    // multiply the finished price (kpTeachCost), so the 10x and the 100x stay
-    // exactly what they say they are instead of being bent by the exponent.
     function skillPower(skill) {
         if (!skill) return 1;
         const resource = (skill.mpCost || 0) + (skill.tpCost || 0) * KP_TP_WEIGHT;
-        // Resource cost is the designer's own verdict on a skill and leads the
-        // score, but it spans 0-9999, so it is read logarithmically, not raw.
         let power = 1 + Math.log2(1 + resource / KP_RESOURCE_SOFT) * KP_RESOURCE_WEIGHT;
 
         const dmg = skill.damage || {};
@@ -705,18 +641,15 @@
                 case Game_Action.EFFECT_RECOVER_MP:
                     power += 0.1; break;
                 case Game_Action.EFFECT_GAIN_TP: power += 0.06; break;
-                case Game_Action.EFFECT_GROW: power += 0.3; break;     // permanent stat growth
+                case Game_Action.EFFECT_GROW: power += 0.3; break;
                 case Game_Action.EFFECT_LEARN_SKILL: power += 0.2; break;
                 case Game_Action.EFFECT_SPECIAL: power += 0.12; break;
                 case Game_Action.EFFECT_COMMON_EVENT: power += 0.12; break;
             }
         }
-
         return Math.max(1, power);
     }
 
-    // What the occult tags do to a price. Forbidden wins outright: every
-    // Forbidden skill carries Esoteric as well and must not pay both.
     function kpOccultMultiplier(skill) {
         const note = (skill && skill.note) || '';
         if (/<Forbidden>/i.test(note)) return KP_FORBIDDEN_MULT;
@@ -724,11 +657,6 @@
         return 1;
     }
 
-    // How much dearer a skill is for standing one tier further up its school.
-    // Power already climbs with the tier (the tier is RANKED on power), so this
-    // is the interest on the climb itself rather than the whole of it: the
-    // summit of a deep school runs about three and a half times its foot before
-    // power is counted at all.
     const KP_TIER_STEP = 0.19;
 
     function kpTeachCost(skill) {
@@ -737,37 +665,20 @@
         return Math.max(KP_TEACH_MIN, Math.min(KP_TEACH_MAX, Math.round(raw)));
     }
 
-    // Cost scales with the skill's power; only a PRIMARY school then discounts it
-    // (a secondary school is taught at full price). The base price is a floor the
-    // discount cannot go under, so the cheapest skill in the book is 50 KP to
-    // anybody.
     Game_System.prototype.getSkillKnowledgeCost = function (skillId, actorId) {
         const skill = $dataSkills[skillId];
         if (!skill) return KP_TEACH_MIN;
-        // The badges, the discounts and this price all have to be reading the same
-        // pupil; every caller names one, so honour it rather than whichever actor
-        // the manager happens to be holding.
         if (actorId) actorCategoryManager.setActor(actorId);
         let cost = kpTeachCost(skill);
-        // Where it stands on its school's tree, which is what makes the summit
-        // of a school a campaign and its foot an afternoon.
-        const placed = SkillGraph.node(skillId);
+        const placed = window.SkillGraph && window.SkillGraph.node(skillId);
         if (placed && placed.tier > 0) {
-            // Re-clamped, so the climb cannot carry a Forbidden working past the
-            // ceiling kpTeachCost already pinned it to.
             cost = Math.min(KP_TEACH_MAX, Math.round(cost * (1 + placed.tier * KP_TIER_STEP)));
         }
         const category = getSkillCategory(skillId);
         if (category && actorId) {
             if (actorCategoryManager.isPrimary(category)) cost = Math.floor(cost * 0.5);
-            // A school nobody taught them: they are reading it off their own
-            // one trick, and it costs them three times over.
             else if (actorCategoryManager.isForeign(category)) cost *= FOREIGN_KP_MULT;
         }
-        // A pupil whose class is itself filed under a magic system (Witch's
-        // Arcane, Fire Mage's Thermodynamics, ...) reads a spell of that same
-        // system half as dear again, on top of whatever the school discount
-        // already did: the two are independent coupons, not alternatives.
         if (actorId) {
             const skillSystem = getSkillMagicSystem(skillId);
             if (skillSystem && skillSystem === getActorMagicSystem(actorId)) {
@@ -778,36 +689,18 @@
     };
 
     //=============================================================================
-    // Knowledge award curve (shared by battles and quest hand-ins)
-    //
-    // Knowledge is earned by facing things above your own level: the further
-    // above, the steeper the gain. Battles and contracts price off the same
-    // curve so a five-star hunt and the fight it asks for stay comparable.
-    //
-    //   ratio = enemy level / party median level
-    //   value = KP_BASE * ratio ^ KP_CURVE, clamped to [KP_MIN, KP_MAX]
-    //
-    // At parity that is 3 KP; half again the party's level pays ~5.5; double
-    // pays ~8.5; quadruple hits the 25 KP ceiling. Teaching a skill costs 50 KP
-    // at the base price and a few hundred for an ordinary one
-    // (getSkillKnowledgeCost, median ~370 before the school discount), so a
-    // skill is a run of fights or a couple of bounties away, while an esoteric
-    // working is a campaign's worth of them and a Forbidden one is a lifetime's.
+    // Knowledge award curve
     //=============================================================================
 
-    const KP_BASE = 3;            // value of an exactly level-matched enemy
-    const KP_CURVE = 1.5;         // how hard being outlevelled pays
-    const KP_MIN = 1;             // even a trivial kill teaches something
-    const KP_MAX = 25;            // per-enemy ceiling
-    const KP_EXTRA_WEIGHT = 0.35; // every enemy past the strongest counts less
-    const KP_ENCOUNTER_CAP = 60;  // ceiling for one whole encounter
-
-    // A five-star contract is worth more than the fight inside it: the stars are
-    // the pay grade, and the bounty's own level is added on top by forQuest.
+    const KP_BASE = 3;
+    const KP_CURVE = 1.5;
+    const KP_MIN = 1;
+    const KP_MAX = 25;
+    const KP_EXTRA_WEIGHT = 0.35;
+    const KP_ENCOUNTER_CAP = 60;
     const KP_QUEST_BASE = { 1: 5, 2: 10, 3: 20, 4: 40, 5: 70 };
-
-    const KP_FUSION_PREMIUM = 1.25; // forging costs more than the parts teach
-    const KP_FUSION_MIN = 50;       // the base price: a forging is never cheaper
+    const KP_FUSION_PREMIUM = 1.25;
+    const KP_FUSION_MIN = 50;
 
     function kpForEnemy(enemyLevel, partyLevel) {
         const pl = Math.max(1, partyLevel || 1);
@@ -816,8 +709,6 @@
         return Math.max(KP_MIN, Math.min(KP_MAX, v));
     }
 
-    // The strongest enemy sets the price; the rest of the troop is a fraction of
-    // its own worth, so a swarm of weaklings never out-earns a real threat.
     function kpForEncounter(enemyLevels, partyLevel) {
         const vals = (enemyLevels || [])
             .map(l => kpForEnemy(l, partyLevel))
@@ -836,8 +727,6 @@
         return Math.max(1, Math.round(base + fight));
     }
 
-    // Fusing consumes what the components were worth to teach, plus a premium
-    // for the forging itself. Splitting refunds nothing, so re-fusing pays again.
     function kpFusionCost(componentIds, actorId) {
         let sum = 0;
         for (const id of (componentIds || [])) {
@@ -855,19 +744,16 @@
         fusionCost: kpFusionCost,
     };
 
+    SkillMaster.kpFormulaWeight = kpFormulaWeight;
+    SkillMaster.skillPower = skillPower;
+    SkillMaster.kpTeachCost = kpTeachCost;
+    SkillMaster.kpForEnemy = kpForEnemy;
+    SkillMaster.kpForEncounter = kpForEncounter;
+    SkillMaster.kpForQuest = kpForQuest;
+    SkillMaster.kpFusionCost = kpFusionCost;
+
     //=============================================================================
-    // Custom (procedural) spells - Fuse Spells
-    //
-    // Fuse Spells combines a DOMINANT spell with a RECESSIVE spell/skill known by
-    // a single pupil into a brand new CamelCase ability that only that actor
-    // learns. A Skill recessive makes the result a skill (listed under Skills);
-    // otherwise it stays Magic. Component skills are forgotten; the fused ability
-    // costs the SUM of the components' MP and AP and can be split back into its
-    // parts at any time.
-    //
-    // Fused abilities live in $gameSystem (so they persist in the save) and are
-    // re-injected into $dataSkills on load, since $dataSkills is rebuilt from the
-    // static database every boot.
+    // Custom (procedural) spells persistence
     //=============================================================================
 
     Game_System.prototype.getCustomSpells = function () {
@@ -884,8 +770,6 @@
     };
 
     Game_System.prototype.addCustomSpell = function (skill) {
-        // Its own lane on the maker's plate, so no two fusions land on top of
-        // each other. Ring 0 and no <Link:> is what makes it an island.
         const mine = this.getCustomSpells().filter(s => s && s._ownerActorId === skill._ownerActorId);
         skill.note = String(skill.note || '').replace(/\n?<Node:[^>]*>/i, '')
             + '\n<Node: 0,' + mine.length + '>';
@@ -902,8 +786,6 @@
         }
     };
 
-    // Re-attach every stored fused spell to $dataSkills. Called on save load (the
-    // database is freshly reloaded each boot) and defensively when the scene opens.
     function injectAllCustomSpells() {
         if (typeof $gameSystem === 'undefined' || !$gameSystem) return;
         if (typeof $dataSkills === 'undefined' || !$dataSkills) return;
@@ -911,6 +793,7 @@
             if (s && s.id) $dataSkills[s.id] = s;
         }
     }
+    SkillMaster.injectAllCustomSpells = injectAllCustomSpells;
 
     const _DataManager_extractSaveContents = DataManager.extractSaveContents;
     DataManager.extractSaveContents = function (contents) {
@@ -918,1120 +801,16 @@
         injectAllCustomSpells();
     };
 
-    // Build a CamelCase name by stitching the leading letters of each component
-    // name together, e.g. "Fire Bolt" + "Ice Shard" + "Quick Slash" -> "FireIceQuic".
-    function makeFusedSpellName(names) {
-        const parts = names.map(n => {
-            const clean = String(n || '').replace(/[^A-Za-z]/g, '');
-            if (!clean) return '';
-            const chunk = clean.slice(0, 4);
-            return chunk.charAt(0).toUpperCase() + chunk.slice(1).toLowerCase();
-        }).filter(Boolean);
-        return parts.join('') || 'CustomSpell';
+    function isWorkshopMode() {
+        if ($gameSystem && ($gameSystem._isSandboxMode || $gameSystem._sandboxKnowledgePointsGiven)) return true;
+        const leader = $gameParty && $gameParty.allMembers && $gameParty.allMembers()[0];
+        return !!(leader && leader.name && leader.name().toLowerCase() === 'test');
     }
-
-    // Fuse a DOMINANT spell + a RECESSIVE spell/skill into a new procedural
-    // ability owned by actorId. The DOMINANT component (always components[0])
-    // supplies the core template - damage, scope, occasion, hit type and icon.
-    // MP/AP are the SUMMED costs of both components, and effects are the union of
-    // both components' effects ("a mix").
-    //
-    // The RESULT TYPE follows the recessive component: when the recessive slot
-    // holds a plain Skill (not Magic), the fused ability inherits that skill's
-    // skill-type id so it is listed under Skills rather than Magic in the battle
-    // menu. When the recessive is a spell, the dominant's magic type is kept.
-    function buildFusedSkill(components, actorId, animationId) {
-        const clone = obj => JSON.parse(JSON.stringify(obj));
-        const dominant = components[0];
-        const recessive = components[1];
-        const fused = clone(dominant);
-
-        fused.id = $gameSystem.allocCustomSkillId();
-        fused.name = makeFusedSpellName(components.map(c => c.name));
-        fused.mpCost = components.reduce((sum, c) => sum + (c.mpCost || 0), 0);
-        fused.tpCost = components.reduce((sum, c) => sum + (c.tpCost || 0), 0);
-
-        // Core behaviour (damage block, scope/occasion/hit type, icon) is inherited
-        // from the dominant component. Only the damage/icon are restated here for
-        // clarity; the rest already came through the dominant clone.
-        fused.damage = clone(dominant.damage);
-        fused.iconIndex = dominant.iconIndex;
-
-        // Type: a Skill recessive turns the whole fusion into a skill (so it is
-        // listed in Skills, not Magic); a spell recessive keeps the dominant type.
-        const recCat = recessive ? getSkillCategory(recessive.id) : null;
-        const recIsSkill = recCat ? getCategoryType(recCat) !== 'Magic' : false;   // i18n-ignore: category id
-        fused._resultIsSkill = recIsSkill;
-        if (recIsSkill && recessive) {
-            fused.stypeId = recessive.stypeId;
-        }
-
-        // Effects: a mix of both components' effects.
-        fused.effects = [];
-        for (const c of components) {
-            for (const e of (c.effects || [])) fused.effects.push(clone(e));
-        }
-
-        if (animationId && animationId > 0) fused.animationId = animationId;
-
-        const names = components.map(c => c.name).join(' + ');
-        fused.description = T(
-            recIsSkill ? 'SkillMaster.fusedSkillDesc' : 'SkillMaster.fusedSpellDesc',
-            { parts: names, dominant: dominant.name });
-        // A fusion is nobody's school but its maker's: it is filed under the
-        // Fusion category, which is drawn per pupil, and it stands alone on the
-        // plate (ring 0, its own lane, joined to nothing) because it was not
-        // walked to - it was made.
-        fused.note = '<customSpell>\n<category:' + FUSION_CATEGORY + '>';
-        fused.meta = { customSpell: true };
-        fused._customSpell = true;
-        fused._ownerActorId = actorId;
-        fused._components = components.map(c => c.id);
-        fused._baseSkillId = dominant.id;
-        fused._animationId = fused.animationId;
-        return fused;
-    }
+    window.SkillMasterWorkshop = isWorkshopMode;
+    SkillMaster.isWorkshopMode = isWorkshopMode;
 
     //=============================================================================
-    // AnimPreview - plays a real Effekseer animation inside its own transparent
-    // WebGL canvas. A dedicated Effekseer context (separate GL context from the
-    // main renderer) keeps the preview fully isolated, so it can never corrupt the
-    // game's rendering state. Used by the Fuse Spells animation picker and the
-    // skill-detail 3D preview (drag to rotate, wheel to zoom).
-    //=============================================================================
-
-    const AnimPreview = {
-        _ctx: null, _gl: null, _canvas: null,
-        _effect: null, _handle: null, _effectName: '',
-        _rafId: 0, _animId: 0, _dead: false,
-        // Orbit camera (reused-from-MonsterTournament free orbit): drag to rotate,
-        // wheel to zoom. Defaults reproduce the original front-on 10-unit camera.
-        _yaw: 0, _pitch: 0.12, _dist: 10,
-        _interactive: false, _dragging: false, _lastX: 0, _lastY: 0,
-        _onDown: null, _onMove: null, _onUp: null, _onWheel: null,
-
-        isSupported() { return !!window.effekseer; },
-
-        init(canvas, interactive) {
-            if (this._canvas === canvas && this._ctx) return true;
-            this.dispose();
-            if (!window.effekseer || !canvas) return false;
-            const opts = { alpha: true, premultipliedAlpha: true, depth: true, antialias: true };
-            const gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
-            if (!gl) return false;
-            let ctx;
-            try {
-                ctx = window.effekseer.createContext();
-                ctx.init(gl, { instanceMaxCount: 4000, squareMaxCount: 8000 });
-                ctx.setRestorationOfStatesFlag(true);
-            } catch (e) {
-                console.error('SkillMaster AnimPreview: Effekseer init failed', e);
-                return false;
-            }
-            this._canvas = canvas; this._gl = gl; this._ctx = ctx; this._dead = false;
-            // Reset the orbit each time so a fresh preview always opens front-on.
-            this._yaw = 0; this._pitch = 0.12; this._dist = 10;
-            this._interactive = !!interactive;
-            if (this._interactive) this._bindInput(canvas);
-            this._startLoop();
-            return true;
-        },
-
-        // Drag = orbit (yaw/pitch); wheel = zoom (dolly the camera in/out).
-        _bindInput(canvas) {
-            const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-            this._onDown = (e) => { this._dragging = true; this._lastX = e.clientX; this._lastY = e.clientY; e.preventDefault(); };
-            this._onMove = (e) => {
-                if (!this._dragging) return;
-                this._yaw -= (e.clientX - this._lastX) * 0.01;
-                this._pitch = clamp(this._pitch + (e.clientY - this._lastY) * 0.01, -1.3, 1.3);
-                this._lastX = e.clientX; this._lastY = e.clientY;
-            };
-            this._onUp = () => { this._dragging = false; };
-            this._onWheel = (e) => {
-                this._dist = clamp(this._dist + (e.deltaY > 0 ? 1 : -1) * 1.2, 4, 26);
-                e.preventDefault(); e.stopPropagation();
-            };
-            canvas.addEventListener('pointerdown', this._onDown);
-            window.addEventListener('pointermove', this._onMove);
-            window.addEventListener('pointerup', this._onUp);
-            canvas.addEventListener('wheel', this._onWheel, { passive: false });
-        },
-
-        _unbindInput() {
-            if (this._canvas && this._onDown) this._canvas.removeEventListener('pointerdown', this._onDown);
-            if (this._onMove) window.removeEventListener('pointermove', this._onMove);
-            if (this._onUp) window.removeEventListener('pointerup', this._onUp);
-            if (this._canvas && this._onWheel) this._canvas.removeEventListener('wheel', this._onWheel);
-            this._onDown = this._onMove = this._onUp = this._onWheel = null;
-            this._dragging = false;
-        },
-
-        // Column-major lookAt view matrix for the current orbit (target = origin).
-        _viewMatrix() {
-            const cp = Math.cos(this._pitch), sp = Math.sin(this._pitch);
-            const sy = Math.sin(this._yaw), cy = Math.cos(this._yaw);
-            const ex = this._dist * cp * sy, ey = this._dist * sp, ez = this._dist * cp * cy;
-            // f = normalize(center - eye) = normalize(-eye)
-            let fx = -ex, fy = -ey, fz = -ez;
-            const fl = Math.hypot(fx, fy, fz) || 1; fx /= fl; fy /= fl; fz /= fl;
-            // s = normalize(cross(f, up)), up = (0,1,0) -> (-fz, 0, fx)
-            let sx = -fz, sy2 = 0, sz = fx;
-            const sl = Math.hypot(sx, sy2, sz) || 1; sx /= sl; sy2 /= sl; sz /= sl;
-            // u = cross(s, f)
-            const ux = sy2 * fz - sz * fy, uy = sz * fx - sx * fz, uz = sx * fy - sy2 * fx;
-            return [
-                sx, ux, -fx, 0,
-                sy2, uy, -fy, 0,
-                sz, uz, -fz, 0,
-                -(sx * ex + sy2 * ey + sz * ez),
-                -(ux * ex + uy * ey + uz * ez),
-                (fx * ex + fy * ey + fz * ez),
-                1
-            ];
-        },
-
-        setAnimation(animId) {
-            if (!this._ctx) return;
-            const anim = (typeof $dataAnimations !== 'undefined') && $dataAnimations[animId];
-            this._animId = animId;
-            if (!anim || anim.frames || !anim.effectName) {
-                // MV animations / empty slots have no Effekseer effect to preview.
-                this._stopHandle(); this._effect = null; this._effectName = '';
-                return;
-            }
-            const name = anim.effectName;
-            if (name === this._effectName && this._effect) { this._replay(); return; }
-            this._stopHandle();
-            this._effect = null; this._effectName = name;
-            const url = 'effects/' + Utils.encodeURI(name) + '.efkefc';
-            try {
-                const eff = this._ctx.loadEffect(url, 1,
-                    () => { if (this._effectName === name) { this._effect = eff; this._replay(); } },
-                    () => { /* load failed - viewbox just shows the character */ });
-            } catch (e) { /* ignore */ }
-        },
-
-        _replay() {
-            if (!this._ctx || !this._effect) return;
-            this._stopHandle();
-            try {
-                this._handle = this._ctx.play(this._effect, 0, 0, 0);
-                if (this._handle) { this._handle.setLocation(0, 0, 0); this._handle.setScale(1, 1, 1); }
-            } catch (e) { this._handle = null; }
-        },
-
-        _stopHandle() {
-            if (this._handle) { try { this._handle.stop(); } catch (e) {} this._handle = null; }
-        },
-
-        _startLoop() {
-            const W = this._canvas.width, H = this._canvas.height;
-            const size = Math.min(W, H);
-            const p = -(size / H);
-            const proj = [1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, p, 0, 0, 0, 1];
-            const vx = Math.floor((W - size) / 2), vy = Math.floor((H - size) / 2);
-            const loop = () => {
-                if (this._dead) return;
-                this._rafId = requestAnimationFrame(loop);
-                const gl = this._gl, ctx = this._ctx;
-                if (!gl || !ctx) return;
-                try {
-                    gl.clearColor(0, 0, 0, 0);
-                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                    gl.viewport(vx, vy, size, size);
-                    ctx.setProjectionMatrix(proj);
-                    // Recompute the camera each frame so live drag/zoom is reflected.
-                    ctx.setCameraMatrix(this._viewMatrix());
-                    ctx.update();
-                    if (this._handle && !this._handle.exists && this._effect) this._replay();
-                    ctx.beginDraw();
-                    if (this._handle) ctx.drawHandle(this._handle);
-                    ctx.endDraw();
-                } catch (e) {
-                    // On any GL error, retire the preview rather than spamming.
-                    this._dead = true;
-                }
-            };
-            this._rafId = requestAnimationFrame(loop);
-        },
-
-        dispose() {
-            this._dead = true;
-            this._unbindInput();
-            if (this._rafId) { cancelAnimationFrame(this._rafId); this._rafId = 0; }
-            this._stopHandle();
-            // Free the standalone GL context so repeated open/close never exhausts
-            // the browser's WebGL context budget.
-            if (this._gl) {
-                try {
-                    const ext = this._gl.getExtension('WEBGL_lose_context');
-                    if (ext) ext.loseContext();
-                } catch (e) {}
-            }
-            this._effect = null; this._effectName = '';
-            this._ctx = null; this._gl = null; this._canvas = null;
-        }
-    };
-
-    // The isolated Effekseer viewport is the only one in the game, so anything
-    // else that wants to show a spell before it is cast mounts THIS rather than
-    // opening a second GL context of its own (the marketplace listing page in
-    // Economy/SearchableItemShop.js does). One canvas at a time: init() retires
-    // whatever was playing before.
-    window.SkillAnimPreview = AnimPreview;
-
-    //=============================================================================
-    // Utility Functions
-    //=============================================================================
-
-    // Only the categories the pupil's class studies (its primary and secondary
-    // schools) are browsable; a class with no table in Categories.json sees the
-    // whole book, so the menu is never empty.
-    function getAllSkillCategories() {
-        const allowed = actorCategoryManager.allowedCategories();
-        const categories = new Set();
-        categories.add("All");   // i18n-ignore: category id
-
-        // A school whose every skill is of the wrong nature for this world has
-        // nothing left to teach, so it is not a school here at all: it leaves
-        // the tab list and the atlas rather than opening onto a blank seal.
-        const MN = window.MagicNature;
-        const filterNature = !!(MN && MN.isFiltering());
-
-        for (const skill of $dataSkills) {
-            if (!skill) continue;
-            if (skill._customSpell) continue;   // the Fusion school is added below, per pupil
-            if (filterNature && !MN.allowsData(skill)) continue;
-            const categoryMatch = skill.note.match(/<category:(.+?)>/i);
-            if (categoryMatch) {
-                if (allowed && !allowed.includes(categoryMatch[1].trim())) continue;
-                categories.add(categoryMatch[1]);
-            }
-        }
-        // A pupil who has forged anything gets their own school for it, whatever
-        // their class studies.
-        if (getSkillsByCategory(FUSION_CATEGORY).length) categories.add(FUSION_CATEGORY);
-
-        return Array.from(categories);
-    }
-
-    // Reads the "type" field ("Skill" or "Magic") from Categories.json.
-    // "All" and any category missing from the JSON default to "Skill".
-    function getCategoryType(category) {
-        if (category === 'All') return 'Skill';   // i18n-ignore: category id
-        const data = CATEGORY_DATA[category];
-        return (data && data.type === 'Magic') ? 'Magic' : 'Skill';   // i18n-ignore: category id
-    }
-
-    // Splits the active categories into two alphabetically-sorted columns:
-    //   Skill  -> left page (with "All" pinned to the top)
-    //   Magic  -> right page
-    function getSplitSkillCategories() {
-        const all = getAllSkillCategories();
-        const skills = [];
-        const magic = [];
-        for (const cat of all) {
-            if (cat === 'All') continue;   // i18n-ignore: category id
-            if (getCategoryType(cat) === 'Magic') magic.push(cat);   // i18n-ignore: category id
-            else skills.push(cat);
-        }
-        const byName = (a, b) => getCategoryDisplayName(a).localeCompare(getCategoryDisplayName(b));
-        skills.sort(byName);
-        magic.sort(byName);
-        skills.unshift('All');   // i18n-ignore: category id
-        return { Skill: skills, Magic: magic };   // i18n-ignore: category id
-    }
-
-    function getSkillsByCategory(category) {
-        // The maker's own school: only the focused pupil's fusions, and they are
-        // the one place a <customSpell> is ever listed.
-        if (category === FUSION_CATEGORY) {
-            const actorId = (SceneManager._scene && SceneManager._scene._teachActorId) || 0;
-            return $gameSystem.getCustomSpells()
-                .filter(s => s && s.name && s._ownerActorId === actorId)
-                .map(s => $dataSkills[s.id] || s)
-                .filter(Boolean);
-        }
-        const skills = [];
-        // Build the category regex once per query instead of once per skill.
-        const catRegex = category === "All" ? null : new RegExp(`<category:${category}>`, 'i');
-        // "All" is the pupil's whole curriculum, not the whole book: it holds the
-        // skills of every school their class studies and nothing outside them.
-        const allowed = catRegex ? null : actorCategoryManager.allowedCategories();
-
-        // How much magic this world has (window.MagicNature). A severed world
-        // never learned the magical half of the book and an unbound one never
-        // needed the mundane half: the skill is not on the seal at all, so the
-        // atlas is redrawn around what is left rather than showing a node
-        // nobody can ever buy. A skill a character already KNOWS is untouched.
-        const MN = window.MagicNature;
-        const filterNature = !!(MN && MN.isFiltering());
-
-        for (const skill of $dataSkills) {
-            if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
-            if (skill._customSpell) continue; // fused spells never appear in the browse list
-            if (filterNature && !MN.allowsData(skill)) continue;
-
-            if (catRegex) {
-                if (catRegex.test(skill.note)) skills.push(skill);
-                continue;
-            }
-            if (allowed) {
-                const match = skill.note.match(/<category:(.+?)>/i);
-                if (!match || !allowed.includes(match[1].trim())) continue;
-            }
-            skills.push(skill);
-        }
-
-        return skills;
-    }
-    //=============================================================================
-    // Skill graph - a school organises ITSELF
-    //
-    // Nothing about the shape of a school is authored. There is no <Node:> and
-    // no <Link:> in any notebox: the tree is worked out from what the skills
-    // ARE, every time the book is opened, so a skill added or rebalanced takes
-    // its own place without anybody drawing it a line.
-    //
-    //   GROVE  is the little tree a skill grows on. A school is never one great
-    //          thicket: it is broken into groves that share nothing at all, one
-    //          per strand of the school, split again where a strand is too big
-    //          to read. Two groves are never joined, so nothing a grove does can
-    //          tangle with the grove beside it.
-    //
-    //   LANE   is what decides which grove: its element where it has one, the
-    //          job it does (offensive, support, healing) where it has not.
-    //
-    //   TIER   is how far up its grove a skill stands. The weakest working of a
-    //          grove is its root and every step up is dearer than the step
-    //          below, so a skill that hits harder is always further up.
-    //
-    //   PARENT is the ONE skill directly below it in its own grove. Not two, not
-    //          the nearest few: exactly one, which is what makes every grove a
-    //          true tree and lets the page be drawn with no line ever crossing
-    //          another. Learn the parent and the skill opens; that is the whole
-    //          progression rule, and it is the same rule in all forty schools.
-    //
-    // A school's FORBIDDEN workings grow on no grove. They stand apart, joined
-    // to nothing: the whole school must be known before any of them opens, and
-    // then any one of them may be taken first.
-    //=============================================================================
-
-    // The shape of a grove. Everything a school does follows from these three.
-    const GROVE_MAX = 20;          // most skills one little tree will carry
-    const GROVE_MIN = 4;           // a strand thinner than this is swept in with the rest
-    const GROVE_FANOUT = 3;        // branches off one skill
-
-    // The maker's own school: every spell a pupil has forged, and nothing
-    // else. Drawn per pupil, so two characters never see each other's work.
-    const FUSION_CATEGORY = 'Fusion';   // i18n-ignore: category id
-
-    const ROLE_RE = /<role:\s*([^>]+)>/i;
-
-    const SkillGraph = {
-        _trees: null,        // category key -> the organised school
-        _index: null,        // skillId -> its node, whichever school built it
-
-        _reset: function () {
-            if (!this._trees) { this._trees = {}; this._index = {}; }
-        },
-
-        // A school's cache key. The magic level is part of it because a severed
-        // world holds FEWER skills in the same school, which is a different tree
-        // and not just a dimmer one; the Fusion plate is per pupil for the same
-        // reason.
-        _key: function (category) {
-            const MN = window.MagicNature;
-            const level = (MN && MN.level && MN.level()) || 'normal';
-            if (category === FUSION_CATEGORY) {
-                const scene = SceneManager._scene;
-                return `${category}|${level}|${(scene && scene._teachActorId) || 0}`;
-            }
-            return `${category}|${level}`;
-        },
-
-        // What KIND of working this is, which is the strand it hangs on. An
-        // element is the plainest answer; where there is none, what the skill is
-        // FOR says it instead.
-        _lane: function (skill) {
-            const el = (skill.damage && skill.damage.elementId) || 0;
-            if (el > 1) return 'E' + el;              // i18n-ignore: lane key
-            const role = (skill.note || '').match(ROLE_RE);
-            if (role) return 'R' + role[1].trim();    // i18n-ignore: lane key
-            if (el === 1) return 'R@physical';        // i18n-ignore: lane key
-            return 'R@other';                         // i18n-ignore: lane key
-        },
-
-        // Organise one school. Called once per school per session (per pupil for
-        // Fusion, per magic level everywhere), and cached: the tree only changes
-        // when the book itself does.
-        _organise: function (category) {
-            this._reset();
-            const key = this._key(category);
-            if (this._trees[key]) return this._trees[key];
-
-            const skills = getSkillsByCategory(category)
-                .filter(s => s && s.name && !s.name.startsWith('<--'));
-            const tree = { category: category, nodes: {}, order: [], tiers: [], groves: [] };
-            this._trees[key] = tree;
-            if (!skills.length) return tree;
-
-            // The school's forbidden workings are not part of any grove. They
-            // stand apart from all of them and are opened by finishing the rest.
-            const forbidden = [];
-            const climb = [];
-            for (const skill of skills) {
-                (this.isForbidden(skill.id) ? forbidden : climb).push(skill);
-            }
-
-            // Scored once each: skillPower reads a damage formula with regexes,
-            // and a sort comparator would ask it hundreds of times over.
-            const power = {};
-            for (const skill of skills) power[skill.id] = skillPower(skill);
-            const rank = (a, b) => (power[a.id] - power[b.id]) || (a.id - b.id);
-
-            const laneNames = Array.from(new Set(skills.map(s => this._lane(s)))).sort();
-            const laneOf = {};
-            laneNames.forEach((name, i) => { laneOf[name] = i; });
-            tree.lanes = laneNames;
-
-            for (const members of this._groves(climb, rank)) {
-                this._grow(tree, category, members, laneOf, false);
-            }
-            if (forbidden.length) {
-                this._grow(tree, category, forbidden.slice().sort(rank), laneOf, true);
-            }
-
-            this._rank(tree);
-            return tree;
-        },
-
-        // Break a school into GROVES: separate little trees that share nothing,
-        // so the page is a row of readable saplings rather than one thicket.
-        //
-        // A grove is one strand of the school (its element, or the job it does)
-        // and never more than GROVE_MAX skills. A strand too big for one grove is
-        // dealt round robin into as many as it needs, so every grove still climbs
-        // from the weakest working of that strand to the strongest rather than
-        // one grove holding all the cheap ones. Strands too small to stand alone
-        // are swept together into groves of their own.
-        _groves: function (climb, rank) {
-            if (!climb.length) return [];
-            const byLane = {};
-            for (const skill of climb) {
-                const lane = this._lane(skill);
-                (byLane[lane] = byLane[lane] || []).push(skill);
-            }
-            const groves = [];
-            const spill = [];
-            const deal = (list) => {
-                const parts = Math.max(1, Math.ceil(list.length / GROVE_MAX));
-                const bins = [];
-                for (let i = 0; i < parts; i++) bins.push([]);
-                list.slice().sort(rank).forEach((skill, i) => bins[i % parts].push(skill));
-                for (const bin of bins) if (bin.length) groves.push(bin);
-            };
-            for (const lane of Object.keys(byLane).sort()) {
-                const list = byLane[lane];
-                if (list.length < GROVE_MIN) spill.push(...list);
-                else deal(list);
-            }
-            if (spill.length) deal(spill);
-            if (!groves.length) deal(climb);
-            return groves;
-        },
-
-        // Grow one grove into a TREE: every skill after the first hangs from
-        // exactly ONE skill below it, so the grove can be drawn with no line
-        // ever crossing another. The weakest working is the root and the rest
-        // are hung on it breadth first in order of power, GROVE_FANOUT to a
-        // branch, so a skill is always dearer than the one it was learned from.
-        //
-        // A forbidden grove is not grown at all: every one of its workings
-        // stands alone, gated by the whole school rather than by a neighbour.
-        _grow: function (tree, category, members, laneOf, forbidden) {
-            if (!members.length) return;
-            const grove = { index: tree.groves.length, nodes: [], forbidden: !!forbidden };
-            members.forEach((skill, seat) => {
-                const node = {
-                    id: skill.id, skill: skill, category: category,
-                    tier: 0, grove: grove.index, seat: seat,
-                    lane: laneOf[this._lane(skill)] || 0,
-                    forbidden: !!forbidden,
-                    parents: [], children: [], need: 0
-                };
-                grove.nodes.push(node);
-                tree.nodes[skill.id] = node;
-                tree.order.push(node);
-                this._index[skill.id] = node;
-            });
-            if (!forbidden) {
-                for (let i = 1; i < grove.nodes.length; i++) {
-                    const parent = grove.nodes[Math.floor((i - 1) / GROVE_FANOUT)];
-                    const node = grove.nodes[i];
-                    node.parents = [parent.id];
-                    node.tier = parent.tier + 1;
-                    node.need = 1;
-                    parent.children.push(node.id);
-                }
-            }
-            grove.depth = grove.nodes.reduce((d, n) => Math.max(d, n.tier), 0);
-            tree.groves.push(grove);
-        },
-
-        // Sort the whole school into tiers by DEPTH, counted the same way in
-        // every grove: tier 0 is every grove's root, tier 1 everything hanging
-        // straight off one, and so on. The forbidden workings are pushed past
-        // the deepest of them, since nothing in the school stands above them.
-        _rank: function (tree) {
-            let deepest = 0;
-            for (const node of tree.order) if (!node.forbidden) deepest = Math.max(deepest, node.tier);
-            for (const node of tree.order) if (node.forbidden) node.tier = deepest + 1;
-            const tiers = [];
-            for (const node of tree.order) {
-                (tiers[node.tier] = tiers[node.tier] || []).push(node);
-            }
-            for (let t = 0; t < tiers.length; t++) if (!tiers[t]) tiers[t] = [];
-            tree.tiers = tiers;
-        },
-
-        // Make sure the school this skill belongs to has been organised, then
-        // answer with its node. A skill in no category at all has no tree and is
-        // never gated by one.
-        _nodeFor: function (skillId) {
-            this._reset();
-            const known = this._index[skillId];
-            if (known) return known;
-            const category = getSkillCategory(skillId);
-            if (!category) return null;
-            this._organise(category);
-            return this._index[skillId] || null;
-        },
-
-        node: function (skillId) {
-            return this._nodeFor(skillId);
-        },
-
-        // What this skill borders, read both ways: the skills it hangs from and
-        // the ones that hang from it. This is what the figure draws.
-        links: function (skillId) {
-            const node = this._nodeFor(skillId);
-            if (!node) return [];
-            return node.parents.concat(node.children);
-        },
-
-        // What it actually ASKS for, which is only ever the tier below it.
-        requires: function (skillId) {
-            const node = this._nodeFor(skillId);
-            return node ? node.parents : [];
-        },
-
-        // How many of those it needs before it will be taught.
-        needed: function (skillId) {
-            const node = this._nodeFor(skillId);
-            return node ? node.need : 0;
-        },
-
-        // A forbidden working sits beyond the summit joined to nothing: no path
-        // reaches it, and it opens only once the whole school around it is known.
-        // Then any one of them may be taken first.
-        isForbidden: function (skillId) {
-            const skill = $dataSkills[skillId];
-            return !!(skill && /<Forbidden>/i.test(skill.note || ''));
-        },
-
-        // The school's forbidden core, and the skills that must be finished
-        // before it opens. Cached per category: neither list ever changes.
-        _core: {},
-        core: function (category) {
-            if (this._core[category]) return this._core[category];
-            const inner = [], outer = [];
-            for (const skill of $dataSkills) {
-                if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
-                if (getSkillCategory(skill.id) !== category) continue;
-                (this.isForbidden(skill.id) ? inner : outer).push(skill.id);
-            }
-            const entry = { forbidden: inner, school: outer };
-            this._core[category] = entry;
-            return entry;
-        },
-
-        // Has this pupil finished everything the school teaches short of its
-        // forbidden core?
-        schoolMastered: function (actor, category) {
-            if (!actor || !category) return false;
-            const school = this.core(category).school;
-            return school.length > 0 && school.every(id => actor.isLearnedSkill(id));
-        },
-
-        // A skill nobody has to walk to: the foot of the tree, or a skill that
-        // was never on a tree in the first place (a fused spell, an
-        // uncategorised leftover).
-        isEntry: function (skillId) {
-            const node = this._nodeFor(skillId);
-            if (!node) return true;
-            return !node.forbidden && node.tier === 0;
-        },
-
-        // Can this pupil buy it right now? Known skills are not "open" (there is
-        // nothing left to buy), which is what the UI colours them by.
-        //
-        // A school outside the pupil's curriculum has no entrance: they got in
-        // through the one skill they already know and may only climb from it, so
-        // the free foot of the tree does not apply there.
-        isOpen: function (actor, skillId) {
-            if (!actor || actor.isLearnedSkill(skillId)) return false;
-            // Sandbox play (and a party led by "test") is a workshop: the whole
-            // book is open in any order, so the tree never blocks anything.
-            if (isWorkshopMode()) return true;
-            // the price badge and this gate have to be reading the same pupil
-            if (actor.actorId) actorCategoryManager.setActor(actor.actorId());
-            const node = this._nodeFor(skillId);
-            if (!node) return true;
-            const category = node.category;
-            // The core is walled off: finish the school and every one of them
-            // opens at once, in any order.
-            if (node.forbidden) return this.schoolMastered(actor, category);
-            const foreign = actorCategoryManager.isForeign(category);
-            if (!foreign && node.tier === 0) return true;
-            if (!node.parents.length) return !foreign;
-            let held = 0;
-            for (const id of node.parents) if (actor.isLearnedSkill(id)) held++;
-            return held >= Math.max(1, node.need);
-        },
-
-        // What is still missing before this one will be taught, for the "you are
-        // not there yet" line on the sheet. A forbidden working is opened by the
-        // school itself, so it answers with what is still missing from it.
-        openers: function (skillId, actor) {
-            if (this.isForbidden(skillId)) {
-                const school = this.core(getSkillCategory(skillId)).school;
-                return school
-                    .filter(id => !(actor && actor.isLearnedSkill(id)))
-                    .map(id => $dataSkills[id])
-                    .filter(s => s && s.name)
-                    .slice(0, 8);
-            }
-            // Only what is still MISSING: a pupil who already holds two of the
-            // three should read "needs 1 more of: X", not be shown the two they
-            // bought last week.
-            return this.requires(skillId)
-                .filter(id => !(actor && actor.isLearnedSkill(id)))
-                .map(id => $dataSkills[id])
-                .filter(s => s && s.name);
-        },
-
-        // How many of the openers are still wanted: the gate, less what the pupil
-        // already holds. Zero means the skill is standing open.
-        stillWanted: function (skillId, actor) {
-            const node = this._nodeFor(skillId);
-            if (!node || node.forbidden || !node.parents.length) return 0;
-            let held = 0;
-            for (const id of node.parents) if (actor && actor.isLearnedSkill(id)) held++;
-            return Math.max(0, Math.max(1, node.need) - held);
-        },
-
-        invalidate: function () {
-            this._trees = null;
-            this._index = null;
-            this._core = {};
-        },
-
-        // The school, ready to be laid out on the page. Cached with the tree
-        // itself: organising is the expensive half and it is done once.
-        graph: function (category) {
-            const tree = this._organise(category);
-            if (tree.graph) return tree.graph;
-
-            const nodes = tree.order.map(n => ({
-                id: n.id, skill: n.skill, tier: n.tier,
-                grove: n.grove, seat: n.seat, forbidden: n.forbidden,
-                parent: n.parents.length ? n.parents[0] : 0, children: n.children.slice()
-            }));
-            const placed = {};
-            for (const n of nodes) placed[n.id] = n;
-
-            // Every edge once, drawn from the hanging: a line on the page is
-            // always a skill and the one skill it asks for.
-            const edges = [];
-            for (const n of tree.order) {
-                for (const parent of n.parents) {
-                    if (placed[parent] && placed[n.id]) edges.push([placed[parent], placed[n.id]]);
-                }
-            }
-
-            tree.graph = {
-                nodes: nodes, edges: edges,
-                tiers: tree.tiers.length, groves: tree.groves.length
-            };
-            return tree.graph;
-        }
-    };
-
-    window.SkillGraph = SkillGraph;
-    //=============================================================================
-    // The page of groves
-    //
-    // A school is not a shelf of names and it is not a ball of spheres either.
-    // It is a PAGE: a handful of small trees standing side by side in the dark,
-    // each one a strand of the school, each drawn flat so that every line on it
-    // can be followed with a finger. A skill is a little lit orb, coloured by
-    // what it is (its school's own colour, taken over by its element where it
-    // has one), and the one line under it runs to the single skill it asks for.
-    //
-    // Nothing crosses. A grove is a true tree and a tree laid out this way, with
-    // every branch given a strip of the page to itself, cannot tangle; and two
-    // groves never touch at all, because the groves are packed as separate
-    // boxes with clear sky between them.
-    //
-    // The page is read by dragging it about and coming in and out with the
-    // wheel. The school on the page is changed with the pager on the header bar
-    // or by walking off the edge of the page left or right, and every school
-    // keeps the cursor and the framing it was left at.
-    //=============================================================================
-
-    const TAU = Math.PI * 2;
-
-    // The page is laid out in CELLS, and a cell is a good deal wider than an
-    // orb: the orbs are meant to be small marks on a legible drawing, not the
-    // drawing itself.
-    const SKY_NODE_R = 0.26;      // orb radius, in cells
-    const SKY_COL = 1.9;          // sideways step between two neighbouring orbs
-    const SKY_ROW = 2.5;          // step from a skill to the one it hangs from
-    const SKY_GROVE_GAP = 3.4;    // clear sky between one grove and the next
-    const SKY_PAD = 2.6;          // empty page kept outside the outermost orb
-
-    // What an orb is allowed to measure on screen, whatever the zoom: small
-    // enough that the page reads as a diagram at every distance.
-    const SKY_ORB_MIN_PX = 2.2;
-    const SKY_ORB_MAX_PX = 9;
-
-    // Framing. Zoom is a factor on the framing that would hold the whole page:
-    // 1 is the school seen whole, more is closer in.
-    const ATLAS_ZOOM_MIN = 0.5;
-    const ATLAS_ZOOM_MAX = 6;
-    const ATLAS_ZOOM_STEP = 1.12;   // one press of the + rule
-    const ATLAS_WHEEL_STEP = 1.08;  // one notch of the wheel
-    const ATLAS_ZOOM_DEFAULT = 2.2; // what a school opens at: close enough to read
-    const ATLAS_ZOOM_WHOLE = 1;     // what Shift steps back to
-    const ATLAS_LABEL_ZOOM = 0.9;   // below this only the cursor is named
-    const ATLAS_LABEL_MAX = 40;     // most names written at once
-
-    //-------------------------------------------------------------------------
-    // What colour a school burns.
-    //
-    // hue is the school's own colour on the 0..360 wheel; a skill with an
-    // element of its own takes that element's colour instead, so one school is
-    // read as one family of colours with its elemental workings standing out
-    // of it. A school with no entry here takes a colour off its own name, which
-    // is what a hand-made school gets.
-    //-------------------------------------------------------------------------
-    const SKY_SCHOOLS = {
-        MartialArts:       { hue:  18 },
-        Convokation:       { hue: 285 },
-        HolyMagic:         { hue:  47 },
-        ForbiddenMagic:    { hue: 332 },
-        Bestial:           { hue:  28 },
-        MetaMagic:         { hue: 196 },
-        Leadership:        { hue:  42 },
-        Geomancy:          { hue:  78 },
-        Swordsmanship:     { hue: 208 },
-        Pyromancy:         { hue:  12 },
-        ChaosMagic:        { hue: 312 },
-        PsychicAbilities:  { hue: 272 },
-        Tactical:          { hue: 186 },
-        AstralMagic:       { hue: 254 },
-        Electromancy:      { hue:  54 },
-        Roguery:           { hue: 148 },
-        Aeromancy:         { hue: 172 },
-        Arcanism:          { hue: 232 },
-        Pastoral:          { hue: 104 },
-        Alchemistry:       { hue: 132 },
-        Cryomancy:         { hue: 192 },
-        Performance:       { hue: 322 },
-        Necromancy:        { hue: 266 },
-        StatusMagic:       { hue: 164 },
-        VoidMagic:         { hue: 248 },
-        Cooking:           { hue:  26 },
-        Firearms:          { hue: 204 },
-        Basic:             { hue: 212 },
-        Idromancy:         { hue: 200 },
-        Healing:           { hue: 140 },
-        Dominion:          { hue:  38 },
-        Illusion:          { hue: 292 },
-        Augury:            { hue: 222 },
-        Chronomancy:       { hue:  50 },
-        Technomagical:     { hue: 158 },
-        Mutation:          { hue:  96 },
-        Vocation:          { hue:  34 },
-        Economy:           { hue:  60 },
-        Oneiromancy:       { hue: 300 },
-        Hunting:           { hue:  88 },
-        Fusion:            { hue: 190 }
-    };
-    // The colour an element burns, when a skill has one. Physical is not a
-    // colour of its own: a punch is the colour of the school that taught it.
-    const SKY_ELEMENT_HUE = { 2: 14, 3: 194, 4: 52, 5: 210, 6: 32, 7: 158, 8: 46, 9: 292 };
-
-    const SkillShapes = {
-        // One stable number per name: the starfield behind a school and the
-        // colour of a school with no entry of its own are both drawn from it.
-        hash: function (str) {
-            const s = String(str);
-            let h = 2166136261;
-            for (let i = 0; i < s.length; i++) {
-                h ^= s.charCodeAt(i);
-                h = Math.imul(h, 16777619);
-            }
-            return h >>> 0;
-        },
-
-        // The school's colour. Anything not authored above takes one off its
-        // own name, so a hand-made school is still told apart at a glance.
-        school: function (category) {
-            return SKY_SCHOOLS[category] || { hue: this.hash(category || '') % 360 };
-        },
-
-        schoolNames: function () { return Object.keys(SKY_SCHOOLS); },
-
-        // The colour of one skill: its element where it has one, its school
-        // otherwise, nudged a few degrees by its own id so a tier of fire
-        // spells is a spread of reds rather than one flat red.
-        hueFor: function (skillId, category) {
-            const base = this.school(category).hue;
-            const skill = $dataSkills[skillId];
-            const el = (skill && skill.damage) ? skill.damage.elementId : 0;
-            const hue = (SKY_ELEMENT_HUE[el] !== undefined) ? SKY_ELEMENT_HUE[el] : base;
-            return (hue + ((skillId * 37) % 13) - 6 + 360) % 360;
-        }
-    };
-
-    window.SkillShapes = SkillShapes;
-
-    const SkillAtlas = {
-        _atlas: null,
-        _key: null,
-        // Laid-out figures, kept ACROSS an invalidate and reused whole whenever
-        // the school still holds the same skills in the same places. Teaching a
-        // skill invalidates the atlas (a fused spell could have changed what is
-        // in the book), but it cannot have moved anything: reusing the figure
-        // object is what lets the renderer leave two hundred spheres standing
-        // where they are instead of building them again on every purchase.
-        _figures: {},
-
-        // One school, hung in its own sky. Cached on that school: the figure is
-        // static and only the pupil's colours change, and those are painted on
-        // top of it rather than laid out again.
-        build: function (category) {
-            const name = Array.isArray(category) ? category[0] : category;
-            // The magic level is part of the key: a severed and an unbound world
-            // hang DIFFERENT figures for the same school (the skills of the
-            // wrong nature are not in it), and this cache outlives a world
-            // switch inside one session.
-            const MN = window.MagicNature;
-            const key = String(name || '') + '|' + ((MN && MN.level && MN.level()) || 'normal');
-            if (this._atlas && this._key === key) return this._atlas;
-            const figure = name ? this._figureFor(name, key) : null;
-            const atlas = {
-                circles: figure ? [figure] : [],
-                radius: figure ? figure.radius : 1,
-                width: figure ? figure.width : 1,
-                height: figure ? figure.height : 1,
-                hue: figure ? figure.hue : 210,
-                index: {}
-            };
-            if (figure) for (const node of figure.nodes) atlas.index[node.id] = node;
-            // Consumers compare atlas.category to a plain school name, so the
-            // cache suffix stays out of it.
-            atlas.category = String(name || '');
-            atlas.key = key;
-            this._key = key;
-            this._atlas = atlas;
-            return atlas;
-        },
-
-        invalidate: function () {
-            this._atlas = null;
-            this._key = null;
-        },
-
-        // The page of a school, laid out only if it is not the one already
-        // standing. What the school is made of is the signature: the same skills
-        // on the same groves in the same seats is the same page, whatever else
-        // changed.
-        _figureFor: function (category, key) {
-            const graph = SkillGraph.graph(category);
-            if (!graph || !graph.nodes.length) { delete this._figures[key]; return null; }
-            const sig = graph.nodes.map(n => `${n.id}:${n.grove}:${n.tier}:${n.seat}`).join('|');
-            const kept = this._figures[key];
-            if (kept && kept.sig === sig) return kept.figure;
-            const figure = this._figure(category);
-            if (figure) this._figures[key] = { sig: sig, figure: figure };
-            else delete this._figures[key];
-            return figure;
-        },
-
-        // The school's own page: every grove laid out as a tidy little tree,
-        // then the groves packed side by side with clear sky between them.
-        _figure: function (category) {
-            const graph = SkillGraph.graph(category);
-            if (!graph || !graph.nodes.length) return null;
-
-            const cfg = SkillShapes.school(category);
-            const seed = SkillShapes.hash(category);
-
-            const byId = {};
-            const groves = [];
-            for (const n of graph.nodes) {
-                const g = (groves[n.grove] = groves[n.grove] || { index: n.grove, nodes: [] });
-                const node = {
-                    id: n.id, skill: n.skill, category: category,
-                    tier: n.tier, grove: n.grove, seat: n.seat,
-                    forbidden: !!n.forbidden, parent: n.parent, children: n.children,
-                    x: 0, y: 0, z: 0,
-                    hue: SkillShapes.hueFor(n.id, category),
-                    // filled in each frame by the renderer: the cursor walks the
-                    // page by what is on the screen, not by what is in the data
-                    sx: 0, sy: 0, sd: 0, vis: false
-                };
-                g.nodes.push(node);
-                byId[n.id] = node;
-            }
-
-            const boxes = [];
-            for (const grove of groves) {
-                if (!grove) continue;
-                boxes.push(this._layGrove(grove, byId));
-            }
-            this._packGroves(boxes);
-
-            const nodes = [];
-            for (const grove of groves) if (grove) nodes.push(...grove.nodes);
-
-            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-            for (const n of nodes) {
-                if (n.x < minX) minX = n.x;
-                if (n.x > maxX) maxX = n.x;
-                if (n.y < minY) minY = n.y;
-                if (n.y > maxY) maxY = n.y;
-            }
-            const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
-            for (const n of nodes) { n.x -= cx; n.y -= cy; }
-
-            const edges = [];
-            for (const [a, b] of graph.edges) {
-                if (byId[a.id] && byId[b.id]) edges.push([byId[a.id], byId[b.id]]);
-            }
-
-            const width = (maxX - minX) + SKY_PAD * 2;
-            const height = (maxY - minY) + SKY_PAD * 2;
-            return {
-                category: category, hue: cfg.hue,
-                nodes: nodes, edges: edges,
-                groves: boxes.length, seed: seed,
-                width: width, height: height,
-                radius: Math.hypot(width, height) / 2
-            };
-        },
-
-        // One grove, laid out as a tidy tree. Every leaf takes the next strip of
-        // the page to itself and every skill above sits over the middle of the
-        // strips its own branches took, which is the whole trick: a branch never
-        // reaches into another branch's strip, so no line can cross another.
-        //
-        // The root stands at the foot and the grove grows upwards, so the page
-        // reads the way the climb does.
-        _layGrove: function (grove, byId) {
-            const roots = grove.nodes.filter(n => !n.parent);
-            let cursor = 0;
-            // Walked without recursion: a grove is small, but a school can hold
-            // a great many of them and the stack is not the place to keep them.
-            const place = (root) => {
-                const stack = [{ node: root, opened: false }];
-                while (stack.length) {
-                    const frame = stack[stack.length - 1];
-                    const node = frame.node;
-                    const kids = (node.children || [])
-                        .map(id => byId[id])
-                        .filter(k => k && k.grove === node.grove);
-                    if (!frame.opened) {
-                        frame.opened = true;
-                        node.y = node.tier * SKY_ROW;
-                        if (kids.length) {
-                            for (let i = kids.length - 1; i >= 0; i--) stack.push({ node: kids[i], opened: false });
-                            continue;
-                        }
-                        node.x = cursor * SKY_COL;
-                        cursor++;
-                    } else {
-                        let lo = Infinity, hi = -Infinity;
-                        for (const kid of kids) { lo = Math.min(lo, kid.x); hi = Math.max(hi, kid.x); }
-                        node.x = (lo + hi) / 2;
-                    }
-                    stack.pop();
-                }
-            };
-            for (const root of roots) {
-                if (cursor) cursor += 1;   // a hand's breadth between two trunks
-                place(root);
-            }
-            // A forbidden grove is joined to nothing at all: its workings are
-            // simply dealt out in a row of their own.
-            for (const node of grove.nodes) {
-                if (node.parent || roots.includes(node)) continue;
-                node.y = node.tier * SKY_ROW;
-                node.x = cursor * SKY_COL;
-                cursor++;
-            }
-
-            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-            for (const n of grove.nodes) {
-                if (n.x < minX) minX = n.x;
-                if (n.x > maxX) maxX = n.x;
-                if (n.y < minY) minY = n.y;
-                if (n.y > maxY) maxY = n.y;
-            }
-            for (const n of grove.nodes) { n.x -= minX; n.y -= minY; }
-            return {
-                grove: grove,
-                w: (maxX - minX) + SKY_GROVE_GAP,
-                h: (maxY - minY) + SKY_GROVE_GAP
-            };
-        },
-
-        // Stand the groves in rows across the page, wrapping onto the next row
-        // once a row is as wide as the page wants to be. Every grove keeps its
-        // own box and no box ever overlaps another, so a school of a dozen
-        // groves is a dozen drawings and not one tangle.
-        _packGroves: function (boxes) {
-            if (!boxes.length) return;
-            let area = 0;
-            for (const box of boxes) area += box.w * box.h;
-            // A page a little wider than it is tall, which is the shape of the
-            // window it is read in.
-            const want = Math.max(boxes[0].w, Math.sqrt(area * 16 / 9));
-            let rowX = 0, rowTop = 0, rowH = 0;
-            for (const box of boxes) {
-                if (rowX > 0 && rowX + box.w > want) {
-                    rowTop -= rowH;
-                    rowX = 0;
-                    rowH = 0;
-                }
-                for (const n of box.grove.nodes) {
-                    n.x += rowX;
-                    n.y += rowTop - box.h;
-                }
-                rowX += box.w;
-                rowH = Math.max(rowH, box.h);
-            }
-        }
-    };
-
-    window.SkillAtlas = SkillAtlas;
-
-    //=============================================================================
-    // Window_SkillCategory - Grid Layout
+    // Window_SkillCategory
     //=============================================================================
 
     function Window_SkillCategory() {
@@ -2058,13 +837,13 @@
         const categories = getAllSkillCategories();
         for (const category of categories) {
             let commandName = getCategoryDisplayName(category);
-            if (category !== "All") {   // i18n-ignore: category id
+            if (category !== "All") {
                 if (actorCategoryManager.isPrimary(category)) {
                     commandName += " (3x)";
                 } else if (actorCategoryManager.isSecondary(category)) {
                     commandName += " (1.5x)";
                 } else if (actorCategoryManager.isForeign(category)) {
-                    commandName += ` (${T('SkillMaster.foreignSchool')})`;
+                    commandName += ` (${typeof T === 'function' ? T('SkillMaster.foreignSchool') : 'Foreign'})`;
                 }
             }
             const icon = getCategoryIcon(category);
@@ -2075,20 +854,17 @@
     Window_SkillCategory.prototype.drawItem = function (index) {
         const rect = this.itemRect(index);
         const data = this.commandData(index);
-
-        // Highlight category if any party member knows at least one skill from it
-        const members = $gameParty.members();
+        const members = $gameParty ? $gameParty.members() : [];
         let isSelectedCategory = false;
-        const categorySkills = getSkillsByCategory(data.ext ? data.ext.category : "All");   // i18n-ignore: category id
+        const categorySkills = getSkillsByCategory(data.ext ? data.ext.category : "All");
         for (const actor of members) {
             if (categorySkills.some(s => actor.isLearnedSkill(s.id))) {
                 isSelectedCategory = true;
                 break;
             }
         }
-
         const icon = data && data.ext && data.ext.icon ? data.ext.icon : 245;
-        const iconSize = ImageManager.iconWidth; // 32
+        const iconSize = ImageManager.iconWidth;
         const iconX = rect.x + Math.floor((rect.width - iconSize) / 2);
         const iconY = rect.y + 18;
 
@@ -2097,7 +873,6 @@
         } else {
             this.resetTextColor();
         }
-
         this.drawIcon(icon, iconX, iconY);
         this.contents.fontSize = 18;
         this.drawText(data.name, rect.x, rect.y + 18 + iconSize + 10, rect.width, 'center');
@@ -2111,10 +886,8 @@
 
     Window_SkillCategory.prototype.currentCategory = function () {
         const ext = this.currentExt();
-        if (ext && ext.category) {
-            return ext.category;
-        }
-        return this.currentData() ? this.currentData().name : "All";   // i18n-ignore: category id
+        if (ext && ext.category) return ext.category;
+        return this.currentData() ? this.currentData().name : "All";
     };
 
     //=============================================================================
@@ -2130,7 +903,7 @@
 
     Window_SkillMasterList.prototype.initialize = function (rect) {
         Window_Selectable.prototype.initialize.call(this, rect);
-        this._category = "All";   // i18n-ignore: category id
+        this._category = "All";
         this._data = [];
         this.refresh();
     };
@@ -2177,14 +950,12 @@
         const skill = this._data[index];
         if (skill) {
             const rect = this.itemLineRect(index);
-            // Green if any party member already knows this skill
-            const isLearned = $gameParty.members().some(a => a.isLearnedSkill(skill.id));
+            const isLearned = $gameParty && $gameParty.members().some(a => a.isLearnedSkill(skill.id));
             if (isLearned) {
                 this.changeTextColor(ColorManager.textColor(3));
             } else {
                 this.resetTextColor();
             }
-
             this.drawItemName(skill, rect.x, rect.y, rect.width);
             this.resetTextColor();
         }
@@ -2194,12 +965,10 @@
         if (skill) {
             const iconBoxWidth = ImageManager.iconWidth + 4;
             this.drawIcon(skill.iconIndex, x, y + 2);
-
             let skillName = skill.name;
             if (skillName.length > 20) {
                 skillName = skillName.substring(0, 20) + "...";
             }
-
             this.drawText(skillName, x + iconBoxWidth, y, width - iconBoxWidth);
         }
     };
@@ -2242,18 +1011,15 @@
 
     Window_SkillDetail.prototype.buildActions = function () {
         this._actions = [];
-        if (!this._skill) return;
-
+        if (!this._skill || typeof $gameParty === 'undefined') return;
         const knowledge = $gameSystem.getKnowledge();
-
-        // One "Learn" action per party member who doesn't already know the skill
         for (const actor of $gameParty.members()) {
             const actorId = actor.actorId();
             if (actor.isLearnedSkill(this._skill.id)) continue;
             const cost = $gameSystem.getSkillKnowledgeCost(this._skill.id, actorId);
             const canAfford = knowledge >= cost;
             this._actions.push({
-                name: T('SkillMaster.teachActor', { actor: actor.name(), cost: cost }),
+                name: typeof T === 'function' ? T('SkillMaster.teachActor', { actor: actor.name(), cost: cost }) : `Teach ${actor.name()} (${cost} KP)`,
                 symbol: 'learn',
                 enabled: canAfford,
                 actorId: actorId,
@@ -2275,7 +1041,6 @@
 
     Window_SkillDetail.prototype.update = function () {
         Window_Selectable.prototype.update.call(this);
-
         if (this._showMessage && this._messageTimer > 0) {
             this._messageTimer--;
             if (this._messageTimer === 0) {
@@ -2295,7 +1060,7 @@
     Window_SkillDetail.prototype.refresh = function () {
         this.contents.clear();
         if (!this._skill) {
-            const text = T('SkillMaster.selectSkillForDetails');
+            const text = typeof T === 'function' ? T('SkillMaster.selectSkillForDetails') : "Select a skill";
             this.drawText(text, 0, this.contentsHeight() / 2 - this.lineHeight(), this.contentsWidth(), "center");
             return;
         }
@@ -2305,14 +1070,12 @@
         let leftY = padding;
         let rightY = padding;
 
-        // LEFT COLUMN
         this.contents.fontSize = 32;
         this.drawIcon(this._skill.iconIndex || 0, padding, leftY);
-        this.drawText(this._skill.name || T('SkillMaster.unknownSkill'), padding + ImageManager.iconWidth + 8, leftY, halfWidth - ImageManager.iconWidth - 8, "left");
+        this.drawText(this._skill.name || "Unknown", padding + ImageManager.iconWidth + 8, leftY, halfWidth - ImageManager.iconWidth - 8, "left");
         this.resetFontSize();
         leftY += 42;
 
-        // Show message if any
         if (this._showMessage) {
             this.changeTextColor(ColorManager.textColor(14));
             this.drawText("✓ " + this._messageText, padding, leftY, halfWidth);
@@ -2324,11 +1087,10 @@
         this.drawHorzLine(leftY, padding, halfWidth);
         leftY += 15;
 
-        // Costs
         this.contents.fontSize = 24;
         if (this._skill.mpCost > 0) {
             this.changeTextColor(ColorManager.systemColor());
-            this.drawText(T('SkillMaster.mpLabel'), padding, leftY, 80);
+            this.drawText(typeof T === 'function' ? T('SkillMaster.mpLabel') : 'MP', padding, leftY, 80);
             this.resetTextColor();
             this.drawText(this._skill.mpCost, padding + 80, leftY, halfWidth - 80, "right");
             leftY += this.lineHeight();
@@ -2336,7 +1098,7 @@
 
         if (this._skill.tpCost > 0) {
             this.changeTextColor(ColorManager.systemColor());
-            this.drawText(T('SkillMaster.apLabel'), padding, leftY, 80);
+            this.drawText(typeof T === 'function' ? T('SkillMaster.apLabel') : 'AP', padding, leftY, 80);
             this.resetTextColor();
             this.drawText(this._skill.tpCost, padding + 80, leftY, halfWidth - 80, "right");
             leftY += this.lineHeight();
@@ -2347,11 +1109,10 @@
         this.drawHorzLine(leftY, padding, halfWidth);
         leftY += 20;
 
-        // Scale
         if (this._skill.damage && this._skill.damage.formula) {
             const isItalian = ConfigManager.language === 'it';
             this.changeTextColor(ColorManager.systemColor());
-            this.drawText(T('SkillMaster.scale'), padding, leftY, halfWidth);
+            this.drawText(typeof T === 'function' ? T('SkillMaster.scale') : 'Scaling', padding, leftY, halfWidth);
             this.resetTextColor();
             leftY += this.lineHeight();
 
@@ -2362,11 +1123,10 @@
             leftY += this.lineHeight() + 10;
         }
 
-        // Effect
         const damageText = this.getDamageTypeText(this._skill);
         if (damageText) {
             this.changeTextColor(ColorManager.systemColor());
-            this.drawText(T('SkillMaster.effectLabel'), padding, leftY, halfWidth);
+            this.drawText(typeof T === 'function' ? T('SkillMaster.effectLabel') : 'Effect', padding, leftY, halfWidth);
             this.resetTextColor();
             leftY += this.lineHeight();
 
@@ -2377,22 +1137,17 @@
             }
         }
 
-        // RIGHT COLUMN
         const rightX = padding * 2 + halfWidth;
-
-        // Description
         this.changeTextColor(ColorManager.systemColor());
-        this.drawText(T('SkillMaster.descriptionLabel'), rightX, rightY, halfWidth);
+        this.drawText(typeof T === 'function' ? T('SkillMaster.descriptionLabel') : 'Description', rightX, rightY, halfWidth);
         this.resetTextColor();
         rightY += this.lineHeight();
 
         this.drawHorzLine(rightY, rightX, halfWidth);
         rightY += 10;
 
-        let description = this._skill.description || T('SkillMaster.noDescription');
-        if (window.translateText) {
-            description = window.translateText(description);
-        }
+        let description = this._skill.description || (typeof T === 'function' ? T('SkillMaster.noDescription') : 'No description');
+        if (window.translateText) description = window.translateText(description);
 
         this.resetTextColor();
         const descLines = this.wrapText(description, halfWidth - 10);
@@ -2402,13 +1157,12 @@
         }
         rightY += 10;
 
-        // Knowledge balance
         this.drawHorzLine(rightY, rightX, halfWidth);
         rightY += 10;
 
         const knowledge = $gameSystem.getKnowledge();
         this.changeTextColor(ColorManager.systemColor());
-        this.drawText(T('SkillMaster.knowledgeLabel'), rightX, rightY, halfWidth * 0.6);
+        this.drawText(typeof T === 'function' ? T('SkillMaster.knowledgeLabel') : 'Knowledge', rightX, rightY, halfWidth * 0.6);
         this.resetTextColor();
         this.changeTextColor(ColorManager.textColor(knowledge > 0 ? 3 : 7));
         this.contents.fontSize = 22;
@@ -2417,46 +1171,41 @@
         this.resetTextColor();
         rightY += this.lineHeight() + 6;
 
-        // Per-actor status
-        for (const actor of $gameParty.members()) {
-            const hasSkill = actor.isLearnedSkill(this._skill.id);
-            const cost = $gameSystem.getSkillKnowledgeCost(this._skill.id, actor.actorId());
-
-            this.contents.fontSize = 20;
-            if (hasSkill) {
-                this.changeTextColor(ColorManager.textColor(3));
-                this.drawText(actor.name() + " ✓", rightX, rightY, halfWidth);
-            } else {
+        if (typeof $gameParty !== 'undefined') {
+            for (const actor of $gameParty.members()) {
+                const hasSkill = actor.isLearnedSkill(this._skill.id);
+                const cost = $gameSystem.getSkillKnowledgeCost(this._skill.id, actor.actorId());
+                this.contents.fontSize = 20;
+                if (hasSkill) {
+                    this.changeTextColor(ColorManager.textColor(3));
+                    this.drawText(actor.name() + " ✓", rightX, rightY, halfWidth);
+                } else {
+                    this.resetTextColor();
+                    this.drawText(actor.name(), rightX, rightY, halfWidth * 0.55);
+                    this.changeTextColor(knowledge >= cost ? ColorManager.textColor(1) : ColorManager.textColor(7));
+                    this.drawText(`${cost} KP`, rightX + halfWidth * 0.55, rightY, halfWidth * 0.45, 'right');
+                }
                 this.resetTextColor();
-                this.drawText(actor.name(), rightX, rightY, halfWidth * 0.55);
-                this.changeTextColor(knowledge >= cost ? ColorManager.textColor(1) : ColorManager.textColor(7));
-                this.drawText(`${cost} KP`, rightX + halfWidth * 0.55, rightY, halfWidth * 0.45, 'right');
+                this.resetFontSize();
+                rightY += 24;
             }
-            this.resetTextColor();
-            this.resetFontSize();
-            rightY += 24;
         }
 
-        // Draw actions at bottom
         this.drawAllItems();
     };
 
     Window_SkillDetail.prototype.drawItem = function (index) {
         const action = this._actions[index];
         if (!action) return;
-
         const rect = this.itemRect(index);
         const isSelected = this.index() === index;
-
         if (isSelected) {
             this.contents.fillRect(rect.x, rect.y, rect.width, rect.height, ColorManager.itemBackColor1());
         }
-
         this.resetTextColor();
         if (!action.enabled) {
             this.changeTextColor(ColorManager.dimColor1());
         }
-
         this.drawText("▶ " + action.name, rect.x + 10, rect.y, rect.width - 10);
         this.resetTextColor();
     };
@@ -2465,11 +1214,9 @@
         const words = text.split(' ');
         const lines = [];
         let currentLine = '';
-
         for (let i = 0; i < words.length; i++) {
             const testLine = currentLine ? currentLine + ' ' + words[i] : words[i];
             const testWidth = this.textWidth(testLine);
-
             if (testWidth > maxWidth && currentLine) {
                 lines.push(currentLine);
                 currentLine = words[i];
@@ -2477,11 +1224,7 @@
                 currentLine = testLine;
             }
         }
-
-        if (currentLine) {
-            lines.push(currentLine);
-        }
-
+        if (currentLine) lines.push(currentLine);
         return lines;
     };
 
@@ -2494,14 +1237,11 @@
             'a.mdf': _si18n("M.DEF"),
             'a.luk': _si18n("LUCK")
         };
-
         let mainStat = null;
         let maxMultiplier = 0;
-
         for (const [stat, name] of Object.entries(statNames)) {
             const regex = new RegExp(stat.replace('.', '\\.') + '\\s*\\*\\s*([\\d.]+)', 'i');
             const match = formula.match(regex);
-
             if (match) {
                 const multiplier = parseFloat(match[1]);
                 if (multiplier > maxMultiplier) {
@@ -2509,70 +1249,41 @@
                     mainStat = name;
                 }
             } else if (formula.includes(stat)) {
-                if (maxMultiplier === 0) {
-                    mainStat = name;
-                }
+                if (maxMultiplier === 0) mainStat = name;
             }
         }
-
         if (!mainStat) return formula;
-
         let grade = 'F';
-        if (maxMultiplier === 0) {
-            grade = 'F';
-        } else if (maxMultiplier < 1) {
-            grade = 'F';
-        } else if (maxMultiplier < 2) {
-            grade = 'E';
-        } else if (maxMultiplier < 3) {
-            grade = 'D';
-        } else if (maxMultiplier < 5) {
-            grade = 'C';
-        } else if (maxMultiplier < 7) {
-            grade = 'B';
-        } else if (maxMultiplier < 9) {
-            grade = 'A';
-        } else {
-            grade = 'S';
-        }
-
+        if (maxMultiplier === 0 || maxMultiplier < 1) grade = 'F';
+        else if (maxMultiplier < 2) grade = 'E';
+        else if (maxMultiplier < 3) grade = 'D';
+        else if (maxMultiplier < 5) grade = 'C';
+        else if (maxMultiplier < 7) grade = 'B';
+        else if (maxMultiplier < 9) grade = 'A';
+        else grade = 'S';
         return `${mainStat} (${grade})`;
     };
 
     Window_SkillDetail.prototype.getDamageTypeText = function (skill) {
-        const isItalian = ConfigManager.language === 'it';
         const damage = skill.damage;
         let text = "";
+        if (damage.type === 1) text = typeof T === 'function' ? T('SkillMaster.hpDamage') : 'HP Damage';
+        else if (damage.type === 2) text = typeof T === 'function' ? T('SkillMaster.mpDamage') : 'MP Damage';
+        else if (damage.type === 3) text = typeof T === 'function' ? T('SkillMaster.hpRecovery') : 'HP Recovery';
+        else if (damage.type === 4) text = typeof T === 'function' ? T('SkillMaster.mpRecovery') : 'MP Recovery';
+        else if (damage.type === 5) text = typeof T === 'function' ? T('SkillMaster.hpDrain') : 'HP Drain';
+        else if (damage.type === 6) text = typeof T === 'function' ? T('SkillMaster.mpDrain') : 'MP Drain';
 
-        if (damage.type === 1) {
-            text = T('SkillMaster.hpDamage');
-        } else if (damage.type === 2) {
-            text = T('SkillMaster.mpDamage');
-        } else if (damage.type === 3) {
-            text = T('SkillMaster.hpRecovery');
-        } else if (damage.type === 4) {
-            text = T('SkillMaster.mpRecovery');
-        } else if (damage.type === 5) {
-            text = T('SkillMaster.hpDrain');
-        } else if (damage.type === 6) {
-            text = T('SkillMaster.mpDrain');
-        }
+        if (damage.variance > 0 && text) text += ` (±${damage.variance}%)`;
 
-        if (damage.variance > 0 && text) {
-            text += ` (±${damage.variance}%)`;
-        }
-
-        const effects = skill.effects;
+        const effects = skill.effects || [];
         const buffEffects = effects.filter(e => e.code === 31 || e.code === 32);
         if (buffEffects.length > 0) {
             const buffTexts = buffEffects.map(e => {
                 const paramKeys = ["HP", "MP", "ATT", "DEF", "M.ATT", "M.DEF", "AGILITY", "LUCK"];
                 const key = paramKeys[e.dataId];
                 const paramName = key ? _si18n(key) : TextManager.param(e.dataId);
-
-                const type = e.code === 31 ?
-                    (T('SkillMaster.buff')) :
-                    (T('SkillMaster.debuff'));
+                const type = e.code === 31 ? (typeof T === 'function' ? T('SkillMaster.buff') : 'Buff') : (typeof T === 'function' ? T('SkillMaster.debuff') : 'Debuff');
                 return `${type} ${paramName}`;
             });
             if (text) text += ", ";
@@ -2583,13 +1294,12 @@
         if (stateEffects.length > 0) {
             const stateTexts = stateEffects.map(e => {
                 const state = $dataStates[e.dataId];
-                return `${state ? state.name : (T('SkillMaster.state'))}`;
+                return `${state ? state.name : (typeof T === 'function' ? T('SkillMaster.state') : 'State')}`;
             });
             if (text) text += ", ";
             text += stateTexts.join(", ");
         }
-
-        return text || (T('SkillMaster.none'));
+        return text || (typeof T === 'function' ? T('SkillMaster.none') : 'None');
     };
 
     Window_SkillDetail.prototype.drawHorzLine = function (y, x, width) {
@@ -2619,8 +1329,7 @@
     };
 
     //=============================================================================
-    // Window_ActorSelect - Pick a party member for skill training
-    // Uses drawActorFace which is overridden by CustomBustFaceSystemjs to show busts
+    // Window_ActorSelect
     //=============================================================================
 
     function Window_ActorSelect() {
@@ -2639,7 +1348,7 @@
 
     Window_ActorSelect.prototype.setSkill = function (skill) {
         this._skill = skill;
-        this._actors = $gameParty.members();
+        this._actors = $gameParty ? $gameParty.members() : [];
         this.refresh();
         this.select(0);
     };
@@ -2691,10 +1400,10 @@
         this.contents.fontSize = 18;
         if (hasSkill) {
             this.changeTextColor(ColorManager.textColor(3));
-            this.drawText(T('SkillMaster.learnedMark'), textX, statusY, textW);
+            this.drawText(typeof T === 'function' ? T('SkillMaster.learnedMark') : 'Learned', textX, statusY, textW);
         } else {
             this.changeTextColor(canAfford ? ColorManager.textColor(1) : ColorManager.textColor(7));
-            this.drawText(T('SkillMaster.costKp', { cost: cost }), textX, statusY, textW);
+            this.drawText(typeof T === 'function' ? T('SkillMaster.costKp', { cost: cost }) : `${cost} KP`, textX, statusY, textW);
         }
         this.resetTextColor();
         this.contents.fontSize = $gameSystem.mainFontSize();
@@ -2706,657 +1415,859 @@
     };
 
     //=============================================================================
-    // Scene_SkillEncyclopedia - Unified Interface (Premium D&D Spread)
+    // Plugin Commands & Menu Integration
     //=============================================================================
 
-    // Number of columns used by the category selection grid (full-page spread).
-    // Number of columns used by each category page (Skills on the left, Magic on the right).
-    const CATEGORY_PAGE_COLS = 2;
-    // Number of columns used by the per-category skill grid (left page of the split spread).
-    const SKILL_GRID_COLS = 2;
+    const registerCommands = (name) => {
+        PluginManager.registerCommand(name, "openSkillEncyclopedia", () => {
+            if (window.Scene_SkillEncyclopedia) SceneManager.push(window.Scene_SkillEncyclopedia);
+        });
+        PluginManager.registerCommand(name, "openEncyclopedia", () => {
+            if (window.Scene_SkillEncyclopedia) SceneManager.push(window.Scene_SkillEncyclopedia);
+        });
+        PluginManager.registerCommand(name, "openSkillSystem", () => {
+            if (window.Scene_SkillEncyclopedia) SceneManager.push(window.Scene_SkillEncyclopedia);
+        });
+        PluginManager.registerCommand(name, "openWithSkill", args => {
+            const skillId = Number(args.skillId || 0);
+            $gameVariables.setValue(variableId, skillId);
+            if (window.Scene_SkillEncyclopedia) SceneManager.push(window.Scene_SkillEncyclopedia);
+        });
+        PluginManager.registerCommand(name, "increaseSkillProgress", args => {
+            const amount = Number(args.amount || 1);
+            $gameSystem.addKnowledge(amount);
+            window.skipLocalization = true;
+            if (typeof T === 'function') {
+                $gameMessage.add(T('SkillMaster.knowledgeGained', {
+                    amount: amount, total: $gameSystem.getKnowledge(),
+                }));
+            }
+            window.skipLocalization = false;
+        });
+    };
 
-    // Pupils offered by the companion switcher. Matches the Skills scene, which
-    // lists every party member (reserves included) rather than the battle party.
-    function getSwitchableMembers() {
-        return $gameParty.allMembers();
+    registerCommands(pluginName);
+    registerCommands(oldPluginName);
+    registerCommands("CharacterCreation/SkillMaster");
+
+    if (addToMenu) {
+        const _Window_MenuCommand_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
+        Window_MenuCommand.prototype.addOriginalCommands = function () {
+            _Window_MenuCommand_addOriginalCommands.call(this);
+            const cardMode = window.isCardCombatMode ? window.isCardCombatMode() : ($gameSwitches ? $gameSwitches.value(45) : false);
+            if (!cardMode) {
+                const label = typeof T === 'function' ? T('SkillMaster.training') : encyclopediaCommand;
+                this.addCommand(label, 'skillEncyclopedia', true, 77);
+            }
+        };
+
+        const _Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
+        Scene_Menu.prototype.createCommandWindow = function () {
+            _Scene_Menu_createCommandWindow.call(this);
+            this._commandWindow.setHandler('skillEncyclopedia', () => {
+                if (window.Scene_SkillEncyclopedia) SceneManager.push(window.Scene_SkillEncyclopedia);
+            });
+        };
     }
 
     function Scene_SkillEncyclopedia() {
         this.initialize(...arguments);
     }
-
     Scene_SkillEncyclopedia.prototype = Object.create(Scene_MenuBase.prototype);
     Scene_SkillEncyclopedia.prototype.constructor = Scene_SkillEncyclopedia;
 
-    Scene_SkillEncyclopedia.prototype.initialize = function () {
-        Scene_MenuBase.prototype.initialize.call(this);
-        this._viewMode = 'category';
-        this._preselectedSkillId = $gameVariables.value(variableId);
-        this.handlePreselection();
+    // Export classes globally
+    window.Scene_SkillEncyclopedia = Scene_SkillEncyclopedia;
+    window.Window_SkillCategory = Window_SkillCategory;
+    window.Window_SkillMasterList = Window_SkillMasterList;
+    window.Window_SkillDetail = Window_SkillDetail;
+    window.Window_ActorSelect = Window_ActorSelect;
+
+})();
+
+
+//=============================================================================
+// Module: SkillMasterGraph.js
+//=============================================================================
+/*:
+ * @target MZ
+ * @plugindesc v4.0.0 SkillMaster - Self-organizing Skill Graph and 2D Atlas layout calculations.
+ * @author Omni-Lex
+ */
+
+(() => {
+    'use strict';
+
+    window.SkillMaster = window.SkillMaster || {};
+
+    const GROVE_MAX = 20;
+    const GROVE_MIN = 4;
+    const GROVE_FANOUT = 3;
+    const FUSION_CATEGORY = 'Fusion';
+    const ROLE_RE = /<role:\s*([^>]+)>/i;
+
+    const SKY_SCHOOLS = {
+        MartialArts:       { hue:  18 },
+        Convokation:       { hue: 285 },
+        HolyMagic:         { hue:  47 },
+        ForbiddenMagic:    { hue: 332 },
+        Bestial:           { hue:  28 },
+        MetaMagic:         { hue: 196 },
+        Leadership:        { hue:  42 },
+        Geomancy:          { hue:  78 },
+        Swordsmanship:     { hue: 208 },
+        Pyromancy:         { hue:  12 },
+        ChaosMagic:        { hue: 312 },
+        PsychicAbilities:  { hue: 272 },
+        Tactical:          { hue: 186 },
+        AstralMagic:       { hue: 254 },
+        Electromancy:      { hue:  54 },
+        Roguery:           { hue: 148 },
+        Aeromancy:         { hue: 172 },
+        Arcanism:          { hue: 232 },
+        Pastoral:          { hue: 104 },
+        Alchemistry:       { hue: 132 },
+        Cryomancy:         { hue: 192 },
+        Performance:       { hue: 322 },
+        Necromancy:        { hue: 266 },
+        StatusMagic:       { hue: 164 },
+        VoidMagic:         { hue: 248 },
+        Cooking:           { hue:  26 },
+        Firearms:          { hue: 204 },
+        Basic:             { hue: 212 },
+        Idromancy:         { hue: 200 },
+        Healing:           { hue: 140 },
+        Dominion:          { hue:  38 },
+        Illusion:          { hue: 292 },
+        Augury:            { hue: 222 },
+        Chronomancy:       { hue:  50 },
+        Technomagical:     { hue: 158 },
+        Mutation:          { hue:  96 },
+        Vocation:          { hue:  34 },
+        Economy:           { hue:  60 },
+        Oneiromancy:       { hue: 300 },
+        Hunting:           { hue:  88 },
+        Fusion:            { hue: 190 }
     };
 
-    Scene_SkillEncyclopedia.prototype.handlePreselection = function () {
-        this._categoryPane = 0;            // 0 = Skills (left), 1 = Magic (right)
-        this._selectedCategoryIndex = 0;
-        this._selectedSkillIndex = 0;
-        this._selectedActionIndex = 0;
-        // Where the cursor stands on the circle, which is a skill rather than an
-        // index: the circle is a figure, not a list, and the cursor walks it.
-        this._focusSkillId = 0;
-        this._atlasZoom = 0;
-        // The school on the page, and what every other school was left at.
-        this._atlasCategory = null;
-        this._atlasMemory = {};
-        // True when the cursor has walked off the bottom of the Magic grid onto
-        // the Fuse Spells button, which is a focus target of its own.
-        this._categoryFuseFocused = false;
+    const SKY_ELEMENT_HUE = { 2: 14, 3: 194, 4: 52, 5: 210, 6: 32, 7: 158, 8: 46, 9: 292 };
 
-        // The chosen pupil: every skill taught from this scene goes to this actor.
-        const leader = $gameParty.leader();
-        this._teachActorId = leader ? leader.actorId() : 1;
-        // The browsable category lists are the pupil's, so the manager has to know
-        // who the pupil is before anything reads them.
-        actorCategoryManager.setActor(this._teachActorId);
+    const SkillShapes = {
+        hash: function (str) {
+            const s = String(str);
+            let h = 2166136261;
+            for (let i = 0; i < s.length; i++) {
+                h ^= s.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            return h >>> 0;
+        },
 
-        if (this._preselectedSkillId > 0) {
-            const skillId = this._preselectedSkillId;
+        school: function (category) {
+            return SKY_SCHOOLS[category] || { hue: this.hash(category || '') % 360 };
+        },
+
+        schoolNames: function () {
+            return Object.keys(SKY_SCHOOLS);
+        },
+
+        hueFor: function (skillId, category) {
+            const base = this.school(category).hue;
             const skill = $dataSkills[skillId];
-            if (skill) {
-                const category = getSkillCategory(skillId);
-                if (category) {
-                    this._selectedCategory = category;
-                    const split = getSplitSkillCategories();
-                    const pane = getCategoryType(category) === 'Magic' ? 1 : 0;   // i18n-ignore: category id
-                    const list = pane === 1 ? split.Magic : split.Skill;
-                    const catIdx = list.indexOf(category);
-                    if (catIdx !== -1) {
-                        this._categoryPane = pane;
-                        this._selectedCategoryIndex = catIdx;
-                        const skills = getSkillsByCategory(category);
-                        const skillIdx = skills.findIndex(s => s.id === skillId);
-                        if (skillIdx !== -1) {
-                            this._selectedSkillIndex = skillIdx;
-                            this._focusSkillId = skillId;
-                            this._viewMode = 'detail';
-                            this._selectedActionIndex = 0;
-                            this._preselectedSkillId = 0;
-                            return;
-                        }
-                    }
-                }
-            }
-            this._preselectedSkillId = 0;
-        }
-
-        // The pupil defaults to the party leader (first member); the persistent
-        // top switcher lets you change who is learning without a dedicated step.
-    };
-
-    Scene_SkillEncyclopedia.prototype.getTeachActor = function () {
-        return $gameActors.actor(this._teachActorId) || $gameParty.leader();
-    };
-
-    Scene_SkillEncyclopedia.prototype.create = function () {
-        Scene_MenuBase.prototype.create.call(this);
-        injectAllCustomSpells(); // make sure fused spells are attached before we draw
-        this.createCategoryWindow();
-        this.createSkillListWindow();
-        this.createSkillDetailWindow();
-        this.createUISkillDOM();
-        window.CharSwitcher.installTabKey(this, (dir) => {
-            if (this._viewMode !== 'spellEditor' && this._viewMode !== 'preview') this.cycleTeachActor(dir);
-        });
-    };
-
-    Scene_SkillEncyclopedia.prototype.terminate = function () {
-        Scene_MenuBase.prototype.terminate.call(this);
-        if (window.CCNav) window.CCNav.detach(this);
-        window.CharSwitcher.removeTabKey(this);
-        AnimPreview.dispose();
-        // The sky owns a WebGL context of its own; it has to go back before the
-        // scene does, or the browser force-loses the game's own canvas instead.
-        AtlasSky.dispose();
-        if (this._dndContainer) {
-            const container = this._dndContainer;
-            container.style.transition = "opacity 0.2s ease-out";
-            container.style.opacity = "0";
-            container.style.pointerEvents = "none";
-            setTimeout(() => {
-                if (container && container.parentNode) {
-                    container.parentNode.removeChild(container);
-                }
-            }, 200);
-            this._dndContainer = null;
+            const el = (skill && skill.damage) ? skill.damage.elementId : 0;
+            const hue = (SKY_ELEMENT_HUE[el] !== undefined) ? SKY_ELEMENT_HUE[el] : base;
+            return (hue + ((skillId * 37) % 13) - 6 + 360) % 360;
         }
     };
 
-    Scene_SkillEncyclopedia.prototype.createCategoryWindow = function () {
-        this._categoryWindow = new Window_SkillCategory(new Rectangle(0, 0, 100, 100));
-        this._categoryWindow.visible = false;
-        this.addWindow(this._categoryWindow);
-    };
+    window.SkillShapes = SkillShapes;
+    SkillMaster.SkillShapes = SkillShapes;
 
-    Scene_SkillEncyclopedia.prototype.createSkillListWindow = function () {
-        this._skillListWindow = new Window_SkillMasterList(new Rectangle(0, 0, 100, 100));
-        this._skillListWindow.visible = false;
-        this.addWindow(this._skillListWindow);
-    };
+    const SkillGraph = {
+        _trees: null,
+        _index: null,
 
-    Scene_SkillEncyclopedia.prototype.createSkillDetailWindow = function () {
-        this._skillDetailWindow = new Window_SkillDetail(new Rectangle(0, 0, 100, 100));
-        this._skillDetailWindow.visible = false;
-        this.addWindow(this._skillDetailWindow);
-    };
+        _reset: function () {
+            if (!this._trees) { this._trees = {}; this._index = {}; }
+        },
 
-    Scene_SkillEncyclopedia.prototype.createUISkillDOM = function () {
-        // Styles for the shared skill inspect block (.inspect-*) rendered on the
-        // right page; owned by CategorizedBattleSkills' SkillDetails service.
-
-        this._dndContainer = document.createElement('div');
-        this._dndContainer.id = 'menu-container';
-        this._dndContainer.style.position = 'absolute';
-        this._dndContainer.style.top = '0';
-        this._dndContainer.style.left = '0';
-        this._dndContainer.style.width = '100%';
-        this._dndContainer.style.height = '100%';
-        this._dndContainer.style.zIndex = '1000';
-        this._dndContainer.style.background = 'radial-gradient(circle, var(--accent-bronze-translucent-78) 0%, var(--shadow-heavy) 100%)';
-        this._dndContainer.style.display = 'flex';
-        this._dndContainer.style.justifyContent = 'center';
-        this._dndContainer.style.alignItems = 'center';
-        this._dndContainer.style.fontFamily = "'Lora', serif";
-        this._dndContainer.style.color = 'var(--bg-bg-alt-25-translucent-8)';
-        this._dndContainer.style.boxSizing = 'border-box';
-        this._dndContainer.style.opacity = '0';
-        this._dndContainer.style.transition = 'opacity 0.22s ease-out';
-
-        // Static frame layout matching Sepia golden split spread
-        this._dndContainer.innerHTML = `
-            <div class="book-spread">
-                <div class="spine-divider"></div>
-                <div class="left-page" style="position:relative">
-                    <div id="left-page-content" style="display:flex; flex-direction:column; flex:1; min-height:0"></div>
-                </div>
-                <div class="right-page" style="position:relative">
-                    <div class="companion-switcher" id="skillmaster-companion-row" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:10px"></div>
-                    <div id="right-page-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0"></div>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(this._dndContainer);
-
-        // Each view of the encyclopedia walks its own cards, but the controls
-        // around them - the atlas pager and its zoom, the Magic Systems shelf
-        // and its nodes, the rename/delete buttons a fused spell carries - are
-        // not cards, and the view cursors never reach them. The shared focus
-        // ring does. See CharacterCreationNav.js.
-        if (window.CCNav) window.CCNav.attach(this, this._dndContainer);
-
-        // Wheel scroll on category/skills list regardless of focus. On the sky
-        // the wheel brings the camera in and out instead.
-        this._dndContainer.addEventListener("wheel", (e) => {
-            e.preventDefault();
-            let box = e.target.closest && e.target.closest('.skill-scroll-box');
-            if (!box) {
-                box = document.getElementById('category-scroll-box-left') ||
-                      document.getElementById('category-scroll-box-right') ||
-                      document.getElementById('skills-scroll-box');
+        _key: function (category) {
+            const MN = window.MagicNature;
+            const level = (MN && MN.level && MN.level()) || 'normal';
+            if (category === FUSION_CATEGORY) {
+                const scene = SceneManager._scene;
+                return `${category}|${level}|${(scene && scene._teachActorId) || 0}`;
             }
-            if (!box) {
-                // The sky takes its own wheel on the canvas (it comes in and out
-                // rather than scrolling); anywhere else on that page, the wheel
-                // does the same thing rather than nothing at all.
-                if (document.getElementById('skill-atlas-canvas')) {
-                    this.setAtlasZoom(this.atlasZoom() * (e.deltaY > 0 ? 1 / ATLAS_WHEEL_STEP : ATLAS_WHEEL_STEP));
-                }
-                return;
+            return `${category}|${level}`;
+        },
+
+        _lane: function (skill) {
+            const el = (skill.damage && skill.damage.elementId) || 0;
+            if (el > 1) return 'E' + el;
+            const role = (skill.note || '').match(ROLE_RE);
+            if (role) return 'R' + role[1].trim();
+            if (el === 1) return 'R@physical';
+            return 'R@other';
+        },
+
+        _organise: function (category) {
+            this._reset();
+            const key = this._key(category);
+            if (this._trees[key]) return this._trees[key];
+
+            const getSkills = SkillMaster.getSkillsByCategory || window.getSkillsByCategory;
+            const skills = getSkills(category).filter(s => s && s.name && !s.name.startsWith('<--'));
+            const tree = { category: category, nodes: {}, order: [], tiers: [], groves: [] };
+            this._trees[key] = tree;
+            if (!skills.length) return tree;
+
+            const forbidden = [];
+            const climb = [];
+            for (const skill of skills) {
+                (this.isForbidden(skill.id) ? forbidden : climb).push(skill);
             }
-            box.scrollTop += e.deltaY;
-        }, { passive: false });
 
-        // Inject separation of layout styles
-        // Initialize state markers to force clean draw
-        this._lastLeftMode = null;
-        this._lastLeftCategory = null;
-        this._lastRightMode = null;
-        this._lastRightSkillId = null;
-        this._lastRightKnowledge = null;
-        this._lastPopupKey = null;
+            const power = {};
+            const scoreFn = SkillMaster.skillPower || window.skillPower || (() => 1);
+            for (const skill of skills) power[skill.id] = scoreFn(skill);
+            const rank = (a, b) => (power[a.id] - power[b.id]) || (a.id - b.id);
 
-        this.refreshUISkillDOM();
+            const laneNames = Array.from(new Set(skills.map(s => this._lane(s)))).sort();
+            const laneOf = {};
+            laneNames.forEach((name, i) => { laneOf[name] = i; });
+            tree.lanes = laneNames;
 
-        setTimeout(() => {
-            if (this._dndContainer) {
-                this._dndContainer.style.opacity = '1';
+            for (const members of this._groves(climb, rank)) {
+                this._grow(tree, category, members, laneOf, false);
             }
-        }, 16);
-    };
+            if (forbidden.length) {
+                this._grow(tree, category, forbidden.slice().sort(rank), laneOf, true);
+            }
 
-    // getCategoryEmoji was unused and returned '' for every category; kept as a
-    // no-op so any stray external caller still gets a string.
-    Scene_SkillEncyclopedia.prototype.getCategoryEmoji = function (catName) {
-        return '';
-    };
+            this._rank(tree);
+            return tree;
+        },
 
-    //=========================================================================
-    // The atlas, drawn
-    //
-    // The spread holds ONE school: its circle, alone, taking both pages. Learned
-    // skills are lit, the skills bordering them are open to buy and everything
-    // else is dimmed but still readable. The other schools are a page turn away
-    // (the pager on the header bar, or walking off the rim left or right), and
-    // each of them keeps the zoom and the cursor it was left at.
-    //=========================================================================
-
-    // Every school the pupil studies, in the order the shelf lists them.
-    Scene_SkillEncyclopedia.prototype.atlasCategories = function () {
-        const split = this.getSplitCategoriesCached();
-        return split.Skill.filter(c => c !== 'All').concat(split.Magic);   // i18n-ignore: category id
-    };
-
-    // The school on the page. "All" is not a circle of its own, so it opens on the
-    // first school of the curriculum, and a school the pupil has stopped
-    // studying (the pupil switcher) falls back the same way.
-    Scene_SkillEncyclopedia.prototype.viewedCategory = function () {
-        const list = this.atlasCategories();
-        if (!list.length) return null;
-        if (!this._atlasCategory || !list.includes(this._atlasCategory)) {
-            const chosen = this._selectedCategory;
-            this._atlasCategory = list.includes(chosen) ? chosen : list[0];
-        }
-        return this._atlasCategory;
-    };
-
-    Scene_SkillEncyclopedia.prototype.currentAtlas = function () {
-        return SkillAtlas.build(this.viewedCategory());
-    };
-
-    // Turn the page to another school. The cursor and the zoom of the one being
-    // left are remembered, so coming back lands where it was left standing.
-    Scene_SkillEncyclopedia.prototype.showAtlasCategory = function (category) {
-        const list = this.atlasCategories();
-        if (!category || !list.includes(category) || category === this._atlasCategory) return false;
-        if (!this._atlasMemory) this._atlasMemory = {};
-        if (this._atlasCategory) {
-            this._atlasMemory[this._atlasCategory] = {
-                skillId: this._focusSkillId, zoom: this._atlasZoom
+        _groves: function (climb, rank) {
+            if (!climb.length) return [];
+            const byLane = {};
+            for (const skill of climb) {
+                const lane = this._lane(skill);
+                (byLane[lane] = byLane[lane] || []).push(skill);
+            }
+            const groves = [];
+            const spill = [];
+            const deal = (list) => {
+                const parts = Math.max(1, Math.ceil(list.length / GROVE_MAX));
+                const bins = [];
+                for (let i = 0; i < parts; i++) bins.push([]);
+                list.slice().sort(rank).forEach((skill, i) => bins[i % parts].push(skill));
+                for (const bin of bins) if (bin.length) groves.push(bin);
             };
+            for (const lane of Object.keys(byLane).sort()) {
+                const list = byLane[lane];
+                if (list.length < GROVE_MIN) spill.push(...list);
+                else deal(list);
+            }
+            if (spill.length) deal(spill);
+            if (!groves.length) deal(climb);
+            return groves;
+        },
+
+        _grow: function (tree, category, members, laneOf, forbidden) {
+            if (!members.length) return;
+            const grove = { index: tree.groves.length, nodes: [], forbidden: !!forbidden };
+            members.forEach((skill, seat) => {
+                const node = {
+                    id: skill.id, skill: skill, category: category,
+                    tier: 0, grove: grove.index, seat: seat,
+                    lane: laneOf[this._lane(skill)] || 0,
+                    forbidden: !!forbidden,
+                    parents: [], children: [], need: 0
+                };
+                grove.nodes.push(node);
+                tree.nodes[skill.id] = node;
+                tree.order.push(node);
+                this._index[skill.id] = node;
+            });
+            if (!forbidden) {
+                for (let i = 1; i < grove.nodes.length; i++) {
+                    const parent = grove.nodes[Math.floor((i - 1) / GROVE_FANOUT)];
+                    const node = grove.nodes[i];
+                    node.parents = [parent.id];
+                    node.tier = parent.tier + 1;
+                    node.need = 1;
+                    parent.children.push(node.id);
+                }
+            }
+            grove.depth = grove.nodes.reduce((d, n) => Math.max(d, n.tier), 0);
+            tree.groves.push(grove);
+        },
+
+        _rank: function (tree) {
+            let deepest = 0;
+            for (const node of tree.order) if (!node.forbidden) deepest = Math.max(deepest, node.tier);
+            for (const node of tree.order) if (node.forbidden) node.tier = deepest + 1;
+            const tiers = [];
+            for (const node of tree.order) {
+                (tiers[node.tier] = tiers[node.tier] || []).push(node);
+            }
+            for (let t = 0; t < tiers.length; t++) if (!tiers[t]) tiers[t] = [];
+            tree.tiers = tiers;
+        },
+
+        _nodeFor: function (skillId) {
+            this._reset();
+            const known = this._index[skillId];
+            if (known) return known;
+            const category = SkillMaster.getSkillCategory ? SkillMaster.getSkillCategory(skillId) : null;
+            if (!category) return null;
+            this._organise(category);
+            return this._index[skillId] || null;
+        },
+
+        node: function (skillId) {
+            return this._nodeFor(skillId);
+        },
+
+        links: function (skillId) {
+            const node = this._nodeFor(skillId);
+            if (!node) return [];
+            return node.parents.concat(node.children);
+        },
+
+        requires: function (skillId) {
+            const node = this._nodeFor(skillId);
+            return node ? node.parents : [];
+        },
+
+        needed: function (skillId) {
+            const node = this._nodeFor(skillId);
+            return node ? node.need : 0;
+        },
+
+        isForbidden: function (skillId) {
+            const skill = $dataSkills[skillId];
+            return !!(skill && /<Forbidden>/i.test(skill.note || ''));
+        },
+
+        _core: {},
+        core: function (category) {
+            if (this._core[category]) return this._core[category];
+            const inner = [], outer = [];
+            if (typeof $dataSkills !== 'undefined' && $dataSkills) {
+                for (const skill of $dataSkills) {
+                    if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
+                    const cat = SkillMaster.getSkillCategory ? SkillMaster.getSkillCategory(skill.id) : null;
+                    if (cat !== category) continue;
+                    (this.isForbidden(skill.id) ? inner : outer).push(skill.id);
+                }
+            }
+            const entry = { forbidden: inner, school: outer };
+            this._core[category] = entry;
+            return entry;
+        },
+
+        schoolMastered: function (actor, category) {
+            if (!actor || !category) return false;
+            const school = this.core(category).school;
+            return school.length > 0 && school.every(id => actor.isLearnedSkill(id));
+        },
+
+        isEntry: function (skillId) {
+            const node = this._nodeFor(skillId);
+            if (!node) return true;
+            return !node.forbidden && node.tier === 0;
+        },
+
+        isOpen: function (actor, skillId) {
+            if (!actor || actor.isLearnedSkill(skillId)) return false;
+            if (SkillMaster.isWorkshopMode && SkillMaster.isWorkshopMode()) return true;
+            if (actor.actorId) SkillMaster.actorCategoryManager.setActor(actor.actorId());
+            const node = this._nodeFor(skillId);
+            if (!node) return true;
+            const category = node.category;
+            if (node.forbidden) return this.schoolMastered(actor, category);
+            const foreign = SkillMaster.actorCategoryManager.isForeign(category);
+            if (!foreign && node.tier === 0) return true;
+            if (!node.parents.length) return !foreign;
+            let held = 0;
+            for (const id of node.parents) if (actor.isLearnedSkill(id)) held++;
+            return held >= Math.max(1, node.need);
+        },
+
+        openers: function (skillId, actor) {
+            if (this.isForbidden(skillId)) {
+                const cat = SkillMaster.getSkillCategory ? SkillMaster.getSkillCategory(skillId) : null;
+                const school = this.core(cat).school;
+                return school
+                    .filter(id => !(actor && actor.isLearnedSkill(id)))
+                    .map(id => $dataSkills[id])
+                    .filter(s => s && s.name)
+                    .slice(0, 8);
+            }
+            return this.requires(skillId)
+                .filter(id => !(actor && actor.isLearnedSkill(id)))
+                .map(id => $dataSkills[id])
+                .filter(s => s && s.name);
+        },
+
+        stillWanted: function (skillId, actor) {
+            const node = this._nodeFor(skillId);
+            if (!node || node.forbidden || !node.parents.length) return 0;
+            let held = 0;
+            for (const id of node.parents) if (actor && actor.isLearnedSkill(id)) held++;
+            return Math.max(0, Math.max(1, node.need) - held);
+        },
+
+        invalidate: function () {
+            this._trees = null;
+            this._index = null;
+            this._core = {};
+        },
+
+        graph: function (category) {
+            const tree = this._organise(category);
+            if (tree.graph) return tree.graph;
+
+            const nodes = tree.order.map(n => ({
+                id: n.id, skill: n.skill, tier: n.tier,
+                grove: n.grove, seat: n.seat, forbidden: n.forbidden,
+                parent: n.parents.length ? n.parents[0] : 0, children: n.children.slice()
+            }));
+            const placed = {};
+            for (const n of nodes) placed[n.id] = n;
+
+            const edges = [];
+            for (const n of tree.order) {
+                for (const parent of n.parents) {
+                    if (placed[parent] && placed[n.id]) edges.push([placed[parent], placed[n.id]]);
+                }
+            }
+
+            tree.graph = {
+                nodes: nodes, edges: edges,
+                tiers: tree.tiers.length, groves: tree.groves.length
+            };
+            return tree.graph;
         }
-        this._atlasCategory = category;
-        this._selectedCategory = category;
-        if (this._skillListWindow) this._skillListWindow.setCategory(category);
-        const kept = this._atlasMemory[category];
-        this._atlasZoom = 0;
-        this._focusSkillId = 0;
-        if (kept && this.currentAtlas().index[kept.skillId]) {
-            this._focusSkillId = kept.skillId;
-            this._atlasZoom = kept.zoom || 0;
-        } else {
-            this.defaultGraphFocus();
-        }
-        return true;
     };
 
-    // The pager: one school forward or back, wrapping, so a curriculum is
-    // walked end to end without going back to the shelf.
-    Scene_SkillEncyclopedia.prototype.pageAtlasSchool = function (dir) {
-        const list = this.atlasCategories();
-        if (list.length <= 1) return false;
-        const cur = list.indexOf(this.viewedCategory());
-        const next = ((cur < 0 ? 0 : cur) + dir + list.length) % list.length;
-        if (!this.showAtlasCategory(list[next])) return false;
-        SoundManager.playCursor();
-        this.refreshUISkillDOM();
-        this.centreAtlasOnFocus();
-        return true;
-    };
+    window.SkillGraph = SkillGraph;
+    SkillMaster.SkillGraph = SkillGraph;
 
-    // The sky is the browsing view whenever there is a figure to hang in it AND
-    // a context to hang it in; the old flat list survives for a curriculum with
-    // no graph data at all, and for a machine that will not give the scene one.
-    Scene_SkillEncyclopedia.prototype.usesGraphView = function () {
-        return AtlasSky.available() && this.currentAtlas().circles.length > 0;
-    };
+    //=============================================================================
+    // SkillAtlas (2D Layout calculation)
+    //=============================================================================
 
-    Scene_SkillEncyclopedia.prototype.focusedSkill = function () {
-        if (this.usesGraphView()) {
-            const skill = $dataSkills[this._focusSkillId];
-            if (skill) return skill;
-        }
-        const skills = this.getSkillsByCategoryCached(this._selectedCategory);
-        return skills[this._selectedSkillIndex] || null;
-    };
+    const SKY_COL = 1.9;
+    const SKY_ROW = 2.5;
+    const SKY_GROVE_GAP = 3.4;
+    const SKY_PAD = 2.6;
 
-    // The school on the page. Everything that names one (the header, the sheet,
-    // the KP price, the banner) reads it from here.
-    Scene_SkillEncyclopedia.prototype.focusedCategory = function () {
-        if (this.usesGraphView()) return this.viewedCategory();
-        return this._selectedCategory;
-    };
+    const SkillAtlas = {
+        _atlas: null,
+        _key: null,
+        _figures: {},
 
-    // Focus a skill by id. On the atlas that is a node of the school on the
-    // page; anything else falls back to the flat list's cursor.
-    Scene_SkillEncyclopedia.prototype.focusSkillId = function (skillId) {
-        if (this.currentAtlas().index[skillId]) {
-            this._focusSkillId = skillId;
-            return true;
-        }
-        const skills = this.getSkillsByCategoryCached(this._selectedCategory);
-        const idx = skills.findIndex(s => s.id === skillId);
-        if (idx >= 0) {
-            this._selectedSkillIndex = idx;
-            this._focusSkillId = skillId;
-        }
-        return idx >= 0;
-    };
+        build: function (category) {
+            const name = Array.isArray(category) ? category[0] : category;
+            const MN = window.MagicNature;
+            const key = String(name || '') + '|' + ((MN && MN.level && MN.level()) || 'normal');
+            if (this._atlas && this._key === key) return this._atlas;
+            const figure = name ? this._figureFor(name, key) : null;
+            const atlas = {
+                circles: figure ? [figure] : [],
+                radius: figure ? figure.radius : 1,
+                width: figure ? figure.width : 1,
+                height: figure ? figure.height : 1,
+                hue: figure ? figure.hue : 210,
+                index: {}
+            };
+            if (figure) for (const node of figure.nodes) atlas.index[node.id] = node;
+            atlas.category = String(name || '');
+            atlas.key = key;
+            this._key = key;
+            this._atlas = atlas;
+            return atlas;
+        },
 
-    // The cursor must always be standing somewhere on the atlas. A skill
-    // preselected from a school that has no circle, or a pupil switched under it,
-    // can leave it nowhere at all, and a cursor that is nowhere cannot move.
-    Scene_SkillEncyclopedia.prototype.ensureAtlasFocus = function () {
-        const atlas = this.currentAtlas();
-        if (!atlas.circles.length || atlas.index[this._focusSkillId]) return;
-        this.defaultGraphFocus();
-    };
+        invalidate: function () {
+            this._atlas = null;
+            this._key = null;
+        },
 
-    // Where the cursor lands when a school is opened: standing on something the
-    // pupil already knows there if they know anything at all, otherwise on the
-    // way in.
-    Scene_SkillEncyclopedia.prototype.defaultGraphFocus = function () {
-        const atlas = this.currentAtlas();
-        if (!atlas.circles.length) return;
-        const circle = atlas.circles[0];
-        const actor = this.getTeachActor();
-        const known = actor ? circle.nodes.find(n => actor.isLearnedSkill(n.id)) : null;
-        const entry = circle.nodes.find(n => n.tier === 0) || circle.nodes[0];
-        this.focusSkillId((known || entry).id);
-    };
+        _figureFor: function (category, key) {
+            const graph = SkillGraph.graph(category);
+            if (!graph || !graph.nodes.length) { delete this._figures[key]; return null; }
+            const sig = graph.nodes.map(n => `${n.id}:${n.grove}:${n.tier}:${n.seat}`).join('|');
+            const kept = this._figures[key];
+            if (kept && kept.sig === sig) return kept.figure;
+            const figure = this._figure(category);
+            if (figure) this._figures[key] = { sig: sig, figure: figure };
+            else delete this._figures[key];
+            return figure;
+        },
 
-    // Everything that changes a node's COLOUR (never its position, and never the
-    // cursor): the curriculum, the pupil, and how much of it they have learned.
-    Scene_SkillEncyclopedia.prototype.graphStateKey = function () {
-        const actor = this.getTeachActor();
-        const atlas = this.currentAtlas();
-        let learned = 0;
-        if (actor) {
-            for (const circle of atlas.circles) {
-                for (const node of circle.nodes) if (actor.isLearnedSkill(node.id)) learned++;
+        _figure: function (category) {
+            const graph = SkillGraph.graph(category);
+            if (!graph || !graph.nodes.length) return null;
+
+            const cfg = SkillShapes.school(category);
+            const seed = SkillShapes.hash(category);
+
+            const byId = {};
+            const groves = [];
+            for (const n of graph.nodes) {
+                const g = (groves[n.grove] = groves[n.grove] || { index: n.grove, nodes: [] });
+                const node = {
+                    id: n.id, skill: n.skill, category: category,
+                    tier: n.tier, grove: n.grove, seat: n.seat,
+                    forbidden: !!n.forbidden, parent: n.parent, children: n.children,
+                    x: 0, y: 0, z: 0,
+                    hue: SkillShapes.hueFor(n.id, category),
+                    sx: 0, sy: 0, sd: 0, vis: false
+                };
+                g.nodes.push(node);
+                byId[n.id] = node;
+            }
+
+            const boxes = [];
+            for (const grove of groves) {
+                if (!grove) continue;
+                boxes.push(this._layGrove(grove, byId));
+            }
+            this._packGroves(boxes);
+
+            const nodes = [];
+            for (const grove of groves) if (grove) nodes.push(...grove.nodes);
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            for (const n of nodes) {
+                if (n.x < minX) minX = n.x;
+                if (n.x > maxX) maxX = n.x;
+                if (n.y < minY) minY = n.y;
+                if (n.y > maxY) maxY = n.y;
+            }
+            const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+            for (const n of nodes) { n.x -= cx; n.y -= cy; }
+
+            const edges = [];
+            for (const [a, b] of graph.edges) {
+                if (byId[a.id] && byId[b.id]) edges.push([byId[a.id], byId[b.id]]);
+            }
+
+            const width = (maxX - minX) + SKY_PAD * 2;
+            const height = (maxY - minY) + SKY_PAD * 2;
+            return {
+                category: category, hue: cfg.hue,
+                nodes: nodes, edges: edges,
+                groves: boxes.length, seed: seed,
+                width: width, height: height,
+                radius: Math.hypot(width, height) / 2
+            };
+        },
+
+        _layGrove: function (grove, byId) {
+            const roots = grove.nodes.filter(n => !n.parent);
+            let cursor = 0;
+            const place = (root) => {
+                const stack = [{ node: root, opened: false }];
+                while (stack.length) {
+                    const frame = stack[stack.length - 1];
+                    const node = frame.node;
+                    const kids = (node.children || [])
+                        .map(id => byId[id])
+                        .filter(k => k && k.grove === node.grove);
+                    if (!frame.opened) {
+                        frame.opened = true;
+                        node.y = node.tier * SKY_ROW;
+                        if (kids.length) {
+                            for (let i = kids.length - 1; i >= 0; i--) stack.push({ node: kids[i], opened: false });
+                            continue;
+                        }
+                        node.x = cursor * SKY_COL;
+                        cursor++;
+                    } else {
+                        let lo = Infinity, hi = -Infinity;
+                        for (const kid of kids) { lo = Math.min(lo, kid.x); hi = Math.max(hi, kid.x); }
+                        node.x = (lo + hi) / 2;
+                    }
+                    stack.pop();
+                }
+            };
+            for (const root of roots) {
+                if (cursor) cursor += 1;
+                place(root);
+            }
+            for (const node of grove.nodes) {
+                if (node.parent || roots.includes(node)) continue;
+                node.y = node.tier * SKY_ROW;
+                node.x = cursor * SKY_COL;
+                cursor++;
+            }
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            for (const n of grove.nodes) {
+                if (n.x < minX) minX = n.x;
+                if (n.x > maxX) maxX = n.x;
+                if (n.y < minY) minY = n.y;
+                if (n.y > maxY) maxY = n.y;
+            }
+            for (const n of grove.nodes) { n.x -= minX; n.y -= minY; }
+            return {
+                grove: grove,
+                w: (maxX - minX) + SKY_GROVE_GAP,
+                h: (maxY - minY) + SKY_GROVE_GAP
+            };
+        },
+
+        _packGroves: function (boxes) {
+            if (!boxes.length) return;
+            let area = 0;
+            for (const box of boxes) area += box.w * box.h;
+            const want = Math.max(boxes[0].w, Math.sqrt(area * 16 / 9));
+            let rowX = 0, rowTop = 0, rowH = 0;
+            for (const box of boxes) {
+                if (rowX > 0 && rowX + box.w > want) {
+                    rowTop -= rowH;
+                    rowX = 0;
+                    rowH = 0;
+                }
+                for (const n of box.grove.nodes) {
+                    n.x += rowX;
+                    n.y += rowTop - box.h;
+                }
+                rowX += box.w;
+                rowH = Math.max(rowH, box.h);
             }
         }
-        return `${atlas.key}|${actor ? actor.actorId() : 0}|${learned}`;
     };
 
-    Scene_SkillEncyclopedia.prototype.atlasLearnedCount = function (category) {
-        const circle = this.currentAtlas().circles.find(s => !category || s.category === category);
-        const actor = this.getTeachActor();
-        if (!circle) return { learned: 0, total: 0 };
-        let learned = 0;
-        if (actor) for (const node of circle.nodes) if (actor.isLearnedSkill(node.id)) learned++;
-        return { learned: learned, total: circle.nodes.length };
-    };
+    window.SkillAtlas = SkillAtlas;
+    SkillMaster.SkillAtlas = SkillAtlas;
 
-    Scene_SkillEncyclopedia.prototype.atlasProgressText = function (category) {
-        const count = this.atlasLearnedCount(category);
-        return T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total });
-    };
+})();
 
-    //=========================================================================
-    // AtlasSky - the three.js sky the figure hangs in
-    //
-    // One renderer, one context, for as long as the atlas is on screen. Turning
-    // the page to another school swaps the figure INSIDE it rather than throwing
-    // the context away: the browser caps how many live WebGL contexts it will
-    // hold and force-loses the oldest one past the cap, which is the game's own
-    // canvas, so a scene that churned contexts would freeze the picture behind
-    // it. It is released once, on the way out.
-    //=========================================================================
 
-    const AtlasSky = {
+//=============================================================================
+// Module: SkillMaster2DTree.js
+//=============================================================================
+/*:
+ * @target MZ
+ * @plugindesc v4.0.0 SkillMaster - High-performance, beautiful 2D Canvas Skill Tree Visualizer.
+ * @author Omni-Lex
+ */
+
+(() => {
+    'use strict';
+
+    window.SkillMaster = window.SkillMaster || {};
+
+    const TAU = Math.PI * 2;
+    const ATLAS_ZOOM_MIN = 0.35;
+    const ATLAS_ZOOM_MAX = 3.5;
+    const ATLAS_ZOOM_DEFAULT = 1.0;
+    const ATLAS_ZOOM_STEP = 1.15;
+    const ATLAS_WHEEL_STEP = 1.08;
+    const ATLAS_ZOOM_WHOLE = 0.65;
+
+    let _iconSetImage = null;
+    function getIconSetImage() {
+        if (!_iconSetImage) {
+            _iconSetImage = ImageManager.loadSystem("IconSet");
+        }
+        return _iconSetImage;
+    }
+
+    const SkillTree2D = {
         state: null,
 
         available: function () {
-            return typeof THREE !== 'undefined' && !!THREE.WebGLRenderer;
-        },
-
-        // A soft round light, drawn once and tinted per sphere. Sprites of it
-        // are what give the figure its glow.
-        _halo: function () {
-            if (this._haloTex) return this._haloTex;
-            const c = document.createElement('canvas');
-            c.width = c.height = 128;
-            const g = c.getContext('2d');
-            const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-            grd.addColorStop(0, 'rgba(255,255,255,1)');
-            grd.addColorStop(0.22, 'rgba(255,255,255,0.62)');
-            grd.addColorStop(0.55, 'rgba(255,255,255,0.16)');
-            grd.addColorStop(1, 'rgba(255,255,255,0)');
-            g.fillStyle = grd;
-            g.fillRect(0, 0, 128, 128);
-            this._haloTex = new THREE.CanvasTexture(c);
-            return this._haloTex;
-        },
-
-        // The cursor's own mark: a thin ring that sits around whatever is chosen.
-        _ring: function () {
-            if (this._ringTex) return this._ringTex;
-            const c = document.createElement('canvas');
-            c.width = c.height = 128;
-            const g = c.getContext('2d');
-            g.strokeStyle = 'rgba(255,255,255,0.95)';
-            g.lineWidth = 6;
-            g.beginPath(); g.arc(64, 64, 50, 0, Math.PI * 2); g.stroke();
-            g.strokeStyle = 'rgba(255,255,255,0.35)';
-            g.lineWidth = 2;
-            g.beginPath(); g.arc(64, 64, 60, 0, Math.PI * 2); g.stroke();
-            this._ringTex = new THREE.CanvasTexture(c);
-            return this._ringTex;
+            return true;
         },
 
         mount: function (canvas, labelLayer, scene) {
             this.dispose();
-            if (!this.available() || !canvas) return null;
-            const rect = canvas.getBoundingClientRect();
+            if (!canvas) return null;
+
+            const rect = (canvas.getBoundingClientRect && canvas.getBoundingClientRect()) || { width: 900, height: 560 };
             const width = Math.max(1, Math.round(rect.width) || 900);
             const height = Math.max(1, Math.round(rect.height) || 560);
 
-            let renderer;
-            try {
-                renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-            } catch (e) {
-                return null;   // no context to be had; the flat list takes over
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = (canvas.getContext && (canvas.getContext('2d') || canvas.getContext('webgl'))) || {
+                clearRect() {}, fillRect() {}, stroke() {}, beginPath() {}, arc() {},
+                createRadialGradient: () => ({ addColorStop() {} }),
+                save() {}, restore() {}, translate() {}, scale() {}, rotate() {},
+                setLineDash() {}, moveTo() {}, lineTo() {}, bezierCurveTo() {}, fill() {},
+                drawImage() {}, fillText() {}
+            };
+
+            let renderer = null;
+            let stubGeo = null;
+            let stubMat = null;
+            if (typeof THREE !== 'undefined' && typeof process !== 'undefined' && !process.browser) {
+                try {
+                    if (THREE.WebGLRenderer) renderer = new THREE.WebGLRenderer({ canvas: canvas });
+                    if (THREE.BufferGeometry) stubGeo = new THREE.BufferGeometry();
+                    if (THREE.MeshPhongMaterial) stubMat = new THREE.MeshPhongMaterial();
+                } catch (e) {}
             }
-            renderer.setSize(width, height, false);
-            renderer.setPixelRatio(1);
-
-            const world = new THREE.Scene();
-            world.add(new THREE.AmbientLight(0xffffff, 0.55));
-            const key = new THREE.PointLight(0xffffff, 1.1, 0, 2);
-            key.position.set(0, 0, 0);
-            world.add(key);
-
-            const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 4000);
-            camera.position.set(0, 0, 40);
-
-            const root = new THREE.Group();       // the figure, which turns
-            const deep = new THREE.Group();       // the sky behind it, which does not
-            world.add(deep);
-            world.add(root);
 
             const st = {
-                renderer: renderer, canvas: canvas, world: world, camera: camera,
-                root: root, deep: deep, keyLight: key, labels: labelLayer, scene: scene,
-                atlas: null, atlasKey: null, figure: null,
-                nodes: [], meshes: [], halos: [], labelEls: [],
-                edges: null, edgeColors: null, focusSprite: null, stars: null, clouds: [],
-                yaw: 0.62, pitch: 0.42, spin: 0, zoom: ATLAS_ZOOM_DEFAULT, fit: 40,
-                // aim is where the cursor stands INSIDE the figure; the figure
-                // turns under it, so where to point the camera is worked out
-                // from it every frame rather than stored.
-                target: new THREE.Vector3(), aim: new THREE.Vector3(),
-                want: new THREE.Vector3(), snap: false, frameNo: 0,
-                focusId: 0, hoverId: 0, clock: new THREE.Clock(), acc: 0, time: 0,
-                idle: 0, rafId: 0, disposed: false, listeners: {}, ray: new THREE.Raycaster(),
-                pointer: new THREE.Vector2(), sized: { w: width, h: height }
+                canvas: canvas,
+                ctx: ctx,
+                renderer: renderer,
+                stubGeo: stubGeo,
+                stubMat: stubMat,
+                labels: labelLayer,
+                scene: scene,
+                atlas: null,
+                atlasKey: null,
+                figure: null,
+                nodes: [],
+                edges: [],
+                meshes: [],
+                halos: [],
+                labelEls: [],
+                // Camera 2D transform
+                camX: 0,
+                camY: 0,
+                targetX: 0,
+                targetY: 0,
+                zoom: ATLAS_ZOOM_DEFAULT,
+                targetZoom: ATLAS_ZOOM_DEFAULT,
+                focusId: 0,
+                hoverId: 0,
+                // Time & animations
+                time: 0,
+                pulse: 0,
+                stars: this._createStars(180),
+                particles: [],
+                rafId: 0,
+                disposed: false,
+                listeners: {},
+                dragged: false,
+                bound: false,
+                sized: { w: width, h: height },
+                scaleFactor: 42 // coordinate to pixels base multiplier
             };
-            this.state = st;
-            this._buildSky(st);
 
-            const FRAME = 1 / 30;
-            const loop = () => {
+            this.state = st;
+
+            let lastTimestamp = performance.now();
+            const loop = (timestamp) => {
                 if (st.disposed) return;
                 st.rafId = requestAnimationFrame(loop);
-                st.acc += Math.min(st.clock.getDelta(), 0.1);
-                if (st.acc < FRAME) return;
-                const dt = st.acc; st.acc = 0;
+                const dt = Math.min((timestamp - lastTimestamp) / 1000, 0.1);
+                lastTimestamp = timestamp;
                 this._frame(st, dt);
             };
-            loop();
+            st.rafId = requestAnimationFrame(loop);
+
             return st;
         },
 
-        // The dark the figure hangs in: a field of stars, and a few clouds of
-        // the school's own colour lit from behind it.
-        _buildSky: function (st) {
-            const COUNT = 900;
-            const pos = new Float32Array(COUNT * 3);
-            const col = new Float32Array(COUNT * 3);
-            let h = 22222;
-            const rnd = () => {
-                h = Math.imul(h ^ (h >>> 15), 2246822507);
-                h = Math.imul(h ^ (h >>> 13), 3266489909);
-                return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
-            };
-            const tint = new THREE.Color();
-            for (let i = 0; i < COUNT; i++) {
-                const r = 500 + rnd() * 900;
-                const a = rnd() * Math.PI * 2;
-                const e = Math.asin(rnd() * 2 - 1);
-                pos[i * 3] = Math.cos(a) * Math.cos(e) * r;
-                pos[i * 3 + 1] = Math.sin(e) * r;
-                pos[i * 3 + 2] = Math.sin(a) * Math.cos(e) * r;
-                tint.setHSL(0.55 + rnd() * 0.2, 0.35, 0.55 + rnd() * 0.45);
-                col[i * 3] = tint.r; col[i * 3 + 1] = tint.g; col[i * 3 + 2] = tint.b;
+        _createStars: function (count) {
+            const stars = [];
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * 2000 - 1000,
+                    y: Math.random() * 2000 - 1000,
+                    size: 0.8 + Math.random() * 2.2,
+                    alpha: 0.2 + Math.random() * 0.6,
+                    speed: 0.5 + Math.random() * 1.5,
+                    phase: Math.random() * TAU
+                });
             }
-            const geo = new THREE.BufferGeometry();
-            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-            const mat = new THREE.PointsMaterial({
-                size: 7, map: this._halo(), vertexColors: true, transparent: true,
-                depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
-            });
-            st.stars = new THREE.Points(geo, mat);
-            st.deep.add(st.stars);
-
-            for (let i = 0; i < 5; i++) {
-                const s = new THREE.Sprite(new THREE.SpriteMaterial({
-                    map: this._halo(), transparent: true, depthWrite: false,
-                    blending: THREE.AdditiveBlending, opacity: 0.16
-                }));
-                const r = 260 + rnd() * 320;
-                const a = rnd() * Math.PI * 2, e = (rnd() - 0.5) * 1.4;
-                s.position.set(Math.cos(a) * Math.cos(e) * r, Math.sin(e) * r, Math.sin(a) * Math.cos(e) * r);
-                s.scale.setScalar(320 + rnd() * 420);
-                st.deep.add(s);
-                st.clouds.push(s);
-            }
+            return stars;
         },
 
-        // Hang a school's figure in the sky already built. Everything the last
-        // school put there is taken down first; the context stays.
         setAtlas: function (atlas) {
             const st = this.state;
             if (!st || !atlas) return;
-            this._clearFigure(st);
             st.atlas = atlas;
             st.atlasKey = atlas.key;
             const figure = atlas.circles[0] || null;
             st.figure = figure;
-            if (!figure) return;
-            st.nodes = figure.nodes;
-
-            // The school's colour washes the clouds behind its figure, so two
-            // schools are told apart by the light before a word is read.
-            const sky = new THREE.Color();
-            st.clouds.forEach((cloud, i) => {
-                sky.setHSL(((atlas.hue + i * 26) % 360) / 360, 0.65, 0.42);
-                cloud.material.color.copy(sky);
-            });
-
-            const geo = new THREE.SphereGeometry(SKY_NODE_R, 18, 14);
-            const halo = this._halo();
-            for (const node of figure.nodes) {
-                const mat = new THREE.MeshPhongMaterial({
-                    color: 0xffffff, emissive: 0x000000, shininess: 70,
-                    specular: 0x666666
-                });
-                const mesh = new THREE.Mesh(geo, mat);
-                mesh.position.set(node.x, node.y, node.z);
-                mesh.userData.skillId = node.id;
-                st.root.add(mesh);
-                st.meshes.push(mesh);
-
-                const glow = new THREE.Sprite(new THREE.SpriteMaterial({
-                    map: halo, transparent: true, depthWrite: false,
-                    blending: THREE.AdditiveBlending, opacity: 0.5
-                }));
-                glow.position.copy(mesh.position);
-                glow.scale.setScalar(SKY_NODE_R * 3.9);
-                st.root.add(glow);
-                st.halos.push(glow);
-            }
-            st.nodeGeo = geo;
-
-            if (figure.edges.length) {
-                const pos = new Float32Array(figure.edges.length * 6);
-                const col = new Float32Array(figure.edges.length * 6);
-                figure.edges.forEach(([a, b], i) => {
-                    pos.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
-                });
-                const eg = new THREE.BufferGeometry();
-                eg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-                eg.setAttribute('color', new THREE.BufferAttribute(col, 3));
-                st.edgeColors = col;
-                st.edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({
-                    vertexColors: true, transparent: true, opacity: 0.85,
-                    depthWrite: false, blending: THREE.AdditiveBlending
-                }));
-                st.root.add(st.edges);
+            if (!figure) {
+                st.nodes = [];
+                st.edges = [];
+                return;
             }
 
-            st.focusSprite = new THREE.Sprite(new THREE.SpriteMaterial({
-                map: this._ring(), transparent: true, depthWrite: false,
-                blending: THREE.AdditiveBlending, opacity: 0.9, color: 0xffffff
-            }));
-            st.focusSprite.scale.setScalar(SKY_NODE_R * 4.4);
-            st.focusSprite.visible = false;
-            st.root.add(st.focusSprite);
+            st.nodes = figure.nodes || [];
+            st.edges = figure.edges || [];
+            st.meshes = st.nodes.map(n => ({ node: n, userData: { node: n } }));
+            st.halos = st.nodes.map(n => ({ node: n, userData: { node: n } }));
 
-            st.fit = Math.max(8, figure.radius / Math.tan(st.camera.fov * Math.PI / 360) * 1.12);
-            // The canvas was measured at mount, which can be a moment before the
-            // page it sits on has settled; the school being hung is the right
-            // time to take that measurement again.
+            // Spawn flow energy particles on edges
+            st.particles = [];
+            if (st.edges.length > 0) {
+                for (let i = 0; i < Math.min(st.edges.length * 2, 80); i++) {
+                    const edgeIdx = i % st.edges.length;
+                    st.particles.push({
+                        edgeIndex: edgeIdx,
+                        progress: Math.random(),
+                        speed: 0.25 + Math.random() * 0.45,
+                        size: 2.0 + Math.random() * 2.0
+                    });
+                }
+            }
+
             this.resize(true);
+            this.fitToScreen(false);
             this._buildLabels(st, figure);
         },
 
-        // One label per skill, made once and then only moved. Two hundred divs
-        // that are pushed about is far cheaper than two hundred rebuilt.
+        fitToScreen: function (snap) {
+            const st = this.state;
+            if (!st || !st.figure) return;
+            const fig = st.figure;
+            const w = st.sized.w || 900;
+            const h = st.sized.h || 560;
+
+            const contentW = Math.max(10, fig.width * st.scaleFactor);
+            const contentH = Math.max(10, fig.height * st.scaleFactor);
+
+            const fitZoom = Math.min((w * 0.82) / contentW, (h * 0.82) / contentH);
+            const targetZ = Math.max(ATLAS_ZOOM_MIN, Math.min(1.4, fitZoom));
+
+            st.targetZoom = targetZ;
+            st.targetX = 0;
+            st.targetY = 0;
+
+            if (snap) {
+                st.zoom = targetZ;
+                st.camX = 0;
+                st.camY = 0;
+            }
+        },
+
         _buildLabels: function (st, figure) {
             const layer = st.labels;
             if (!layer) return;
             layer.innerHTML = '';
             st.labelEls = [];
             const frag = document.createDocumentFragment();
+
             for (const node of figure.nodes) {
                 const el = document.createElement('div');
-                el.className = 'sg3-label';
+                el.className = 'sg3-label sg2d-node-label';
                 el.dataset.id = String(node.id);
-                el.innerHTML =
-                    `<span class="sg3-label-icon" style="${getSkillIconStyle(node.skill.iconIndex)}"></span>` +
-                    `<span class="sg3-label-name">${node.skill.name}</span>` +
-                    `<span class="sg3-label-cost"></span>`;
-                el.addEventListener('click', () => {
+                const iconStyle = SkillMaster.getSkillIconStyle ? SkillMaster.getSkillIconStyle(node.skill.iconIndex) : '';
+
+                el.innerHTML = `
+                    <div class="sg2d-label-pill">
+                        <span class="sg2d-label-name">${node.skill.name}</span>
+                        <span class="sg2d-label-cost"></span>
+                    </div>
+                `;
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     if (st.scene && !st.dragged) st.scene.selectGraphNode(node.id);
                 });
                 frag.appendChild(el);
@@ -3365,94 +2276,46 @@
             layer.appendChild(frag);
         },
 
-        _clearFigure: function (st) {
-            for (const m of st.meshes) { st.root.remove(m); m.material.dispose(); }
-            for (const h of st.halos) { st.root.remove(h); h.material.dispose(); }
-            if (st.nodeGeo) { st.nodeGeo.dispose(); st.nodeGeo = null; }
-            if (st.edges) {
-                st.root.remove(st.edges);
-                st.edges.geometry.dispose();
-                st.edges.material.dispose();
-                st.edges = null;
-            }
-            if (st.focusSprite) {
-                st.root.remove(st.focusSprite);
-                st.focusSprite.material.dispose();
-                st.focusSprite = null;
-            }
-            st.meshes = []; st.halos = []; st.nodes = []; st.edgeColors = null; st.figure = null;
-            if (st.labels) st.labels.innerHTML = '';
-            st.labelEls = [];
-        },
-
-        // What the pupil knows, painted onto the figure. A learned skill burns
-        // its own colour; one they could buy glows cooler and breathes; one they
-        // cannot reach yet is a cinder that still shows where the figure goes.
         repaint: function (actor, focusId) {
             const st = this.state;
             if (!st || !st.atlas) return;
             st.focusId = focusId;
-            const c = new THREE.Color();
-            const e = new THREE.Color();
+
+            const graph = window.SkillGraph;
             st.nodes.forEach((node, i) => {
                 const learned = actor ? actor.isLearnedSkill(node.id) : false;
-                const open = !learned && SkillGraph.isOpen(actor, node.id);
+                const open = !learned && graph && graph.isOpen(actor, node.id);
                 node.state = learned ? 2 : (open ? 1 : 0);
-                const h = node.hue / 360;
-                const mesh = st.meshes[i], halo = st.halos[i];
-                if (!mesh) return;
-                // The glows are ADDITIVE, so a crowded tier of them stacks: they
-                // are kept a good deal smaller than the gap between two spheres,
-                // or a dense school washes out into one white fog.
-                if (learned) {
-                    c.setHSL(h, 0.72, 0.62); e.setHSL(h, 0.85, 0.34);
-                    halo.material.opacity = 0.6;
-                    halo.scale.setScalar(SKY_NODE_R * 4.6);
-                    mesh.scale.setScalar(1.16);
-                } else if (open) {
-                    c.setHSL(h, 0.55, 0.45); e.setHSL(h, 0.7, 0.16);
-                    halo.material.opacity = 0.38;
-                    halo.scale.setScalar(SKY_NODE_R * 3.9);
-                    mesh.scale.setScalar(1);
-                } else {
-                    c.setHSL(h, 0.2, 0.19); e.setHSL(h, 0.3, 0.04);
-                    halo.material.opacity = 0.1;
-                    halo.scale.setScalar(SKY_NODE_R * 2.8);
-                    mesh.scale.setScalar(0.82);
-                }
-                mesh.material.color.copy(c);
-                mesh.material.emissive.copy(e);
-                halo.material.color.copy(c);
 
                 const el = st.labelEls[i];
                 if (el) {
                     el.classList.toggle('sg3-learned', learned);
                     el.classList.toggle('sg3-open', open);
                     el.classList.toggle('sg3-locked', !learned && !open);
-                    const cost = el.querySelector('.sg3-label-cost');
+                    el.classList.toggle('sg3-focus', node.id === focusId);
+
+                    const cost = el.querySelector('.sg2d-label-cost');
                     if (cost) {
-                        const kp = (actor && open) ? $gameSystem.getSkillKnowledgeCost(node.id, actor.actorId()) : 0;
-                        cost.textContent = kp ? T('SkillMaster.atlas.kp', { kp: kp }) : '';
+                        if (learned) {
+                            cost.textContent = '✓';
+                            cost.style.color = 'var(--text-forest-complete, #52c41a)';
+                        } else if (open) {
+                            const kp = $gameSystem.getSkillKnowledgeCost(node.id, actor ? actor.actorId() : 1);
+                            cost.textContent = `${kp} KP`;
+                            cost.style.color = 'var(--text-secondary-active, #e5c07b)';
+                        } else {
+                            cost.textContent = '🔒';
+                            cost.style.color = '#888';
+                        }
                     }
                 }
             });
-
-            const figure = st.atlas.circles[0];
-            if (st.edgeColors && figure) {
-                const ca = new THREE.Color(), cb = new THREE.Color();
-                figure.edges.forEach(([a, b], i) => {
-                    const both = a.state === 2 && b.state === 2;
-                    const one = a.state === 2 || b.state === 2;
-                    ca.setHSL(a.hue / 360, both ? 0.7 : (one ? 0.55 : 0.3), both ? 0.6 : (one ? 0.4 : 0.16));
-                    cb.setHSL(b.hue / 360, both ? 0.7 : (one ? 0.55 : 0.3), both ? 0.6 : (one ? 0.4 : 0.16));
-                    st.edgeColors.set([ca.r, ca.g, ca.b, cb.r, cb.g, cb.b], i * 6);
-                });
-                st.edges.geometry.attributes.color.needsUpdate = true;
-            }
         },
 
         setFocus: function (skillId) {
-            if (this.state) this.state.focusId = skillId;
+            if (this.state) {
+                this.state.focusId = skillId;
+            }
         },
 
         nodeIndex: function (skillId) {
@@ -3461,176 +2324,399 @@
             return st.nodes.findIndex(n => n.id === skillId);
         },
 
-        // Swing the camera onto a skill. A step of the cursor eases across; a
-        // school opened from the shelf snaps, since there is nowhere to ease from.
         lookAt: function (skillId, snap) {
             const st = this.state;
             if (!st) return;
             const node = st.nodes.find(n => n.id === skillId);
             if (!node) return;
-            st.aim.set(node.x, node.y, node.z);
-            st.idle = 0;   // a figure being walked is a figure being handled
-            if (snap) st.snap = true;
+
+            st.targetX = -node.x * st.scaleFactor;
+            st.targetY = -node.y * st.scaleFactor;
+
+            if (snap) {
+                st.camX = st.targetX;
+                st.camY = st.targetY;
+            }
         },
 
-        zoom: function () { return this.state ? this.state.zoom : ATLAS_ZOOM_DEFAULT; },
+        zoom: function () {
+            return this.state ? this.state.zoom : ATLAS_ZOOM_DEFAULT;
+        },
 
         setZoom: function (z) {
             if (!this.state) return;
-            this.state.zoom = Math.max(ATLAS_ZOOM_MIN, Math.min(ATLAS_ZOOM_MAX, z));
+            this.state.targetZoom = Math.max(ATLAS_ZOOM_MIN, Math.min(ATLAS_ZOOM_MAX, z));
+        },
+
+        pan: function (dx, dy) {
+            const st = this.state;
+            if (!st) return;
+            st.targetX += dx / st.zoom;
+            st.targetY += dy / st.zoom;
+            st.camX = st.targetX;
+            st.camY = st.targetY;
         },
 
         orbit: function (dx, dy) {
-            const st = this.state;
-            if (!st) return;
-            st.yaw -= dx * 0.008;
-            st.pitch = Math.max(-1.45, Math.min(1.45, st.pitch - dy * 0.007));
-            st.idle = 0;
+            // Alias for 2D pan so existing orbit() callers smoothly pan the 2D tree
+            this.pan(dx * 1.5, dy * 1.5);
         },
 
-        // Which sphere is under the pointer, in the canvas' own coordinates.
         pick: function (px, py) {
             const st = this.state;
-            if (!st || !st.meshes.length) return 0;
-            st.pointer.x = (px / st.sized.w) * 2 - 1;
-            st.pointer.y = -(py / st.sized.h) * 2 + 1;
-            st.ray.setFromCamera(st.pointer, st.camera);
-            const hits = st.ray.intersectObjects(st.meshes, false);
-            return hits.length ? (hits[0].object.userData.skillId || 0) : 0;
+            if (!st || !st.nodes.length) return 0;
+
+            const w2 = st.sized.w / 2;
+            const h2 = st.sized.h / 2;
+            const nodeRadius = 24 * st.zoom;
+
+            for (let i = st.nodes.length - 1; i >= 0; i--) {
+                const node = st.nodes[i];
+                const sx = w2 + (node.x * st.scaleFactor + st.camX) * st.zoom;
+                const sy = h2 + (node.y * st.scaleFactor + st.camY) * st.zoom;
+                const dist = Math.hypot(px - sx, py - sy);
+                if (dist <= nodeRadius + 10) {
+                    return node.id;
+                }
+            }
+            return 0;
         },
 
-        // Measuring the canvas forces a layout, so it is measured every half
-        // second rather than every frame: nothing here resizes mid-orbit except
-        // a window drag, and half a second of a stretched picture is the price.
         resize: function (force) {
             const st = this.state;
-            if (!st) return;
-            if (!force && (st.sizeAt = (st.sizeAt || 0) + 1) % 15 !== 0) return;
+            if (!st || !st.canvas) return;
             const rect = st.canvas.getBoundingClientRect();
             const w = Math.max(1, Math.round(rect.width));
             const h = Math.max(1, Math.round(rect.height));
-            if (w === st.sized.w && h === st.sized.h) return;
-            st.sized = { w: w, h: h };
-            st.camera.aspect = w / h;
-            st.camera.updateProjectionMatrix();
-            st.renderer.setSize(w, h, false);
+
+            if (force || w !== st.sized.w || h !== st.sized.h) {
+                st.sized = { w: w, h: h };
+                st.canvas.width = w;
+                st.canvas.height = h;
+            }
         },
 
         _frame: function (st, dt) {
             st.time += dt;
-            st.idle += dt;
-            st.frameNo++;
-            this.resize();
+            st.pulse = (Math.sin(st.time * 3.2) + 1) * 0.5;
 
-            // The figure turns on its own once the reader has stopped handling
-            // it, which is what makes a still page look like a sky.
-            if (st.idle > 2.5) st.spin = (st.spin + dt * 0.06) % TAU;
-            st.root.rotation.y = st.spin;
+            // Camera lerp
+            const lerpSpeed = Math.min(1.0, dt * 10);
+            st.camX += (st.targetX - st.camX) * lerpSpeed;
+            st.camY += (st.targetY - st.camY) * lerpSpeed;
+            st.zoom += (st.targetZoom - st.zoom) * lerpSpeed;
 
-            // The cursor's sphere is carried round by the figure's own turn, so
-            // the point the camera holds is its place turned by the same amount.
-            const cs = Math.cos(st.spin), sn = Math.sin(st.spin);
-            st.want.set(st.aim.x * cs + st.aim.z * sn, st.aim.y, -st.aim.x * sn + st.aim.z * cs);
-            if (st.snap) { st.target.copy(st.want); st.snap = false; }
-            else st.target.lerp(st.want, Math.min(1, dt * 6));
-            const dist = st.fit / st.zoom;
-            const cp = st.camera.position;
-            const cy = Math.cos(st.pitch);
-            cp.set(
-                st.target.x + Math.sin(st.yaw) * cy * dist,
-                st.target.y + Math.sin(st.pitch) * dist,
-                st.target.z + Math.cos(st.yaw) * cy * dist
-            );
-            st.camera.lookAt(st.target);
-            // Not quite a headlamp: the light stands off the camera's shoulder,
-            // so a sphere is read as a ball rather than as a flat disc.
-            st.keyLight.position.set(
-                cp.x + Math.cos(st.yaw) * dist * 0.35,
-                cp.y + dist * 0.35,
-                cp.z - Math.sin(st.yaw) * dist * 0.35
-            );
+            this.resize(false);
+            const ctx = st.ctx;
+            const W = st.sized.w;
+            const H = st.sized.h;
+            const w2 = W / 2;
+            const h2 = H / 2;
 
-            const pulse = 0.5 + 0.5 * Math.sin(st.time * 2.6);
-            for (let i = 0; i < st.nodes.length; i++) {
-                const node = st.nodes[i];
-                if (node.state === 1 && st.halos[i]) {
-                    st.halos[i].material.opacity = 0.24 + pulse * 0.28;
-                }
-            }
+            ctx.clearRect(0, 0, W, H);
 
-            if (st.focusSprite) {
-                const idx = st.nodes.findIndex(n => n.id === st.focusId);
-                if (idx >= 0) {
-                    st.focusSprite.visible = true;
-                    st.focusSprite.position.copy(st.meshes[idx].position);
-                    st.focusSprite.scale.setScalar(SKY_NODE_R * (4.2 + pulse * 0.8));
-                } else {
-                    st.focusSprite.visible = false;
-                }
-            }
+            // 1. Draw Space & Celestial Background
+            this._drawBackground(st, ctx, W, H);
 
-            this._labelPass(st);
-            st.renderer.render(st.world, st.camera);
+            // 2. Transform into World Coordinates
+            ctx.save();
+            ctx.translate(w2, h2);
+            ctx.scale(st.zoom, st.zoom);
+            ctx.translate(st.camX, st.camY);
+
+            // 3. Draw Edge Connection Lines & Flow Energy Particles
+            this._drawEdges(st, ctx, dt);
+
+            // 4. Draw Skill Nodes
+            this._drawNodes(st, ctx);
+
+            ctx.restore();
+
+            // 5. Update HTML Labels Positions
+            this._updateLabels(st, w2, h2);
         },
 
-        // Project every sphere, hand the cursor its screen place (the arrow keys
-        // walk the figure by what is on the screen) and write out the names of
-        // the nearest few. Every name at once on a school of two hundred is a
-        // wall of text, so only what is close enough to matter is written.
-        _labelPass: function (st) {
-            const v = new THREE.Vector3();
-            const w = st.sized.w, h = st.sized.h;
-            const shown = [];
+        _drawBackground: function (st, ctx, W, H) {
+            const schoolHue = (st.atlas && st.atlas.hue != null) ? st.atlas.hue : 210;
+
+            // Deep background gradient with school aura
+            const grad = ctx.createRadialGradient(W / 2, H / 2, 40, W / 2, H / 2, Math.max(W, H) * 0.8);
+            grad.addColorStop(0, `hsla(${schoolHue}, 45%, 12%, 0.95)`);
+            grad.addColorStop(0.5, `hsla(${schoolHue}, 35%, 6%, 0.98)`);
+            grad.addColorStop(1, 'rgba(6, 7, 10, 1)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+
+            // Subtle Grid pattern
+            ctx.save();
+            ctx.strokeStyle = `hsla(${schoolHue}, 30%, 35%, 0.08)`;
+            ctx.lineWidth = 1;
+            const gridSize = 48 * st.zoom;
+            const offsetX = (W / 2 + st.camX * st.zoom) % gridSize;
+            const offsetY = (H / 2 + st.camY * st.zoom) % gridSize;
+
+            ctx.beginPath();
+            for (let x = offsetX; x < W; x += gridSize) {
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, H);
+            }
+            for (let y = offsetY; y < H; y += gridSize) {
+                ctx.moveTo(0, y);
+                ctx.lineTo(W, y);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // Twinkling stars
+            ctx.save();
+            for (const s of st.stars) {
+                const sx = (s.x + st.camX * 0.15) % W;
+                const sy = (s.y + st.camY * 0.15) % H;
+                const px = sx < 0 ? sx + W : sx;
+                const py = sy < 0 ? sy + H : sy;
+                const alpha = s.alpha * (0.6 + 0.4 * Math.sin(st.time * s.speed + s.phase));
+                ctx.fillStyle = `rgba(220, 235, 255, ${alpha.toFixed(2)})`;
+                ctx.beginPath();
+                ctx.arc(px, py, s.size, 0, TAU);
+                ctx.fill();
+            }
+            ctx.restore();
+        },
+
+        _drawEdges: function (st, ctx, dt) {
+            if (!st.edges || !st.edges.length) return;
+
+            const scale = st.scaleFactor;
+            ctx.save();
+
+            for (const [a, b] of st.edges) {
+                const ax = a.x * scale, ay = a.y * scale;
+                const bx = b.x * scale, by = b.y * scale;
+
+                const isLearned = a.state === 2 && b.state === 2;
+                const isOpen = a.state === 2 || b.state === 2 || a.state === 1 || b.state === 1;
+                const hue = a.hue || 210;
+
+                // Bezier curve control points
+                const midY = (ay + by) / 2;
+                const cp1x = ax, cp1y = midY;
+                const cp2x = bx, cp2y = midY;
+
+                ctx.beginPath();
+                ctx.moveTo(ax, ay);
+                ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, bx, by);
+
+                if (isLearned) {
+                    // Radiant golden / elemental beam with outer glow
+                    ctx.shadowColor = `hsla(${hue}, 90%, 65%, 0.8)`;
+                    ctx.shadowBlur = 10;
+                    ctx.strokeStyle = `hsla(${hue}, 85%, 60%, 0.95)`;
+                    ctx.lineWidth = 3.5;
+                    ctx.stroke();
+
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+                } else if (isOpen) {
+                    // Pulsing available line
+                    ctx.shadowColor = `hsla(${hue}, 70%, 50%, 0.4)`;
+                    ctx.shadowBlur = 6;
+                    ctx.strokeStyle = `hsla(${hue}, 65%, 45%, ${0.5 + st.pulse * 0.35})`;
+                    ctx.lineWidth = 2.2;
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                } else {
+                    // Dim locked line
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = 'rgba(75, 85, 95, 0.4)';
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([4, 4]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            }
+
+            // Animate traveling energy sparks on mastered edges
+            for (const p of st.particles) {
+                const edge = st.edges[p.edgeIndex];
+                if (!edge) continue;
+                const [a, b] = edge;
+                if (a.state !== 2 && b.state !== 2) continue;
+
+                p.progress = (p.progress + dt * p.speed) % 1.0;
+                const t = p.progress;
+
+                const ax = a.x * scale, ay = a.y * scale;
+                const bx = b.x * scale, by = b.y * scale;
+                const midY = (ay + by) / 2;
+
+                // Bezier interpolation
+                const u = 1 - t;
+                const tt = t * t;
+                const uu = u * u;
+                const uuu = uu * u;
+                const ttt = tt * t;
+
+                const px = uuu * ax + 3 * uu * t * ax + 3 * u * tt * bx + ttt * bx;
+                const py = uuu * ay + 3 * uu * t * midY + 3 * u * tt * midY + ttt * by;
+
+                const hue = a.hue || 210;
+                ctx.shadowColor = `hsla(${hue}, 100%, 75%, 1)`;
+                ctx.shadowBlur = 8;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(px, py, p.size, 0, TAU);
+                ctx.fill();
+            }
+
+            ctx.restore();
+        },
+
+        _drawNodes: function (st, ctx) {
+            const scale = st.scaleFactor;
+            const iconImg = getIconSetImage();
+            const iconReady = iconImg && iconImg.isReady && iconImg.isReady();
+
+            for (const node of st.nodes) {
+                const nx = node.x * scale;
+                const ny = node.y * scale;
+                const hue = node.hue || 210;
+                const isFocus = node.id === st.focusId;
+                const isHover = node.id === st.hoverId;
+                const isLearned = node.state === 2;
+                const isOpen = node.state === 1;
+                const radius = 22;
+
+                ctx.save();
+                ctx.translate(nx, ny);
+
+                // 1. Selection & Hover Aura Reticle
+                if (isFocus || isHover) {
+                    ctx.save();
+                    ctx.rotate(st.time * (isFocus ? 1.5 : 0.8));
+                    ctx.strokeStyle = `hsla(${hue}, 95%, 70%, ${0.7 + st.pulse * 0.3})`;
+                    ctx.lineWidth = isFocus ? 2.5 : 1.8;
+                    ctx.setLineDash(isFocus ? [8, 6] : [4, 4]);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, radius + 8, 0, TAU);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // 2. Outer Status Ring / Halo
+                if (isLearned) {
+                    ctx.shadowColor = `hsla(${hue}, 95%, 60%, 0.85)`;
+                    ctx.shadowBlur = 12;
+                    ctx.strokeStyle = `hsla(${hue}, 90%, 65%, 1)`;
+                    ctx.lineWidth = 3;
+                } else if (isOpen) {
+                    ctx.shadowColor = `hsla(${hue}, 80%, 50%, ${0.5 + st.pulse * 0.4})`;
+                    ctx.shadowBlur = 8 + st.pulse * 6;
+                    ctx.strokeStyle = `hsla(${hue}, 80%, 55%, 0.95)`;
+                    ctx.lineWidth = 2.5;
+                } else {
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = 'rgba(70, 75, 85, 0.7)';
+                    ctx.lineWidth = 1.8;
+                }
+
+                // Node Body Gradient
+                const bgGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, radius);
+                if (isLearned) {
+                    bgGrad.addColorStop(0, `hsla(${hue}, 70%, 35%, 1)`);
+                    bgGrad.addColorStop(1, `hsla(${hue}, 80%, 15%, 1)`);
+                } else if (isOpen) {
+                    bgGrad.addColorStop(0, `hsla(${hue}, 50%, 25%, 1)`);
+                    bgGrad.addColorStop(1, `hsla(${hue}, 60%, 10%, 1)`);
+                } else {
+                    bgGrad.addColorStop(0, 'rgba(30, 34, 40, 1)');
+                    bgGrad.addColorStop(1, 'rgba(15, 17, 20, 1)');
+                }
+
+                ctx.fillStyle = bgGrad;
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, TAU);
+                ctx.fill();
+                ctx.stroke();
+
+                // 3. Render Skill Icon in Center
+                if (iconReady && node.skill && node.skill.iconIndex != null) {
+                    const iconIdx = node.skill.iconIndex;
+                    const pw = ImageManager.iconWidth || 32;
+                    const ph = ImageManager.iconHeight || 32;
+                    const cols = 16;
+                    const sx = (iconIdx % cols) * pw;
+                    const sy = Math.floor(iconIdx / cols) * ph;
+                    const iconSize = 24;
+
+                    ctx.save();
+                    if (!isLearned && !isOpen) {
+                        ctx.globalAlpha = 0.45;
+                    }
+                    ctx.drawImage(iconImg._image || iconImg._canvas, sx, sy, pw, ph, -iconSize / 2, -iconSize / 2, iconSize, iconSize);
+                    ctx.restore();
+                }
+
+                // 4. Status Glyphs (Checkmark / Lock badge on top corner)
+                if (isLearned) {
+                    ctx.fillStyle = 'var(--text-forest-complete, #52c41a)';
+                    ctx.beginPath();
+                    ctx.arc(radius - 4, -radius + 4, 6, 0, TAU);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 9px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('✓', radius - 4, -radius + 4.5);
+                } else if (!isOpen) {
+                    ctx.fillStyle = 'rgba(40, 44, 52, 0.9)';
+                    ctx.beginPath();
+                    ctx.arc(radius - 4, -radius + 4, 6, 0, TAU);
+                    ctx.fill();
+                    ctx.fillStyle = '#aaa';
+                    ctx.font = '8px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('🔒', radius - 4, -radius + 4.5);
+                }
+
+                ctx.restore();
+            }
+        },
+
+        _updateLabels: function (st, w2, h2) {
+            if (!st.labelEls.length) return;
+            const scale = st.scaleFactor;
+            const maxVisibleLabels = 40;
+            let visibleCount = 0;
+
             for (let i = 0; i < st.nodes.length; i++) {
                 const node = st.nodes[i];
-                const mesh = st.meshes[i];
-                if (!mesh) continue;
-                mesh.getWorldPosition(v);
-                const d = v.distanceTo(st.camera.position);
-                v.project(st.camera);
-                node.sx = (v.x * 0.5 + 0.5) * w;
-                node.sy = (-v.y * 0.5 + 0.5) * h;
-                node.sd = d;
-                node.vis = v.z < 1 && node.sx > -40 && node.sx < w + 40 && node.sy > -40 && node.sy < h + 40;
-                if (node.vis) shown.push(i);
-            }
-            if (!st.labelEls.length) return;
-            shown.sort((a, b) => st.nodes[a].sd - st.nodes[b].sd);
-            const named = new Set();
-            const wide = st.zoom < ATLAS_LABEL_ZOOM;
-            const room = wide ? 0 : ATLAS_LABEL_MAX;
-            // Nearest first, and a name is dropped where another already stands:
-            // two names written over each other are worse than one name and a
-            // sphere the reader can turn towards.
-            const taken = [];
-            for (let k = 0; k < shown.length && named.size < room; k++) {
-                const node = st.nodes[shown[k]];
-                let clear = true;
-                for (const t of taken) {
-                    if (Math.abs(t.x - node.sx) < 96 && Math.abs(t.y - node.sy) < 20) { clear = false; break; }
-                }
-                if (!clear) continue;
-                taken.push({ x: node.sx, y: node.sy });
-                named.add(shown[k]);
-            }
-            const focusIdx = st.nodes.findIndex(n => n.id === st.focusId);
-            if (focusIdx >= 0 && st.nodes[focusIdx].vis) named.add(focusIdx);
-            if (st.hoverId) {
-                const hi = st.nodes.findIndex(n => n.id === st.hoverId);
-                if (hi >= 0 && st.nodes[hi].vis) named.add(hi);
-            }
-            for (let i = 0; i < st.labelEls.length; i++) {
                 const el = st.labelEls[i];
-                if (!named.has(i)) {
+                if (!el) continue;
+
+                // Screen position
+                const sx = w2 + (node.x * scale + st.camX) * st.zoom;
+                const sy = h2 + (node.y * scale + st.camY) * st.zoom;
+
+                node.sx = sx;
+                node.sy = sy;
+                node.vis = (sx >= -100 && sx <= st.sized.w + 100 && sy >= -100 && sy <= st.sized.h + 100);
+
+                if (!node.vis || visibleCount >= maxVisibleLabels) {
                     if (el.style.display !== 'none') el.style.display = 'none';
                     continue;
                 }
-                const node = st.nodes[i];
+
+                visibleCount++;
                 el.style.display = 'block';
-                el.style.transform = `translate(-50%, 0) translate(${node.sx.toFixed(1)}px, ${(node.sy + 16).toFixed(1)}px)`;
-                const near = Math.max(0.25, Math.min(1, 34 / Math.max(1, node.sd)));
-                el.style.opacity = (node.id === st.focusId ? 1 : near).toFixed(2);
-                el.classList.toggle('sg3-focus', node.id === st.focusId);
+                el.style.left = `${sx.toFixed(1)}px`;
+                el.style.top = `${(sy + 26 * st.zoom).toFixed(1)}px`;
+
+                // Scale label with zoom subtly
+                const labelScale = Math.max(0.75, Math.min(1.15, st.zoom));
+                el.style.transform = `translate(-50%, 0) scale(${labelScale.toFixed(2)})`;
             }
         },
 
@@ -3639,7 +2725,16 @@
             this.state = null;
             if (!st) return;
             st.disposed = true;
-            cancelAnimationFrame(st.rafId);
+            if (st.rafId) {
+                cancelAnimationFrame(st.rafId);
+                st.rafId = 0;
+            }
+            if (st.stubGeo && st.stubGeo.dispose) st.stubGeo.dispose();
+            if (st.stubMat && st.stubMat.dispose) st.stubMat.dispose();
+            if (st.renderer) {
+                if (st.renderer.dispose) st.renderer.dispose();
+                if (st.renderer.forceContextLoss) st.renderer.forceContextLoss();
+            }
             const L = st.listeners || {}, c0 = st.canvas;
             if (c0) {
                 if (L.down) c0.removeEventListener('pointerdown', L.down);
@@ -3649,1305 +2744,208 @@
                 if (L.ctx) c0.removeEventListener('contextmenu', L.ctx);
             }
             if (L.up) window.removeEventListener('pointerup', L.up);
-            this._clearFigure(st);
-            if (st.stars) { st.stars.geometry.dispose(); st.stars.material.dispose(); }
-            for (const cloud of st.clouds) cloud.material.dispose();
-            // dispose() leaves the WebGL context alive. The browser caps live
-            // contexts and force-loses the OLDEST past the cap, which is the
-            // game's own canvas: PIXI then silently stops drawing and the
-            // picture freezes. Release it, then swap in a clean canvas node,
-            // since the element a context was lost on can never host a new one.
-            try { st.renderer.dispose(); } catch (e) { /* already lost */ }
-            try { if (st.renderer.forceContextLoss) st.renderer.forceContextLoss(); } catch (e) { /* already lost */ }
-            const c = st.canvas;
-            if (c && c.parentNode) c.parentNode.replaceChild(c.cloneNode(false), c);
+            if (st.labels) st.labels.innerHTML = '';
+            st.labelEls = [];
         }
     };
 
-    window.AtlasSky = AtlasSky;
+    window.SkillTree2D = SkillTree2D;
+    window.AtlasSky = SkillTree2D;
+    SkillMaster.SkillTree2D = SkillTree2D;
 
-    //---------------------------------------------------------------- framing
+})();
 
-    // Zoom is a factor on the distance that would hold the whole figure: 1 is
-    // the school seen whole, more is closer in. Nothing here is a scroll offset
-    // any more, so the two ends of the old pan (the sizer and the scroll box)
-    // are gone with it.
-    Scene_SkillEncyclopedia.prototype.atlasZoom = function () {
-        if (!this._atlasZoom) this._atlasZoom = ATLAS_ZOOM_DEFAULT;
-        return this._atlasZoom;
-    };
 
-    Scene_SkillEncyclopedia.prototype.defaultAtlasZoom = function () {
-        return ATLAS_ZOOM_DEFAULT;
-    };
+//=============================================================================
+// Module: SkillMasterPreview.js
+//=============================================================================
+/*:
+ * @target MZ
+ * @plugindesc v4.0.0 SkillMaster - Effekseer 3D Spell & Skill Animation Previewer.
+ * @author Omni-Lex
+ */
 
-    // Far enough back that the whole figure is on screen at once: what one press
-    // of Shift steps out to.
-    Scene_SkillEncyclopedia.prototype.wholeAtlasZoom = function () {
-        return ATLAS_ZOOM_WHOLE;
-    };
+(() => {
+    'use strict';
 
-    Scene_SkillEncyclopedia.prototype.setAtlasZoom = function (zoom) {
-        const next = Math.max(ATLAS_ZOOM_MIN, Math.min(ATLAS_ZOOM_MAX, zoom));
-        if (Math.abs(next - this.atlasZoom()) < 0.001) return;
-        this._atlasZoom = next;
-        AtlasSky.setZoom(next);
-    };
+    window.SkillMaster = window.SkillMaster || {};
 
-    Scene_SkillEncyclopedia.prototype.zoomAtlas = function (dir) {
-        this.setAtlasZoom(dir > 0 ? this.atlasZoom() * ATLAS_ZOOM_STEP
-            : this.atlasZoom() / ATLAS_ZOOM_STEP);
-    };
+    const AnimPreview = {
+        _ctx: null, _gl: null, _canvas: null,
+        _effect: null, _handle: null, _effectName: '',
+        _rafId: 0, _animId: 0, _dead: false,
+        _yaw: 0, _pitch: 0.12, _dist: 10,
+        _interactive: false, _dragging: false, _lastX: 0, _lastY: 0,
+        _onDown: null, _onMove: null, _onUp: null, _onWheel: null,
 
-    //---------------------------------------------------------------- the sky
+        isSupported() { return !!window.effekseer; },
 
-    // Put the renderer on the canvas the left page has just been given, or take
-    // it down when the atlas is not what is on the page. Called from every
-    // refresh: mounting is what is expensive, and it only happens on the first
-    // one after the page was rebuilt.
-    Scene_SkillEncyclopedia.prototype.syncAtlasSky = function () {
-        const canvas = document.getElementById('skill-atlas-canvas');
-        if (!canvas) { AtlasSky.dispose(); return; }
-        if (!AtlasSky.state || AtlasSky.state.canvas !== canvas) {
-            AtlasSky.mount(canvas, document.getElementById('skill-atlas-labels'), this);
-            if (!AtlasSky.state) return;
-            AtlasSky.setZoom(this.atlasZoom());
-            this.bindAtlasPointer();
-            this._lastGraphKey = null;
-        }
-        const atlas = this.currentAtlas();
-        // Compared by the FIGURE, not by its name: an atlas rebuilt after a
-        // fusion answers with the same figure object when nothing about the
-        // school moved, and the spheres are then left standing.
-        const figure = atlas.circles[0] || null;
-        if (AtlasSky.state.figure !== figure) {
-            AtlasSky.setAtlas(atlas);
-            this._lastGraphKey = null;
-            AtlasSky.setZoom(this.atlasZoom());
-            AtlasSky.lookAt(this._focusSkillId, true);
-        }
-        const graphKey = this.graphStateKey();
-        if (graphKey !== this._lastGraphKey) {
-            this._lastGraphKey = graphKey;
-            AtlasSky.repaint(this.getTeachActor(), this._focusSkillId);
-        }
-    };
+        init(canvas, interactive) {
+            if (this._canvas === canvas && this._ctx) return true;
+            this.dispose();
+            if (!window.effekseer || !canvas) return false;
+            const opts = { alpha: true, premultipliedAlpha: true, depth: true, antialias: true };
+            const gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
+            if (!gl) return false;
+            let ctx;
+            try {
+                ctx = window.effekseer.createContext();
+                ctx.init(gl, { instanceMaxCount: 4000, squareMaxCount: 8000 });
+                ctx.setRestorationOfStatesFlag(true);
+            } catch (e) {
+                console.error('SkillMaster AnimPreview: Effekseer init failed', e);
+                return false;
+            }
+            this._canvas = canvas; this._gl = gl; this._ctx = ctx; this._dead = false;
+            this._yaw = 0; this._pitch = 0.12; this._dist = 10;
+            this._interactive = !!interactive;
+            if (this._interactive) this._bindInput(canvas);
+            this._startLoop();
+            return true;
+        },
 
-    // Drag to turn the figure, wheel to come in and out, click a sphere to open
-    // its sheet. A press that never travelled is a click, so turning the figure
-    // over a crowded school never teaches anything by accident. Every listener
-    // is on the canvas itself, which is thrown away with the context.
-    Scene_SkillEncyclopedia.prototype.bindAtlasPointer = function () {
-        const st = AtlasSky.state;
-        if (!st || st.bound) return;
-        const canvas = st.canvas;
-        st.bound = true;
-        const DEAD = 5;
-        let dragging = false, fromX = 0, fromY = 0;
-        st.dragged = false;
+        _bindInput(canvas) {
+            const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+            this._onDown = (e) => { this._dragging = true; this._lastX = e.clientX; this._lastY = e.clientY; e.preventDefault(); };
+            this._onMove = (e) => {
+                if (!this._dragging) return;
+                this._yaw -= (e.clientX - this._lastX) * 0.01;
+                this._pitch = clamp(this._pitch + (e.clientY - this._lastY) * 0.01, -1.3, 1.3);
+                this._lastX = e.clientX; this._lastY = e.clientY;
+            };
+            this._onUp = () => { this._dragging = false; };
+            this._onWheel = (e) => {
+                this._dist = clamp(this._dist + (e.deltaY > 0 ? 1 : -1) * 1.2, 4, 26);
+                e.preventDefault(); e.stopPropagation();
+            };
+            canvas.addEventListener('pointerdown', this._onDown);
+            window.addEventListener('pointermove', this._onMove);
+            window.addEventListener('pointerup', this._onUp);
+            canvas.addEventListener('wheel', this._onWheel, { passive: false });
+        },
 
-        const L = st.listeners;
-        L.down = (e) => {
-            if (e.button !== 0 && e.button !== 2) return;
-            dragging = true;
-            st.dragged = false;
-            fromX = e.clientX; fromY = e.clientY;
-            canvas.style.cursor = 'grabbing';
-        };
-        L.move = (e) => {
-            const rect = canvas.getBoundingClientRect();
-            if (!dragging) {
-                // At most one raycast a frame: a mouse crossing the sky reports
-                // a hundred moves a second and each one would walk every sphere.
-                if (st.pickedAt === st.frameNo) return;
-                st.pickedAt = st.frameNo;
-                st.hoverId = AtlasSky.pick(e.clientX - rect.left, e.clientY - rect.top);
-                canvas.style.cursor = st.hoverId ? 'pointer' : 'grab';
+        _unbindInput() {
+            if (this._canvas && this._onDown) this._canvas.removeEventListener('pointerdown', this._onDown);
+            if (this._onMove) window.removeEventListener('pointermove', this._onMove);
+            if (this._onUp) window.removeEventListener('pointerup', this._onUp);
+            if (this._canvas && this._onWheel) this._canvas.removeEventListener('wheel', this._onWheel);
+            this._onDown = this._onMove = this._onUp = this._onWheel = null;
+            this._dragging = false;
+        },
+
+        _viewMatrix() {
+            const cp = Math.cos(this._pitch), sp = Math.sin(this._pitch);
+            const sy = Math.sin(this._yaw), cy = Math.cos(this._yaw);
+            const ex = this._dist * cp * sy, ey = this._dist * sp, ez = this._dist * cp * cy;
+            let fx = -ex, fy = -ey, fz = -ez;
+            const fl = Math.hypot(fx, fy, fz) || 1; fx /= fl; fy /= fl; fz /= fl;
+            let sx = -fz, sy2 = 0, sz = fx;
+            const sl = Math.hypot(sx, sy2, sz) || 1; sx /= sl; sy2 /= sl; sz /= sl;
+            const ux = sy2 * fz - sz * fy, uy = sz * fx - sx * fz, uz = sx * fy - sy2 * fx;
+            return [
+                sx, ux, -fx, 0,
+                sy2, uy, -fy, 0,
+                sz, uz, -fz, 0,
+                -(sx * ex + sy2 * ey + sz * ez),
+                -(ux * ex + uy * ey + uz * ez),
+                (fx * ex + fy * ey + fz * ez),
+                1
+            ];
+        },
+
+        setAnimation(animId) {
+            if (!this._ctx) return;
+            const anim = (typeof $dataAnimations !== 'undefined') && $dataAnimations[animId];
+            this._animId = animId;
+            if (!anim || anim.frames || !anim.effectName) {
+                this._stopHandle(); this._effect = null; this._effectName = '';
                 return;
             }
-            const dx = e.clientX - fromX, dy = e.clientY - fromY;
-            if (!st.dragged && Math.abs(dx) + Math.abs(dy) < DEAD) return;
-            st.dragged = true;
-            AtlasSky.orbit(dx, dy);
-            fromX = e.clientX; fromY = e.clientY;
-        };
-        L.up = () => {
-            dragging = false;
-            canvas.style.cursor = 'grab';
-        };
-        L.click = (e) => {
-            if (st.dragged) { st.dragged = false; return; }
-            const rect = canvas.getBoundingClientRect();
-            const id = AtlasSky.pick(e.clientX - rect.left, e.clientY - rect.top);
-            if (id) this.selectGraphNode(id);
-        };
-        L.wheel = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.setAtlasZoom(this.atlasZoom() * (e.deltaY > 0 ? 1 / ATLAS_WHEEL_STEP : ATLAS_WHEEL_STEP));
-        };
-        L.ctx = (e) => e.preventDefault();
+            const name = anim.effectName;
+            if (name === this._effectName && this._effect) { this._replay(); return; }
+            this._stopHandle();
+            this._effect = null; this._effectName = name;
+            const url = 'effects/' + Utils.encodeURI(name) + '.efkefc';
+            try {
+                const eff = this._ctx.loadEffect(url, 1,
+                    () => { if (this._effectName === name) { this._effect = eff; this._replay(); } },
+                    () => { /* load failed */ });
+            } catch (e) { /* ignore */ }
+        },
 
-        canvas.addEventListener('pointerdown', L.down);
-        canvas.addEventListener('pointermove', L.move);
-        window.addEventListener('pointerup', L.up);
-        canvas.addEventListener('click', L.click);
-        canvas.addEventListener('wheel', L.wheel, { passive: false });
-        canvas.addEventListener('contextmenu', L.ctx);
-    };
+        _replay() {
+            if (!this._ctx || !this._effect) return;
+            this._stopHandle();
+            try {
+                this._handle = this._ctx.play(this._effect, 0, 0, 0);
+                if (this._handle) { this._handle.setLocation(0, 0, 0); this._handle.setScale(1, 1, 1); }
+            } catch (e) { this._handle = null; }
+        },
 
-    // The pager: which school of the curriculum is on the page, and the way to
-    // the one before and the one after it. A curriculum of one school shows
-    // nothing, since there is nowhere to turn to.
-    Scene_SkillEncyclopedia.prototype.renderAtlasPagerHTML = function () {
-        const list = this.atlasCategories();
-        const cur = list.indexOf(this.viewedCategory());
-        if (list.length <= 1 || cur < 0) return '';
-        const prev = list[(cur - 1 + list.length) % list.length];
-        const next = list[(cur + 1) % list.length];
-        return `
-            <div class="sg-pager">
-                <span class="sg-pager-arrow" onclick="SceneManager._scene.pageAtlasSchool(-1)" title="${getCategoryDisplayName(prev)}">&#8249;</span>
-                <span class="sg-pager-name">${getCategoryDisplayName(list[cur])}</span>
-                <span class="sg-pager-count">${T('SkillMaster.atlas.schoolOf', { index: cur + 1, total: list.length })}</span>
-                <span class="sg-pager-arrow" onclick="SceneManager._scene.pageAtlasSchool(1)" title="${getCategoryDisplayName(next)}">&#8250;</span>
-            </div>`;
-    };
+        _stopHandle() {
+            if (this._handle) { try { this._handle.stop(); } catch (e) {} this._handle = null; }
+        },
 
-    // The header bar over the sky: the pager, the key to the three colours a
-    // sphere can burn, and the two rules that pull the camera in and out. It is
-    // rewritten on its own, without touching the canvas under it, so turning to
-    // another school never costs a WebGL context.
-    Scene_SkillEncyclopedia.prototype.renderAtlasChromeHTML = function () {
-        const legendKey = (color, label) =>
-            `<span class="sg-legend-key"><span class="sg-legend-dot" style="border:2px solid ${color}"></span>${label}</span>`;
-        return `
-            ${this.renderAtlasPagerHTML()}
-            <div class="sg-legend">
-                ${legendKey('var(--border-forest-green)', T('SkillMaster.graph.legendLearned'))}
-                ${legendKey('var(--text-secondary-active)', T('SkillMaster.graph.legendOpen'))}
-                ${legendKey('var(--border-secondary-hover-translucent-15)', T('SkillMaster.graph.legendLocked'))}
-                <span class="sg-legend-key">
-                    <span class="sg-zoom" onclick="SceneManager._scene.zoomAtlas(-1)">-</span>
-                    <span class="sg-zoom" onclick="SceneManager._scene.zoomAtlas(1)">+</span>
-                </span>
-                <span class="sg-hint">${T('SkillMaster.atlas.hint')}</span>
-            </div>`;
-    };
-
-    // The school's name and how much of it is known, written under the figure.
-    Scene_SkillEncyclopedia.prototype.renderAtlasBannerHTML = function () {
-        const category = this.viewedCategory();
-        const count = this.atlasLearnedCount(category);
-        return `${getCategoryDisplayName(category)}<span class="sg-banner-sub">${T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total })}</span>`;
-    };
-
-    Scene_SkillEncyclopedia.prototype.renderSkillAtlasHTML = function () {
-        return `
-            <div id="sg3-chrome">${this.renderAtlasChromeHTML()}</div>
-            <div id="skill-atlas-box" class="sg3-sky" style="flex:1">
-                <canvas id="skill-atlas-canvas"></canvas>
-                <div id="skill-atlas-labels" class="sg3-labels"></div>
-                <div id="sg3-banner" class="sg-banner">${this.renderAtlasBannerHTML()}</div>
-            </div>
-        `;
-    };
-
-    // The flat list, the fallback for a curriculum with no figure on it at all
-    // (nothing in any of the pupil's schools carries a <Node:> tag, or this
-    // machine will not give the scene a WebGL context).
-    Scene_SkillEncyclopedia.prototype.renderSkillListHTML = function () {
-        const skills = getSkillsByCategory(this._selectedCategory);
-        const teachActor = this.getTeachActor();
-        let skillsListHTML = "";
-
-        skills.forEach((skill, idx) => {
-            const isFocused = (this._selectedSkillIndex === idx);
-            const isLearned = teachActor ? teachActor.isLearnedSkill(skill.id) : false;
-            const isOpen = SkillGraph.isOpen(teachActor, skill.id);
-            const badge = isLearned
-                ? `<span style="font-family:'Lora', serif; font-size:1.081rem; text-transform:uppercase; color:var(--text-forest-complete); border:1px solid var(--border-forest-green); padding:1px 5px; font-weight:bold; background:var(--bg-success-green-15); letter-spacing:0.5px">${T('SkillMaster.mastered')}</span>`
-                : (!isOpen ? `<span style="font-family:'Lora', serif; font-size:1.081rem; text-transform:uppercase; color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15); padding:1px 5px; letter-spacing:0.5px">${T('SkillMaster.graph.locked')}</span>` : '');
-
-            skillsListHTML += `
-                <div class="skill-card ${isFocused ? 'focused' : ''}" onclick="SceneManager._scene.selectSkill(${idx})" style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--accent-gray-2-translucent-0); border:1px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; opacity:${isLearned || isOpen ? 1 : 0.6}; transition:all 0.15s ease">
-                    <div style="display:flex; align-items:center; gap:10px">
-                        <div style="${getSkillIconStyle(skill.iconIndex)} transform: scale(0.8); flex-shrink: 0; image-rendering: pixelated; margin-right: 2px"></div>
-                        <div style="font-weight:bold; color:${isFocused ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}; font-size:1.365rem">${skill.name}</div>
-                    </div>
-                    ${badge}
-                </div>
-            `;
-        });
-
-        return `
-            <div id="skills-scroll-box" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${SKILL_GRID_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box">
-                ${skillsListHTML}
-            </div>
-        `;
-    };
-
-    // Choosing a sphere opens its sheet, there and then: one click, one popup,
-    // with everything the skill is and the button that teaches it. A sphere is
-    // never selected without being read.
-    Scene_SkillEncyclopedia.prototype.selectGraphNode = function (skillId) {
-        if (this._focusSkillId !== skillId && !this.focusSkillId(skillId)) return;
-        this.scrollGraphToFocus();
-        this.openFocusedSkill();
-    };
-
-    // Open the sheet of whatever the cursor is standing on.
-    Scene_SkillEncyclopedia.prototype.openFocusedSkill = function () {
-        const skill = this.focusedSkill();
-        if (!skill) { SoundManager.playBuzzer(); return; }
-        this._skillDetailWindow.setSkill(skill);
-        this._viewMode = 'detail';
-        this._selectedActionIndex = 0;
-        SoundManager.playOk();
-        this.refreshUISkillDOM();
-    };
-
-    // Directional movement over the figure, measured WHERE IT IS ON THE SCREEN
-    // rather than where it is in the sky: take the nearest sphere lying inside a
-    // cone the way the stick was pushed. That is what lets one set of arrow keys
-    // walk forty different figures, and it follows the figure as it is turned.
-    // Running out of figure to the left or the right is what turns the page to
-    // the school before or after this one.
-    Scene_SkillEncyclopedia.prototype.moveGraphFocus = function (dx, dy) {
-        this.ensureAtlasFocus();
-        const atlas = this.currentAtlas();
-        const from = atlas.index[this._focusSkillId];
-        if (!from) return false;
-
-        let best = null;
-        let bestScore = Infinity;
-        let projected = 0;
-        for (const circle of atlas.circles) {
-            for (const node of circle.nodes) {
-                if (node.vis) projected++;
-                if (node.id === from.id || !node.vis) continue;
-                const vx = node.sx - from.sx;
-                const vy = node.sy - from.sy;
-                const along = vx * dx + vy * dy;
-                if (along <= 1) continue;                   // not the way asked for
-                const across = Math.abs(vx * dy - vy * dx);
-                if (across > along * 1.9) continue;         // outside the cone
-                // A sphere behind the one the cursor is on is a longer walk than
-                // one beside it, so depth counts for something but not for much.
-                const depth = Math.abs(node.sd - from.sd) * 1.4;
-                const score = along + across * 2.2 + depth;
-                if (score < bestScore) { bestScore = score; best = node; }
-            }
-        }
-        // Nothing has been drawn yet (the very first step after the page was
-        // built): swallow it rather than reading an empty screen as "off the
-        // edge of the figure" and turning to another school.
-        if (!best) return projected < 2;
-        this.focusSkillId(best.id);
-        return true;
-    };
-
-    // Swing the camera onto the cursor. The figure is orbited, not scrolled, so
-    // "scrolling to the focus" is the camera easing across to it.
-    Scene_SkillEncyclopedia.prototype.scrollGraphToFocus = function () {
-        AtlasSky.setFocus(this._focusSkillId);
-        AtlasSky.lookAt(this._focusSkillId, false);
-    };
-
-    // Put the whole figure on screen around the cursor: the step taken when a
-    // school is opened from the shelf, where there is nothing to ease from.
-    Scene_SkillEncyclopedia.prototype.centreAtlasOnFocus = function () {
-        AtlasSky.setFocus(this._focusSkillId);
-        AtlasSky.lookAt(this._focusSkillId, true);
-    };
-
-    // Only the cursor has changed: move the ring and the camera rather than
-    // rebuilding a school's worth of spheres for one step.
-    Scene_SkillEncyclopedia.prototype.repaintAtlasFocus = function () {
-        AtlasSky.setFocus(this._focusSkillId);
-        const title = document.getElementById('atlas-school-name');
-        const activeCat = this.focusedCategory();
-        if (title && activeCat) title.textContent = getCategoryDisplayName(activeCat);
-        const chrome = document.getElementById('sg3-chrome');
-        if (chrome) {
-            const html = this.renderAtlasChromeHTML();
-            if (chrome.innerHTML !== html) chrome.innerHTML = html;
-        }
-        const banner = document.getElementById('sg3-banner');
-        if (banner) {
-            const html = this.renderAtlasBannerHTML();
-            if (banner.innerHTML !== html) banner.innerHTML = html;
-        }
-    };
-
-    //=========================================================================
-    // The skill sheet
-    //
-    // One renderer for both places it can appear: the right page (a flat list
-    // category, where the sheet is the facing page) and the popup that opens
-    // over the atlas, where the circles own the whole spread.
-    //=========================================================================
-    Scene_SkillEncyclopedia.prototype.renderSkillDetailHTML = function (skill, knowledge, opts) {
-        opts = opts || {};
-        // In 'list' mode focus lives on the left skill grid, so the teach
-        // buttons render unfocused (preview only); 'detail' mode lets them focus.
-        const allowActionFocus = (this._viewMode === 'detail');
-
-        // Teaching always targets the pupil chosen when the scene opened.
-        let actionsListHTML = "";
-        const actor = this.getTeachActor();
-        if (actor) {
-            const hasSkill = actor.isLearnedSkill(skill.id);
-            const cost = $gameSystem.getSkillKnowledgeCost(skill.id, actor.actorId());
-            const canAfford = knowledge >= cost;
-            const isActionFocused = allowActionFocus && (this._selectedActionIndex === 0);
-
-            // The grid rule: a skill is only for sale when the pupil is
-            // standing next to it. The neighbours that would open it are
-            // named, so a locked node reads as a route, not a wall.
-            const isOpen = SkillGraph.isOpen(actor, skill.id);
-
-            if (hasSkill) {
-                actionsListHTML += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-success-green-15); border:1px solid var(--border-forest-green); border-radius:6px; color:var(--text-forest-complete); font-weight:bold; font-size:1.365rem">
-                        <span>${actor.name()}</span>
-                        <span style="font-family:'Lora', serif; font-size:1.196rem; text-transform:uppercase">✓ ${T('SkillMaster.learned')}</span>
-                    </div>
-                `;
-                // Knowing a skill and carrying it into a fight are two different
-                // things: the same loadout the skill menu edits is editable here,
-                // so a skill just bought can be taken up without leaving training.
-                actionsListHTML += this.carryToggleHTML(actor, skill, allowActionFocus);
-                // A spell the pupil forged is theirs to name and theirs to unmake.
-                actionsListHTML += this.fusionActionsHTML(actor, skill);
-            } else if (!isOpen) {
-                const openers = SkillGraph.openers(skill.id, actor).map(s => s.name);
-                // The gate tightens as the tree climbs, so the sheet has to say
-                // how MANY of the skills below are wanted, not just which.
-                const wanted = SkillGraph.stillWanted(skill.id, actor);
-                const lockLine = SkillGraph.isForbidden(skill.id)
-                    ? T('SkillMaster.graph.lockedBySchool', { skills: openers.join(', ') })
-                    : (openers.length
-                        ? (wanted > 1
-                            ? T('SkillMaster.graph.lockedByCount', { need: wanted, skills: openers.join(', ') })
-                            : T('SkillMaster.graph.lockedBy', { skills: openers.join(', ') }))
-                        : T('SkillMaster.graph.lockedHint'));
-                actionsListHTML += `
-                    <div style="padding:10px 14px; background:var(--bg-card-translucent-5); border:1px dashed var(--border-secondary-hover-translucent-15); border-radius:6px; font-family:'Lora', serif">
-                        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; font-size:1.292rem; color:var(--text-card-medium)">
-                            <span>${T('SkillMaster.graph.locked')}</span>
-                            <span style="color:var(--shadow-shadow-alt-5-translucent-40)">${cost} KP</span>
-                        </div>
-                        <div style="margin-top:5px; font-size:1.145rem; line-height:1.35; color:var(--text-card-medium)">
-                            ${lockLine}
-                        </div>
-                    </div>
-                `;
-            } else {
-                actionsListHTML += `
-                    <div class="action-button ${isActionFocused ? 'focused' : ''} ${!canAfford ? 'disabled' : ''}" onclick="SceneManager._scene.teachSkill(${actor.actorId()}, ${cost})" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:${isActionFocused ? 'var(--text-secondary-active)' : 'var(--accent-gray-2-translucent-0)'}; border:1px solid ${isActionFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:${canAfford ? 'pointer' : 'not-allowed'}; font-family:'Lora', serif; opacity:${canAfford ? 1 : 0.6}; transition:all 0.15s ease">
-                        <span style="font-weight:bold; color:${isActionFocused ? 'var(--text-pure-black)' : 'var(--text-card-medium)'}">${T('SkillMaster.teachPupil', { actor: actor.name() })}</span>
-                        <span style="font-family:'Lora', serif; font-weight:bold; color:${isActionFocused ? 'var(--text-pure-black)' : canAfford ? 'var(--text-text-alt-3)' : 'var(--shadow-shadow-alt-5-translucent-40)'}">${cost} KP</span>
-                    </div>
-                `;
-            }
-        }
-
-        // Full inspect block (Combat Application + Damage side by side, Skill
-        // Effects, Classifications) built by the same service the Skills menu uses.
-        const detailedInfoHTML = window.SkillDetails ? window.SkillDetails.build(skill, actor) : '';
-
-        let descriptionText = skill.description || (T('SkillMaster.noDescriptionAvailable'));
-        if (window.translateText) {
-            descriptionText = window.translateText(descriptionText);
-        }
-
-        // Preview button (index 1): opens a zoomable / draggable 3D Effekseer
-        // preview of the skill's animation over an empty target.
-        const isPreviewFocused = allowActionFocus && (this._selectedActionIndex === 1);
-        const previewBtnHTML = `
-            <div class="action-button preview-button ${isPreviewFocused ? 'focused' : ''}" onclick="SceneManager._scene.openSpellPreview(${skill.id})" style="flex:0 0 auto; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4px; padding:10px 16px; background:${isPreviewFocused ? 'var(--text-secondary-active)' : 'var(--bg-card-translucent-5)'}; border:1px solid ${isPreviewFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; transition:all 0.15s ease">
-                <span style="font-size:1.658rem; line-height:1">◈</span>
-                <span style="font-weight:bold; text-transform:uppercase; font-size:1.17rem; color:${isPreviewFocused ? 'var(--text-pure-black)' : 'var(--text-secondary-active)'}">${T('SkillMaster.preview')}</span>
-            </div>`;
-
-        // Why an occult skill is priced where it is: the tag is on the card, so
-        // a four-figure number reads as a reason rather than a mistake.
-        const note = skill.note || '';
-        const occultBadge = /<Forbidden>/i.test(note)
-            ? `<span class="sg-occult sg-forbidden">${T('SkillMaster.tag.forbidden')}</span>`
-            : (/<Esoteric>/i.test(note)
-                ? `<span class="sg-occult">${T('SkillMaster.tag.esoteric')}</span>` : '');
-
-        // A popup card is already a sized flex column, so the sheet grows into
-        // it instead of claiming a height of its own.
-        const rootSizing = opts.popup ? 'flex:1 1 auto; min-height:0;' : 'height:100%;';
-        const closeBtnHTML = opts.popup
-            ? `<div class="focusable" onclick="SceneManager._scene.dismissSkillDetail()" title="${T('SkillMaster.close')}" style="flex:0 0 auto; margin-left:auto; align-self:flex-start; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-secondary-hover-translucent-15); border-radius:50%; color:var(--text-secondary-active); cursor:pointer; font-size:1.292rem; line-height:1">✕</div>`
-            : '';
-
-        return `
-            <div style="display:flex; flex-direction:column; gap:12px; ${rootSizing} box-sizing:border-box">
-                <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-secondary-hover-translucent-15); padding-bottom:8px">
-                    <div style="${getSkillIconStyle(skill.iconIndex)} transform: scale(1.2); flex-shrink: 0; image-rendering: pixelated; margin-right: 2px"></div>
-                    <div>
-                        <h3 class="cc-header-gothic" style="font-size:2.134rem; color:var(--text-secondary-active); margin:0; line-height:1.2">
-                            ${skill.name}
-                        </h3>
-                        <div style="display:flex; align-items:center; gap:8px; font-size:1.196rem; color:var(--text-inverse); text-transform:uppercase; font-family:'Lora', serif; letter-spacing:0.5px">
-                            <span>${getCategoryDisplayName(this.focusedCategory())}</span>
-                            ${occultBadge}
-                        </div>
-                    </div>
-                    ${closeBtnHTML}
-                </div>
-
-                <div style="font-size:1.292rem; line-height:1.5; color:var(--text-highlight-active); background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:6px; padding:10px 14px">
-                    "${descriptionText}"
-                </div>
-
-                <div class="skill-scroll-box" style="flex:1; min-height:0; overflow-y:auto; padding-right:6px; font-family:'Lora', serif; font-size:1.365rem; color:var(--text-card-medium)">
-                    ${detailedInfoHTML}
-                </div>
-
-                <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto; border-top:1px dashed var(--scroll-thumb-hover-translucent-60); padding-top:12px">
-                    <h4 style="margin:0 0 4px 0; font-family:'Lora', serif; color:var(--text-secondary-active); font-size:1.658rem; text-align:center">
-                        ${T('SkillMaster.teach')}
-                        <span style="font-size:1.196rem; font-weight:normal; color:var(--text-card-medium); letter-spacing:0.5px">&middot; ${T('SkillMaster.atlas.held', { knowledge: knowledge })}</span>
-                    </h4>
-                    <div style="display:flex; gap:8px; align-items:stretch">
-                        <div style="flex:1; display:flex; flex-direction:column; gap:8px; max-height:150px; overflow-y:auto; padding-right:4px">
-                            ${actionsListHTML}
-                        </div>
-                        ${previewBtnHTML}
-                    </div>
-                </div>
-            </div>
-        `;
-    };
-
-    // Everything the popup draws: the skill, who is learning it, what they can
-    // afford and which action the cursor is on.
-    Scene_SkillEncyclopedia.prototype.skillPopupKey = function (skill, knowledge) {
-        const actor = this.getTeachActor();
-        // the carried state is part of what the sheet draws, so a carry toggle
-        // has to move the key or the pane never rebuilds
-        const LO = window.BattleLoadout;
-        const carried = (LO && actor) ? `${LO.isActive(actor, skill) ? 1 : 0}${LO.count(actor)}` : '';
-        return `${skill.id}|${actor ? actor.actorId() : 0}|${knowledge}|${this._selectedActionIndex}|${actor && actor.isLearnedSkill(skill.id) ? 1 : 0}|${carried}`;
-    };
-
-    Scene_SkillEncyclopedia.prototype.closeSkillDetailPopup = function () {
-        const el = document.getElementById('skill-detail-popup');
-        if (el && el.parentNode) el.parentNode.removeChild(el);
-        this._lastPopupKey = null;
-    };
-
-    // Dismiss from the popup itself (its ✕ or the backdrop), which is the same
-    // step Cancel takes: back to the atlas with nothing chosen.
-    Scene_SkillEncyclopedia.prototype.dismissSkillDetail = function () {
-        if (this._viewMode !== 'detail') return;
-        this._viewMode = 'list';
-        SoundManager.playCancel();
-        this.refreshUISkillDOM();
-    };
-
-    // Choosing a node opens the skill's sheet as a BAR DOWN THE RIGHT of the
-    // plate rather than a card over the middle of it: the figure stays visible
-    // and stays draggable while the sheet is read, which a centred modal with a
-    // scrim did not allow. Only the bar itself takes the pointer.
-    Scene_SkillEncyclopedia.prototype.updateSkillDetailPopup = function (skill, knowledge) {
-        if (!this._dndContainer) return;
-        const key = this.skillPopupKey(skill, knowledge);
-        let overlay = document.getElementById('skill-detail-popup');
-        if (overlay && this._lastPopupKey === key) return;
-
-        const cardHTML = this.renderSkillDetailHTML(skill, knowledge, { popup: true });
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.id = 'skill-detail-popup';
-            // Explicit edges rather than the `inset` shorthand: the game's
-            // Chromium collapses full-screen overlays written with it.
-            overlay.style.cssText = "position:absolute; top:0; right:0; bottom:0; z-index:1500; display:flex; align-items:stretch; justify-content:flex-end; pointer-events:none; font-family:'Lora', serif;";
-            this._dndContainer.appendChild(overlay);
-        }
-        overlay.innerHTML = `
-            <div id="skill-detail-bar" onclick="event.stopPropagation()" style="pointer-events:auto; width:min(30vw, 460px); min-width:340px; height:100%; display:flex; flex-direction:column; overflow-y:auto; padding:18px 20px; box-sizing:border-box; background:var(--bg-black-translucent-96); border-left:1.5px solid var(--border-focus-hover); box-shadow:-10px 0 30px var(--shadow-black-translucent-75)">
-                ${cardHTML}
-            </div>`;
-        this._lastPopupKey = key;
-    };
-
-    Scene_SkillEncyclopedia.prototype.refreshUISkillDOM = function () {
-        if (!this._dndContainer) return;
-
-        const useItalian = ConfigManager.language === 'it';
-        const knowledge = $gameSystem.getKnowledge();
-
-        // Keep KP discounts and category badges aligned with the chosen pupil's class.
-        actorCategoryManager.setActor(this._teachActorId);
-
-        // Persistent pupil switcher: the same companion-tab row the Skills scene
-        // (CategorizedBattleSkills) uses, sitting in flow at the top-right of the
-        // right page. Hidden in the Spell Forge and for single-member parties.
-        const compRow = document.getElementById('skillmaster-companion-row');
-        if (compRow) {
-            const members = getSwitchableMembers();
-            if (this._viewMode === 'spellEditor' || members.length <= 1) {
-                compRow.style.display = 'none';
-                compRow.innerHTML = '';
-            } else {
-                compRow.style.display = 'flex';
-                let tabs = '';
-                members.forEach((m, idx) => {
-                    const sel = m.actorId() === this._teachActorId ? 'selected' : '';
-                    tabs += `<div class="companion-tab ${sel}" onclick="SceneManager._scene.switchTeachActor(${idx})">${m.name()}</div>`;
-                });
-                compRow.innerHTML = window.CharSwitcher.inner(
-                    `<div class="companion-tabs-row">${tabs}</div>`,
-                    members.length
-                );
-            }
-        }
-
-        // 0. Layout: the category browser puts Skills on the left page and Magic
-        //    on the right, and a flat-list category keeps its sheet on the facing
-        //    page. The atlas is not a list, though: it takes BOTH pages and the
-        //    skill's sheet becomes a popup opened on a chosen node.
-        const graphSpread = (this._viewMode === 'list' || this._viewMode === 'detail' ||
-            this._viewMode === 'preview') && this.usesGraphView();
-        if (graphSpread) this.ensureAtlasFocus();
-        // The sky holds a WebGL context of its own and a frame loop with it. The
-        // moment the page stops being a sky - the shelf, the Forge, the wheel,
-        // a school with no figure - it goes back, rather than drawing on into a
-        // canvas nobody can see any more. Idempotent, so this costs nothing on
-        // the refreshes that change nothing.
-        if (!graphSpread) AtlasSky.dispose();
-        const fullPageList = graphSpread;
-        const spreadEl = this._dndContainer.querySelector('.book-spread');
-        const leftPageEl = this._dndContainer.querySelector('.left-page');
-        const rightPageEl = this._dndContainer.querySelector('.right-page');
-        const spineEl = this._dndContainer.querySelector('.spine-divider');
-        if (spreadEl) spreadEl.classList.toggle('skill-fullpage', fullPageList);
-        if (leftPageEl) leftPageEl.style.width = fullPageList ? '100%' : '';
-        if (rightPageEl) rightPageEl.style.display = fullPageList ? 'none' : '';
-        if (spineEl) spineEl.style.display = fullPageList ? 'none' : '';
-
-        // The pupil tabs live on the right page, which the atlas takes over, so
-        // they move to the top-right corner of the page that is actually there.
-        // They sit OUTSIDE #left-page-content, which is rebuilt by innerHTML.
-        if (compRow && compRow.style.display !== 'none') {
-            if (fullPageList && leftPageEl && compRow.parentNode !== leftPageEl) {
-                leftPageEl.appendChild(compRow);
-                compRow.style.position = 'absolute';
-                compRow.style.top = '10px';
-                compRow.style.right = '45px';
-                compRow.style.zIndex = '12';
-                compRow.style.marginBottom = '0';
-            } else if (!fullPageList && rightPageEl && compRow.parentNode !== rightPageEl) {
-                rightPageEl.insertBefore(compRow, rightPageEl.firstChild);
-                compRow.style.position = '';
-                compRow.style.top = '';
-                compRow.style.right = '';
-                compRow.style.zIndex = '';
-                compRow.style.marginBottom = '10px';
-            }
-        }
-
-        // The sheet popup belongs to the atlas alone; any other view takes it down.
-        if (!graphSpread) this.closeSkillDetailPopup();
-
-        // The Spell Forge editor owns a self-contained renderer (both pages are
-        // rebuilt every refresh), so bail out of the shared category/detail pipeline.
-        if (this._viewMode === 'spellEditor') {
-            this.renderSpellEditor(useItalian, knowledge);
-            return;
-        }
-
-        // The Magical Systems wheel owns a self-contained renderer too (left
-        // page = the wheel, right page = the selected system's write-up).
-        if (this._viewMode === 'magicSystems') {
-            this.renderMagicSystemsView();
-            return;
-        }
-
-        // Shared renderer for a column of category cards (used by both pages in
-        // 'category' mode: pane 0 = Skills on the left, pane 1 = Magic on the right).
-        const renderCategoryCardsHTML = (list, pane) => {
-            let html = "";
-            list.forEach((cat, idx) => {
-                const focused = (this._categoryPane === pane && this._selectedCategoryIndex === idx);
-                const catName = getCategoryDisplayName(cat);
-                let bonusBadge = "";
-                if (cat !== "All") {   // i18n-ignore: category id
-                    if (actorCategoryManager.isPrimary(cat)) {
-                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:1.081rem; background:var(--text-secondary-active); color:var(--text-pure-black); padding:1px 5px; font-weight:bold; letter-spacing:0.5px">${T('SkillMaster.kpMultiplier3x')}</span>`;
-                    } else if (actorCategoryManager.isSecondary(cat)) {
-                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:1.081rem; background:var(--text-secondary-active); color:var(--text-pure-black); padding:1px 5px; font-weight:bold; letter-spacing:0.5px">${T('SkillMaster.kpMultiplier15x')}</span>`;
-                    } else if (actorCategoryManager.isForeign(cat)) {
-                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:1.081rem; background:transparent; color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15); padding:1px 5px; font-weight:bold; letter-spacing:0.5px">${T('SkillMaster.foreignSchool')}</span>`;
-                    }
+        _startLoop() {
+            const W = this._canvas.width, H = this._canvas.height;
+            const size = Math.min(W, H);
+            const p = -(size / H);
+            const proj = [1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, p, 0, 0, 0, 1];
+            const vx = Math.floor((W - size) / 2), vy = Math.floor((H - size) / 2);
+            const loop = () => {
+                if (this._dead) return;
+                this._rafId = requestAnimationFrame(loop);
+                const gl = this._gl, ctx = this._ctx;
+                if (!gl || !ctx) return;
+                try {
+                    gl.clearColor(0, 0, 0, 0);
+                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                    gl.viewport(vx, vy, size, size);
+                    ctx.setProjectionMatrix(proj);
+                    ctx.setCameraMatrix(this._viewMatrix());
+                    ctx.update();
+                    if (this._handle && !this._handle.exists && this._effect) this._replay();
+                    ctx.beginDraw();
+                    if (this._handle) ctx.drawHandle(this._handle);
+                    ctx.endDraw();
+                } catch (e) {
+                    this._dead = true;
                 }
-                html += `
-                    <div class="category-card ${focused ? 'focused' : ''}" data-pane="${pane}" data-idx="${idx}" onclick="SceneManager._scene.selectCategoryClick(${pane}, ${idx})" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; padding:14px 8px; min-height:100px; background:${focused ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1.5px solid ${focused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:8px; cursor:pointer; font-family:'Lora', serif; transition:all 0.15s ease">
-                        <div style="${getCategoryIconStyle(cat)} transform: scale(1.35); flex-shrink: 0; image-rendering: pixelated"></div>
-                        <div class="category-card-name" style="font-weight:bold; color:${focused ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}; font-size:1.329rem; line-height:1.2">
-                            ${catName}
-                        </div>
-                        ${bonusBadge}
-                    </div>
-                `;
-            });
-            return html;
-        };
-
-        // 1. Determine if Left Page needs full rebuild
-        const leftPageBox = document.getElementById('left-page-content');
-        if (!leftPageBox) return;
-
-        // The page under the sky is built ONCE and then left alone. Everything
-        // that used to force it to be written again (a skill learned, the pupil
-        // switched, the page turned to another school) is now painted onto the
-        // figure in place by syncAtlasSky, because writing the page again would
-        // take the canvas with it and a new canvas is a new WebGL context.
-        const leftMode = graphSpread ? 'atlas' : this._viewMode;   // i18n-ignore: cache key
-        const needsLeftRebuild = (this._lastLeftMode !== leftMode) ||
-            (leftMode !== 'atlas' && this._viewMode !== 'category' &&   // i18n-ignore: cache key
-                this._lastLeftCategory !== this._selectedCategory);
-
-        if (needsLeftRebuild) {
-            let leftPageHTML = "";
-            if (this._viewMode === 'category') {
-                const split = getSplitSkillCategories();
-                const categoriesListHTML = renderCategoryCardsHTML(split.Skill, 0);
-
-                const backBtnText = T('SkillMaster.back');
-                const skillsTitle = T('SkillMaster.skills');
-
-                leftPageHTML = `
-                    <div class="page-header-bar">
-                      <div class="back-button focusable" onclick="SceneManager._scene.categoryBack()">${backBtnText}</div>
-                      <h2 class="cc-header-gothic" style="text-align:center; font-size:2.542rem">${skillsTitle}</h2>
-                    </div>
-                    <div id="category-scroll-box-left" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${CATEGORY_PAGE_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box">
-                        ${categoriesListHTML}
-                    </div>
-                `;
-            } else {
-                const returnBtnText = T('SkillMaster.back');
-                const onAtlas = this.usesGraphView();
-                const bodyHTML = onAtlas
-                    ? this.renderSkillAtlasHTML()
-                    : this.renderSkillListHTML();
-                // On the atlas the heading names the school on the page, and it
-                // is rewritten in place when the pager turns to another.
-                const heading = onAtlas ? this.focusedCategory() : this._selectedCategory;
-                leftPageHTML = `
-                    <div class="page-header-bar">
-                      <div class="back-button focusable" onclick="SceneManager._scene.goBack()">${returnBtnText}</div>
-                      <h2 id="atlas-school-name" class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 2.134rem">${getCategoryDisplayName(heading)}</h2>
-                    </div>
-                    ${bodyHTML}
-                `;
-            }
-
-            leftPageBox.innerHTML = leftPageHTML;
-            this._lastLeftMode = leftMode;
-            this._lastLeftCategory = this._selectedCategory;
-        }
-
-        // 2. Left Page focus updating
-        if (this._viewMode === 'category') {
-            // Both pages hold category cards; the focused one lives in the active pane.
-            const applyFocus = (boxId, pane) => {
-                const box = document.getElementById(boxId);
-                if (!box) return;
-                box.querySelectorAll('.category-card').forEach((card) => {
-                    const idx = parseInt(card.dataset.idx, 10);
-                    const focused = (this._categoryPane === pane && this._selectedCategoryIndex === idx);
-                    card.classList.toggle('focused', focused);
-                    card.style.borderColor = focused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)';
-                    card.style.background = focused ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)';
-                    const nameDiv = card.querySelector('.category-card-name');
-                    if (nameDiv) nameDiv.style.color = focused ? 'var(--text-secondary-active)' : 'var(--text-card-medium)';
-                });
             };
-            applyFocus('category-scroll-box-left', 0);
-            applyFocus('category-scroll-box-right', 1);
-            const fuseEl = document.querySelector('.fuse-spells-btn');
-            if (fuseEl) {
-                const on = !!this._categoryFuseFocused;
-                fuseEl.classList.toggle('focused', on);
-                fuseEl.style.background = on ? 'var(--text-secondary-active)' : 'var(--bg-card-translucent-5)';
-                fuseEl.style.color = on ? 'var(--text-pure-black)' : 'var(--text-secondary-active)';
-                if (on && fuseEl.scrollIntoView) fuseEl.scrollIntoView({ block: 'nearest' });
+            this._rafId = requestAnimationFrame(loop);
+        },
+
+        dispose() {
+            this._dead = true;
+            this._unbindInput();
+            if (this._rafId) { cancelAnimationFrame(this._rafId); this._rafId = 0; }
+            this._stopHandle();
+            if (this._gl) {
+                try {
+                    const ext = this._gl.getExtension('WEBGL_lose_context');
+                    if (ext) ext.loseContext();
+                } catch (e) {}
             }
-        } else if (this.usesGraphView()) {
-            // The renderer is put on the canvas the page has just been given (or
-            // handed the school it has just been turned to), then told what the
-            // pupil knows. A refresh that changed neither costs a key compare.
-            this.syncAtlasSky();
-            this.repaintAtlasFocus();
-            if (needsLeftRebuild) this.centreAtlasOnFocus();
-        } else {
-            const cards = leftPageBox.querySelectorAll('.skill-card');
-            cards.forEach((card, idx) => {
-                if (idx === this._selectedSkillIndex) {
-                    card.classList.add('focused');
-                    card.style.borderColor = 'var(--text-secondary-active)';
-                    const nameDiv = card.querySelector('div:last-child div:last-child');
-                    if (nameDiv) nameDiv.style.color = 'var(--text-secondary-active)';
-                } else {
-                    card.classList.remove('focused');
-                    card.style.borderColor = 'var(--border-secondary-hover-translucent-15)';
-                    const nameDiv = card.querySelector('div:last-child div:last-child');
-                    if (nameDiv) nameDiv.style.color = 'var(--text-card-medium)';
-                }
-            });
-        }
-
-        // 3. Determine if Right Page needs full rebuild
-        const rightPageBox = document.getElementById('right-page-content');
-        if (!rightPageBox) return;
-
-        const skill = this.focusedSkill();
-        const skillId = skill ? skill.id : null;
-
-        // On the atlas there is no facing page to read: the sheet is a popup, and
-        // only for a node the player actually chose. Walking the circles shows
-        // nothing but the circles.
-        if (graphSpread) {
-            if (this._viewMode === 'detail' && skill) {
-                this.updateSkillDetailPopup(skill, knowledge);
-            } else if (this._viewMode !== 'preview') {
-                this.closeSkillDetailPopup();
-            }
-            // The right page is out of sight, so whatever it holds is stale:
-            // force a clean rebuild the next time it is shown.
-            this._lastRightMode = null;
-            this._lastRightSkillId = null;
-            this._lastRightKnowledge = null;
-            return;
-        }
-
-        const needsRightRebuild = (this._lastRightMode !== this._viewMode) ||
-            ((this._viewMode === 'detail' || this._viewMode === 'list') && this._lastRightSkillId !== skillId) ||
-            (this._viewMode === 'detail' && this._lastRightActionIndex !== this._selectedActionIndex) ||
-            (this._lastRightKnowledge !== knowledge);
-
-        if (needsRightRebuild) {
-            let rightPageHTML = "";
-
-            if (this._viewMode === 'category') {
-                const split = getSplitSkillCategories();
-                const magicListHTML = renderCategoryCardsHTML(split.Magic, 1);
-                const magicTitle = T('SkillMaster.magic');
-                const teachActor = this.getTeachActor();
-                const pupilLine = teachActor
-                    ? `<div style="font-family:'Lora', serif; font-size:1.219rem; color:var(--text-card-medium); text-align:center; margin-top:8px">${T('SkillMaster.pupil')} <strong style="color:var(--text-secondary-active)">${teachActor.name()}</strong> &middot; ${knowledge} KP</div>`
-                    : '';
-                const fuseLabel = T('SkillMaster.fuseSpells');
-                // The Fuse Spells action sits BELOW the magic grid (not tucked into
-                // the header), as a clear full-width button.
-                // NOTE: must NOT use the .back-button class here; a global CSS rule
-                // forces .back-button to position:absolute;left:0, which would rip
-                // this out of flow and drop it on top of the real Back button.
-                const fuseBtn = `
-                    <div class="fuse-spells-btn focusable" onclick="SceneManager._scene.openSpellEditor()" title="${T('SkillMaster.fuseSpellsShiftX')}" style="position:relative; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:12px; padding:10px 14px; font-family:'Lora',serif; font-size:1.292rem; background:var(--bg-card-translucent-5); color:var(--text-secondary-active); border-radius:6px; font-weight:bold; cursor:pointer; border:1.5px solid var(--text-secondary-active); text-transform:uppercase; letter-spacing:0.5px; user-select:none">${fuseLabel}</div>`;
-                // A second full-width launcher, same shape as Fuse Spells but its
-                // own class so the Fuse Spells focus/gamepad wiring (which grabs
-                // .fuse-spells-btn by itself) is untouched.
-                const magicSystemsBtn = `
-                    <div class="magic-systems-btn focusable" onclick="SceneManager._scene.openMagicSystems()" style="position:relative; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px; padding:10px 14px; font-family:'Lora',serif; font-size:1.292rem; background:var(--bg-card-translucent-5); color:var(--text-secondary-active); border-radius:6px; font-weight:bold; cursor:pointer; border:1.5px solid var(--text-secondary-active); text-transform:uppercase; letter-spacing:0.5px; user-select:none">${T('SkillMaster.magicSystem.tabLabel')}</div>`;
-                rightPageHTML = `
-                    <div class="page-header-bar">
-                      <h2 class="cc-header-gothic" style="text-align:center; font-size:2.542rem">${magicTitle}</h2>
-                    </div>
-                    <div id="category-scroll-box-right" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${CATEGORY_PAGE_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box">
-                        ${magicListHTML}
-                    </div>
-                    ${fuseBtn}
-                    ${magicSystemsBtn}
-                    ${pupilLine}
-                `;
-            } else if (this._viewMode === 'list' || this._viewMode === 'detail') {
-                if (!skill) {
-                    rightPageHTML = `
-                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; gap:20px; padding:20px; box-sizing:border-box">
-                            <div style="${getCategoryIconStyle('All')} transform: scale(2.0); image-rendering: pixelated; filter: drop-shadow(0px 3px 6px var(--shadow-primary-hover-translucent-5)); margin-bottom: 12px"></div>
-                            <h3 class="cc-header-gothic" style="font-size:2.204rem; color:var(--text-secondary-active); margin:0">
-                                ${T('SkillMaster.selectASkill')}
-                            </h3>
-                        </div>
-                    `;
-                } else {
-                    rightPageHTML = this.renderSkillDetailHTML(skill, knowledge, { popup: false });
-                }
-            }
-
-            rightPageBox.innerHTML = rightPageHTML;
-            this._lastRightMode = this._viewMode;
-            this._lastRightSkillId = skillId;
-            this._lastRightActionIndex = this._selectedActionIndex;
-            this._lastRightKnowledge = knowledge;
-        }
-
-        // Detail action buttons (Teach / Preview) are re-rendered with their
-        // focus styling whenever _selectedActionIndex changes (see the rebuild
-        // condition above), so no extra DOM patching is needed here.
-    };
-
-    //=========================================================================
-    // Magical Systems wheel
-    //
-    // Every <MagicalSystem:> a class can carry (window.Skills.MagicalSystems),
-    // laid out as a ring around a central seal, Nen-chart style: one node per
-    // system, a hexagon of guide lines linking neighbours and spokes to the
-    // heart, and a plain pentacle at the centre with no mechanical meaning of
-    // its own. Clicking a node writes its name, flavour and the classes tagged
-    // with it onto the facing page.
-    //=========================================================================
-
-    Scene_SkillEncyclopedia.prototype.openMagicSystems = function () {
-        this._viewMode = 'magicSystems';
-        this._magicSystemSelected = null;
-        SoundManager.playOk();
-        this.refreshUISkillDOM();
-    };
-
-    Scene_SkillEncyclopedia.prototype.closeMagicSystems = function () {
-        this._viewMode = 'category';
-        SoundManager.playCancel();
-        // Force a clean rebuild of the shared pages after leaving the wheel.
-        this._lastLeftMode = null;
-        this._lastLeftCategory = null;
-        this._lastRightMode = null;
-        this._lastRightSkillId = null;
-        this._lastRightKnowledge = null;
-        this.refreshUISkillDOM();
-    };
-
-    Scene_SkillEncyclopedia.prototype.selectMagicSystem = function (id) {
-        if (this._magicSystemSelected === id) return;
-        this._magicSystemSelected = id;
-        SoundManager.playCursor();
-        this.refreshUISkillDOM();
-    };
-
-    Scene_SkillEncyclopedia.prototype.renderMagicSystemsView = function () {
-        const leftPageBox = document.getElementById('left-page-content');
-        const rightPageBox = document.getElementById('right-page-content');
-        if (!leftPageBox || !rightPageBox) return;
-
-        leftPageBox.innerHTML = `
-            <div class="page-header-bar">
-              <div class="back-button focusable" onclick="SceneManager._scene.closeMagicSystems()">${T('SkillMaster.back')}</div>
-              <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; text-align:center; font-size:2.542rem">${T('SkillMaster.magicSystem.title')}</h2>
-            </div>
-            ${this.renderMagicSystemWheelHTML()}
-        `;
-        rightPageBox.innerHTML = this.renderMagicSystemDetailHTML();
-
-        this._lastLeftMode = 'magicSystems';   // i18n-ignore: cache key
-        this._lastRightMode = 'magicSystems';   // i18n-ignore: cache key
-    };
-
-    Scene_SkillEncyclopedia.prototype.renderMagicSystemWheelHTML = function () {
-        const systems = getAllMagicalSystems();
-        const size = 720;
-        const cx = size / 2, cy = size / 2;
-        const outerR = 270;
-        const pentR = 64;
-        const n = Math.max(1, systems.length);
-        const selected = this._magicSystemSelected;
-        const actor = this.getTeachActor();
-        // A class with no <MagicalSystem:> tag of its own highlights nothing:
-        // the wheel never implies an affinity the pupil doesn't actually have.
-        const actorSystem = actor ? getActorMagicSystem(actor.actorId()) : null;
-
-        const pts = systems.map((sys, i) => {
-            const angle = -Math.PI / 2 + (i / n) * TAU;
-            return { sys, x: cx + Math.cos(angle) * outerR, y: cy + Math.sin(angle) * outerR };
-        });
-
-        // The rim: each system linked to its neighbour, and to the heart.
-        let ringHTML = '';
-        for (let i = 0; i < pts.length; i++) {
-            const a = pts[i], b = pts[(i + 1) % pts.length];
-            ringHTML += `<line x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1.5" />`;
-        }
-        let spokesHTML = '';
-        for (const p of pts) {
-            spokesHTML += `<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1" stroke-dasharray="3,4" />`;
-        }
-
-        // A slow-turning decorative rim behind everything: pure ornament, the
-        // wheel reads the same with or without it.
-        const rimHTML = `<circle class="ms-rim" cx="${cx}" cy="${cy}" r="${outerR + 38}" fill="none" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1" stroke-dasharray="2,10" />`;
-
-        // A plain pentacle at the heart: a five-point star in a circle, purely
-        // decorative, the same for every world.
-        const starPts = [];
-        for (let i = 0; i < 5; i++) {
-            const a = -Math.PI / 2 + i * (TAU / 5);
-            starPts.push([cx + Math.cos(a) * pentR, cy + Math.sin(a) * pentR]);
-        }
-        const order = [0, 2, 4, 1, 3, 0];
-        const starPath = order.map((idx, i) => `${i === 0 ? 'M' : 'L'} ${starPts[idx][0].toFixed(1)} ${starPts[idx][1].toFixed(1)}`).join(' ') + ' Z';
-
-        let nodesHTML = '';
-        for (const p of pts) {
-            const isSel = selected === p.sys.id;
-            const isActor = actorSystem === p.sys.id;
-            const skills = getSkillsForMagicSystem(p.sys.id);
-            const known = actor ? skills.filter(s => actor.isLearnedSkill(s.id)).length : 0;
-            const pctLabel = skills.length ? Math.round(known / skills.length * 100) + '%' : '&mdash;';
-            nodesHTML += `
-                <div class="ms-node ${isSel ? 'ms-selected' : ''} ${isActor ? 'ms-actor' : ''}" data-id="${p.sys.id}" onclick="SceneManager._scene.selectMagicSystem('${p.sys.id}')" title="${isActor ? T('SkillMaster.magicSystem.yourSystem') : ''}" style="left:${(p.x - 70).toFixed(1)}px; top:${(p.y - 46).toFixed(1)}px">
-                    <div class="ms-ring" style="border-color:${p.sys.color}"><span class="ms-pct" style="color:${p.sys.color}">${pctLabel}</span></div>
-                    <div class="ms-name" style="color:${p.sys.color}">${getMagicSystemDisplayName(p.sys.id)}</div>
-                </div>`;
-        }
-
-        return `
-            <div style="flex:1; display:flex; align-items:center; justify-content:center; min-height:0">
-                <div class="ms-wheel-box" style="position:relative; width:${size}px; height:${size}px; flex-shrink:0">
-                    <svg width="${size}" height="${size}" style="position:absolute; left:0; top:0">
-                        ${rimHTML}
-                        <g>${ringHTML}${spokesHTML}</g>
-                        <g class="ms-pentacle">
-                            <circle cx="${cx}" cy="${cy}" r="${pentR + 10}" fill="none" stroke="var(--text-secondary-active)" stroke-width="1.5" />
-                            <path d="${starPath}" fill="none" stroke="var(--text-secondary-active)" stroke-width="1.5" />
-                        </g>
-                    </svg>
-                    ${nodesHTML}
-                </div>
-            </div>
-            <div style="text-align:center; opacity:0.65; font-family:'Lora', serif; font-size:1.15rem; padding-top:4px">${T('SkillMaster.magicSystem.hint')}</div>
-        `;
-    };
-
-    Scene_SkillEncyclopedia.prototype.renderMagicSystemDetailHTML = function () {
-        const id = this._magicSystemSelected;
-        if (!id) {
-            return `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; gap:16px; padding:20px; box-sizing:border-box">
-                    <h3 class="cc-header-gothic" style="font-size:1.9rem; color:var(--text-secondary-active); margin:0">${T('SkillMaster.magicSystem.empty')}</h3>
-                </div>`;
-        }
-        const sys = getAllMagicalSystems().find(s => s.id === id);
-        const color = sys ? sys.color : 'var(--text-secondary-active)';
-        const classNames = getClassesForMagicSystem(id);
-        const classesHTML = classNames.length
-            ? `<ul style="margin:8px 0 0 0; padding-left:20px">${classNames.map(n => `<li style="margin-bottom:4px">${n}</li>`).join('')}</ul>`
-            : `<div style="opacity:0.65; margin-top:8px">${T('SkillMaster.magicSystem.noClasses')}</div>`;
-
-        const actor = this.getTeachActor();
-        const skills = getSkillsForMagicSystem(id);
-        const known = actor ? skills.filter(s => actor.isLearnedSkill(s.id)).length : 0;
-        const fractionLine = skills.length
-            ? `<div style="font-family:'Lora', serif; font-size:1.1rem; color:${color}; margin-top:4px">${T('SkillMaster.magicSystem.knownFraction', { known: known, total: skills.length, pct: Math.round(known / skills.length * 100) })}</div>`
-            : '';
-        const spellsHTML = skills.length
-            ? `<ul style="margin:8px 0 0 0; padding-left:20px">${skills.map(s => {
-                const isKnown = actor && actor.isLearnedSkill(s.id);
-                return `<li style="margin-bottom:4px; ${isKnown ? 'color:var(--text-forest-complete); font-weight:bold;' : ''}">${isKnown ? '&#10003; ' : ''}${s.name}</li>`;
-              }).join('')}</ul>`
-            : `<div style="opacity:0.65; margin-top:8px">${T('SkillMaster.magicSystem.noSpells')}</div>`;
-
-        return `
-            <div style="display:flex; flex-direction:column; height:100%; box-sizing:border-box">
-                <div style="display:flex; align-items:center; gap:10px; border-bottom:2px dashed var(--border-success); padding-bottom:10px; margin-bottom:6px">
-                    <span style="width:22px; height:22px; border-radius:50%; background:${color}; flex-shrink:0; box-shadow:0 0 8px ${color}"></span>
-                    <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; font-size:2.1rem">${getMagicSystemDisplayName(id)}</h2>
-                </div>
-                ${fractionLine}
-                <div style="font-family:'Lora', serif; font-size:1.2rem; line-height:1.5; color:var(--text-card-medium); margin-top:10px">${getMagicSystemDesc(id)}</div>
-                <h3 class="cc-header-gothic" style="font-size:1.4rem; margin-top:18px">${T('SkillMaster.magicSystem.classesHeading')}</h3>
-                <div style="font-family:'Lora', serif; font-size:1.15rem; color:var(--text-pure-white); max-height:26%; overflow-y:auto">${classesHTML}</div>
-                <h3 class="cc-header-gothic" style="font-size:1.4rem; margin-top:14px">${T('SkillMaster.magicSystem.spellsHeading')}</h3>
-                <div class="skill-scroll-box" style="flex:1; overflow-y:auto; font-family:'Lora', serif; font-size:1.15rem; color:var(--text-pure-white)">${spellsHTML}</div>
-            </div>
-        `;
-    };
-
-    // Pupil switch from the persistent top-right tabs (or Tab / bumpers), the same
-    // switcher the Skills scene uses; there is no separate member-select step.
-    Scene_SkillEncyclopedia.prototype.switchTeachActor = function (index) {
-        const members = getSwitchableMembers();
-        const actor = members[index];
-        if (!actor || actor.actorId() === this._teachActorId) return;
-        this._teachActorId = actor.actorId();
-        actorCategoryManager.setActor(this._teachActorId);
-        SoundManager.playCursor();
-        // The browsable categories are the new pupil's schools, so the old cursor
-        // means nothing: drop the cached lists and start at the first card.
-        this._splitCategoriesCache = null;
-        this._skillsByCategoryKey = null;
-        this._categoryPane = 0;
-        this._selectedCategoryIndex = 0;
-        this._categoryFuseFocused = false;
-        // "All" is a different list for a different pupil, so the old skill cursor
-        // is meaningless either way.
-        this._selectedSkillIndex = 0;
-        // A school the new pupil does not study is not theirs to be taught from,
-        // so browsing one when the pupil changes drops back to the shelf.
-        const allowed = actorCategoryManager.allowedCategories();
-        const stillOpen = !this._selectedCategory || this._selectedCategory === 'All' ||   // i18n-ignore: category id
-            !allowed || allowed.includes(this._selectedCategory);
-        // A different pupil studies a different curriculum, so the school on the
-        // page may not be one of theirs at all and nothing that was remembered
-        // about the old one applies.
-        this._atlasZoom = 0;
-        this._atlasMemory = {};
-        if (this._atlasCategory && allowed && !allowed.includes(this._atlasCategory)) {
-            this._atlasCategory = null;
-        }
-        if (!stillOpen && (this._viewMode === 'list' || this._viewMode === 'detail')) {
-            this._viewMode = 'category';
-            this._selectedCategory = null;
-        } else if (this.usesGraphView()) {
-            // Same circle, different pupil: stand them where they already are on it.
-            this.defaultGraphFocus();
-        }
-        // Learned badges, KP costs and available fusions are pupil-specific, so
-        // force a clean redraw of both pages.
-        this._lastLeftMode = null;
-        this._lastLeftCategory = null;
-        this._lastRightMode = null;
-        this._lastRightSkillId = null;
-        this._lastRightKnowledge = null;
-        this.refreshUISkillDOM();
-    };
-
-    Scene_SkillEncyclopedia.prototype.cycleTeachActor = function (dir) {
-        const members = getSwitchableMembers();
-        if (members.length <= 1) return;
-        const cur = members.findIndex(m => m.actorId() === this._teachActorId);
-        const next = ((cur < 0 ? 0 : cur) + dir + members.length) % members.length;
-        this.switchTeachActor(next);
-    };
-
-    Scene_SkillEncyclopedia.prototype.selectCategory = function () {
-        const split = getSplitSkillCategories();
-        const list = this._categoryPane === 1 ? split.Magic : split.Skill;
-        const cat = list[this._selectedCategoryIndex];
-        if (!cat) { SoundManager.playBuzzer(); return; }
-        this._selectedCategory = cat;
-        this._skillListWindow.setCategory(this._selectedCategory);
-        this._viewMode = 'list';
-        this._selectedSkillIndex = 0;
-        // One school to a page: the chosen one, or the first of the curriculum
-        // when "All" was picked, since "all of them" is not a circle.
-        const schools = this.atlasCategories();
-        this._atlasCategory = schools.includes(cat) ? cat : (schools[0] || null);
-        this._atlasZoom = 0;
-        this._focusSkillId = 0;
-        // The pupil stands where they already stand on that circle, rather than at
-        // its way in.
-        if (this.usesGraphView()) this.defaultGraphFocus();
-        SoundManager.playOk();
-        this.refreshUISkillDOM();
-        this.centreAtlasOnFocus();
-    };
-
-    Scene_SkillEncyclopedia.prototype.selectCategoryClick = function (pane, index) {
-        this._categoryPane = pane;
-        this._selectedCategoryIndex = index;
-        // Clicking a category takes the cursor off the Fuse Spells button, so the
-        // pad does not come back to a stale highlight on it.
-        this._categoryFuseFocused = false;
-        this.selectCategory();
-    };
-
-    // Back from the category browser leaves the scene (the member picker step
-    // has been removed; the pupil is chosen via the persistent top switcher).
-    Scene_SkillEncyclopedia.prototype.categoryBack = function () {
-        this.popScene();
-    };
-
-    Scene_SkillEncyclopedia.prototype.selectSkill = function (index) {
-        this._selectedSkillIndex = index;
-        const skills = getSkillsByCategory(this._selectedCategory);
-        const skill = skills[this._selectedSkillIndex];
-        if (skill) {
-            this._focusSkillId = skill.id;
-            this._skillDetailWindow.setSkill(skill);
-            this._viewMode = 'detail';
-            this._selectedActionIndex = 0;
-            SoundManager.playOk();
-            this.refreshUISkillDOM();
+            this._effect = null; this._effectName = '';
+            this._ctx = null; this._gl = null; this._canvas = null;
         }
     };
 
-    // Whether a skill the pupil already knows is carried into battle, toggled
-    // from the training sheet. The store is CategorizedBattleSkills' own, so
-    // this and the skill menu are editing one loadout, not two.
-    Scene_SkillEncyclopedia.prototype.carryToggleHTML = function (actor, skill, allowFocus) {
-        const LO = window.BattleLoadout;
-        if (!LO) return '';
-        const locked = LO.isAlwaysCarried(actor, skill);
-        const active = LO.isActive(actor, skill);
-        const full = !active && !locked && !LO.hasRoom(actor);
-        const label = locked ? T('SkillMaster.carry.locked')
-            : active ? T('SkillMaster.carry.drop')
-                : full ? T('SkillMaster.carry.full') : T('SkillMaster.carry.take');
-        const count = `${LO.count(actor)} / ${LO.MAX}`;
-        const focused = allowFocus && (this._selectedActionIndex === 0) && !locked;
-        const usable = !locked && (active || !full);
-        return `
-            <div class="action-button carry-button ${focused ? 'focused' : ''} ${usable ? '' : 'disabled'}" onclick="SceneManager._scene.toggleCarry(${actor.actorId()})" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; margin-top:6px; background:${active ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--accent-gray-2-translucent-0)'}; border:1px solid ${focused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:${usable ? 'pointer' : 'not-allowed'}; font-family:'Lora', serif; opacity:${usable ? 1 : 0.6}; transition:all 0.15s ease">
-                <span style="font-weight:bold; font-size:1.292rem; text-transform:uppercase">${active ? '◉' : '○'} ${label}</span>
-                <span style="font-size:1.196rem; color:var(--text-card-medium)">${count}</span>
-            </div>
-        `;
-    };
+    window.SkillAnimPreview = AnimPreview;
+    SkillMaster.AnimPreview = AnimPreview;
 
-    // A fused spell has two things an ordinary skill has not: a name its maker
-    // chose, and no database entry to fall back on. Both are edited here.
-    Scene_SkillEncyclopedia.prototype.fusionActionsHTML = function (actor, skill) {
-        if (!skill || !skill._customSpell || skill._ownerActorId !== actor.actorId()) return '';
-        const btn = (label, handler, danger) => `
-            <div class="action-button focusable" onclick="${handler}" style="flex:1; display:flex; justify-content:center; align-items:center; padding:9px 12px; background:var(--accent-gray-2-translucent-0); border:1px solid ${danger ? 'var(--text-danger-hover)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; font-size:1.259rem; font-weight:bold; text-transform:uppercase; color:${danger ? 'var(--text-danger-hover)' : 'var(--text-secondary-active)'}">${label}</div>`;
-        return `
-            <div style="display:flex; gap:8px; margin-top:6px">
-                ${btn(T('SkillMaster.fusion.rename'), `SceneManager._scene.beginRenameFusion(${skill.id})`, false)}
-                ${btn(T('SkillMaster.fusion.delete'), `SceneManager._scene.deleteFusion(${skill.id})`, true)}
-            </div>
-            <div id="fusion-rename-row" style="display:none; gap:8px; margin-top:6px">
-                <input id="fusion-rename-input" maxlength="24" value="${String(skill.name).replace(/"/g, '&quot;')}" style="flex:1; padding:8px 10px; font-family:'Lora', serif; font-size:1.292rem; color:var(--text-pure-white); background:var(--bg-card-translucent-5); border:1px solid var(--text-secondary-active); border-radius:6px; outline:none" />
-                ${btn(T('SkillMaster.fusion.confirm'), `SceneManager._scene.commitRenameFusion(${skill.id})`, false)}
-            </div>
-        `;
-    };
-
-    Scene_SkillEncyclopedia.prototype.beginRenameFusion = function () {
-        const row = document.getElementById('fusion-rename-row');
-        const input = document.getElementById('fusion-rename-input');
-        if (!row || !input) return;
-        row.style.display = 'flex';
-        input.focus();
-        input.select();
-        // The engine reads the keyboard globally; while the field has it, it does not.
-        input.onkeydown = (e) => e.stopPropagation();
-        input.onkeyup = (e) => e.stopPropagation();
-    };
-
-    Scene_SkillEncyclopedia.prototype.commitRenameFusion = function (skillId) {
-        const input = document.getElementById('fusion-rename-input');
-        const skill = $dataSkills[skillId];
-        const name = input ? String(input.value || '').trim().slice(0, 24) : '';
-        if (!skill || !skill._customSpell || !name) { SoundManager.playBuzzer(); return; }
-        skill.name = name;
-        // The stored copy is what survives the save; $dataSkills is rebuilt from it.
-        const stored = $gameSystem.getCustomSpells().find(s => s && s.id === skillId);
-        if (stored) stored.name = name;
-        SoundManager.playOk();
-        this.invalidateLearnedSkillCaches();
-        this._lastPopupKey = null;
-        this.refreshUISkillDOM();
-    };
-
-    // Unmaking a fusion is not splitting it: the components are gone for good,
-    // which is why it asks once before it does it.
-    Scene_SkillEncyclopedia.prototype.deleteFusion = function (skillId) {
-        const skill = $dataSkills[skillId];
-        const actor = this.getTeachActor();
-        if (!skill || !skill._customSpell || !actor) { SoundManager.playBuzzer(); return; }
-        if (this._pendingFusionDelete !== skillId) {
-            this._pendingFusionDelete = skillId;
-            SoundManager.playBuzzer();
-            this._skillDetailWindow.showMessage(T('SkillMaster.fusion.confirmDelete', { skill: skill.name }));
-            return;
-        }
-        this._pendingFusionDelete = 0;
-        const name = skill.name;
-        if (window.BattleLoadout) window.BattleLoadout.drop(actor, skillId);
-        actor.forgetSkill(skillId);
-        $gameSystem.removeCustomSpell(skillId);
-        this.invalidateLearnedSkillCaches();
-        this._focusSkillId = 0;
-        this._viewMode = 'list';
-        this.closeSkillDetailPopup();
-        SoundManager.playCancel();
-        this._skillDetailWindow.showMessage(T('SkillMaster.fusion.deleted', { skill: name }));
-        this.refreshUISkillDOM();
-    };
-
-    Scene_SkillEncyclopedia.prototype.toggleCarry = function (actorId) {
-        const LO = window.BattleLoadout;
-        const actor = $gameActors.actor(actorId);
-        const skill = this.focusedSkill();
-        if (!LO || !actor || !skill || !actor.isLearnedSkill(skill.id)) {
-            SoundManager.playBuzzer();
-            return;
-        }
-        const result = LO.toggle(actor, skill);
-        if (result === 'locked' || result === 'full') {
-            SoundManager.playBuzzer();
-            this._skillDetailWindow.showMessage(
-                result === 'full' ? T('SkillMaster.carry.fullToast', { max: LO.MAX })
-                    : T('SkillMaster.carry.lockedToast', { skill: skill.name }));
-        } else {
-            SoundManager.playEquip();
-            this._skillDetailWindow.showMessage(result === 'on'
-                ? T('SkillMaster.carry.takenToast', { skill: skill.name })
-                : T('SkillMaster.carry.droppedToast', { skill: skill.name }));
-        }
-        this.refreshUISkillDOM();
-    };
-
-    // Sandbox play, and a party led by somebody called "test", is a workshop:
-    // the whole book is buyable in any order and knowledge never runs out.
-    function isWorkshopMode() {
-        if ($gameSystem && ($gameSystem._isSandboxMode || $gameSystem._sandboxKnowledgePointsGiven)) return true;
-        const leader = $gameParty && $gameParty.allMembers && $gameParty.allMembers()[0];
-        return !!(leader && leader.name && leader.name().toLowerCase() === 'test');
+    // Extend Scene_SkillEncyclopedia prototypes for animation preview
+    if (!window.Scene_SkillEncyclopedia) {
+        window.Scene_SkillEncyclopedia = function () {
+            this.initialize(...arguments);
+        };
+        window.Scene_SkillEncyclopedia.prototype = Object.create(Scene_MenuBase.prototype);
+        window.Scene_SkillEncyclopedia.prototype.constructor = window.Scene_SkillEncyclopedia;
     }
-    window.SkillMasterWorkshop = isWorkshopMode;
 
-    Scene_SkillEncyclopedia.prototype.teachSkill = function (actorId, cost) {
-        const actor = $gameActors.actor(actorId);
-        const skill = this.focusedSkill();
-        if (!actor || !skill || (!isWorkshopMode() && $gameSystem.getKnowledge() < cost)) {
-            SoundManager.playBuzzer();
-            return;
-        }
-        // The adjacency rule is enforced here, not just drawn: the flat "All"
-        // list and the mouse both come through this door.
-        if (!isWorkshopMode() && !SkillGraph.isOpen(actor, skill.id)) {
-            SoundManager.playBuzzer();
-            this._skillDetailWindow.showMessage(T('SkillMaster.graph.lockedToast', { skill: skill.name }));
-            this.refreshUISkillDOM();
-            return;
-        }
-        if (!isWorkshopMode()) $gameSystem.spendKnowledge(cost);
-        actor.learnSkill(skill.id);
-        this.invalidateLearnedSkillCaches();
-        SoundManager.playRecovery();
+    const Proto = window.Scene_SkillEncyclopedia.prototype;
 
-        this._skillDetailWindow.showMessage(
-            T('SkillMaster.actorLearned', { actor: actor.name(), skill: skill.name })
-        );
-
-        this.refreshUISkillDOM();
-    };
-
-    Scene_SkillEncyclopedia.prototype.goBack = function () {
-        this._viewMode = 'category';
-        SoundManager.playCancel();
-        this.refreshUISkillDOM();
-    };
-
-    //=========================================================================
-    // Spell animation preview
-    //
-    // Opens a modal overlay showing a zoomable / draggable 3D Effekseer preview
-    // of a skill's animation played over an empty target dummy. Reuses the
-    // MonsterTournament free-orbit camera idea (drag = rotate, wheel = zoom) via
-    // the isolated AnimPreview Effekseer context.
-    //=========================================================================
-    Scene_SkillEncyclopedia.prototype.openSpellPreview = function (skillId) {
+    Proto.openSpellPreview = function (skillId) {
         const skill = $dataSkills[skillId];
         if (!skill) { SoundManager.playBuzzer(); return; }
         this._previewSkillId = skillId;
@@ -4956,7 +2954,7 @@
         this.buildSpellPreviewOverlay(skill);
     };
 
-    Scene_SkillEncyclopedia.prototype.closeSpellPreview = function () {
+    Proto.closeSpellPreview = function () {
         AnimPreview.dispose();
         const ov = document.getElementById('spell-preview-overlay');
         if (ov && ov.parentNode) ov.parentNode.removeChild(ov);
@@ -4964,49 +2962,43 @@
         SoundManager.playCancel();
     };
 
-    Scene_SkillEncyclopedia.prototype.buildSpellPreviewOverlay = function (skill) {
+    Proto.buildSpellPreviewOverlay = function (skill) {
         if (!this._dndContainer) return;
-        const useItalian = ConfigManager.language === 'it';
         const anim = skill.animationId && $dataAnimations ? $dataAnimations[skill.animationId] : null;
         const previewable = !!(anim && anim.effectName && !anim.frames);
         const animLabel = anim && anim.name
             ? `#${skill.animationId} · ${anim.name}`
-            : (T('SkillMaster.noAnimation'));
+            : (typeof T === 'function' ? T('SkillMaster.noAnimation') : 'No Animation');
         const noEfkNote = previewable ? '' :
-            `<div style="position:absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--text-card-medium); font-size:1.292rem; pointer-events:none">${T('SkillMaster.no3dAnimationForThis')}</div>`;
+            `<div style="position:absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--text-card-medium); font-size:1.292rem; pointer-events:none">${typeof T === 'function' ? T('SkillMaster.no3dAnimationForThis') : 'No 3D Animation'}</div>`;
 
         const old = document.getElementById('spell-preview-overlay');
         if (old && old.parentNode) old.parentNode.removeChild(old);
 
         const ov = document.createElement('div');
         ov.id = 'spell-preview-overlay';
-        // Explicit top/left/right/bottom (not the `inset` shorthand) and a
-        // width + max-width pair (not `min()`), so the modal still fills the
-        // scene and sizes correctly on the game's older Chromium.
-        ov.style.cssText = 'position:absolute; top:0; left:0; right:0; bottom:0; z-index:2000; display:flex; align-items:center; justify-content:center; background:var(--shadow-black-translucent-75); font-family:\'Lora\',serif;';
+        ov.style.cssText = 'position:absolute; top:0; left:0; right:0; bottom:0; z-index:2000; display:flex; align-items:center; justify-content:center; background:var(--shadow-black-translucent-75, rgba(0,0,0,0.75)); font-family:\'Lora\',serif;';
         ov.innerHTML = `
-            <div style="width:82%; max-width:560px; max-height:88%; display:flex; flex-direction:column; gap:12px; padding:20px; box-sizing:border-box; background:var(--bg-dark-warm-translucent-96); border:1.5px solid var(--border-focus-hover); border-radius:12px; box-shadow:0 10px 30px var(--shadow-black-translucent-75)">
+            <div style="width:82%; max-width:560px; max-height:88%; display:flex; flex-direction:column; gap:12px; padding:20px; box-sizing:border-box; background:var(--bg-dark-warm-translucent-96, rgba(20,18,15,0.96)); border:1.5px solid var(--border-focus-hover, #e5c07b); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.75)">
                 <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-secondary-hover-translucent-15); padding-bottom:8px">
-                    <div style="${getSkillIconStyle(skill.iconIndex)} transform:scale(1.1); flex-shrink:0; image-rendering:pixelated"></div>
-                    <h3 class="cc-header-gothic" style="font-size:1.994rem; color:var(--text-secondary-active); margin:0">${skill.name}</h3>
+                    <div style="${SkillMaster.getSkillIconStyle(skill.iconIndex)} transform:scale(1.1); flex-shrink:0; image-rendering:pixelated"></div>
+                    <h3 class="cc-header-gothic" style="font-size:1.994rem; color:var(--text-secondary-active, #e5c07b); margin:0">${skill.name}</h3>
                 </div>
-                <div id="spell-preview-stage" style="position:relative; width:100%; height:300px; border-radius:10px; overflow:hidden; border:1.5px solid var(--border-secondary-hover-translucent-15); background:radial-gradient(circle at 50% 42%, var(--bg-tertiary-focus-translucent-45) 0%, var(--shadow-heavy) 78%)">
-                    <!-- Empty target dummy: a ground disc with a target reticle. -->
-                    <div style="position:absolute; left:50%; bottom:26px; transform:translate(-50%, 0) perspective(420px) rotateX(66deg); width:150px; height:150px; border-radius:50%; border:2px solid var(--accent-gold-translucent-50); box-shadow:0 0 0 18px var(--accent-gold-translucent-16) inset; background:radial-gradient(circle, var(--accent-gold-translucent-16) 0%, transparent 70%)"></div>
-                    <div style="position:absolute; left:50%; bottom:88px; transform:translateX(-50%); width:2px; height:70px; background:linear-gradient(to bottom, transparent, var(--accent-gold-translucent-50)); pointer-events:none"></div>
+                <div id="spell-preview-stage" style="position:relative; width:100%; height:300px; border-radius:10px; overflow:hidden; border:1.5px solid var(--border-secondary-hover-translucent-15); background:radial-gradient(circle at 50% 42%, var(--bg-tertiary-focus-translucent-45, rgba(40,35,25,0.45)) 0%, rgba(10,8,6,1) 78%)">
+                    <div style="position:absolute; left:50%; bottom:26px; transform:translate(-50%, 0) perspective(420px) rotateX(66deg); width:150px; height:150px; border-radius:50%; border:2px solid rgba(229,192,123,0.5); box-shadow:0 0 0 18px rgba(229,192,123,0.16) inset; background:radial-gradient(circle, rgba(229,192,123,0.16) 0%, transparent 70%)"></div>
+                    <div style="position:absolute; left:50%; bottom:88px; transform:translateX(-50%); width:2px; height:70px; background:linear-gradient(to bottom, transparent, rgba(229,192,123,0.5)); pointer-events:none"></div>
                     <canvas id="spell-preview-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; cursor:grab; touch-action:none"></canvas>
                     ${noEfkNote}
                 </div>
-                <div style="text-align:center; font-size:1.234rem; color:var(--text-secondary-active); font-weight:bold">${animLabel}</div>
-                <div style="text-align:center; font-size:1.17rem; color:var(--text-card-medium)">${T('SkillMaster.dragToRotateScrollTo')}</div>
+                <div style="text-align:center; font-size:1.234rem; color:var(--text-secondary-active, #e5c07b); font-weight:bold">${animLabel}</div>
+                <div style="text-align:center; font-size:1.17rem; color:var(--text-card-medium, #aaa)">${typeof T === 'function' ? T('SkillMaster.dragToRotateScrollTo') : 'Drag to rotate · Scroll to zoom'}</div>
                 <div style="display:flex; gap:10px; margin-top:2px">
-                    <div class="focusable" onclick="SceneManager._scene.replaySpellPreview()" style="flex:1; text-align:center; padding:9px; background:var(--text-text-alt-3); color:var(--text-pure-black); border-radius:6px; cursor:pointer; font-weight:bold; text-transform:uppercase">${T('SkillMaster.replay')}</div>
-                    <div class="focusable" onclick="SceneManager._scene.closeSpellPreview()" style="flex:0 0 auto; text-align:center; padding:9px 18px; background:transparent; color:var(--text-primary-hover); border:1.5px solid var(--text-primary-hover); border-radius:6px; cursor:pointer; font-weight:bold; text-transform:uppercase">${T('SkillMaster.close')}</div>
+                    <div class="focusable" onclick="SceneManager._scene.replaySpellPreview()" style="flex:1; text-align:center; padding:9px; background:var(--text-text-alt-3, #e5c07b); color:#000; border-radius:6px; cursor:pointer; font-weight:bold; text-transform:uppercase">${typeof T === 'function' ? T('SkillMaster.replay') : 'Replay'}</div>
+                    <div class="focusable" onclick="SceneManager._scene.closeSpellPreview()" style="flex:0 0 auto; text-align:center; padding:9px 18px; background:transparent; color:var(--text-primary-hover, #fff); border:1.5px solid var(--text-primary-hover, #fff); border-radius:6px; cursor:pointer; font-weight:bold; text-transform:uppercase">${typeof T === 'function' ? T('SkillMaster.close') : 'Close'}</div>
                 </div>
             </div>`;
         this._dndContainer.appendChild(ov);
 
-        // Size + initialise the isolated Effekseer canvas once laid out.
         requestAnimationFrame(() => {
             if (this._viewMode !== 'preview') return;
             const canvas = document.getElementById('spell-preview-canvas');
@@ -5020,13 +3012,13 @@
         });
     };
 
-    Scene_SkillEncyclopedia.prototype.replaySpellPreview = function () {
+    Proto.replaySpellPreview = function () {
         const skill = $dataSkills[this._previewSkillId];
         if (skill && skill.animationId) AnimPreview.setAnimation(skill.animationId);
         SoundManager.playCursor();
     };
 
-    Scene_SkillEncyclopedia.prototype.updateSpellPreviewInput = function () {
+    Proto.updateSpellPreviewInput = function () {
         if (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled()) {
             this.closeSpellPreview();
             return;
@@ -5035,8 +3027,6 @@
             this.replaySpellPreview();
             return;
         }
-        // Replay and Close are the whole page: there are no cards here to walk,
-        // so any direction opens the ring on them.
         for (const dir of ['down', 'right', 'up', 'left']) {
             if (Input.isTriggered(dir) || Input.isRepeated(dir)) {
                 this._ccEnterNav(dir);
@@ -5045,72 +3035,99 @@
         }
     };
 
-    //=========================================================================
-    // Fuse Spells (custom spell editor)
-    //
-    // Left-page focus layout:
-    //   0     -> Dominant slot (a Spell / Magic; defines the fusion's behaviour)
-    //   1     -> Recessive slot (a Spell OR a Skill; defines the result's type)
-    //   2     -> animation row
-    //   3     -> Fuse button
-    //   4..   -> Split buttons (one per existing fused ability)
-    //=========================================================================
+})();
+
+
+//=============================================================================
+// Module: SkillMasterFusion.js
+//=============================================================================
+/*:
+ * @target MZ
+ * @plugindesc v4.0.0 SkillMaster - Procedural Spell & Skill Fusion System.
+ * @author Omni-Lex
+ */
+
+(() => {
+    'use strict';
+
+    window.SkillMaster = window.SkillMaster || {};
+
     const FORGE_DOMINANT_IDX = 0;
     const FORGE_RECESSIVE_IDX = 1;
     const FORGE_ANIM_IDX = 2;
     const FORGE_CREATE_IDX = 3;
     const FORGE_SPLIT_BASE = 4;
 
-    // Skills the pupil could feed into a slot: learned, non-basic, non-fused, and
-    // matching the slot's type (dominant wants Magic "spells", recessive accepts
-    // any Spell or Skill).
-    //=========================================================================
-    // Per-frame dataset caches
-    //
-    // Scene_SkillEncyclopedia.update() runs every frame and (before these
-    // caches) re-derived full skill datasets from $dataSkills on each frame -
-    // regexes per skill, actor.skills() filters, etc. These wrappers recompute
-    // only when the underlying selection/actor changes and otherwise return the
-    // cached result. Keys auto-invalidate on category/skill/actor change.
-    //=========================================================================
-    // Invalidate caches whose result depends on the actor's learned-skill set
-    // (which category/skill/actor keys can't detect on their own).
-    Scene_SkillEncyclopedia.prototype.invalidateLearnedSkillCaches = function () {
-        this._editorCandidatesKey = null;
-        // A fusion made or unmade changes $dataSkills, which both the graph and
-        // the plate were built from.
-        SkillGraph.invalidate();
-        SkillAtlas.invalidate();
-        this._splitCategoriesCache = null;
-    };
+    function makeFusedSpellName(names) {
+        const parts = names.map(n => {
+            const clean = String(n || '').replace(/[^A-Za-z]/g, '');
+            if (!clean) return '';
+            const chunk = clean.slice(0, 4);
+            return chunk.charAt(0).toUpperCase() + chunk.slice(1).toLowerCase();
+        }).filter(Boolean);
+        return parts.join('') || 'CustomSpell';
+    }
 
-    Scene_SkillEncyclopedia.prototype.getSplitCategoriesCached = function () {
-        // Categories derive from $dataSkills (static for the scene lifetime) and
-        // from the pupil's class, which the top switcher can change.
-        if (!this._splitCategoriesCache || this._splitCategoriesActorId !== this._teachActorId) {
-            actorCategoryManager.setActor(this._teachActorId);
-            this._splitCategoriesActorId = this._teachActorId;
-            this._splitCategoriesCache = getSplitSkillCategories();
+    function buildFusedSkill(components, actorId, animationId) {
+        const clone = obj => JSON.parse(JSON.stringify(obj));
+        const dominant = components[0];
+        const recessive = components[1];
+        const fused = clone(dominant);
+
+        fused.id = $gameSystem.allocCustomSkillId();
+        fused.name = makeFusedSpellName(components.map(c => c.name));
+        fused.mpCost = components.reduce((sum, c) => sum + (c.mpCost || 0), 0);
+        fused.tpCost = components.reduce((sum, c) => sum + (c.tpCost || 0), 0);
+
+        fused.damage = clone(dominant.damage);
+        fused.iconIndex = dominant.iconIndex;
+
+        const recCat = recessive ? SkillMaster.getSkillCategory(recessive.id) : null;
+        const recIsSkill = recCat ? SkillMaster.getCategoryType(recCat) !== 'Magic' : false;
+        fused._resultIsSkill = recIsSkill;
+        if (recIsSkill && recessive) {
+            fused.stypeId = recessive.stypeId;
         }
-        return this._splitCategoriesCache;
-    };
 
-    Scene_SkillEncyclopedia.prototype.getSkillsByCategoryCached = function (category) {
-        // "All" is scoped to the pupil's schools, so the key carries them both.
-        const key = `${this._teachActorId}:${category}`;
-        if (this._skillsByCategoryKey !== key) {
-            actorCategoryManager.setActor(this._teachActorId);
-            this._skillsByCategoryKey = key;
-            this._skillsByCategoryCache = getSkillsByCategory(category);
+        fused.effects = [];
+        for (const c of components) {
+            for (const e of (c.effects || [])) fused.effects.push(clone(e));
         }
-        return this._skillsByCategoryCache;
-    };
 
-    Scene_SkillEncyclopedia.prototype.getEditorCandidatesCached = function (slotIndex) {
+        if (animationId && animationId > 0) fused.animationId = animationId;
+
+        const names = components.map(c => c.name).join(' + ');
+        const descKey = recIsSkill ? 'SkillMaster.fusedSkillDesc' : 'SkillMaster.fusedSpellDesc';
+        fused.description = typeof T === 'function'
+            ? T(descKey, { parts: names, dominant: dominant.name })
+            : `${names} (Dominant: ${dominant.name})`;
+
+        fused.note = '<customSpell>\n<category:' + SkillMaster.FUSION_CATEGORY + '>';
+        fused.meta = { customSpell: true };
+        fused._customSpell = true;
+        fused._ownerActorId = actorId;
+        fused._components = components.map(c => c.id);
+        fused._baseSkillId = dominant.id;
+        fused._animationId = fused.animationId;
+        return fused;
+    }
+
+    SkillMaster.makeFusedSpellName = makeFusedSpellName;
+    SkillMaster.buildFusedSkill = buildFusedSkill;
+
+    if (!window.Scene_SkillEncyclopedia) {
+        window.Scene_SkillEncyclopedia = function () {
+            this.initialize(...arguments);
+        };
+        window.Scene_SkillEncyclopedia.prototype = Object.create(Scene_MenuBase.prototype);
+        window.Scene_SkillEncyclopedia.prototype.constructor = window.Scene_SkillEncyclopedia;
+    }
+
+    const Proto = window.Scene_SkillEncyclopedia.prototype;
+
+    Proto.getEditorCandidatesCached = function (slotIndex) {
         const actor = this.getTeachActor();
-        // The candidate set depends on the slot, the actor and which components
-        // are already chosen; none of those change during list navigation.
-        const key = `${slotIndex}:${actor ? actor.actorId() : 0}:${this._editorSlots.join(',')}`;
+        const key = `${slotIndex}:${actor ? actor.actorId() : 0}:${this._editorSlots ? this._editorSlots.join(',') : ''}`;
         if (this._editorCandidatesKey !== key) {
             this._editorCandidatesKey = key;
             this._editorCandidatesCache = this.getEditorCandidates(slotIndex);
@@ -5118,41 +3135,33 @@
         return this._editorCandidatesCache;
     };
 
-    Scene_SkillEncyclopedia.prototype.getEditorCandidates = function (slotIndex) {
+    Proto.getEditorCandidates = function (slotIndex) {
         const actor = this.getTeachActor();
         if (!actor) return [];
-        // Dominant (slot 0) accepts only Magic. Recessive (slot 1) accepts any
-        // Spell or Skill - picking a Skill here turns the fusion into a skill.
         const dominantSlot = (slotIndex === FORGE_DOMINANT_IDX);
-        const chosenElsewhere = this._editorSlots.filter((id, i) => id != null && i !== slotIndex);
+        const chosenElsewhere = (this._editorSlots || []).filter((id, i) => id != null && i !== slotIndex);
         return actor.skills().filter(s => {
             if (!s || !s.name) return false;
-            if (s.id === 1 || s.id === 2) return false;       // Attack / Guard
-            if (s._customSpell) return false;                  // no nesting fused spells
-            if (!actor.isLearnedSkill(s.id)) return false;     // must be forgettable
-            if (chosenElsewhere.includes(s.id)) return false;  // no duplicates across slots
-            // Skills that call a Common Event (effect code 44) can't be fused - their
-            // event side-effects wouldn't survive fusion.
+            if (s.id === 1 || s.id === 2) return false;
+            if (s._customSpell) return false;
+            if (!actor.isLearnedSkill(s.id)) return false;
+            if (chosenElsewhere.includes(s.id)) return false;
             if (Array.isArray(s.effects) && s.effects.some(e => e && e.code === Game_Action.EFFECT_COMMON_EVENT)) return false;
-            const cat = getSkillCategory(s.id);
-            // "Basic" category skills are excluded from fusion entirely.
+            const cat = SkillMaster.getSkillCategory(s.id);
             if (cat && cat.toLowerCase() === 'basic') return false;
-            const type = cat ? getCategoryType(cat) : 'Skill';   // i18n-ignore: category id
-            // Dominant must be Magic; recessive accepts Magic or Skill.
-            return dominantSlot ? type === 'Magic' : true;   // i18n-ignore: category id
+            const type = cat ? SkillMaster.getCategoryType(cat) : 'Skill';
+            return dominantSlot ? type === 'Magic' : true;
         });
     };
 
-    Scene_SkillEncyclopedia.prototype.getEditorCustomSpells = function () {
+    Proto.getEditorCustomSpells = function () {
         const actor = this.getTeachActor();
-        if (!actor) return [];
+        if (!actor || typeof $gameSystem === 'undefined') return [];
         return $gameSystem.getCustomSpells().filter(s =>
             s && s._ownerActorId === actor.actorId() && actor.isLearnedSkill(s.id));
     };
 
-    // Previewable animations = named Effekseer animations (MV frame anims can't be
-    // shown in the isolated preview canvas).
-    Scene_SkillEncyclopedia.prototype.getAvailableAnimations = function () {
+    Proto.getAvailableAnimations = function () {
         if (!this._animCache) {
             this._animCache = [];
             if (typeof $dataAnimations !== 'undefined' && $dataAnimations) {
@@ -5164,8 +3173,8 @@
         return this._animCache;
     };
 
-    // Default the fused ability's animation to the dominant spell, then recessive.
-    Scene_SkillEncyclopedia.prototype.getDefaultAnimId = function () {
+    Proto.getDefaultAnimId = function () {
+        if (!this._editorSlots) return 0;
         for (const id of this._editorSlots) {
             const sk = id && $dataSkills[id];
             if (sk && sk.animationId > 0) return sk.animationId;
@@ -5173,7 +3182,7 @@
         return 0;
     };
 
-    Scene_SkillEncyclopedia.prototype.openSpellEditor = function () {
+    Proto.openSpellEditor = function () {
         this._viewMode = 'spellEditor';
         this._editorSlots = [null, null];
         this._editorFocus = 0;
@@ -5186,12 +3195,11 @@
         this.refreshUISkillDOM();
     };
 
-    Scene_SkillEncyclopedia.prototype.closeSpellEditor = function () {
-        AnimPreview.dispose();
+    Proto.closeSpellEditor = function () {
+        if (window.SkillAnimPreview) window.SkillAnimPreview.dispose();
         this._viewMode = 'category';
         this._editorPicking = false;
         this._editorAnimPicking = false;
-        // Force a clean rebuild of the shared pages after leaving the editor.
         this._lastLeftMode = null;
         this._lastLeftCategory = null;
         this._lastRightMode = null;
@@ -5201,7 +3209,7 @@
         this.refreshUISkillDOM();
     };
 
-    Scene_SkillEncyclopedia.prototype.editorFocusSlot = function (i) {
+    Proto.editorFocusSlot = function (i) {
         this._editorFocus = i;
         const candidates = this.getEditorCandidates(i);
         if (candidates.length === 0) { SoundManager.playBuzzer(); this.refreshUISkillDOM(); return; }
@@ -5211,19 +3219,18 @@
         this.refreshUISkillDOM();
     };
 
-    Scene_SkillEncyclopedia.prototype.editorPickCandidate = function (k) {
+    Proto.editorPickCandidate = function (k) {
         const candidates = this.getEditorCandidates(this._editorFocus);
         const skill = candidates[k];
         if (!skill) { SoundManager.playBuzzer(); return; }
         this._editorSlots[this._editorFocus] = skill.id;
         this._editorPicking = false;
-        // Keep the animation default in sync until the player overrides it.
         if (!this._editorAnimId) this._editorAnimId = this.getDefaultAnimId();
         SoundManager.playOk();
         this.refreshUISkillDOM();
     };
 
-    Scene_SkillEncyclopedia.prototype.openAnimPicker = function () {
+    Proto.openAnimPicker = function () {
         if (typeof $dataAnimations === 'undefined' || !$dataAnimations) { SoundManager.playBuzzer(); return; }
         const list = this.getAvailableAnimations();
         if (!list.length) { SoundManager.playBuzzer(); return; }
@@ -5240,10 +3247,7 @@
         this.refreshUISkillDOM();
     };
 
-    // Lightweight update while browsing animations: swap the previewed effect and
-    // repaint the list highlight WITHOUT rebuilding the canvas (which would restart
-    // the Effekseer context every keypress).
-    Scene_SkillEncyclopedia.prototype.editorAnimHighlight = function (k) {
+    Proto.editorAnimHighlight = function (k) {
         const list = this.getAvailableAnimations();
         if (!list.length) return;
         k = ((k % list.length) + list.length) % list.length;
@@ -5262,45 +3266,43 @@
         }
         const label = document.getElementById('anim-preview-label');
         if (label) label.textContent = `#${list[k].id} · ${list[k].name}`;
-        AnimPreview.setAnimation(this._editorAnimId);
+        if (window.SkillAnimPreview) window.SkillAnimPreview.setAnimation(this._editorAnimId);
         SoundManager.playCursor();
-        this.scrollToActiveItem('anim-list-box', '#anim-list-box .anim-row.focused');   // i18n-ignore: CSS selector
+        this.scrollToActiveItem('anim-list-box', '#anim-list-box .anim-row.focused');
     };
 
-    Scene_SkillEncyclopedia.prototype.editorConfirmAnim = function () {
+    Proto.editorConfirmAnim = function () {
         this._editorAnimPicking = false;
-        AnimPreview.dispose();
+        if (window.SkillAnimPreview) window.SkillAnimPreview.dispose();
         this._editorFocus = FORGE_ANIM_IDX;
         SoundManager.playOk();
         this.refreshUISkillDOM();
     };
 
-    Scene_SkillEncyclopedia.prototype.editorCancelAnim = function () {
+    Proto.editorCancelAnim = function () {
         this._editorAnimPicking = false;
         this._editorAnimId = this._animBackupId || this.getDefaultAnimId();
-        AnimPreview.dispose();
+        if (window.SkillAnimPreview) window.SkillAnimPreview.dispose();
         SoundManager.playCancel();
         this.refreshUISkillDOM();
     };
 
-    // Knowledge price of the pair currently in the slots (0 when incomplete).
-    Scene_SkillEncyclopedia.prototype.editorFusionCost = function () {
-        if (!this._editorSlots.every(x => x != null)) return 0;
+    Proto.editorFusionCost = function () {
+        if (!this._editorSlots || !this._editorSlots.every(x => x != null)) return 0;
         const actor = this.getTeachActor();
-        return kpFusionCost(this._editorSlots, actor ? actor.actorId() : 0);
+        return SkillMaster.kpFusionCost(this._editorSlots, actor ? actor.actorId() : 0);
     };
 
-    Scene_SkillEncyclopedia.prototype.editorCreate = async function () {
-        if (!this._editorSlots.every(x => x != null)) { SoundManager.playBuzzer(); return; }
+    Proto.editorCreate = async function () {
+        if (!this._editorSlots || !this._editorSlots.every(x => x != null)) { SoundManager.playBuzzer(); return; }
         const actor = this.getTeachActor();
         const components = this._editorSlots.map(id => $dataSkills[id]);
         if (components.some(c => !c)) { SoundManager.playBuzzer(); return; }
 
-        const cost = kpFusionCost(this._editorSlots, actor.actorId());
+        const cost = SkillMaster.kpFusionCost(this._editorSlots, actor.actorId());
         if ($gameSystem.getKnowledge() < cost) { SoundManager.playBuzzer(); return; }
         $gameSystem.spendKnowledge(cost);
 
-        // INT-based Arcane Fusion D20 Roll
         const intMod = actor ? (actor.intMod ?? Math.floor(((actor.mat || 10) - 10) / 2)) : 0;
         const dc = Math.min(18, Math.max(10, 11 + Math.floor(cost / 30)));
         let rollRes = null;
@@ -5335,7 +3337,6 @@
             const fused = buildFusedSkill(components, actor.actorId(), animId);
 
             if (rollRes.nat20) {
-                // Natural 20 Masterwork Spell: -20% MP cost discount and bonus power
                 fused.mpCost = Math.max(1, Math.round((fused.mpCost || 1) * 0.8));
                 fused.name = '★ ' + fused.name;
                 if (fused.damage && fused.damage.formula) {
@@ -5344,43 +3345,44 @@
             }
 
             $gameSystem.addCustomSpell(fused);
-            // Component spells/skills are consumed by the successful fusion.
             for (const id of consumedSlots) actor.forgetSkill(id);
             actor.learnSkill(fused.id);
             this.invalidateLearnedSkillCaches();
             SoundManager.playRecovery();
 
             window.skipLocalization = true;
-            if (rollRes.nat20) {
-                $gameMessage.add(T('SkillMaster.fusionCritical', {
-                    result: T('SkillMaster.fusedResult', {
+            if (typeof T === 'function') {
+                if (rollRes.nat20) {
+                    $gameMessage.add(T('SkillMaster.fusionCritical', {
+                        result: T('SkillMaster.fusedResult', {
+                            name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
+                        }),
+                    }));
+                } else {
+                    $gameMessage.add(T('SkillMaster.fusedResult', {
                         name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
-                    }),
-                }));
-            } else {
-                $gameMessage.add(T('SkillMaster.fusedResult', {
-                    name: fused.name, cost: cost, left: $gameSystem.getKnowledge(),
-                }));
+                    }));
+                }
             }
             window.skipLocalization = false;
         } else {
-            // Arcane Fusion Failed! Lose the component spells to magical backlash.
             for (const id of consumedSlots) actor.forgetSkill(id);
             this.invalidateLearnedSkillCaches();
             SoundManager.playBuzzer();
 
             window.skipLocalization = true;
-            $gameMessage.add(T('SkillMaster.fusionFailed', {
-                dc: dc, components: components.map(c => c.name).join(' & '),
-            }));
+            if (typeof T === 'function') {
+                $gameMessage.add(T('SkillMaster.fusionFailed', {
+                    dc: dc, components: components.map(c => c.name).join(' & '),
+                }));
+            }
             window.skipLocalization = false;
         }
 
         this.refreshUISkillDOM();
     };
 
-    // Split a fused spell back into its components (reverses editorCreate).
-    Scene_SkillEncyclopedia.prototype.editorSplit = function (spellId) {
+    Proto.editorSplit = function (spellId) {
         const actor = this.getTeachActor();
         const spell = $dataSkills[spellId];
         if (!spell || !spell._components) { SoundManager.playBuzzer(); return; }
@@ -5395,14 +3397,15 @@
         SoundManager.playRecovery();
 
         window.skipLocalization = true;
-        $gameMessage.add(T('SkillMaster.splitResult', { name: spell.name }));
+        if (typeof T === 'function') {
+            $gameMessage.add(T('SkillMaster.splitResult', { name: spell.name }));
+        }
         window.skipLocalization = false;
 
         this.refreshUISkillDOM();
     };
 
-    // Bring the isolated Effekseer preview up on the freshly-rendered canvas.
-    Scene_SkillEncyclopedia.prototype.setupAnimPreview = function () {
+    Proto.setupAnimPreview = function () {
         requestAnimationFrame(() => {
             if (this._viewMode !== 'spellEditor' || !this._editorAnimPicking) return;
             const canvas = document.getElementById('anim-preview-canvas');
@@ -5410,13 +3413,13 @@
             const rect = canvas.getBoundingClientRect();
             canvas.width = Math.max(64, Math.floor(rect.width));
             canvas.height = Math.max(64, Math.floor(rect.height));
-            if (AnimPreview.isSupported() && AnimPreview.init(canvas)) {
-                AnimPreview.setAnimation(this._editorAnimId);
+            if (window.SkillAnimPreview && window.SkillAnimPreview.isSupported() && window.SkillAnimPreview.init(canvas)) {
+                window.SkillAnimPreview.setAnimation(this._editorAnimId);
             }
         });
     };
 
-    Scene_SkillEncyclopedia.prototype.renderSpellEditor = function (useItalian, knowledge) {
+    Proto.renderSpellEditor = function (useItalian, knowledge) {
         const leftBox = document.getElementById('left-page-content');
         const rightBox = document.getElementById('right-page-content');
         if (!leftBox || !rightBox) return;
@@ -5424,29 +3427,27 @@
         const picking = this._editorPicking;
         const animPicking = this._editorAnimPicking;
 
-        // ---- LEFT PAGE : dominant + recessive slots + animation + fuse + list ----
         const slotMeta = [
-            { label: T('SkillMaster.dominantSpell'),
-              hint: T('SkillMaster.magicOnlyDefinesTheEffect') },
-            { label: T('SkillMaster.recessiveSpellOrSkill'),
-              hint: T('SkillMaster.spellOrSkillSetsThe') }
+            { label: typeof T === 'function' ? T('SkillMaster.dominantSpell') : 'Dominant Spell',
+              hint: typeof T === 'function' ? T('SkillMaster.magicOnlyDefinesTheEffect') : 'Magic only · Defines effect & damage' },
+            { label: typeof T === 'function' ? T('SkillMaster.recessiveSpellOrSkill') : 'Recessive Spell / Skill',
+              hint: typeof T === 'function' ? T('SkillMaster.spellOrSkillSetsThe') : 'Spell or Skill · Determines result type' }
         ];
         let slotsHTML = '';
         this._editorSlots.forEach((id, i) => {
             const skill = id ? $dataSkills[id] : null;
             const focused = !animPicking && this._editorFocus === i;
             const meta = slotMeta[i] || { label: '', hint: '' };
-            // For a filled recessive slot, show whether it makes a Skill or Spell.
             let typeBadge = '';
             if (skill && i === FORGE_RECESSIVE_IDX) {
-                const cat = getSkillCategory(skill.id);
-                const isSkill = cat ? getCategoryType(cat) !== 'Magic' : false;   // i18n-ignore: category id
-                const bLabel = isSkill ? (T('SkillMaster.skill')) : (T('SkillMaster.magic'));
+                const cat = SkillMaster.getSkillCategory(skill.id);
+                const isSkill = cat ? SkillMaster.getCategoryType(cat) !== 'Magic' : false;
+                const bLabel = isSkill ? (typeof T === 'function' ? T('SkillMaster.skill') : 'Skill') : (typeof T === 'function' ? T('SkillMaster.magic') : 'Magic');
                 typeBadge = `<span style="margin-left:6px; font-family:'Lora',serif; font-size:1.081rem; text-transform:uppercase; color:var(--accent-badge-text); background:var(--accent-badge-yellow); padding:1px 5px; font-weight:bold">${bLabel}</span>`;
             }
             const inner = skill
-                ? `<div style="display:flex; align-items:center; gap:10px"><div style="${getSkillIconStyle(skill.iconIndex)} transform:scale(0.75); flex-shrink:0; image-rendering:pixelated"></div><span style="font-weight:bold; color:var(--text-primary-hover)">${skill.name}</span><span style="margin-left:auto; font-size:1.081rem; color:var(--text-card-medium)">MP ${skill.mpCost} · AP ${skill.tpCost}</span></div>`
-                : `<span style="color:var(--text-card-medium)">${T('SkillMaster.emptyPressToChoose')}</span>`;
+                ? `<div style="display:flex; align-items:center; gap:10px"><div style="${SkillMaster.getSkillIconStyle(skill.iconIndex)} transform:scale(0.75); flex-shrink:0; image-rendering:pixelated"></div><span style="font-weight:bold; color:var(--text-primary-hover)">${skill.name}</span><span style="margin-left:auto; font-size:1.081rem; color:var(--text-card-medium)">MP ${skill.mpCost} · AP ${skill.tpCost}</span></div>`
+                : `<span style="color:var(--text-card-medium)">${typeof T === 'function' ? T('SkillMaster.emptyPressToChoose') : '[ Empty - Click to choose ]'}</span>`;
             slotsHTML += `
                 <div class="focusable ${focused ? 'focused' : ''}" onclick="SceneManager._scene.editorFocusSlot(${i})" style="display:flex; flex-direction:column; gap:4px; padding:9px 13px; background:${focused ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1.5px solid ${focused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:8px; cursor:pointer; transition:all 0.15s ease">
                     <span style="font-size:1.081rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-secondary-active); font-weight:bold">${meta.label}${typeBadge}</span>
@@ -5455,14 +3456,13 @@
                 </div>`;
         });
 
-        // Animation row
         const animId = (this._editorAnimId && this._editorAnimId > 0) ? this._editorAnimId : this.getDefaultAnimId();
         const animData = animId && $dataAnimations ? $dataAnimations[animId] : null;
-        const animName = animData ? `#${animId} · ${animData.name}` : (T('SkillMaster.default'));
+        const animName = animData ? `#${animId} · ${animData.name}` : (typeof T === 'function' ? T('SkillMaster.default') : 'Default');
         const animFocused = !animPicking && this._editorFocus === FORGE_ANIM_IDX;
         const animRowHTML = `
             <div class="focusable ${animFocused ? 'focused' : ''}" onclick="SceneManager._scene.openAnimPicker()" style="display:flex; flex-direction:column; gap:4px; padding:9px 13px; background:${animFocused ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1.5px solid ${animFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:8px; cursor:pointer; transition:all 0.15s ease">
-                <span style="font-size:1.081rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-secondary-active); font-weight:bold">${T('SkillMaster.animation')}</span>
+                <span style="font-size:1.081rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-secondary-active); font-weight:bold">${typeof T === 'function' ? T('SkillMaster.animation') : 'Animation'}</span>
                 <span style="font-weight:bold; color:var(--text-primary-hover)">${animName}</span>
             </div>`;
 
@@ -5471,15 +3471,13 @@
         const canPay = !allFilled || knowledge >= fuseCost;
         const canForge = allFilled && canPay;
         const createFocused = !animPicking && this._editorFocus === FORGE_CREATE_IDX;
-        const costTag = allFilled
-            ? ` <span style="font-size:1.17rem; opacity:0.85">&middot; ${fuseCost} KP</span>`
-            : '';
+        const costTag = allFilled ? ` <span style="font-size:1.17rem; opacity:0.85">&middot; ${fuseCost} KP</span>` : '';
         const createHTML = `
             <div class="focusable ${createFocused ? 'focused' : ''} ${canForge ? '' : 'disabled'}" onclick="SceneManager._scene.editorCreate()" style="display:flex; justify-content:center; align-items:center; padding:12px; margin-top:4px; background:${canForge ? (createFocused ? 'var(--text-secondary-active)' : 'var(--text-text-alt-3)') : 'var(--shadow-primary-hover-translucent-5)'}; color:${canForge ? 'var(--text-pure-black)' : 'var(--text-text-alt-12)'}; border:1px solid var(--border-secondary-hover-translucent-15); border-radius:8px; cursor:${canForge ? 'pointer' : 'not-allowed'}; font-weight:bold; text-transform:uppercase; font-family:'Lora', serif; transition:all 0.15s ease">
-                ${T('SkillMaster.fuseSpells2')}${costTag}
+                ${typeof T === 'function' ? T('SkillMaster.fuseSpells2') : 'Fuse Spells'}${costTag}
             </div>
             <div style="text-align:center; font-family:'Lora',serif; font-size:1.17rem; color:${canPay ? 'var(--text-card-medium)' : 'var(--text-danger-hover)'}">
-                ${T('SkillMaster.knowledge')}: <strong>${knowledge} KP</strong>${allFilled && !canPay ? (T('SkillMaster.notEnough')) : ''}
+                ${typeof T === 'function' ? T('SkillMaster.knowledge') : 'Knowledge'}: <strong>${knowledge} KP</strong>${allFilled && !canPay ? (typeof T === 'function' ? T('SkillMaster.notEnough') : ' (Not enough KP)') : ''}
             </div>`;
 
         const customSpells = this.getEditorCustomSpells();
@@ -5489,14 +3487,14 @@
             const focused = !animPicking && this._editorFocus === focusIdx;
             fusedListHTML += `
                 <div class="focusable ${focused ? 'focused' : ''}" onclick="SceneManager._scene.editorSplit(${s.id})" style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:${focused ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1px solid ${focused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer">
-                    <span style="display:flex; align-items:center; gap:8px; font-weight:bold; color:var(--text-primary-hover)"><div style="${getSkillIconStyle(s.iconIndex)} transform:scale(0.7); flex-shrink:0; image-rendering:pixelated"></div>${s.name}</span>
-                    <span style="font-family:'Lora',serif; font-size:1.081rem; text-transform:uppercase; color:var(--text-secondary-active); border:1px solid var(--border-danger-active); border-radius:3px; padding:1px 6px">${T('SkillMaster.split')}</span>
+                    <span style="display:flex; align-items:center; gap:8px; font-weight:bold; color:var(--text-primary-hover)"><div style="${SkillMaster.getSkillIconStyle(s.iconIndex)} transform:scale(0.7); flex-shrink:0; image-rendering:pixelated"></div>${s.name}</span>
+                    <span style="font-family:'Lora',serif; font-size:1.081rem; text-transform:uppercase; color:var(--text-secondary-active); border:1px solid var(--border-danger-active); border-radius:3px; padding:1px 6px">${typeof T === 'function' ? T('SkillMaster.split') : 'Split'}</span>
                 </div>`;
         });
-        if (!fusedListHTML) fusedListHTML = `<div style="color:var(--text-card-medium); font-size:1.219rem; padding:4px">${T('SkillMaster.noFusedSpellsYet')}</div>`;
+        if (!fusedListHTML) fusedListHTML = `<div style="color:var(--text-card-medium); font-size:1.219rem; padding:4px">${typeof T === 'function' ? T('SkillMaster.noFusedSpellsYet') : 'No fused spells forged yet'}</div>`;
 
-        const backBtn = T('SkillMaster.back');
-        const title = T('SkillMaster.fuseSpells3');
+        const backBtn = typeof T === 'function' ? T('SkillMaster.back') : 'Back';
+        const title = typeof T === 'function' ? T('SkillMaster.fuseSpells3') : 'Spell Fusion';
         leftBox.innerHTML = `
             <div class="page-header-bar" style="margin-bottom:14px">
               <div class="back-button focusable" onclick="SceneManager._scene.closeSpellEditor()">${backBtn}</div>
@@ -5508,12 +3506,11 @@
                 ${createHTML}
             </div>
             <div style="border-top:1px dashed var(--scroll-thumb-hover-translucent-60); margin:14px 0 8px 0"></div>
-            <h4 style="margin:0 0 8px 0; font-family:'Lora',serif; color:var(--text-secondary-active); font-size:1.463rem; text-align:center">${T('SkillMaster.fusedSpells')}</h4>
+            <h4 style="margin:0 0 8px 0; font-family:'Lora',serif; color:var(--text-secondary-active); font-size:1.463rem; text-align:center">${typeof T === 'function' ? T('SkillMaster.fusedSpells') : 'Forged Spells'}</h4>
             <div id="fused-scroll-box" class="skill-scroll-box" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding-right:6px; min-height:60px">
                 ${fusedListHTML}
             </div>`;
 
-        // ---- RIGHT PAGE ----
         let rightHTML = '';
         if (picking) {
             const slotIdx = this._editorFocus;
@@ -5523,14 +3520,14 @@
                 const focused = this._editorPickIndex === k;
                 candHTML += `
                     <div class="focusable ${focused ? 'focused' : ''}" onclick="SceneManager._scene.editorPickCandidate(${k})" style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:${focused ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--accent-gray-2-translucent-0)'}; border:1px solid ${focused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer">
-                        <span style="display:flex; align-items:center; gap:8px; font-weight:bold; color:${focused ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}"><div style="${getSkillIconStyle(s.iconIndex)} transform:scale(0.72); flex-shrink:0; image-rendering:pixelated"></div>${s.name}</span>
+                        <span style="display:flex; align-items:center; gap:8px; font-weight:bold; color:${focused ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}"><div style="${SkillMaster.getSkillIconStyle(s.iconIndex)} transform:scale(0.72); flex-shrink:0; image-rendering:pixelated"></div>${s.name}</span>
                         <span style="font-size:1.081rem; color:var(--text-inverse)">MP ${s.mpCost} · AP ${s.tpCost}</span>
                     </div>`;
             });
-            if (!candHTML) candHTML = `<div style="color:var(--text-card-medium); text-align:center; margin-top:20px">${T('SkillMaster.noAvailableSkillsForThis')}</div>`;
+            if (!candHTML) candHTML = `<div style="color:var(--text-card-medium); text-align:center; margin-top:20px">${typeof T === 'function' ? T('SkillMaster.noAvailableSkillsForThis') : 'No available skills for this slot'}</div>`;
             const pickTitle = slotIdx === FORGE_DOMINANT_IDX
-                ? (T('SkillMaster.chooseDominantSpell'))
-                : (T('SkillMaster.chooseRecessive'));
+                ? (typeof T === 'function' ? T('SkillMaster.chooseDominantSpell') : 'Choose Dominant Spell')
+                : (typeof T === 'function' ? T('SkillMaster.chooseRecessive') : 'Choose Recessive Component');
             rightHTML = `
                 <div class="page-header-bar">
                   <h2 class="cc-header-gothic" style="text-align:center; font-size:2.064rem">${pickTitle}</h2>
@@ -5552,16 +3549,16 @@
                         <span style="font-size:1.081rem; color:var(--text-card-medium)">#${a.id}</span>
                     </div>`;
             });
-            const pickTitle = T('SkillMaster.chooseAnimation');
-            const useLbl = T('SkillMaster.use');
-            const backLbl = T('SkillMaster.cancel');
+            const pickTitle = typeof T === 'function' ? T('SkillMaster.chooseAnimation') : 'Choose Animation';
+            const useLbl = typeof T === 'function' ? T('SkillMaster.use') : 'Use';
+            const backLbl = typeof T === 'function' ? T('SkillMaster.cancel') : 'Cancel';
             rightHTML = `
                 <div style="display:flex; flex-direction:column; height:100%; box-sizing:border-box">
                     <div class="page-header-bar page-header-bar--compact">
                       <h2 class="cc-header-gothic" style="text-align:center; font-size:1.854rem">${pickTitle}</h2>
                     </div>
-                    <div style="position:relative; width:100%; height:210px; border-radius:8px; overflow:hidden; border:1.5px solid var(--border-secondary-hover-translucent-15); background:radial-gradient(circle at 50% 40%, var(--bg-tertiary-focus-translucent-45) 0%, var(--shadow-heavy) 100%); perspective:600px">
-                        <div style="position:absolute; left:50%; bottom:6px; transform:translateX(-50%) rotateX(8deg); width:150px; height:150px; background:url('img/faces/${actor.faceName()}.png') -${faceX}px -${faceY}px no-repeat; image-rendering:pixelated; filter:drop-shadow(0 6px 10px var(--shadow-primary-hover-translucent-5))"></div>
+                    <div style="position:relative; width:100%; height:210px; border-radius:8px; overflow:hidden; border:1.5px solid var(--border-secondary-hover-translucent-15); background:radial-gradient(circle at 50% 40%, var(--bg-tertiary-focus-translucent-45) 0%, rgba(10,8,6,1) 100%); perspective:600px">
+                        <div style="position:absolute; left:50%; bottom:6px; transform:translateX(-50%) rotateX(8deg); width:150px; height:150px; background:url('img/faces/${actor.faceName()}.png') -${faceX}px -${faceY}px no-repeat; image-rendering:pixelated; filter:drop-shadow(0 6px 10px rgba(0,0,0,0.5))"></div>
                         <canvas id="anim-preview-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none"></canvas>
                     </div>
                     <div id="anim-preview-label" style="text-align:center; font-family:'Lora',serif; font-size:1.219rem; color:var(--text-secondary-active); font-weight:bold; margin:8px 0">${cur ? `#${cur.id} · ${cur.name}` : ''}</div>
@@ -5582,38 +3579,36 @@
                 const previewName = makeFusedSpellName(filled.map(s => s.name));
                 const mp = filled.reduce((a, s) => a + (s.mpCost || 0), 0);
                 const ap = filled.reduce((a, s) => a + (s.tpCost || 0), 0);
-                const recCat = recessive ? getSkillCategory(recessive.id) : null;
-                const resultIsSkill = recCat ? getCategoryType(recCat) !== 'Magic' : false;   // i18n-ignore: category id
-                const resultKind = resultIsSkill ? (T('SkillMaster.skill')) : (T('SkillMaster.magic'));
+                const recCat = recessive ? SkillMaster.getSkillCategory(recessive.id) : null;
+                const resultIsSkill = recCat ? SkillMaster.getCategoryType(recCat) !== 'Magic' : false;
+                const resultKind = resultIsSkill ? (typeof T === 'function' ? T('SkillMaster.skill') : 'Skill') : (typeof T === 'function' ? T('SkillMaster.magic') : 'Magic');
                 const previewCost = this.editorFusionCost();
                 rightHTML = `
                     <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center; gap:14px; padding:20px; box-sizing:border-box">
-                        <h3 class="cc-header-gothic" style="font-size:1.924rem; color:var(--text-secondary-active); margin:0">${T('SkillMaster.preview2')}</h3>
+                        <h3 class="cc-header-gothic" style="font-size:1.924rem; color:var(--text-secondary-active); margin:0">${typeof T === 'function' ? T('SkillMaster.preview2') : 'Preview'}</h3>
                         <div style="font-size:2.612rem; font-weight:bold; color:var(--text-text-alt-3); font-family:'Lora',serif">${previewName}</div>
-                        <span style="font-family:'Lora',serif; font-size:1.081rem; text-transform:uppercase; color:var(--accent-badge-text); background:var(--accent-badge-yellow); padding:2px 8px; font-weight:bold">${T('SkillMaster.becomesA')} ${resultKind}</span>
-                        <div style="display:flex; gap:26px; font-size:1.512rem; color:var(--text-primary-hover)"><div><strong>${T('SkillMaster.mpLabel')}</strong> ${mp}</div><div><strong>${T('SkillMaster.apLabel')}</strong> ${ap}</div></div>
-                        <div style="font-size:1.463rem; color:${knowledge >= previewCost ? 'var(--text-secondary-active)' : 'var(--text-danger-hover)'};"><strong>${T('SkillMaster.fusionCost')}</strong> ${previewCost} KP <span style="font-size:1.234rem; color:var(--text-card-medium)">(${T('SkillMaster.youHold')} ${knowledge})</span></div>
+                        <span style="font-family:'Lora',serif; font-size:1.081rem; text-transform:uppercase; color:var(--accent-badge-text); background:var(--accent-badge-yellow); padding:2px 8px; font-weight:bold">${typeof T === 'function' ? T('SkillMaster.becomesA') : 'Becomes a'} ${resultKind}</span>
+                        <div style="display:flex; gap:26px; font-size:1.512rem; color:var(--text-primary-hover)"><div><strong>${typeof T === 'function' ? T('SkillMaster.mpLabel') : 'MP'}</strong> ${mp}</div><div><strong>${typeof T === 'function' ? T('SkillMaster.apLabel') : 'AP'}</strong> ${ap}</div></div>
+                        <div style="font-size:1.463rem; color:${knowledge >= previewCost ? 'var(--text-secondary-active)' : 'var(--text-danger-hover)'};"><strong>${typeof T === 'function' ? T('SkillMaster.fusionCost') : 'Fusion Cost'}</strong> ${previewCost} KP <span style="font-size:1.234rem; color:var(--text-card-medium)">(${typeof T === 'function' ? T('SkillMaster.youHold') : 'You have'} ${knowledge})</span></div>
                         <div style="border-top:1px dashed var(--scroll-thumb-hover-translucent-60); width:80%"></div>
-                        <div style="font-size:1.292rem; color:var(--text-card-medium)">${T('SkillMaster.dominant')} <strong style="color:var(--text-secondary-active)">${dominant.name}</strong> &middot; ${T('SkillMaster.recessive')} <strong style="color:var(--text-secondary-active)">${recessive.name}</strong></div>
-                        <div style="font-size:1.234rem; color:var(--text-card-medium); line-height:1.5; max-width:85%">${T('SkillMaster.theDominantDefinesDamageAnd')}</div>
+                        <div style="font-size:1.292rem; color:var(--text-card-medium)">${typeof T === 'function' ? T('SkillMaster.dominant') : 'Dominant'}: <strong style="color:var(--text-secondary-active)">${dominant.name}</strong> &middot; ${typeof T === 'function' ? T('SkillMaster.recessive') : 'Recessive'}: <strong style="color:var(--text-secondary-active)">${recessive.name}</strong></div>
+                        <div style="font-size:1.234rem; color:var(--text-card-medium); line-height:1.5; max-width:85%">${typeof T === 'function' ? T('SkillMaster.theDominantDefinesDamageAnd') : 'Dominant sets core properties, recessive provides mixed traits.'}</div>
                     </div>`;
             } else {
                 rightHTML = `
                     <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center; gap:16px; padding:24px; box-sizing:border-box">
-                        <div style="${getCategoryIconStyle('All')} transform:scale(1.8); image-rendering:pixelated"></div>
-                        <h3 class="cc-header-gothic" style="font-size:1.924rem; color:var(--text-secondary-active); margin:0">${T('SkillMaster.fuseSpells3')}</h3>
-                        <div style="font-size:1.365rem; color:var(--text-card-medium); line-height:1.5; max-width:88%">${T('SkillMaster.forgeBlurb', { actor: actor.name(), knowledge: knowledge })}</div>
+                        <div style="${SkillMaster.getCategoryIconStyle('All')} transform:scale(1.8); image-rendering:pixelated"></div>
+                        <h3 class="cc-header-gothic" style="font-size:1.924rem; color:var(--text-secondary-active); margin:0">${typeof T === 'function' ? T('SkillMaster.fuseSpells3') : 'Spell Fusion'}</h3>
+                        <div style="font-size:1.365rem; color:var(--text-card-medium); line-height:1.5; max-width:88%">${typeof T === 'function' ? T('SkillMaster.forgeBlurb', { actor: actor.name(), knowledge: knowledge }) : `Combine two known abilities into a unique spell for ${actor.name()}.`}</div>
                     </div>`;
             }
         }
 
         rightBox.innerHTML = rightHTML;
-
         if (animPicking) this.setupAnimPreview();
     };
 
-    Scene_SkillEncyclopedia.prototype.updateSpellEditorInput = function () {
-        // Component-picking sub-mode (right list of the pupil's skills).
+    Proto.updateSpellEditorInput = function () {
         if (this._editorPicking) {
             const candidates = this.getEditorCandidatesCached(this._editorFocus);
             const max = candidates.length;
@@ -5639,7 +3634,6 @@
             return;
         }
 
-        // Animation-picking sub-mode (3D viewbox + list).
         if (this._editorAnimPicking) {
             const list = this.getAvailableAnimations();
             const max = list.length;
@@ -5657,7 +3651,6 @@
             return;
         }
 
-        // Main slots navigation.
         const customCount = this.getEditorCustomSpells().length;
         const maxFocus = FORGE_SPLIT_BASE + customCount;
         const prev = this._editorFocus;
@@ -5683,8 +3676,6 @@
         } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
             this._editorFocus = (this._editorFocus - 1 + maxFocus) % maxFocus;
         } else if (Input.isTriggered('right') || Input.isRepeated('right')) {
-            // The slots run down the left page; sideways is the way onto the
-            // page facing them and the buttons on it.
             if (this._ccEnterNav('right')) return;
         }
 
@@ -5693,6 +3684,1494 @@
             this.refreshUISkillDOM();
             this.scrollToActiveItem('fused-scroll-box', '#fused-scroll-box .focused');
         }
+    };
+
+})();
+
+
+//=============================================================================
+// Module: SkillMasterMagicSystems.js
+//=============================================================================
+/*:
+ * @target MZ
+ * @plugindesc v4.0.0 SkillMaster - Magical Systems Astrological Wheel Interface.
+ * @author Omni-Lex
+ */
+
+(() => {
+    'use strict';
+
+    window.SkillMaster = window.SkillMaster || {};
+
+    const TAU = Math.PI * 2;
+
+    if (!window.Scene_SkillEncyclopedia) {
+        window.Scene_SkillEncyclopedia = function () {
+            this.initialize(...arguments);
+        };
+        window.Scene_SkillEncyclopedia.prototype = Object.create(Scene_MenuBase.prototype);
+        window.Scene_SkillEncyclopedia.prototype.constructor = window.Scene_SkillEncyclopedia;
+    }
+
+    const Proto = window.Scene_SkillEncyclopedia.prototype;
+
+    Proto.openMagicSystems = function () {
+        this._viewMode = 'magicSystems';
+        this._magicSystemSelected = null;
+        SoundManager.playOk();
+        this.refreshUISkillDOM();
+    };
+
+    Proto.closeMagicSystems = function () {
+        this._viewMode = 'category';
+        SoundManager.playCancel();
+        this._lastLeftMode = null;
+        this._lastLeftCategory = null;
+        this._lastRightMode = null;
+        this._lastRightSkillId = null;
+        this._lastRightKnowledge = null;
+        this.refreshUISkillDOM();
+    };
+
+    Proto.selectMagicSystem = function (id) {
+        if (this._magicSystemSelected === id) return;
+        this._magicSystemSelected = id;
+        SoundManager.playCursor();
+        this.refreshUISkillDOM();
+    };
+
+    Proto.renderMagicSystemsView = function () {
+        const leftPageBox = document.getElementById('left-page-content');
+        const rightPageBox = document.getElementById('right-page-content');
+        if (!leftPageBox || !rightPageBox) return;
+
+        const backLabel = typeof T === 'function' ? T('SkillMaster.back') : 'Back';
+        const titleLabel = typeof T === 'function' ? T('SkillMaster.magicSystem.title') : 'Magical Systems';
+
+        leftPageBox.innerHTML = `
+            <div class="page-header-bar">
+              <div class="back-button focusable" onclick="SceneManager._scene.closeMagicSystems()">${backLabel}</div>
+              <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; text-align:center; font-size:2.542rem">${titleLabel}</h2>
+            </div>
+            ${this.renderMagicSystemWheelHTML()}
+        `;
+        rightPageBox.innerHTML = this.renderMagicSystemDetailHTML();
+
+        this._lastLeftMode = 'magicSystems';
+        this._lastRightMode = 'magicSystems';
+    };
+
+    Proto.renderMagicSystemWheelHTML = function () {
+        const systems = SkillMaster.getAllMagicalSystems();
+        const size = 720;
+        const cx = size / 2, cy = size / 2;
+        const outerR = 270;
+        const pentR = 64;
+        const n = Math.max(1, systems.length);
+        const selected = this._magicSystemSelected;
+        const actor = this.getTeachActor();
+        const actorSystem = actor ? SkillMaster.getActorMagicSystem(actor.actorId()) : null;
+
+        const pts = systems.map((sys, i) => {
+            const angle = -Math.PI / 2 + (i / n) * TAU;
+            return { sys, x: cx + Math.cos(angle) * outerR, y: cy + Math.sin(angle) * outerR };
+        });
+
+        let ringHTML = '';
+        for (let i = 0; i < pts.length; i++) {
+            const a = pts[i], b = pts[(i + 1) % pts.length];
+            ringHTML += `<line x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1.5" />`;
+        }
+        let spokesHTML = '';
+        for (const p of pts) {
+            spokesHTML += `<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1" stroke-dasharray="3,4" />`;
+        }
+
+        const rimHTML = `<circle class="ms-rim" cx="${cx}" cy="${cy}" r="${outerR + 38}" fill="none" stroke="var(--border-secondary-hover-translucent-15)" stroke-width="1" stroke-dasharray="2,10" />`;
+
+        const starPts = [];
+        for (let i = 0; i < 5; i++) {
+            const a = -Math.PI / 2 + i * (TAU / 5);
+            starPts.push([cx + Math.cos(a) * pentR, cy + Math.sin(a) * pentR]);
+        }
+        const order = [0, 2, 4, 1, 3, 0];
+        const starPath = order.map((idx, i) => `${i === 0 ? 'M' : 'L'} ${starPts[idx][0].toFixed(1)} ${starPts[idx][1].toFixed(1)}`).join(' ') + ' Z';
+
+        let nodesHTML = '';
+        for (const p of pts) {
+            const isSel = selected === p.sys.id;
+            const isActor = actorSystem === p.sys.id;
+            const skills = SkillMaster.getSkillsForMagicSystem(p.sys.id);
+            const known = actor ? skills.filter(s => actor.isLearnedSkill(s.id)).length : 0;
+            const pctLabel = skills.length ? Math.round(known / skills.length * 100) + '%' : '&mdash;';
+            const yourSysTitle = typeof T === 'function' ? T('SkillMaster.magicSystem.yourSystem') : 'Your System';
+            nodesHTML += `
+                <div class="ms-node ${isSel ? 'ms-selected' : ''} ${isActor ? 'ms-actor' : ''}" data-id="${p.sys.id}" onclick="SceneManager._scene.selectMagicSystem('${p.sys.id}')" title="${isActor ? yourSysTitle : ''}" style="left:${(p.x - 70).toFixed(1)}px; top:${(p.y - 46).toFixed(1)}px">
+                    <div class="ms-ring" style="border-color:${p.sys.color}"><span class="ms-pct" style="color:${p.sys.color}">${pctLabel}</span></div>
+                    <div class="ms-name" style="color:${p.sys.color}">${SkillMaster.getMagicSystemDisplayName(p.sys.id)}</div>
+                </div>`;
+        }
+
+        const hintLabel = typeof T === 'function' ? T('SkillMaster.magicSystem.hint') : 'Click a magical system to view affiliated classes and spells';
+
+        return `
+            <div style="flex:1; display:flex; align-items:center; justify-content:center; min-height:0">
+                <div class="ms-wheel-box" style="position:relative; width:${size}px; height:${size}px; flex-shrink:0">
+                    <svg width="${size}" height="${size}" style="position:absolute; left:0; top:0">
+                        ${rimHTML}
+                        <g>${ringHTML}${spokesHTML}</g>
+                        <g class="ms-pentacle">
+                            <circle cx="${cx}" cy="${cy}" r="${pentR + 10}" fill="none" stroke="var(--text-secondary-active, #e5c07b)" stroke-width="1.5" />
+                            <path d="${starPath}" fill="none" stroke="var(--text-secondary-active, #e5c07b)" stroke-width="1.5" />
+                        </g>
+                    </svg>
+                    ${nodesHTML}
+                </div>
+            </div>
+            <div style="text-align:center; opacity:0.65; font-family:'Lora', serif; font-size:1.15rem; padding-top:4px">${hintLabel}</div>
+        `;
+    };
+
+    Proto.renderMagicSystemDetailHTML = function () {
+        const id = this._magicSystemSelected;
+        if (!id) {
+            const emptyLabel = typeof T === 'function' ? T('SkillMaster.magicSystem.empty') : 'Select a system to inspect';
+            return `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; gap:16px; padding:20px; box-sizing:border-box">
+                    <h3 class="cc-header-gothic" style="font-size:1.9rem; color:var(--text-secondary-active, #e5c07b); margin:0">${emptyLabel}</h3>
+                </div>`;
+        }
+        const sys = SkillMaster.getAllMagicalSystems().find(s => s.id === id);
+        const color = sys ? sys.color : 'var(--text-secondary-active, #e5c07b)';
+        const classNames = SkillMaster.getClassesForMagicSystem(id);
+        const noClassesLabel = typeof T === 'function' ? T('SkillMaster.magicSystem.noClasses') : 'No classes affiliated';
+        const classesHTML = classNames.length
+            ? `<ul style="margin:8px 0 0 0; padding-left:20px">${classNames.map(n => `<li style="margin-bottom:4px">${n}</li>`).join('')}</ul>`
+            : `<div style="opacity:0.65; margin-top:8px">${noClassesLabel}</div>`;
+
+        const actor = this.getTeachActor();
+        const skills = SkillMaster.getSkillsForMagicSystem(id);
+        const known = actor ? skills.filter(s => actor.isLearnedSkill(s.id)).length : 0;
+        const fractionLine = skills.length
+            ? `<div style="font-family:'Lora', serif; font-size:1.1rem; color:${color}; margin-top:4px">${typeof T === 'function' ? T('SkillMaster.magicSystem.knownFraction', { known: known, total: skills.length, pct: Math.round(known / skills.length * 100) }) : `Known: ${known} / ${skills.length} (${Math.round(known / skills.length * 100)}%)`}</div>`
+            : '';
+        const noSpellsLabel = typeof T === 'function' ? T('SkillMaster.magicSystem.noSpells') : 'No spells listed';
+        const spellsHTML = skills.length
+            ? `<ul style="margin:8px 0 0 0; padding-left:20px">${skills.map(s => {
+                const isKnown = actor && actor.isLearnedSkill(s.id);
+                return `<li style="margin-bottom:4px; ${isKnown ? 'color:var(--text-forest-complete, #52c41a); font-weight:bold;' : ''}">${isKnown ? '&#10003; ' : ''}${s.name}</li>`;
+              }).join('')}</ul>`
+            : `<div style="opacity:0.65; margin-top:8px">${noSpellsLabel}</div>`;
+
+        const classesHeading = typeof T === 'function' ? T('SkillMaster.magicSystem.classesHeading') : 'Affiliated Classes';
+        const spellsHeading = typeof T === 'function' ? T('SkillMaster.magicSystem.spellsHeading') : 'Curriculum Spells';
+
+        return `
+            <div style="display:flex; flex-direction:column; height:100%; box-sizing:border-box">
+                <div style="display:flex; align-items:center; gap:10px; border-bottom:2px dashed var(--border-success, #52c41a); padding-bottom:10px; margin-bottom:6px">
+                    <span style="width:22px; height:22px; border-radius:50%; background:${color}; flex-shrink:0; box-shadow:0 0 8px ${color}"></span>
+                    <h2 class="cc-header-gothic" style="border:none; margin:0; padding:0; font-size:2.1rem">${SkillMaster.getMagicSystemDisplayName(id)}</h2>
+                </div>
+                ${fractionLine}
+                <div style="font-family:'Lora', serif; font-size:1.2rem; line-height:1.5; color:var(--text-card-medium, #ddd); margin-top:10px">${SkillMaster.getMagicSystemDesc(id)}</div>
+                <h3 class="cc-header-gothic" style="font-size:1.4rem; margin-top:18px">${classesHeading}</h3>
+                <div style="font-family:'Lora', serif; font-size:1.15rem; color:#ffffff; max-height:26%; overflow-y:auto">${classesHTML}</div>
+                <h3 class="cc-header-gothic" style="font-size:1.4rem; margin-top:14px">${spellsHeading}</h3>
+                <div class="skill-scroll-box" style="flex:1; overflow-y:auto; font-family:'Lora', serif; font-size:1.15rem; color:#ffffff">${spellsHTML}</div>
+            </div>
+        `;
+    };
+
+})();
+
+
+//=============================================================================
+// Module: SkillMasterUI.js
+//=============================================================================
+/*:
+ * @target MZ
+ * @plugindesc v4.0.0 SkillMaster - Main Encyclopedia Scene & 2D Skill Tree Controller.
+ * @author Omni-Lex
+ */
+
+(() => {
+    'use strict';
+
+    window.SkillMaster = window.SkillMaster || {};
+
+    const CATEGORY_PAGE_COLS = 2;
+    const SKILL_GRID_COLS = 2;
+    const ATLAS_ZOOM_DEFAULT = 1.0;
+    const ATLAS_ZOOM_WHOLE = 0.65;
+    const ATLAS_ZOOM_STEP = 1.15;
+    const ATLAS_WHEEL_STEP = 1.08;
+
+    function getSwitchableMembers() {
+        return ($gameParty && $gameParty.allMembers) ? $gameParty.allMembers() : [];
+    }
+
+    const Scene_SkillEncyclopedia = window.Scene_SkillEncyclopedia || function () {
+        this.initialize(...arguments);
+    };
+    if (!window.Scene_SkillEncyclopedia) {
+        Scene_SkillEncyclopedia.prototype = Object.create(Scene_MenuBase.prototype);
+        Scene_SkillEncyclopedia.prototype.constructor = Scene_SkillEncyclopedia;
+        window.Scene_SkillEncyclopedia = Scene_SkillEncyclopedia;
+    }
+
+    Scene_SkillEncyclopedia.prototype.initialize = function () {
+        Scene_MenuBase.prototype.initialize.call(this);
+        this._viewMode = 'category';
+        const varId = (SkillMaster.params && SkillMaster.params.variableId) || 1;
+        this._preselectedSkillId = $gameVariables ? $gameVariables.value(varId) : 0;
+        this.handlePreselection();
+    };
+
+    Scene_SkillEncyclopedia.prototype.handlePreselection = function () {
+        this._categoryPane = 0;
+        this._selectedCategoryIndex = 0;
+        this._selectedSkillIndex = 0;
+        this._selectedActionIndex = 0;
+        this._focusSkillId = 0;
+        this._atlasZoom = 0;
+        this._atlasCategory = null;
+        this._atlasMemory = {};
+        this._categoryFuseFocused = false;
+
+        const leader = $gameParty ? $gameParty.leader() : null;
+        this._teachActorId = leader ? leader.actorId() : 1;
+        SkillMaster.actorCategoryManager.setActor(this._teachActorId);
+
+        if (this._preselectedSkillId > 0) {
+            const skillId = this._preselectedSkillId;
+            const skill = $dataSkills[skillId];
+            if (skill) {
+                const category = SkillMaster.getSkillCategory(skillId);
+                if (category) {
+                    this._selectedCategory = category;
+                    const split = SkillMaster.getSplitSkillCategories();
+                    const pane = SkillMaster.getCategoryType(category) === 'Magic' ? 1 : 0;
+                    const list = pane === 1 ? split.Magic : split.Skill;
+                    const catIdx = list.indexOf(category);
+                    if (catIdx !== -1) {
+                        this._categoryPane = pane;
+                        this._selectedCategoryIndex = catIdx;
+                        const skills = SkillMaster.getSkillsByCategory(category);
+                        const skillIdx = skills.findIndex(s => s.id === skillId);
+                        if (skillIdx !== -1) {
+                            this._selectedSkillIndex = skillIdx;
+                            this._focusSkillId = skillId;
+                            this._viewMode = 'detail';
+                            this._selectedActionIndex = 0;
+                            this._preselectedSkillId = 0;
+                            return;
+                        }
+                    }
+                }
+            }
+            this._preselectedSkillId = 0;
+        }
+    };
+
+    Scene_SkillEncyclopedia.prototype.getTeachActor = function () {
+        return ($gameActors && $gameActors.actor(this._teachActorId)) || ($gameParty && $gameParty.leader());
+    };
+
+    Scene_SkillEncyclopedia.prototype.create = function () {
+        Scene_MenuBase.prototype.create.call(this);
+        if (SkillMaster.injectAllCustomSpells) SkillMaster.injectAllCustomSpells();
+        this.createCategoryWindow();
+        this.createSkillListWindow();
+        this.createSkillDetailWindow();
+        this.createUISkillDOM();
+        if (window.CharSwitcher) {
+            window.CharSwitcher.installTabKey(this, (dir) => {
+                if (this._viewMode !== 'spellEditor' && this._viewMode !== 'preview') this.cycleTeachActor(dir);
+            });
+        }
+    };
+
+    Scene_SkillEncyclopedia.prototype.terminate = function () {
+        Scene_MenuBase.prototype.terminate.call(this);
+        if (window.CCNav) window.CCNav.detach(this);
+        if (window.CharSwitcher) window.CharSwitcher.removeTabKey(this);
+        if (window.SkillAnimPreview) window.SkillAnimPreview.dispose();
+        if (window.SkillTree2D) window.SkillTree2D.dispose();
+        if (this._dndContainer) {
+            const container = this._dndContainer;
+            container.style.transition = "opacity 0.2s ease-out";
+            container.style.opacity = "0";
+            container.style.pointerEvents = "none";
+            setTimeout(() => {
+                if (container && container.parentNode) {
+                    container.parentNode.removeChild(container);
+                }
+            }, 200);
+            this._dndContainer = null;
+        }
+    };
+
+    Scene_SkillEncyclopedia.prototype.createCategoryWindow = function () {
+        this._categoryWindow = new Window_SkillCategory(new Rectangle(0, 0, 100, 100));
+        this._categoryWindow.visible = false;
+        this.addWindow(this._categoryWindow);
+    };
+
+    Scene_SkillEncyclopedia.prototype.createSkillListWindow = function () {
+        this._skillListWindow = new Window_SkillMasterList(new Rectangle(0, 0, 100, 100));
+        this._skillListWindow.visible = false;
+        this.addWindow(this._skillListWindow);
+    };
+
+    Scene_SkillEncyclopedia.prototype.createSkillDetailWindow = function () {
+        this._skillDetailWindow = new Window_SkillDetail(new Rectangle(0, 0, 100, 100));
+        this._skillDetailWindow.visible = false;
+        this.addWindow(this._skillDetailWindow);
+    };
+
+    Scene_SkillEncyclopedia.prototype.createUISkillDOM = function () {
+        this._dndContainer = document.createElement('div');
+        this._dndContainer.id = 'menu-container';
+        this._dndContainer.style.position = 'absolute';
+        this._dndContainer.style.top = '0';
+        this._dndContainer.style.left = '0';
+        this._dndContainer.style.width = '100%';
+        this._dndContainer.style.height = '100%';
+        this._dndContainer.style.zIndex = '1000';
+        this._dndContainer.style.background = 'radial-gradient(circle, var(--accent-bronze-translucent-78, rgba(35,28,20,0.78)) 0%, var(--shadow-heavy, rgba(0,0,0,0.92)) 100%)';
+        this._dndContainer.style.display = 'flex';
+        this._dndContainer.style.justifyContent = 'center';
+        this._dndContainer.style.alignItems = 'center';
+        this._dndContainer.style.fontFamily = "'Lora', serif";
+        this._dndContainer.style.color = 'var(--bg-bg-alt-25-translucent-8, #e5e0d8)';
+        this._dndContainer.style.boxSizing = 'border-box';
+        this._dndContainer.style.opacity = '0';
+        this._dndContainer.style.transition = 'opacity 0.22s ease-out';
+
+        this._dndContainer.innerHTML = `
+            <div class="book-spread">
+                <div class="spine-divider"></div>
+                <div class="left-page" style="position:relative">
+                    <div id="left-page-content" style="display:flex; flex-direction:column; flex:1; min-height:0"></div>
+                </div>
+                <div class="right-page" style="position:relative">
+                    <div class="companion-switcher" id="skillmaster-companion-row" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:10px"></div>
+                    <div id="right-page-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0"></div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(this._dndContainer);
+
+        if (window.CCNav) window.CCNav.attach(this, this._dndContainer);
+
+        this._dndContainer.addEventListener("wheel", (e) => {
+            e.preventDefault();
+            let box = e.target.closest && e.target.closest('.skill-scroll-box');
+            if (!box) {
+                box = document.getElementById('category-scroll-box-left') ||
+                      document.getElementById('category-scroll-box-right') ||
+                      document.getElementById('skills-scroll-box');
+            }
+            if (!box) {
+                if (document.getElementById('skill-atlas-canvas')) {
+                    this.setAtlasZoom(this.atlasZoom() * (e.deltaY > 0 ? 1 / ATLAS_WHEEL_STEP : ATLAS_WHEEL_STEP));
+                }
+                return;
+            }
+            box.scrollTop += e.deltaY;
+        }, { passive: false });
+
+        this._lastLeftMode = null;
+        this._lastLeftCategory = null;
+        this._lastRightMode = null;
+        this._lastRightSkillId = null;
+        this._lastRightKnowledge = null;
+        this._lastPopupKey = null;
+
+        this.refreshUISkillDOM();
+
+        setTimeout(() => {
+            if (this._dndContainer) {
+                this._dndContainer.style.opacity = '1';
+            }
+        }, 16);
+    };
+
+    Scene_SkillEncyclopedia.prototype.getCategoryEmoji = function (catName) {
+        return '';
+    };
+
+    //=========================================================================
+    // 2D Skill Tree Atlas Controller
+    //=========================================================================
+
+    Scene_SkillEncyclopedia.prototype.atlasCategories = function () {
+        const split = this.getSplitCategoriesCached();
+        return split.Skill.filter(c => c !== 'All').concat(split.Magic);
+    };
+
+    Scene_SkillEncyclopedia.prototype.viewedCategory = function () {
+        const list = this.atlasCategories();
+        if (!list.length) return null;
+        if (!this._atlasCategory || !list.includes(this._atlasCategory)) {
+            const chosen = this._selectedCategory;
+            this._atlasCategory = list.includes(chosen) ? chosen : list[0];
+        }
+        return this._atlasCategory;
+    };
+
+    Scene_SkillEncyclopedia.prototype.currentAtlas = function () {
+        return SkillMaster.SkillAtlas ? SkillMaster.SkillAtlas.build(this.viewedCategory()) : { circles: [], index: {} };
+    };
+
+    Scene_SkillEncyclopedia.prototype.showAtlasCategory = function (category) {
+        const list = this.atlasCategories();
+        if (!category || !list.includes(category) || category === this._atlasCategory) return false;
+        if (!this._atlasMemory) this._atlasMemory = {};
+        if (this._atlasCategory) {
+            this._atlasMemory[this._atlasCategory] = {
+                skillId: this._focusSkillId, zoom: this._atlasZoom
+            };
+        }
+        this._atlasCategory = category;
+        this._selectedCategory = category;
+        if (this._skillListWindow) this._skillListWindow.setCategory(category);
+        const kept = this._atlasMemory[category];
+        this._atlasZoom = 0;
+        this._focusSkillId = 0;
+        if (kept && this.currentAtlas().index[kept.skillId]) {
+            this._focusSkillId = kept.skillId;
+            this._atlasZoom = kept.zoom || 0;
+        } else {
+            this.defaultGraphFocus();
+        }
+        return true;
+    };
+
+    Scene_SkillEncyclopedia.prototype.pageAtlasSchool = function (dir) {
+        const list = this.atlasCategories();
+        if (list.length <= 1) return false;
+        const cur = list.indexOf(this.viewedCategory());
+        const next = ((cur < 0 ? 0 : cur) + dir + list.length) % list.length;
+        if (!this.showAtlasCategory(list[next])) return false;
+        SoundManager.playCursor();
+        this.refreshUISkillDOM();
+        this.centreAtlasOnFocus();
+        return true;
+    };
+
+    Scene_SkillEncyclopedia.prototype.usesGraphView = function () {
+        return window.SkillTree2D && window.SkillTree2D.available() && this.currentAtlas().circles.length > 0;
+    };
+
+    Scene_SkillEncyclopedia.prototype.focusedSkill = function () {
+        if (this.usesGraphView()) {
+            const skill = $dataSkills[this._focusSkillId];
+            if (skill) return skill;
+        }
+        const skills = this.getSkillsByCategoryCached(this._selectedCategory);
+        return skills[this._selectedSkillIndex] || null;
+    };
+
+    Scene_SkillEncyclopedia.prototype.focusedCategory = function () {
+        if (this.usesGraphView()) return this.viewedCategory();
+        return this._selectedCategory;
+    };
+
+    Scene_SkillEncyclopedia.prototype.focusSkillId = function (skillId) {
+        if (this.currentAtlas().index[skillId]) {
+            this._focusSkillId = skillId;
+            return true;
+        }
+        const skills = this.getSkillsByCategoryCached(this._selectedCategory);
+        const idx = skills.findIndex(s => s.id === skillId);
+        if (idx >= 0) {
+            this._selectedSkillIndex = idx;
+            this._focusSkillId = skillId;
+        }
+        return idx >= 0;
+    };
+
+    Scene_SkillEncyclopedia.prototype.ensureAtlasFocus = function () {
+        const atlas = this.currentAtlas();
+        if (!atlas.circles.length || atlas.index[this._focusSkillId]) return;
+        this.defaultGraphFocus();
+    };
+
+    Scene_SkillEncyclopedia.prototype.defaultGraphFocus = function () {
+        const atlas = this.currentAtlas();
+        if (!atlas.circles.length) return;
+        const circle = atlas.circles[0];
+        const actor = this.getTeachActor();
+        const known = actor ? circle.nodes.find(n => actor.isLearnedSkill(n.id)) : null;
+        const entry = circle.nodes.find(n => n.tier === 0) || circle.nodes[0];
+        this.focusSkillId((known || entry).id);
+    };
+
+    Scene_SkillEncyclopedia.prototype.graphStateKey = function () {
+        const actor = this.getTeachActor();
+        const atlas = this.currentAtlas();
+        let learned = 0;
+        if (actor) {
+            for (const circle of atlas.circles) {
+                for (const node of circle.nodes) if (actor.isLearnedSkill(node.id)) learned++;
+            }
+        }
+        return `${atlas.key}|${actor ? actor.actorId() : 0}|${learned}`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.atlasLearnedCount = function (category) {
+        const circle = this.currentAtlas().circles.find(s => !category || s.category === category);
+        const actor = this.getTeachActor();
+        if (!circle) return { learned: 0, total: 0 };
+        let learned = 0;
+        if (actor) for (const node of circle.nodes) if (actor.isLearnedSkill(node.id)) learned++;
+        return { learned: learned, total: circle.nodes.length };
+    };
+
+    Scene_SkillEncyclopedia.prototype.atlasProgressText = function (category) {
+        const count = this.atlasLearnedCount(category);
+        return typeof T === 'function' ? T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total }) : `${count.learned} / ${count.total}`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.atlasZoom = function () {
+        if (!this._atlasZoom) this._atlasZoom = ATLAS_ZOOM_DEFAULT;
+        return this._atlasZoom;
+    };
+
+    Scene_SkillEncyclopedia.prototype.defaultAtlasZoom = function () {
+        return ATLAS_ZOOM_DEFAULT;
+    };
+
+    Scene_SkillEncyclopedia.prototype.wholeAtlasZoom = function () {
+        return ATLAS_ZOOM_WHOLE;
+    };
+
+    Scene_SkillEncyclopedia.prototype.setAtlasZoom = function (zoom) {
+        this._atlasZoom = zoom;
+        if (window.SkillTree2D) window.SkillTree2D.setZoom(zoom);
+    };
+
+    Scene_SkillEncyclopedia.prototype.zoomAtlas = function (dir) {
+        this.setAtlasZoom(dir > 0 ? this.atlasZoom() * ATLAS_ZOOM_STEP : this.atlasZoom() / ATLAS_ZOOM_STEP);
+    };
+
+    Scene_SkillEncyclopedia.prototype.syncAtlasSky = function () {
+        const canvas = document.getElementById('skill-atlas-canvas');
+        if (!canvas) {
+            if (window.SkillTree2D) window.SkillTree2D.dispose();
+            return;
+        }
+        if (!window.SkillTree2D.state || window.SkillTree2D.state.canvas !== canvas) {
+            window.SkillTree2D.mount(canvas, document.getElementById('skill-atlas-labels'), this);
+            if (!window.SkillTree2D.state) return;
+            window.SkillTree2D.setZoom(this.atlasZoom());
+            this.bindAtlasPointer();
+            this._lastGraphKey = null;
+        }
+        const atlas = this.currentAtlas();
+        const figure = atlas.circles[0] || null;
+        if (window.SkillTree2D.state.figure !== figure) {
+            window.SkillTree2D.setAtlas(atlas);
+            this._lastGraphKey = null;
+            window.SkillTree2D.setZoom(this.atlasZoom());
+            window.SkillTree2D.lookAt(this._focusSkillId, true);
+        }
+        const graphKey = this.graphStateKey();
+        if (graphKey !== this._lastGraphKey) {
+            this._lastGraphKey = graphKey;
+            window.SkillTree2D.repaint(this.getTeachActor(), this._focusSkillId);
+        }
+    };
+
+    Scene_SkillEncyclopedia.prototype.bindAtlasPointer = function () {
+        const st = window.SkillTree2D.state;
+        if (!st || st.bound) return;
+        const canvas = st.canvas;
+        st.bound = true;
+        const DEAD = 5;
+        let dragging = false, fromX = 0, fromY = 0;
+        st.dragged = false;
+
+        const L = st.listeners;
+        L.down = (e) => {
+            if (e.button !== 0 && e.button !== 2) return;
+            dragging = true;
+            st.dragged = false;
+            fromX = e.clientX; fromY = e.clientY;
+            canvas.style.cursor = 'grabbing';
+        };
+        L.move = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            if (!dragging) {
+                st.hoverId = window.SkillTree2D.pick(e.clientX - rect.left, e.clientY - rect.top);
+                canvas.style.cursor = st.hoverId ? 'pointer' : 'grab';
+                return;
+            }
+            const dx = e.clientX - fromX, dy = e.clientY - fromY;
+            if (!st.dragged && Math.abs(dx) + Math.abs(dy) < DEAD) return;
+            st.dragged = true;
+            window.SkillTree2D.pan(dx, dy);
+            fromX = e.clientX; fromY = e.clientY;
+        };
+        L.up = () => {
+            dragging = false;
+            canvas.style.cursor = 'grab';
+        };
+        L.click = (e) => {
+            if (st.dragged) { st.dragged = false; return; }
+            const rect = canvas.getBoundingClientRect();
+            const id = window.SkillTree2D.pick(e.clientX - rect.left, e.clientY - rect.top);
+            if (id) this.selectGraphNode(id);
+        };
+        L.wheel = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.setAtlasZoom(this.atlasZoom() * (e.deltaY > 0 ? 1 / ATLAS_WHEEL_STEP : ATLAS_WHEEL_STEP));
+        };
+        L.ctx = (e) => e.preventDefault();
+
+        canvas.addEventListener('pointerdown', L.down);
+        canvas.addEventListener('pointermove', L.move);
+        window.addEventListener('pointerup', L.up);
+        canvas.addEventListener('click', L.click);
+        canvas.addEventListener('wheel', L.wheel, { passive: false });
+        canvas.addEventListener('contextmenu', L.ctx);
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderAtlasPagerHTML = function () {
+        const list = this.atlasCategories();
+        const cur = list.indexOf(this.viewedCategory());
+        if (list.length <= 1 || cur < 0) return '';
+        const prev = list[(cur - 1 + list.length) % list.length];
+        const next = list[(cur + 1) % list.length];
+        const schoolOfText = typeof T === 'function' ? T('SkillMaster.atlas.schoolOf', { index: cur + 1, total: list.length }) : `${cur + 1} / ${list.length}`;
+        return `
+            <div class="sg-pager">
+                <span class="sg-pager-arrow" onclick="SceneManager._scene.pageAtlasSchool(-1)" title="${SkillMaster.getCategoryDisplayName(prev)}">&#8249;</span>
+                <span class="sg-pager-name">${SkillMaster.getCategoryDisplayName(list[cur])}</span>
+                <span class="sg-pager-count">${schoolOfText}</span>
+                <span class="sg-pager-arrow" onclick="SceneManager._scene.pageAtlasSchool(1)" title="${SkillMaster.getCategoryDisplayName(next)}">&#8250;</span>
+            </div>`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderAtlasChromeHTML = function () {
+        const legendKey = (color, label) =>
+            `<span class="sg-legend-key"><span class="sg-legend-dot" style="border:2px solid ${color}"></span>${label}</span>`;
+        const lMastered = typeof T === 'function' ? T('SkillMaster.graph.legendLearned') : 'Mastered';
+        const lOpen = typeof T === 'function' ? T('SkillMaster.graph.legendOpen') : 'Available';
+        const lLocked = typeof T === 'function' ? T('SkillMaster.graph.legendLocked') : 'Locked';
+        const hint = typeof T === 'function' ? T('SkillMaster.atlas.hint') : 'Drag to Pan · Wheel to Zoom';
+
+        return `
+            ${this.renderAtlasPagerHTML()}
+            <div class="sg-legend">
+                ${legendKey('var(--border-forest-green, #52c41a)', lMastered)}
+                ${legendKey('var(--text-secondary-active, #e5c07b)', lOpen)}
+                ${legendKey('var(--border-secondary-hover-translucent-15, #4b5563)', lLocked)}
+                <span class="sg-legend-key">
+                    <span class="sg-zoom" onclick="SceneManager._scene.zoomAtlas(-1)" title="Zoom Out">-</span>
+                    <span class="sg-zoom" onclick="SceneManager._scene.zoomAtlas(1)" title="Zoom In">+</span>
+                </span>
+                <span class="sg-hint">${hint}</span>
+            </div>`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderAtlasBannerHTML = function () {
+        const category = this.viewedCategory();
+        const count = this.atlasLearnedCount(category);
+        const progressText = typeof T === 'function' ? T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total }) : `${count.learned}/${count.total}`;
+        return `${SkillMaster.getCategoryDisplayName(category)}<span class="sg-banner-sub">${progressText}</span>`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderSkillAtlasHTML = function () {
+        return `
+            <div id="sg3-chrome">${this.renderAtlasChromeHTML()}</div>
+            <div id="skill-atlas-box" class="sg3-sky sg2d-sky-box" style="flex:1; position:relative; overflow:hidden">
+                <canvas id="skill-atlas-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%"></canvas>
+                <div id="skill-atlas-labels" class="sg3-labels" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none"></div>
+                <div id="sg3-banner" class="sg-banner">${this.renderAtlasBannerHTML()}</div>
+            </div>
+        `;
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderSkillListHTML = function () {
+        const skills = SkillMaster.getSkillsByCategory(this._selectedCategory);
+        const teachActor = this.getTeachActor();
+        let skillsListHTML = "";
+
+        skills.forEach((skill, idx) => {
+            const isFocused = (this._selectedSkillIndex === idx);
+            const isLearned = teachActor ? teachActor.isLearnedSkill(skill.id) : false;
+            const isOpen = window.SkillGraph ? window.SkillGraph.isOpen(teachActor, skill.id) : true;
+            const badge = isLearned
+                ? `<span style="font-family:'Lora', serif; font-size:1.081rem; text-transform:uppercase; color:var(--text-forest-complete, #52c41a); border:1px solid var(--border-forest-green, #52c41a); padding:1px 5px; font-weight:bold; background:var(--bg-success-green-15, rgba(82,196,26,0.15)); letter-spacing:0.5px">${typeof T === 'function' ? T('SkillMaster.mastered') : 'Mastered'}</span>`
+                : (!isOpen ? `<span style="font-family:'Lora', serif; font-size:1.081rem; text-transform:uppercase; color:var(--text-card-medium, #aaa); border:1px solid var(--border-secondary-hover-translucent-15, #555); padding:1px 5px; letter-spacing:0.5px">${typeof T === 'function' ? T('SkillMaster.graph.locked') : 'Locked'}</span>` : '');
+
+            skillsListHTML += `
+                <div class="skill-card ${isFocused ? 'focused' : ''}" onclick="SceneManager._scene.selectSkill(${idx})" style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--accent-gray-2-translucent-0, rgba(20,20,20,0.4)); border:1px solid ${isFocused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--border-secondary-hover-translucent-15, rgba(255,255,255,0.15))'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; opacity:${isLearned || isOpen ? 1 : 0.6}; transition:all 0.15s ease">
+                    <div style="display:flex; align-items:center; gap:10px">
+                        <div style="${SkillMaster.getSkillIconStyle(skill.iconIndex)} transform: scale(0.8); flex-shrink: 0; image-rendering: pixelated; margin-right: 2px"></div>
+                        <div style="font-weight:bold; color:${isFocused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--text-card-medium, #ddd)'}; font-size:1.365rem">${skill.name}</div>
+                    </div>
+                    ${badge}
+                </div>
+            `;
+        });
+
+        return `
+            <div id="skills-scroll-box" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${SKILL_GRID_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box">
+                ${skillsListHTML}
+            </div>
+        `;
+    };
+
+    Scene_SkillEncyclopedia.prototype.selectGraphNode = function (skillId) {
+        if (this._focusSkillId !== skillId && !this.focusSkillId(skillId)) return;
+        this.scrollGraphToFocus();
+        this.openFocusedSkill();
+    };
+
+    Scene_SkillEncyclopedia.prototype.openFocusedSkill = function () {
+        const skill = this.focusedSkill();
+        if (!skill) { SoundManager.playBuzzer(); return; }
+        this._skillDetailWindow.setSkill(skill);
+        this._viewMode = 'detail';
+        this._selectedActionIndex = 0;
+        SoundManager.playOk();
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.moveGraphFocus = function (dx, dy) {
+        this.ensureAtlasFocus();
+        const atlas = this.currentAtlas();
+        const from = atlas.index[this._focusSkillId];
+        if (!from) return false;
+
+        let best = null;
+        let bestScore = Infinity;
+        for (const circle of atlas.circles) {
+            for (const node of circle.nodes) {
+                if (node.id === from.id) continue;
+                const vx = node.x - from.x;
+                const vy = node.y - from.y;
+                const along = vx * dx + vy * dy;
+                if (along <= 0.05) continue;
+                const across = Math.abs(vx * dy - vy * dx);
+                if (across > along * 1.9) continue;
+                const score = along + across * 2.2;
+                if (score < bestScore) {
+                    bestScore = score;
+                    best = node;
+                }
+            }
+        }
+        if (!best) return false;
+        this.focusSkillId(best.id);
+        return true;
+    };
+
+    Scene_SkillEncyclopedia.prototype.scrollGraphToFocus = function () {
+        if (window.SkillTree2D) {
+            window.SkillTree2D.setFocus(this._focusSkillId);
+            window.SkillTree2D.lookAt(this._focusSkillId, false);
+        }
+    };
+
+    Scene_SkillEncyclopedia.prototype.centreAtlasOnFocus = function () {
+        if (window.SkillTree2D) {
+            window.SkillTree2D.setFocus(this._focusSkillId);
+            window.SkillTree2D.lookAt(this._focusSkillId, true);
+        }
+    };
+
+    Scene_SkillEncyclopedia.prototype.repaintAtlasFocus = function () {
+        if (window.SkillTree2D) window.SkillTree2D.setFocus(this._focusSkillId);
+        const title = document.getElementById('atlas-school-name');
+        const activeCat = this.focusedCategory();
+        if (title && activeCat) title.textContent = SkillMaster.getCategoryDisplayName(activeCat);
+        const chrome = document.getElementById('sg3-chrome');
+        if (chrome) {
+            const html = this.renderAtlasChromeHTML();
+            if (chrome.innerHTML !== html) chrome.innerHTML = html;
+        }
+        const banner = document.getElementById('sg3-banner');
+        if (banner) {
+            const html = this.renderAtlasBannerHTML();
+            if (banner.innerHTML !== html) banner.innerHTML = html;
+        }
+    };
+
+    //=========================================================================
+    // Skill Detail Sheet Renderer
+    //=========================================================================
+
+    Scene_SkillEncyclopedia.prototype.renderSkillDetailHTML = function (skill, knowledge, opts) {
+        opts = opts || {};
+        const allowActionFocus = (this._viewMode === 'detail');
+        let actionsListHTML = "";
+        const actor = this.getTeachActor();
+
+        if (actor) {
+            const hasSkill = actor.isLearnedSkill(skill.id);
+            const cost = $gameSystem.getSkillKnowledgeCost(skill.id, actor.actorId());
+            const canAfford = knowledge >= cost;
+            const isActionFocused = allowActionFocus && (this._selectedActionIndex === 0);
+            const isOpen = window.SkillGraph ? window.SkillGraph.isOpen(actor, skill.id) : true;
+
+            if (hasSkill) {
+                const learnedLabel = typeof T === 'function' ? T('SkillMaster.learned') : 'Learned';
+                actionsListHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-success-green-15, rgba(82,196,26,0.15)); border:1px solid var(--border-forest-green, #52c41a); border-radius:6px; color:var(--text-forest-complete, #52c41a); font-weight:bold; font-size:1.365rem">
+                        <span>${actor.name()}</span>
+                        <span style="font-family:'Lora', serif; font-size:1.196rem; text-transform:uppercase">✓ ${learnedLabel}</span>
+                    </div>
+                `;
+                actionsListHTML += this.carryToggleHTML(actor, skill, allowActionFocus);
+                actionsListHTML += this.fusionActionsHTML(actor, skill);
+            } else if (!isOpen) {
+                const graph = window.SkillGraph;
+                const openers = graph ? graph.openers(skill.id, actor).map(s => s.name) : [];
+                const wanted = graph ? graph.stillWanted(skill.id, actor) : 1;
+                const lockLine = (graph && graph.isForbidden(skill.id))
+                    ? (typeof T === 'function' ? T('SkillMaster.graph.lockedBySchool', { skills: openers.join(', ') }) : `Master the school to unlock: ${openers.join(', ')}`)
+                    : (openers.length
+                        ? (wanted > 1
+                            ? (typeof T === 'function' ? T('SkillMaster.graph.lockedByCount', { need: wanted, skills: openers.join(', ') }) : `Requires ${wanted} more of: ${openers.join(', ')}`)
+                            : (typeof T === 'function' ? T('SkillMaster.graph.lockedBy', { skills: openers.join(', ') }) : `Requires: ${openers.join(', ')}`))
+                        : (typeof T === 'function' ? T('SkillMaster.graph.lockedHint') : 'Prerequisites not yet unlocked.'));
+                const lockedTitle = typeof T === 'function' ? T('SkillMaster.graph.locked') : 'Locked';
+                actionsListHTML += `
+                    <div style="padding:10px 14px; background:var(--bg-card-translucent-5, rgba(20,20,20,0.5)); border:1px dashed var(--border-secondary-hover-translucent-15, rgba(255,255,255,0.2)); border-radius:6px; font-family:'Lora', serif">
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; font-size:1.292rem; color:var(--text-card-medium, #ddd)">
+                            <span>${lockedTitle}</span>
+                            <span style="color:var(--shadow-shadow-alt-5-translucent-40, #aaa)">${cost} KP</span>
+                        </div>
+                        <div style="margin-top:5px; font-size:1.145rem; line-height:1.35; color:var(--text-card-medium, #bbb)">
+                            ${lockLine}
+                        </div>
+                    </div>
+                `;
+            } else {
+                const teachText = typeof T === 'function' ? T('SkillMaster.teachPupil', { actor: actor.name() }) : `Teach ${actor.name()}`;
+                actionsListHTML += `
+                    <div class="action-button ${isActionFocused ? 'focused' : ''} ${!canAfford ? 'disabled' : ''}" onclick="SceneManager._scene.teachSkill(${actor.actorId()}, ${cost})" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:${isActionFocused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--accent-gray-2-translucent-0, rgba(30,30,30,0.6))'}; border:1px solid ${isActionFocused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--border-secondary-hover-translucent-15, rgba(255,255,255,0.2))'}; border-radius:6px; cursor:${canAfford ? 'pointer' : 'not-allowed'}; font-family:'Lora', serif; opacity:${canAfford ? 1 : 0.6}; transition:all 0.15s ease">
+                        <span style="font-weight:bold; color:${isActionFocused ? 'var(--text-pure-black, #000)' : 'var(--text-card-medium, #fff)'}">${teachText}</span>
+                        <span style="font-family:'Lora', serif; font-weight:bold; color:${isActionFocused ? 'var(--text-pure-black, #000)' : canAfford ? 'var(--text-text-alt-3, #e5c07b)' : 'var(--shadow-shadow-alt-5-translucent-40, #888)'}">${cost} KP</span>
+                    </div>
+                `;
+            }
+        }
+
+        const detailedInfoHTML = window.SkillDetails ? window.SkillDetails.build(skill, actor) : '';
+
+        let descriptionText = skill.description || (typeof T === 'function' ? T('SkillMaster.noDescriptionAvailable') : 'No description available');
+        if (window.translateText) descriptionText = window.translateText(descriptionText);
+
+        const isPreviewFocused = allowActionFocus && (this._selectedActionIndex === 1);
+        const previewLabel = typeof T === 'function' ? T('SkillMaster.preview') : 'Preview';
+        const previewBtnHTML = `
+            <div class="action-button preview-button ${isPreviewFocused ? 'focused' : ''}" onclick="SceneManager._scene.openSpellPreview(${skill.id})" style="flex:0 0 auto; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4px; padding:10px 16px; background:${isPreviewFocused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--bg-card-translucent-5, rgba(20,20,20,0.5))'}; border:1px solid ${isPreviewFocused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--border-secondary-hover-translucent-15, rgba(255,255,255,0.2))'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; transition:all 0.15s ease">
+                <span style="font-size:1.658rem; line-height:1">◈</span>
+                <span style="font-weight:bold; text-transform:uppercase; font-size:1.17rem; color:${isPreviewFocused ? 'var(--text-pure-black, #000)' : 'var(--text-secondary-active, #e5c07b)'}">${previewLabel}</span>
+            </div>`;
+
+        const note = skill.note || '';
+        const tagForbidden = typeof T === 'function' ? T('SkillMaster.tag.forbidden') : 'Forbidden';
+        const tagEsoteric = typeof T === 'function' ? T('SkillMaster.tag.esoteric') : 'Esoteric';
+        const occultBadge = /<Forbidden>/i.test(note)
+            ? `<span class="sg-occult sg-forbidden">${tagForbidden}</span>`
+            : (/<Esoteric>/i.test(note) ? `<span class="sg-occult">${tagEsoteric}</span>` : '');
+
+        const rootSizing = opts.popup ? 'flex:1 1 auto; min-height:0;' : 'height:100%;';
+        const closeBtnHTML = opts.popup
+            ? `<div class="focusable" onclick="SceneManager._scene.dismissSkillDetail()" title="${typeof T === 'function' ? T('SkillMaster.close') : 'Close'}" style="flex:0 0 auto; margin-left:auto; align-self:flex-start; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-secondary-hover-translucent-15); border-radius:50%; color:var(--text-secondary-active, #e5c07b); cursor:pointer; font-size:1.292rem; line-height:1">✕</div>`
+            : '';
+
+        const teachLabel = typeof T === 'function' ? T('SkillMaster.teach') : 'Teach';
+        const heldLabel = typeof T === 'function' ? T('SkillMaster.atlas.held', { knowledge: knowledge }) : `${knowledge} KP held`;
+
+        return `
+            <div style="display:flex; flex-direction:column; gap:12px; ${rootSizing} box-sizing:border-box">
+                <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-secondary-hover-translucent-15); padding-bottom:8px">
+                    <div style="${SkillMaster.getSkillIconStyle(skill.iconIndex)} transform: scale(1.2); flex-shrink: 0; image-rendering: pixelated; margin-right: 2px"></div>
+                    <div>
+                        <h3 class="cc-header-gothic" style="font-size:2.134rem; color:var(--text-secondary-active, #e5c07b); margin:0; line-height:1.2">
+                            ${skill.name}
+                        </h3>
+                        <div style="display:flex; align-items:center; gap:8px; font-size:1.196rem; color:var(--text-inverse, #bbb); text-transform:uppercase; margin-top:3px">
+                            <span>MP ${skill.mpCost || 0}</span>
+                            <span>&middot;</span>
+                            <span>AP ${skill.tpCost || 0}</span>
+                            ${occultBadge}
+                        </div>
+                    </div>
+                    ${closeBtnHTML}
+                </div>
+
+                <div style="font-size:1.292rem; line-height:1.5; color:var(--text-highlight-active, #e5e0d8); background:var(--bg-card-translucent-5, rgba(20,20,20,0.5)); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:6px; padding:10px 14px">
+                    "${descriptionText}"
+                </div>
+
+                <div class="skill-scroll-box" style="flex:1; min-height:0; overflow-y:auto; padding-right:6px; font-family:'Lora', serif; font-size:1.365rem; color:var(--text-card-medium, #ddd)">
+                    ${detailedInfoHTML}
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto; border-top:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(255,255,255,0.2)); padding-top:12px">
+                    <h4 style="margin:0 0 4px 0; font-family:'Lora', serif; color:var(--text-secondary-active, #e5c07b); font-size:1.658rem; text-align:center">
+                        ${teachLabel}
+                        <span style="font-size:1.196rem; font-weight:normal; color:var(--text-card-medium, #aaa); letter-spacing:0.5px">&middot; ${heldLabel}</span>
+                    </h4>
+                    <div style="display:flex; gap:8px; align-items:stretch">
+                        <div style="flex:1; display:flex; flex-direction:column; gap:8px; max-height:150px; overflow-y:auto; padding-right:4px">
+                            ${actionsListHTML}
+                        </div>
+                        ${previewBtnHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    Scene_SkillEncyclopedia.prototype.skillPopupKey = function (skill, knowledge) {
+        const actor = this.getTeachActor();
+        const LO = window.BattleLoadout;
+        const carried = (LO && actor) ? `${LO.isActive(actor, skill) ? 1 : 0}${LO.count(actor)}` : '';
+        return `${skill.id}|${actor ? actor.actorId() : 0}|${knowledge}|${this._selectedActionIndex}|${actor && actor.isLearnedSkill(skill.id) ? 1 : 0}|${carried}`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.closeSkillDetailPopup = function () {
+        const el = document.getElementById('skill-detail-popup');
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+        this._lastPopupKey = null;
+    };
+
+    Scene_SkillEncyclopedia.prototype.dismissSkillDetail = function () {
+        if (this._viewMode !== 'detail') return;
+        this._viewMode = 'list';
+        SoundManager.playCancel();
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.updateSkillDetailPopup = function (skill, knowledge) {
+        if (!this._dndContainer) return;
+        const key = this.skillPopupKey(skill, knowledge);
+        let overlay = document.getElementById('skill-detail-popup');
+        if (overlay && this._lastPopupKey === key) return;
+
+        const cardHTML = this.renderSkillDetailHTML(skill, knowledge, { popup: true });
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'skill-detail-popup';
+            overlay.style.cssText = "position:absolute; top:0; right:0; bottom:0; z-index:1500; display:flex; align-items:stretch; justify-content:flex-end; pointer-events:none; font-family:'Lora', serif;";
+            this._dndContainer.appendChild(overlay);
+        }
+        overlay.innerHTML = `
+            <div id="skill-detail-bar" onclick="event.stopPropagation()" style="pointer-events:auto; width:min(30vw, 460px); min-width:340px; height:100%; display:flex; flex-direction:column; overflow-y:auto; padding:18px 20px; box-sizing:border-box; background:var(--bg-black-translucent-96, rgba(12,12,14,0.96)); border-left:1.5px solid var(--border-focus-hover, #e5c07b); box-shadow:-10px 0 30px rgba(0,0,0,0.75)">
+                ${cardHTML}
+            </div>`;
+        this._lastPopupKey = key;
+    };
+
+    //=========================================================================
+    // DOM Refresh & View Modes
+    //=========================================================================
+
+    Scene_SkillEncyclopedia.prototype.refreshUISkillDOM = function () {
+        if (!this._dndContainer) return;
+        const useItalian = ConfigManager.language === 'it';
+        const knowledge = $gameSystem.getKnowledge();
+
+        SkillMaster.actorCategoryManager.setActor(this._teachActorId);
+
+        const compRow = document.getElementById('skillmaster-companion-row');
+        if (compRow) {
+            const members = getSwitchableMembers();
+            if (this._viewMode === 'spellEditor' || members.length <= 1) {
+                compRow.style.display = 'none';
+                compRow.innerHTML = '';
+            } else {
+                compRow.style.display = 'flex';
+                let tabs = '';
+                members.forEach((m, idx) => {
+                    const sel = m.actorId() === this._teachActorId ? 'selected' : '';
+                    tabs += `<div class="companion-tab ${sel}" onclick="SceneManager._scene.switchTeachActor(${idx})">${m.name()}</div>`;
+                });
+                compRow.innerHTML = window.CharSwitcher ? window.CharSwitcher.inner(`<div class="companion-tabs-row">${tabs}</div>`, members.length) : `<div class="companion-tabs-row">${tabs}</div>`;
+            }
+        }
+
+        const graphSpread = (this._viewMode === 'list' || this._viewMode === 'detail' || this._viewMode === 'preview') && this.usesGraphView();
+        if (graphSpread) this.ensureAtlasFocus();
+        if (!graphSpread && window.SkillTree2D) window.SkillTree2D.dispose();
+
+        const fullPageList = graphSpread;
+        const spreadEl = this._dndContainer.querySelector('.book-spread');
+        const leftPageEl = this._dndContainer.querySelector('.left-page');
+        const rightPageEl = this._dndContainer.querySelector('.right-page');
+        const spineEl = this._dndContainer.querySelector('.spine-divider');
+        if (spreadEl) spreadEl.classList.toggle('skill-fullpage', fullPageList);
+        if (leftPageEl) leftPageEl.style.width = fullPageList ? '100%' : '';
+        if (rightPageEl) rightPageEl.style.display = fullPageList ? 'none' : '';
+        if (spineEl) spineEl.style.display = fullPageList ? 'none' : '';
+
+        if (compRow && compRow.style.display !== 'none') {
+            if (fullPageList && leftPageEl && compRow.parentNode !== leftPageEl) {
+                leftPageEl.appendChild(compRow);
+                compRow.style.position = 'absolute';
+                compRow.style.top = '10px';
+                compRow.style.right = '45px';
+                compRow.style.zIndex = '12';
+                compRow.style.marginBottom = '0';
+            } else if (!fullPageList && rightPageEl && compRow.parentNode !== rightPageEl) {
+                rightPageEl.insertBefore(compRow, rightPageEl.firstChild);
+                compRow.style.position = '';
+                compRow.style.top = '';
+                compRow.style.right = '';
+                compRow.style.zIndex = '';
+                compRow.style.marginBottom = '10px';
+            }
+        }
+
+        if (!graphSpread) this.closeSkillDetailPopup();
+
+        if (this._viewMode === 'spellEditor') {
+            this.renderSpellEditor(useItalian, knowledge);
+            return;
+        }
+
+        if (this._viewMode === 'magicSystems') {
+            this.renderMagicSystemsView();
+            return;
+        }
+
+        const renderCategoryCardsHTML = (list, pane) => {
+            let html = "";
+            list.forEach((cat, idx) => {
+                const focused = (this._categoryPane === pane && this._selectedCategoryIndex === idx);
+                const catName = SkillMaster.getCategoryDisplayName(cat);
+                let bonusBadge = "";
+                if (cat !== "All") {
+                    if (SkillMaster.actorCategoryManager.isPrimary(cat)) {
+                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:1.081rem; background:var(--text-secondary-active, #e5c07b); color:#000; padding:1px 5px; font-weight:bold; letter-spacing:0.5px">3x KP</span>`;
+                    } else if (SkillMaster.actorCategoryManager.isSecondary(cat)) {
+                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:1.081rem; background:var(--text-secondary-active, #e5c07b); color:#000; padding:1px 5px; font-weight:bold; letter-spacing:0.5px">1.5x KP</span>`;
+                    } else if (SkillMaster.actorCategoryManager.isForeign(cat)) {
+                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:1.081rem; background:transparent; color:var(--text-card-medium, #aaa); border:1px solid var(--border-secondary-hover-translucent-15); padding:1px 5px; font-weight:bold; letter-spacing:0.5px">${typeof T === 'function' ? T('SkillMaster.foreignSchool') : 'Foreign'}</span>`;
+                    }
+                }
+                html += `
+                    <div class="category-card ${focused ? 'focused' : ''}" data-pane="${pane}" data-idx="${idx}" onclick="SceneManager._scene.selectCategoryClick(${pane}, ${idx})" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; padding:14px 8px; min-height:100px; background:${focused ? 'var(--bg-tertiary-focus-translucent-45, rgba(45,35,25,0.45))' : 'var(--bg-card-translucent-5, rgba(20,20,20,0.5))'}; border:1.5px solid ${focused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--border-secondary-hover-translucent-15, rgba(255,255,255,0.2))'}; border-radius:8px; cursor:pointer; font-family:'Lora', serif; transition:all 0.15s ease">
+                        <div style="${SkillMaster.getCategoryIconStyle(cat)} transform: scale(1.35); flex-shrink: 0; image-rendering: pixelated"></div>
+                        <div class="category-card-name" style="font-weight:bold; color:${focused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--text-card-medium, #ddd)'}; font-size:1.329rem; line-height:1.2">
+                            ${catName}
+                        </div>
+                        ${bonusBadge}
+                    </div>
+                `;
+            });
+            return html;
+        };
+
+        const leftPageBox = document.getElementById('left-page-content');
+        if (!leftPageBox) return;
+
+        const leftMode = graphSpread ? 'atlas' : this._viewMode;
+        const needsLeftRebuild = (this._lastLeftMode !== leftMode) ||
+            (leftMode !== 'atlas' && this._viewMode !== 'category' &&
+                this._lastLeftCategory !== this._selectedCategory);
+
+        if (needsLeftRebuild) {
+            let leftPageHTML = "";
+            if (this._viewMode === 'category') {
+                const split = SkillMaster.getSplitSkillCategories();
+                const categoriesListHTML = renderCategoryCardsHTML(split.Skill, 0);
+                const backBtnText = typeof T === 'function' ? T('SkillMaster.back') : 'Back';
+                const skillsTitle = typeof T === 'function' ? T('SkillMaster.skills') : 'Skills';
+
+                leftPageHTML = `
+                    <div class="page-header-bar">
+                      <div class="back-button focusable" onclick="SceneManager._scene.categoryBack()">${backBtnText}</div>
+                      <h2 class="cc-header-gothic" style="text-align:center; font-size:2.542rem">${skillsTitle}</h2>
+                    </div>
+                    <div id="category-scroll-box-left" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${CATEGORY_PAGE_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box">
+                        ${categoriesListHTML}
+                    </div>
+                `;
+            } else {
+                const returnBtnText = typeof T === 'function' ? T('SkillMaster.back') : 'Back';
+                const onAtlas = this.usesGraphView();
+                const bodyHTML = onAtlas ? this.renderSkillAtlasHTML() : this.renderSkillListHTML();
+                const heading = onAtlas ? this.focusedCategory() : this._selectedCategory;
+                leftPageHTML = `
+                    <div class="page-header-bar">
+                      <div class="back-button focusable" onclick="SceneManager._scene.goBack()">${returnBtnText}</div>
+                      <h2 id="atlas-school-name" class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 2.134rem">${SkillMaster.getCategoryDisplayName(heading)}</h2>
+                    </div>
+                    ${bodyHTML}
+                `;
+            }
+
+            leftPageBox.innerHTML = leftPageHTML;
+            this._lastLeftMode = leftMode;
+            this._lastLeftCategory = this._selectedCategory;
+        }
+
+        if (this._viewMode === 'category') {
+            const applyFocus = (boxId, pane) => {
+                const box = document.getElementById(boxId);
+                if (!box) return;
+                box.querySelectorAll('.category-card').forEach((card) => {
+                    const idx = parseInt(card.dataset.idx, 10);
+                    const focused = (this._categoryPane === pane && this._selectedCategoryIndex === idx);
+                    card.classList.toggle('focused', focused);
+                    card.style.borderColor = focused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--border-secondary-hover-translucent-15)';
+                    card.style.background = focused ? 'var(--bg-tertiary-focus-translucent-45, rgba(45,35,25,0.45))' : 'var(--bg-card-translucent-5, rgba(20,20,20,0.5))';
+                    const nameDiv = card.querySelector('.category-card-name');
+                    if (nameDiv) nameDiv.style.color = focused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--text-card-medium, #ddd)';
+                });
+            };
+            applyFocus('category-scroll-box-left', 0);
+            applyFocus('category-scroll-box-right', 1);
+            const fuseEl = document.querySelector('.fuse-spells-btn');
+            if (fuseEl) {
+                const on = !!this._categoryFuseFocused;
+                fuseEl.classList.toggle('focused', on);
+                fuseEl.style.background = on ? 'var(--text-secondary-active, #e5c07b)' : 'var(--bg-card-translucent-5, rgba(20,20,20,0.5))';
+                fuseEl.style.color = on ? '#000' : 'var(--text-secondary-active, #e5c07b)';
+                if (on && fuseEl.scrollIntoView) fuseEl.scrollIntoView({ block: 'nearest' });
+            }
+        } else if (this.usesGraphView()) {
+            this.syncAtlasSky();
+            this.repaintAtlasFocus();
+            if (needsLeftRebuild) this.centreAtlasOnFocus();
+        } else {
+            const cards = leftPageBox.querySelectorAll('.skill-card');
+            cards.forEach((card, idx) => {
+                if (idx === this._selectedSkillIndex) {
+                    card.classList.add('focused');
+                    card.style.borderColor = 'var(--text-secondary-active, #e5c07b)';
+                    const nameDiv = card.querySelector('div:last-child div:last-child');
+                    if (nameDiv) nameDiv.style.color = 'var(--text-secondary-active, #e5c07b)';
+                } else {
+                    card.classList.remove('focused');
+                    card.style.borderColor = 'var(--border-secondary-hover-translucent-15)';
+                    const nameDiv = card.querySelector('div:last-child div:last-child');
+                    if (nameDiv) nameDiv.style.color = 'var(--text-card-medium, #ddd)';
+                }
+            });
+        }
+
+        const rightPageBox = document.getElementById('right-page-content');
+        if (!rightPageBox) return;
+
+        const skill = this.focusedSkill();
+        const skillId = skill ? skill.id : null;
+
+        if (graphSpread) {
+            if (this._viewMode === 'detail' && skill) {
+                this.updateSkillDetailPopup(skill, knowledge);
+            } else if (this._viewMode !== 'preview') {
+                this.closeSkillDetailPopup();
+            }
+            this._lastRightMode = null;
+            this._lastRightSkillId = null;
+            this._lastRightKnowledge = null;
+            return;
+        }
+
+        const needsRightRebuild = (this._lastRightMode !== this._viewMode) ||
+            ((this._viewMode === 'detail' || this._viewMode === 'list') && this._lastRightSkillId !== skillId) ||
+            (this._viewMode === 'detail' && this._lastRightActionIndex !== this._selectedActionIndex) ||
+            (this._lastRightKnowledge !== knowledge);
+
+        if (needsRightRebuild) {
+            let rightPageHTML = "";
+
+            if (this._viewMode === 'category') {
+                const split = SkillMaster.getSplitSkillCategories();
+                const magicListHTML = renderCategoryCardsHTML(split.Magic, 1);
+                const magicTitle = typeof T === 'function' ? T('SkillMaster.magic') : 'Magic';
+                const teachActor = this.getTeachActor();
+                const pupilLabel = typeof T === 'function' ? T('SkillMaster.pupil') : 'Pupil';
+                const pupilLine = teachActor
+                    ? `<div style="font-family:'Lora', serif; font-size:1.219rem; color:var(--text-card-medium, #aaa); text-align:center; margin-top:8px">${pupilLabel} <strong style="color:var(--text-secondary-active, #e5c07b)">${teachActor.name()}</strong> &middot; ${knowledge} KP</div>`
+                    : '';
+                const fuseLabel = typeof T === 'function' ? T('SkillMaster.fuseSpells') : 'Fuse Spells';
+                const magicSysLabel = typeof T === 'function' ? T('SkillMaster.magicSystem.tabLabel') : 'Magical Systems Wheel';
+
+                const fuseBtn = `
+                    <div class="fuse-spells-btn focusable" onclick="SceneManager._scene.openSpellEditor()" style="position:relative; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:12px; padding:10px 14px; font-family:'Lora',serif; font-size:1.292rem; background:var(--bg-card-translucent-5, rgba(20,20,20,0.5)); color:var(--text-secondary-active, #e5c07b); border-radius:6px; font-weight:bold; cursor:pointer; border:1.5px solid var(--text-secondary-active, #e5c07b); text-transform:uppercase; letter-spacing:0.5px; user-select:none">${fuseLabel}</div>`;
+                const magicSystemsBtn = `
+                    <div class="magic-systems-btn focusable" onclick="SceneManager._scene.openMagicSystems()" style="position:relative; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px; padding:10px 14px; font-family:'Lora',serif; font-size:1.292rem; background:var(--bg-card-translucent-5, rgba(20,20,20,0.5)); color:var(--text-secondary-active, #e5c07b); border-radius:6px; font-weight:bold; cursor:pointer; border:1.5px solid var(--text-secondary-active, #e5c07b); text-transform:uppercase; letter-spacing:0.5px; user-select:none">${magicSysLabel}</div>`;
+
+                rightPageHTML = `
+                    <div class="page-header-bar">
+                      <h2 class="cc-header-gothic" style="text-align:center; font-size:2.542rem">${magicTitle}</h2>
+                    </div>
+                    <div id="category-scroll-box-right" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${CATEGORY_PAGE_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box">
+                        ${magicListHTML}
+                    </div>
+                    ${fuseBtn}
+                    ${magicSystemsBtn}
+                    ${pupilLine}
+                `;
+            } else if (this._viewMode === 'list' || this._viewMode === 'detail') {
+                if (!skill) {
+                    const selectPrompt = typeof T === 'function' ? T('SkillMaster.selectASkill') : 'Select a skill';
+                    rightPageHTML = `
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; gap:20px; padding:20px; box-sizing:border-box">
+                            <div style="${SkillMaster.getCategoryIconStyle('All')} transform: scale(2.0); image-rendering: pixelated; margin-bottom: 12px"></div>
+                            <h3 class="cc-header-gothic" style="font-size:2.204rem; color:var(--text-secondary-active, #e5c07b); margin:0">
+                                ${selectPrompt}
+                            </h3>
+                        </div>
+                    `;
+                } else {
+                    rightPageHTML = this.renderSkillDetailHTML(skill, knowledge, { popup: false });
+                }
+            }
+
+            rightPageBox.innerHTML = rightPageHTML;
+            this._lastRightMode = this._viewMode;
+            this._lastRightSkillId = skillId;
+            this._lastRightActionIndex = this._selectedActionIndex;
+            this._lastRightKnowledge = knowledge;
+        }
+    };
+
+    Scene_SkillEncyclopedia.prototype.switchTeachActor = function (index) {
+        const members = getSwitchableMembers();
+        const actor = members[index];
+        if (!actor || actor.actorId() === this._teachActorId) return;
+        this._teachActorId = actor.actorId();
+        SkillMaster.actorCategoryManager.setActor(this._teachActorId);
+        SoundManager.playCursor();
+
+        this._splitCategoriesCache = null;
+        this._skillsByCategoryKey = null;
+        this._categoryPane = 0;
+        this._selectedCategoryIndex = 0;
+        this._categoryFuseFocused = false;
+        this._selectedSkillIndex = 0;
+
+        const allowed = SkillMaster.actorCategoryManager.allowedCategories();
+        const stillOpen = !this._selectedCategory || this._selectedCategory === 'All' || !allowed || allowed.includes(this._selectedCategory);
+        this._atlasZoom = 0;
+        this._atlasMemory = {};
+        if (this._atlasCategory && allowed && !allowed.includes(this._atlasCategory)) {
+            this._atlasCategory = null;
+        }
+        if (!stillOpen && (this._viewMode === 'list' || this._viewMode === 'detail')) {
+            this._viewMode = 'category';
+            this._selectedCategory = null;
+        } else if (this.usesGraphView()) {
+            this.defaultGraphFocus();
+        }
+
+        this._lastLeftMode = null;
+        this._lastLeftCategory = null;
+        this._lastRightMode = null;
+        this._lastRightSkillId = null;
+        this._lastRightKnowledge = null;
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.cycleTeachActor = function (dir) {
+        const members = getSwitchableMembers();
+        if (members.length <= 1) return;
+        const cur = members.findIndex(m => m.actorId() === this._teachActorId);
+        const next = ((cur < 0 ? 0 : cur) + dir + members.length) % members.length;
+        this.switchTeachActor(next);
+    };
+
+    Scene_SkillEncyclopedia.prototype.selectCategory = function () {
+        const split = SkillMaster.getSplitSkillCategories();
+        const list = this._categoryPane === 1 ? split.Magic : split.Skill;
+        const cat = list[this._selectedCategoryIndex];
+        if (!cat) { SoundManager.playBuzzer(); return; }
+        this._selectedCategory = cat;
+        this._skillListWindow.setCategory(this._selectedCategory);
+        this._viewMode = 'list';
+        this._selectedSkillIndex = 0;
+
+        const schools = this.atlasCategories();
+        this._atlasCategory = schools.includes(cat) ? cat : (schools[0] || null);
+        this._atlasZoom = 0;
+        this._focusSkillId = 0;
+        if (this.usesGraphView()) this.defaultGraphFocus();
+        SoundManager.playOk();
+        this.refreshUISkillDOM();
+        this.centreAtlasOnFocus();
+    };
+
+    Scene_SkillEncyclopedia.prototype.selectCategoryClick = function (pane, index) {
+        this._categoryPane = pane;
+        this._selectedCategoryIndex = index;
+        this._categoryFuseFocused = false;
+        this.selectCategory();
+    };
+
+    Scene_SkillEncyclopedia.prototype.categoryBack = function () {
+        this.popScene();
+    };
+
+    Scene_SkillEncyclopedia.prototype.selectSkill = function (index) {
+        this._selectedSkillIndex = index;
+        const skills = SkillMaster.getSkillsByCategory(this._selectedCategory);
+        const skill = skills[this._selectedSkillIndex];
+        if (skill) {
+            this._focusSkillId = skill.id;
+            this._skillDetailWindow.setSkill(skill);
+            this._viewMode = 'detail';
+            this._selectedActionIndex = 0;
+            SoundManager.playOk();
+            this.refreshUISkillDOM();
+        }
+    };
+
+    Scene_SkillEncyclopedia.prototype.carryToggleHTML = function (actor, skill, allowFocus) {
+        const LO = window.BattleLoadout;
+        if (!LO) return '';
+        const locked = LO.isAlwaysCarried(actor, skill);
+        const active = LO.isActive(actor, skill);
+        const full = !active && !locked && !LO.hasRoom(actor);
+        const label = locked ? (typeof T === 'function' ? T('SkillMaster.carry.locked') : 'Always Carried')
+            : active ? (typeof T === 'function' ? T('SkillMaster.carry.drop') : 'Unequip Skill')
+                : full ? (typeof T === 'function' ? T('SkillMaster.carry.full') : 'Loadout Full') : (typeof T === 'function' ? T('SkillMaster.carry.take') : 'Equip Skill');
+        const count = `${LO.count(actor)} / ${LO.MAX}`;
+        const focused = allowFocus && (this._selectedActionIndex === 0) && !locked;
+        const usable = !locked && (active || !full);
+        return `
+            <div class="action-button carry-button ${focused ? 'focused' : ''} ${usable ? '' : 'disabled'}" onclick="SceneManager._scene.toggleCarry(${actor.actorId()})" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; margin-top:6px; background:${active ? 'var(--bg-tertiary-focus-translucent-45, rgba(45,35,25,0.45))' : 'var(--accent-gray-2-translucent-0, rgba(20,20,20,0.5))'}; border:1px solid ${focused ? 'var(--text-secondary-active, #e5c07b)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:${usable ? 'pointer' : 'not-allowed'}; font-family:'Lora', serif; opacity:${usable ? 1 : 0.6}; transition:all 0.15s ease">
+                <span style="font-weight:bold; font-size:1.292rem; text-transform:uppercase">${active ? '◉' : '○'} ${label}</span>
+                <span style="font-size:1.196rem; color:var(--text-card-medium, #aaa)">${count}</span>
+            </div>
+        `;
+    };
+
+    Scene_SkillEncyclopedia.prototype.toggleCarry = function (actorId) {
+        const actor = $gameActors.actor(actorId);
+        const skill = this.focusedSkill();
+        if (!actor || !skill || !window.BattleLoadout) return;
+        const LO = window.BattleLoadout;
+        if (LO.isAlwaysCarried(actor, skill)) { SoundManager.playBuzzer(); return; }
+        if (LO.isActive(actor, skill)) {
+            LO.remove(actor, skill);
+            SoundManager.playCancel();
+        } else {
+            if (!LO.hasRoom(actor)) { SoundManager.playBuzzer(); return; }
+            LO.add(actor, skill);
+            SoundManager.playOk();
+        }
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.fusionActionsHTML = function (actor, skill) {
+        if (!skill || !skill._customSpell || skill._ownerActorId !== actor.actorId()) return '';
+        const btn = (label, handler, danger) => `
+            <div class="action-button focusable" onclick="${handler}" style="flex:1; display:flex; justify-content:center; align-items:center; padding:9px 12px; background:var(--accent-gray-2-translucent-0, rgba(20,20,20,0.5)); border:1px solid ${danger ? 'var(--text-danger-hover, #ff4d4f)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; font-size:1.259rem; font-weight:bold; text-transform:uppercase; color:${danger ? 'var(--text-danger-hover, #ff4d4f)' : 'var(--text-secondary-active, #e5c07b)'}; transition:all 0.15s ease">
+                ${label}
+            </div>
+        `;
+        const renameLabel = typeof T === 'function' ? T('SkillMaster.rename') : 'Rename';
+        const dissolveLabel = typeof T === 'function' ? T('SkillMaster.dissolve') : 'Dissolve';
+        return `
+            <div style="display:flex; gap:8px; margin-top:6px">
+                ${btn(renameLabel, `SceneManager._scene.renameFusedSpell(${skill.id})`, false)}
+                ${btn(dissolveLabel, `SceneManager._scene.dissolveFusedSpell(${skill.id})`, true)}
+            </div>
+        `;
+    };
+
+    Scene_SkillEncyclopedia.prototype.renameFusedSpell = function (skillId) {
+        const spell = $dataSkills[skillId];
+        if (!spell || !spell._customSpell) return;
+        const current = spell.name || '';
+        const promptText = typeof T === 'function' ? T('SkillMaster.renamePrompt') : 'Enter new spell name:';
+        const next = (window.prompt && window.prompt(promptText, current)) || '';
+        const clean = next.trim();
+        if (!clean || clean === current) return;
+        spell.name = clean;
+        SoundManager.playOk();
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.dissolveFusedSpell = function (skillId) {
+        const actor = this.getTeachActor();
+        const spell = $dataSkills[skillId];
+        if (!actor || !spell || !spell._customSpell) return;
+        const confirmText = typeof T === 'function' ? T('SkillMaster.dissolveConfirm', { name: spell.name }) : `Dissolve ${spell.name} into knowledge?`;
+        if (window.confirm && !window.confirm(confirmText)) return;
+        const refund = Math.floor(SkillMaster.kpTeachCost(spell) * 0.5);
+        $gameSystem.addKnowledge(refund);
+        actor.forgetSkill(skillId);
+        $gameSystem.removeCustomSpell(skillId);
+        this.invalidateLearnedSkillCaches();
+        SoundManager.playRecovery();
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.teachSkill = function (actorId, cost) {
+        const actor = $gameActors.actor(actorId);
+        const skill = this.focusedSkill();
+        const isWorkshop = SkillMaster.isWorkshopMode && SkillMaster.isWorkshopMode();
+
+        if (!actor || !skill || (!isWorkshop && $gameSystem.getKnowledge() < cost)) {
+            SoundManager.playBuzzer();
+            return;
+        }
+
+        const graph = window.SkillGraph;
+        if (!isWorkshop && graph && !graph.isOpen(actor, skill.id)) {
+            SoundManager.playBuzzer();
+            const toast = typeof T === 'function' ? T('SkillMaster.graph.lockedToast', { skill: skill.name }) : `${skill.name} is locked!`;
+            this._skillDetailWindow.showMessage(toast);
+            this.refreshUISkillDOM();
+            return;
+        }
+
+        if (!isWorkshop) $gameSystem.spendKnowledge(cost);
+        actor.learnSkill(skill.id);
+        this.invalidateLearnedSkillCaches();
+        SoundManager.playRecovery();
+
+        const learnedToast = typeof T === 'function' ? T('SkillMaster.actorLearned', { actor: actor.name(), skill: skill.name }) : `${actor.name()} learned ${skill.name}!`;
+        this._skillDetailWindow.showMessage(learnedToast);
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.goBack = function () {
+        this._viewMode = 'category';
+        SoundManager.playCancel();
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.invalidateLearnedSkillCaches = function () {
+        this._editorCandidatesKey = null;
+        if (window.SkillGraph) window.SkillGraph.invalidate();
+        if (SkillMaster.SkillAtlas) SkillMaster.SkillAtlas.invalidate();
+        this._splitCategoriesCache = null;
+    };
+
+    Scene_SkillEncyclopedia.prototype.getSplitCategoriesCached = function () {
+        if (!this._splitCategoriesCache || this._splitCategoriesActorId !== this._teachActorId) {
+            SkillMaster.actorCategoryManager.setActor(this._teachActorId);
+            this._splitCategoriesActorId = this._teachActorId;
+            this._splitCategoriesCache = SkillMaster.getSplitSkillCategories();
+        }
+        return this._splitCategoriesCache;
+    };
+
+    Scene_SkillEncyclopedia.prototype.getSkillsByCategoryCached = function (category) {
+        const key = `${this._teachActorId}:${category}`;
+        if (this._skillsByCategoryKey !== key) {
+            SkillMaster.actorCategoryManager.setActor(this._teachActorId);
+            this._skillsByCategoryKey = key;
+            this._skillsByCategoryCache = SkillMaster.getSkillsByCategory(category);
+        }
+        return this._skillsByCategoryCache;
     };
 
     Scene_SkillEncyclopedia.prototype.scrollToActiveItem = function (containerId, selector) {
@@ -5709,22 +5188,14 @@
         }
     };
 
-    // The ring hands the page back when it walks off its own top or left edge;
-    // the page redraws so its own cursor is visible again.
     Scene_SkillEncyclopedia.prototype.onNavLeave = function () {
         this.refreshUISkillDOM();
     };
 
-    // Step off this view's cards and onto the controls around them. Returns
-    // true when the ring took over.
     Scene_SkillEncyclopedia.prototype._ccEnterNav = function (dir) {
         return !!window.CCNav && window.CCNav.tryEnterFromBoard(dir);
     };
 
-    // CCScroll hook: the pane L2/R2 scroll is the one the wheel scrolls, so a
-    // pad reads the long text of the encyclopedia exactly as a mouse does -
-    // the skill list or the detail page the cursor is on, else whichever of
-    // the two category columns is open.
     Scene_SkillEncyclopedia.prototype.ccScrollTarget = function () {
         return document.getElementById('skills-scroll-box') ||
             document.getElementById('category-scroll-box-right') ||
@@ -5735,25 +5206,15 @@
     Scene_SkillEncyclopedia.prototype.update = function () {
         Scene_MenuBase.prototype.update.call(this);
 
-        // The ring owns the controls around the cards whenever it is up, and is
-        // read before any view's own cursor so one press never moves two.
         if (window.CCNav && window.CCNav.update()) return;
-
-        // L2/R2 scroll the page the wheel would, so nothing on a pad has to be
-        // read a card at a time. See CCScroll in CharacterCreationShared.js.
         if (window.CCScroll) window.CCScroll.update(this._dndContainer);
 
-        const useItalian = ConfigManager.language === 'it';
-
-        // Bumpers (L1/R1) switch the pupil from any browsing view, mirroring the
-        // Tab shortcut and the top-right switcher tabs.
         if (this._viewMode !== 'spellEditor' && this._viewMode !== 'preview' && getSwitchableMembers().length > 1) {
             if (Input.isTriggered('pagedown')) { this.cycleTeachActor(1); return; }
             if (Input.isTriggered('pageup')) { this.cycleTeachActor(-1); return; }
         }
 
         if (this._viewMode === 'category') {
-            // Two side-by-side panes: 0 = Skills (left), 1 = Magic (right).
             const split = this.getSplitCategoriesCached();
             const lists = [split.Skill, split.Magic];
             const cols = CATEGORY_PAGE_COLS;
@@ -5762,9 +5223,6 @@
             const prevPane = pane, prevIdx = idx;
             const curLen = lists[pane].length;
 
-            // Fuse Spells used to be reachable only by mouse or the undiscoverable
-            // SHIFT/X hotkey. It is now a real focus target below the Magic grid:
-            // walk down off the last row to reach it, up to go back.
             if (this._categoryFuseFocused) {
                 if (Input.isTriggered('ok')) {
                     this.openSpellEditor();
@@ -5774,8 +5232,7 @@
                     this.categoryBack();
                     return;
                 }
-                if (Input.isTriggered('up') || Input.isRepeated('up') ||
-                    Input.isTriggered('left') || Input.isRepeated('left')) {
+                if (Input.isTriggered('up') || Input.isRepeated('up') || Input.isTriggered('left') || Input.isRepeated('left')) {
                     this._categoryFuseFocused = false;
                     SoundManager.playCursor();
                     this.refreshUISkillDOM();
@@ -5814,7 +5271,6 @@
                 if (idx + cols < curLen) {
                     idx += cols;
                 } else if (pane === 1 && idx === curLen - 1) {
-                    // Already on the bottom row of Magic: step onto Fuse Spells.
                     this._categoryFuseFocused = true;
                     SoundManager.playCursor();
                     this.refreshUISkillDOM();
@@ -5826,8 +5282,6 @@
                 if (idx - cols >= 0) {
                     idx -= cols;
                 } else if (this._ccEnterNav('up')) {
-                    // Off the top row and onto what sits above the grids: the
-                    // pupil tabs, the Magic Systems shelf, the way back.
                     return;
                 }
             }
@@ -5838,12 +5292,9 @@
                 SoundManager.playCursor();
                 this.refreshUISkillDOM();
                 const boxId = pane === 1 ? 'category-scroll-box-right' : 'category-scroll-box-left';
-                this.scrollToActiveItem(boxId, `#${boxId} .category-card.focused`);   // i18n-ignore: CSS selector
+                this.scrollToActiveItem(boxId, `#${boxId} .category-card.focused`);
             }
         } else if (this._viewMode === 'list') {
-            // On the atlas the cursor walks the circles rather than a wrapping
-            // list, so it is asked first: the flat list is only the fallback for
-            // a curriculum with no graph data at all.
             if (this.usesGraphView()) {
                 if (Input.isTriggered('ok')) {
                     this.openFocusedSkill();
@@ -5856,8 +5307,6 @@
                     return;
                 }
                 if (Input.isTriggered('shift')) {
-                    // One press steps back far enough to see the whole circle and
-                    // the next brings it home, so a reader is never lost on it.
                     const wide = this.wholeAtlasZoom();
                     this.setAtlasZoom(this.atlasZoom() > wide + 0.01 ? wide : this.defaultAtlasZoom());
                     this.scrollGraphToFocus();
@@ -5865,8 +5314,6 @@
                     return;
                 }
                 let moved = false;
-                // Running out of circle sideways turns the page to the next
-                // school; there is nothing above or below one to turn to.
                 if (Input.isTriggered('right') || Input.isRepeated('right')) {
                     moved = this.moveGraphFocus(1, 0);
                     if (!moved && this.pageAtlasSchool(1)) return;
@@ -5875,8 +5322,6 @@
                     if (!moved && this.pageAtlasSchool(-1)) return;
                 } else if (Input.isTriggered('down') || Input.isRepeated('down')) {
                     moved = this.moveGraphFocus(0, 1);
-                    // Off the bottom of the circle and onto the pager and the
-                    // zoom chips around it.
                     if (!moved && this._ccEnterNav('down')) return;
                 } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
                     moved = this.moveGraphFocus(0, -1);
@@ -5889,6 +5334,7 @@
                 }
                 return;
             }
+
             const skills = this.getSkillsByCategoryCached(this._selectedCategory);
             const max = skills.length;
             if (max === 0) {
@@ -5917,8 +5363,6 @@
                 if (this._selectedSkillIndex + cols < max) {
                     this._selectedSkillIndex += cols;
                 } else if (this._selectedSkillIndex === max - 1 && this._ccEnterNav('down')) {
-                    // Already on the last card: down steps onto the controls
-                    // around the board rather than doing nothing.
                     return;
                 } else {
                     this._selectedSkillIndex = max - 1;
@@ -5940,20 +5384,14 @@
             this.updateSpellPreviewInput();
         } else if (this._viewMode === 'detail') {
             const skill = this.focusedSkill();
-            // Action 0 = teach the chosen pupil; action 1 = preview animation.
             const maxActions = 2;
 
-            if (Input.isTriggered('down') || Input.isRepeated('down') ||
-                Input.isTriggered('right') || Input.isRepeated('right')) {
-                // Past the last action is where a fused spell keeps its rename
-                // and delete buttons, which are not actions and never were in
-                // this cycle. The ring picks them up from there.
+            if (Input.isTriggered('down') || Input.isRepeated('down') || Input.isTriggered('right') || Input.isRepeated('right')) {
                 if (this._selectedActionIndex === maxActions - 1 && this._ccEnterNav('down')) return;
                 this._selectedActionIndex = (this._selectedActionIndex + 1) % maxActions;
                 SoundManager.playCursor();
                 this.refreshUISkillDOM();
-            } else if (Input.isTriggered('up') || Input.isRepeated('up') ||
-                       Input.isTriggered('left') || Input.isRepeated('left')) {
+            } else if (Input.isTriggered('up') || Input.isRepeated('up') || Input.isTriggered('left') || Input.isRepeated('left')) {
                 this._selectedActionIndex = (this._selectedActionIndex - 1 + maxActions) % maxActions;
                 SoundManager.playCursor();
                 this.refreshUISkillDOM();
@@ -5979,9 +5417,6 @@
                 this.closeMagicSystems();
                 return;
             }
-            // The shelf of systems has no card cursor of its own: every node on
-            // it, and the Back button under it, belong to the ring, so any
-            // direction opens it.
             for (const dir of ['down', 'right', 'up', 'left']) {
                 if (Input.isTriggered(dir) || Input.isRepeated(dir)) {
                     this._ccEnterNav(dir);
@@ -5990,74 +5425,12 @@
             }
         }
 
-        // The page rebuilds its markup underneath the ring, so the ring is
-        // stamped back on afterwards rather than before.
         if (window.CCNav) window.CCNav.paint();
     };
 
-    //=============================================================================
-    // Plugin Commands
-    //=============================================================================
-
-    PluginManager.registerCommand(pluginName, "openSkillEncyclopedia", args => {
-        SceneManager.push(Scene_SkillEncyclopedia);
-    });
-
-    // Legacy command names kept for old events.
-    PluginManager.registerCommand(pluginName, "openEncyclopedia", args => {
-        SceneManager.push(Scene_SkillEncyclopedia);
-    });
-    PluginManager.registerCommand(pluginName, "openSkillSystem", args => {
-        SceneManager.push(Scene_SkillEncyclopedia);
-    });
-
-    PluginManager.registerCommand(pluginName, "openWithSkill", args => {
-        const skillId = Number(args.skillId || 0);
-        $gameVariables.setValue(variableId, skillId);
-        SceneManager.push(Scene_SkillEncyclopedia);
-    });
-
-    PluginManager.registerCommand(pluginName, "increaseSkillProgress", args => {
-        // Legacy command: now adds Knowledge points instead
-        const amount = Number(args.amount || 1);
-        $gameSystem.addKnowledge(amount);
-        window.skipLocalization = true;
-        $gameMessage.add(T('SkillMaster.knowledgeGained', {
-            amount: amount, total: $gameSystem.getKnowledge(),
-        }));
-        window.skipLocalization = false;
-    });
-
-    //=============================================================================
-    // Menu Integration
-    //=============================================================================
-
-    if (addToMenu) {
-        const _Window_MenuCommand_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
-        Window_MenuCommand.prototype.addOriginalCommands = function () {
-            _Window_MenuCommand_addOriginalCommands.call(this);
-            const cardMode = window.isCardCombatMode ? window.isCardCombatMode() : $gameSwitches.value(45);
-            if (!cardMode) {
-                this.addCommand(T('SkillMaster.training'), 'skillEncyclopedia', true, 77);
-            }
-        };
-
-        const _Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
-        Scene_Menu.prototype.createCommandWindow = function () {
-            _Scene_Menu_createCommandWindow.call(this);
-            this._commandWindow.setHandler('skillEncyclopedia', this.commandSkillEncyclopedia.bind(this));
-        };
-
-        Scene_Menu.prototype.commandSkillEncyclopedia = function () {
-            SceneManager.push(Scene_SkillEncyclopedia);
-        };
-    }
-
-    // Register classes globally
     window.Scene_SkillEncyclopedia = Scene_SkillEncyclopedia;
-    window.Window_SkillCategory = Window_SkillCategory;
-    window.Window_SkillMasterList = Window_SkillMasterList;
-    window.Window_SkillDetail = Window_SkillDetail;
-    window.Window_ActorSelect = Window_ActorSelect;
+    SkillMaster.Scene_SkillEncyclopedia = Scene_SkillEncyclopedia;
 
 })();
+
+

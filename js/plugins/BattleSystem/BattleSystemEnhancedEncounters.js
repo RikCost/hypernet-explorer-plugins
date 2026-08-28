@@ -2177,15 +2177,18 @@
     // Chaos mode is the exception and re-deals on every entrance: the visit
     // counter Game_Map#setup bumps rides in the key, so walking back onto a tile
     // you have already cleared finds different monsters on it.
+    // Answers true when it threw the square's fauna away, which is to say when
+    // the pass about to run is a fresh DEAL rather than a re-stock of ground the
+    // party is already standing on.
     BSE.Helpers.syncProcGenEnemyCache = function() {
-        if ($gameMap.mapId() !== 636) return;
+        if ($gameMap.mapId() !== 636) return false;
         const wc = BSE.Helpers.getWorldCoordinates() || { x: 0, y: 0 };
         const stack = $gameSystem._procGenData && $gameSystem._procGenData.biomeLayerStack;
         const depth = stack ? stack.length : 0;
         const visit = BSE.Helpers.getSpawnMode() === 'chaos'
             ? (',' + ($gameSystem._chaosSpawnVisit || 0)) : '';
         const key = `${wc.x},${wc.y},${depth},${BSE.Helpers.getMapBiome() || ''}${visit}`;
-        if ($gameSystem._procGenEnemyCacheKey === key) return;
+        if ($gameSystem._procGenEnemyCacheKey === key) return false;
         $gameSystem._procGenEnemyCacheKey = key;
         $gameSystem._procGenEnemyTroops = {};
         $gameSystem._procGenEnemyPositions = {};
@@ -2195,6 +2198,38 @@
         // longer exists. Covers the re-stocks that happen without a transfer
         // (WorldMapReturn's refreshEnemiesForBiome, a chaos-mode re-deal).
         if (BSE.Functions.healPersistentEnemies) BSE.Functions.healPersistentEnemies();
+        return true;
+    };
+
+    // Where the roaming monsters are standing RIGHT NOW, in the square's own
+    // coordinates, written over whatever tile they were first dealt.
+    //
+    // A re-stock is not always a re-deal. Coming back from a fight the party
+    // fled runs the whole pass again over the very same square (Scene_Map is
+    // rebuilt, the procedural map is laid down again and populated again), and
+    // so does closing a menu. The creatures on that square are already
+    // somewhere - somewhere the player was looking at a second ago - and the
+    // pass below would deal them their ORIGINAL tiles back, or, for the one the
+    // party just ran away from, a fresh tile anywhere on the map, because a
+    // monster standing next to the party is inside the ring the arrival
+    // clearance keeps empty. Either way it read as the monsters teleporting the
+    // moment a battle ended. Adopting the tiles they are actually on is what
+    // puts every one of them back exactly where it was.
+    BSE.Functions.rememberEnemyPositions = function() {
+        if (!$gameSystem._procGenEnemyPositions) $gameSystem._procGenEnemyPositions = {};
+        const w = $gameMap.width(), h = $gameMap.height();
+        for (const ev of $gameMap.events()) {
+            if (!ev || ev._erased) continue;
+            const data = ev.event();
+            if (!data || data.name !== "Enemy") continue;
+            const x = ev.x, y = ev.y;
+            // (0, 0) is the parking spot every pass reads as "not placed", and
+            // anything outside the square belongs to one of the window's other
+            // squares (see ProcStitch's square-local view).
+            if (x === 0 && y === 0) continue;
+            if (x < 0 || y < 0 || x >= w || y >= h) continue;
+            $gameSystem._procGenEnemyPositions[ev.eventId()] = { x, y };
+        }
     };
 
     // Chaos mode re-deals a procedural map's monsters on every entrance, so it
@@ -2205,6 +2240,11 @@
         _BSE_Game_Map_setup.call(this, mapId);
         if ($gameSystem) {
             $gameSystem._chaosSpawnVisit = (($gameSystem._chaosSpawnVisit || 0) + 1) % 1000000;
+            // setup rebuilds every event from the map file, so the "Enemy" events
+            // are back on the template's own corners and say nothing about where
+            // this square's monsters were standing. rememberEnemyPositions must
+            // not believe them.
+            $gameSystem._procGenEnemiesFromTemplate = true;
         }
     };
 
@@ -2261,7 +2301,15 @@
     };
 
     Scene_Map.prototype.spawnEnemiesFromEncounters = function() {
-        BSE.Helpers.syncProcGenEnemyCache();
+        const reDealt = BSE.Helpers.syncProcGenEnemyCache();
+        // Same square, same fauna, and the events on it are the live ones: this
+        // is the party coming back from a fled fight or out of a menu, so where
+        // each creature stands now is where it has to stand afterwards.
+        if ($gameMap.mapId() === 636 && !reDealt &&
+            !$gameSystem._procGenEnemiesFromTemplate) {
+            BSE.Functions.rememberEnemyPositions();
+        }
+        $gameSystem._procGenEnemiesFromTemplate = false;
         BSE.Functions.restoreErasedEnemyEvents();
 
         // Whose rules apply here.
@@ -2568,6 +2616,15 @@
             }
         }
 
+        // Every tile the square can legally seat a monster on, taken before the
+        // narrowing below. A REMEMBERED post is looked up here rather than in the
+        // narrowed list, because the narrowing is about where to deal a monster
+        // that has none: the arrival clearance in particular empties the ring the
+        // party is standing in, which is exactly the ring the creature they just
+        // fled from is standing in too.
+        const legalTiles = new Map();
+        for (const t of spawnTiles) legalTiles.set(t.x + ',' + t.y, t);
+
         // Road biomes: spawn off the carriageway, since enemies refuse to walk
         // onto road / dashed-line tiles and would be stranded there. Falls back
         // to the unfiltered list if the road leaves no roadside tile at all.
@@ -2689,13 +2746,23 @@
             if (spawnTiles.length) {
                 let loc;
                 let idx = -1;
+                let remembered = null;
                 if (isProcGenMap) {
                     if (!$gameSystem._procGenEnemyPositions) $gameSystem._procGenEnemyPositions = {};
                     const savedPos = $gameSystem._procGenEnemyPositions[ev.eventId()];
-                    if (savedPos) idx = spawnTiles.findIndex(tile => tile.x === savedPos.x && tile.y === savedPos.y);
+                    if (savedPos) {
+                        idx = spawnTiles.findIndex(tile => tile.x === savedPos.x && tile.y === savedPos.y);
+                        // Dropped by the narrowing, but still a tile of this
+                        // square: the post is honoured anyway. No other event can
+                        // claim it, because a remembered post is a tile that was
+                        // spliced out of the draw when it was first dealt.
+                        if (idx === -1) remembered = legalTiles.get(savedPos.x + ',' + savedPos.y) || null;
+                    }
                 }
                 if (idx !== -1) {
                     loc = spawnTiles.splice(idx, 1)[0];
+                } else if (remembered) {
+                    loc = remembered;
                 } else {
                     // The boss (first enemy event, the modes that place one) is
                     // biased into the room farthest from the dungeon entrance
@@ -3402,7 +3469,14 @@
         event._aiSeen = false;
         event._aiLast = null;
         event._aiRoused = 0;
-        event._aiHome = { x: event.x, y: event.y };
+        // The home post is a MAP coordinate, and this pass runs inside the
+        // stitched window's square-local view (ProcStitch.inPartySquare), where
+        // event.x reads back as the tile's position inside its own 64x64 square.
+        // Written from that, every creature in a square the window does not have
+        // at its corner woke up believing home was one or two squares away and
+        // set off for it, so a square the party had just walked into emptied
+        // itself as fast as it was stocked. _x is the map position either way.
+        event._aiHome = { x: event._x, y: event._y };
         event._aiPatrolDir = 0;
         event._aiDriftDir = 0;
         event._aiStuck = 0;

@@ -202,12 +202,19 @@
         update() {
             let open = false;
             for (const el of this._held.keys()) {
-                if (!el.isConnected) continue;
+                if (!el.isConnected) {
+                    this._held.delete(el);
+                    continue;
+                }
                 const st = el.style;
-                if (st.display === 'none' || st.visibility === 'hidden') continue;
-                // ...and one that has since been made click-through is being
-                // drawn through rather than used.
+                if (st.display === 'none' || st.visibility === 'hidden' || st.opacity === '0') continue;
                 if (st.pointerEvents === 'none') continue;
+                if (typeof window !== 'undefined' && window.getComputedStyle) {
+                    try {
+                        const cs = window.getComputedStyle(el);
+                        if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0' || cs.pointerEvents === 'none') continue;
+                    } catch (e) {}
+                }
                 if (el.offsetWidth > 0 || el.offsetHeight > 0) { open = true; break; }
             }
             this.open = open;
@@ -4441,10 +4448,13 @@
         _drawForWindow() {
             const pre = this._preGameCanvas;
             this._preGameCanvas = null;
-            if (!pre) return;
-            this._renderer.setPixelRatio(pre.ratio);
-            this._renderer.setSize(pre.w / pre.ratio, pre.h / pre.ratio, false);
-            this._camera.aspect = pre.aspect;
+            const ratio = pre ? pre.ratio : Math.min(window.devicePixelRatio || 1, 1.25);
+            const w = (pre && pre.w) ? (pre.w / ratio) : window.innerWidth;
+            const h = (pre && pre.h) ? (pre.h / ratio) : window.innerHeight;
+            const aspect = (pre && pre.aspect) ? pre.aspect : (w / Math.max(1, h));
+            this._renderer.setPixelRatio(ratio);
+            this._renderer.setSize(w, h, false);
+            this._camera.aspect = aspect;
             this._camera.updateProjectionMatrix();
         }
 
@@ -4455,7 +4465,7 @@
             // A fight that never swapped the canvas (it was opened and settled
             // before the battle scene was ever built) still took the controls on
             // its way in, so they are handed back here too.
-            if (!this._battleWatch) { this._unlockControls(); return; }
+            if (!this._battleWatch) { this._unlockControls(true); return; }
             this._battleWatch = false;
             this._battleSeen  = false;
             this._drawForWindow();
@@ -4479,6 +4489,8 @@
             this._stationRefuelWatch = false;
             if (this._domMenus) {
                 this._domMenuOpen = this._domMenus.releaseSince(this._battleDomMark || 0);
+            } else {
+                this._domMenuOpen = false;
             }
             this._battleDomMark = 0;
             if (this._hud && this._hud.setHidden) this._hud.setHidden(false);
@@ -4495,9 +4507,12 @@
             // out of frame until the map comes back, and gives up on it
             // altogether if the party has been taken off the world map.
             if (!(SceneManager._nextScene instanceof Scene_Map) &&
-                !(SceneManager._scene instanceof Scene_Map)) {
+                !(SceneManager._scene instanceof Scene_Map) &&
+                !(SceneManager._scene instanceof Scene_Battle)) {
                 this._suspended = true;
                 if (this._overlay) this._overlay.style.display = 'none';
+            } else {
+                this._suspended = false;
             }
         }
 
@@ -4802,23 +4817,60 @@
             });
         }
 
-        // Are we in the caves? Asked of where the eye actually is, once a
-        // frame, and answered with a little hysteresis so standing in the mouth
-        // of a shaft does not flicker the whole world in and out.
-        //
-        // Telling the terrain is what builds the passages: nothing of them is
-        // meshed while the party is above ground, where there is nothing of them
-        // to see. That means one rebuild on the way down and one on the way back
-        // up, which is the right place to pay for it.
         _updateUnderground() {
-            const eye = this._viewMode === 'foot'
+            if (this._standalone || this._titleMode || this._transitioningUnderground) return;
+            const eye = (this._viewMode === 'foot' && this._fpc)
                 ? this._fpc.getRig().position
                 : { x: this._vanX, y: this._vanY + 6, z: this._vanZ };
-            const margin = this._underground ? 6 : -2;
-            const under = this._terrain.isUnderground(eye.x, eye.z, eye.y + margin);
-            if (under === this._underground) return;
-            this._underground = under;
-            this._terrain.setCavesVisible(under);
+
+            // Ocean / sea water diving: keep diving in 3D without teleporting
+            const waterKind = this._terrain ? this._terrain.waterKindAt(eye.x, eye.z) : null;
+            const waterTop = this._terrain ? this._terrain.waterSurfaceAt(eye.x, eye.z) : null;
+            const isOceanOrSeaWater = (waterKind === 'sea' || (waterTop !== null && eye.y <= waterTop && waterKind !== 'inland'));
+            if (isOceanOrSeaWater) {
+                this._underground = false;
+                return;
+            }
+
+            // Check if player goes more than X blocks underground (e.g. dug down or fell into a deep shaft/trench):
+            const groundTop = this._terrain ? this._terrain.field.blockTopAt(eye.x, eye.z) : 0;
+            const depthUnderground = groundTop - eye.y;
+            // X blocks underground: VOX.SIZE = 5 units per block (~1.25m). X = 3 blocks (15 units)
+            const X_BLOCKS = 3;
+            const threshold = X_BLOCKS * VOX.SIZE;
+            if (depthUnderground >= threshold) {
+                this._enterUnderground2D();
+            }
+        }
+
+        // Descending underground transfers to the 2D procedural map at the underground cave layer
+        _enterUnderground2D() {
+            if (this._transitioningUnderground) return;
+            this._transitioningUnderground = true;
+
+            let tileX = Math.max(0, Math.min(255, Math.floor(this._vanX / WORLD_TILE_SIZE)));
+            let tileY = Math.max(0, Math.min(255, Math.floor(this._vanZ / WORLD_TILE_SIZE)));
+
+            if (typeof $gameVariables !== 'undefined') {
+                $gameVariables.setValue(43, tileX);
+                $gameVariables.setValue(44, tileY);
+                if (!this._footOnly && window.VehiclePosition) {
+                    window.VehiclePosition.set('camper', WORLD_MAP_ID, tileX, tileY);
+                }
+            }
+
+            // Stop the 3D scene cleanly
+            VoxelWorldSystem.stop();
+
+            // Prepare and initiate procedural underground descent
+            if (typeof $gameSystem !== 'undefined' && $gameSystem) {
+                if ($gameSystem.generateProceduralMap) {
+                    $gameSystem.generateProceduralMap();
+                }
+                if (typeof PluginManager !== 'undefined' && PluginManager.callCommand) {
+                    PluginManager.callCommand(null, 'WorldMapReturn', 'goDown', {});
+                }
+            }
         }
 
         // Keep the 2D world coordinates (vars 43/44) on the tile the 3D scene has

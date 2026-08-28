@@ -1844,6 +1844,344 @@
   }
 
   /**
+   * Smooth cave ceiling mask before wall placement:
+   * - Fills 1-tile holes in rock mass (floor surrounded by >= 3 ceiling neighbors)
+   * - Prunes 1-tile thin ceiling ridges/spikes and floating diagonal strands
+   * - Prunes 1-tile thin horizontal/vertical ceiling slivers (floor on both N and S, or both E and W)
+   */
+  function smoothCaveCeilingMask(mapData, width, height, caveCeilingTile, caveFloorTile, borderThickness = 3) {
+    if (!mapData || width <= 0 || height <= 0) return;
+
+    // Pass 1: Fill enclosed 1-tile floor holes inside solid rock
+    for (let y = borderThickness; y < height - borderThickness; y++) {
+      for (let x = borderThickness; x < width - borderThickness; x++) {
+        const idx = calculateIndex(x, y, 0, width, height);
+        if (mapData[idx] === caveFloorTile) {
+          let cCount = 0;
+          if (mapData[calculateIndex(x + 1, y, 0, width, height)] === caveCeilingTile) cCount++;
+          if (mapData[calculateIndex(x - 1, y, 0, width, height)] === caveCeilingTile) cCount++;
+          if (mapData[calculateIndex(x, y + 1, 0, width, height)] === caveCeilingTile) cCount++;
+          if (mapData[calculateIndex(x, y - 1, 0, width, height)] === caveCeilingTile) cCount++;
+          if (cCount >= 3) {
+            mapData[idx] = caveCeilingTile;
+          }
+        }
+      }
+    }
+
+    // Pass 2: Remove 1-tile thin ceiling ridges, slivers and diagonal strands
+    for (let iter = 0; iter < 2; iter++) {
+      for (let y = borderThickness; y < height - borderThickness; y++) {
+        for (let x = borderThickness; x < width - borderThickness; x++) {
+          const idx = calculateIndex(x, y, 0, width, height);
+          if (mapData[idx] === caveCeilingTile) {
+            const east = mapData[calculateIndex(x + 1, y, 0, width, height)] === caveCeilingTile;
+            const west = mapData[calculateIndex(x - 1, y, 0, width, height)] === caveCeilingTile;
+            const south = mapData[calculateIndex(x, y + 1, 0, width, height)] === caveCeilingTile;
+            const north = mapData[calculateIndex(x, y - 1, 0, width, height)] === caveCeilingTile;
+
+            const cCount = (east ? 1 : 0) + (west ? 1 : 0) + (south ? 1 : 0) + (north ? 1 : 0);
+
+            // Ceiling with fewer than 2 orthogonal ceiling neighbors is a floating strand or isolated spike
+            if (cCount < 2) {
+              mapData[idx] = caveFloorTile;
+            } else if ((north && south && !east && !west) || (east && west && !north && !south)) {
+              // 1-tile thin bridge in open space -> prune to prevent blocking
+              mapData[idx] = caveFloorTile;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Reconcile cave walls and ceilings to guarantee visual integrity:
+   * 1. Prunes small isolated/orphaned ceiling fragments (< 6 contiguous tiles) that do not connect to borders.
+   * 2. Removes any orphaned CaveWall tiles (walls without a Ceiling or valid CaveWall above them).
+   * 3. Draws CaveWall tiles below every south-facing CaveCeiling edge with calibrated height (wallHeight = 2).
+   * 4. Validates that every CaveWall tile connects vertically to a CaveCeiling above it.
+   */
+  function reconcileCaveWallsAndCeilings(
+    mapData,
+    width,
+    height,
+    caveCeilingTile,
+    caveWallTile,
+    caveFloorTile,
+    wallHeight = 2,
+    allFeatures = {}
+  ) {
+    if (!mapData || width <= 0 || height <= 0) return;
+
+    // Collect all known ceiling and wall tile IDs
+    const ceilingTileSet = new Set();
+    if (caveCeilingTile !== undefined && caveCeilingTile !== null) {
+      ceilingTileSet.add(caveCeilingTile);
+    }
+    for (const name of ["Ceiling", "CaveCeiling", "MountainCeiling", "DungeonCeiling"]) {
+      for (const v of (allFeatures && allFeatures[name]) || []) {
+        const id = v.type === "single" ? v.tileId : (v.tiles && v.tiles[0] && v.tiles[0][0]);
+        if (id !== undefined && id !== null) ceilingTileSet.add(id);
+      }
+    }
+
+    const wallTileSet = new Set();
+    if (caveWallTile !== undefined && caveWallTile !== null) {
+      wallTileSet.add(caveWallTile);
+    }
+    for (const name of ["CaveWall", "MountainWall", "DungeonWall"]) {
+      for (const v of (allFeatures && allFeatures[name]) || []) {
+        const id = v.type === "single" ? v.tileId : (v.tiles && v.tiles[0] && v.tiles[0][0]);
+        if (id !== undefined && id !== null) wallTileSet.add(id);
+      }
+    }
+
+    const isCeiling = (tileId) => ceilingTileSet.has(tileId);
+    const isWall = (tileId) => wallTileSet.has(tileId);
+
+    // Pass 1: Prune small isolated ceiling clusters (< 6 tiles and not touching map borders)
+    const visited = new Uint8Array(width * height);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const idx = calculateIndex(x, y, 0, width, height);
+        if (visited[y * width + x] || !isCeiling(mapData[idx])) continue;
+
+        const cluster = [];
+        let touchesBorder = false;
+        const stack = [{ x, y }];
+        visited[y * width + x] = 1;
+
+        while (stack.length > 0) {
+          const p = stack.pop();
+          cluster.push(p);
+          if (p.x === 0 || p.x === width - 1 || p.y === 0 || p.y === height - 1) {
+            touchesBorder = true;
+          }
+
+          const neighbors = [
+            { x: p.x + 1, y: p.y },
+            { x: p.x - 1, y: p.y },
+            { x: p.x, y: p.y + 1 },
+            { x: p.x, y: p.y - 1 }
+          ];
+
+          for (const n of neighbors) {
+            if (n.x < 0 || n.x >= width || n.y < 0 || n.y >= height) continue;
+            const nPos = n.y * width + n.x;
+            if (!visited[nPos]) {
+              const nIdx = calculateIndex(n.x, n.y, 0, width, height);
+              if (isCeiling(mapData[nIdx])) {
+                visited[nPos] = 1;
+                stack.push(n);
+              }
+            }
+          }
+        }
+
+        if (cluster.length < 6 && !touchesBorder) {
+          for (const p of cluster) {
+            const cIdx = calculateIndex(p.x, p.y, 0, width, height);
+            mapData[cIdx] = caveFloorTile;
+          }
+        }
+      }
+    }
+
+    // Pass 2: Clean up any existing orphaned CaveWalls
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        const idx = calculateIndex(x, y, 0, width, height);
+        if (isWall(mapData[idx])) {
+          if (y === 0) {
+            mapData[idx] = caveFloorTile;
+          } else {
+            const aboveIdx = calculateIndex(x, y - 1, 0, width, height);
+            const aboveTile = mapData[aboveIdx];
+            if (!isCeiling(aboveTile) && !isWall(aboveTile)) {
+              mapData[idx] = caveFloorTile;
+            }
+          }
+        }
+      }
+    }
+
+    // Pass 3: Draw CaveWalls below each CaveCeiling (South-facing edges)
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        const idx = calculateIndex(x, y, 0, width, height);
+        if (isCeiling(mapData[idx])) {
+          if (y + 1 < height) {
+            const belowIdx = calculateIndex(x, y + 1, 0, width, height);
+            if (!isCeiling(mapData[belowIdx])) {
+              // Count floor gap until the next ceiling in this column
+              let gap = 0;
+              for (let k = y + 1; k < height; k++) {
+                const kIdx = calculateIndex(x, k, 0, width, height);
+                if (isCeiling(mapData[kIdx])) break;
+                gap++;
+              }
+
+              // Determine wall height so passages and rooms stay open
+              let hWall = wallHeight;
+              if (y + 1 + gap < height) {
+                // There is ceiling below this gap
+                if (gap <= 1) {
+                  hWall = 0; // Keep floor in 1-tile passage so player is never blocked
+                } else if (gap === 2) {
+                  hWall = 1; // 1 wall, 1 floor
+                } else {
+                  hWall = Math.min(wallHeight, gap - 2); // Keep at least 2 floor tiles in wider passages
+                  if (hWall < 1 && gap >= 2) hWall = 1;
+                }
+              } else {
+                // Gap extends to bottom boundary
+                hWall = Math.min(wallHeight, Math.max(0, gap - 1));
+              }
+
+              for (let dy = 1; dy <= hWall; dy++) {
+                const wy = y + dy;
+                if (wy < height) {
+                  const wIdx = calculateIndex(x, wy, 0, width, height);
+                  if (!isCeiling(mapData[wIdx])) {
+                    mapData[wIdx] = caveWallTile;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Pass 4: Final verification - Remove any orphaned wall that cannot trace back up to a Ceiling
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        const idx = calculateIndex(x, y, 0, width, height);
+        if (isWall(mapData[idx])) {
+          let hasCeilingAbove = false;
+          for (let k = y - 1; k >= 0 && k >= y - wallHeight; k--) {
+            const kIdx = calculateIndex(x, k, 0, width, height);
+            if (isCeiling(mapData[kIdx])) {
+              hasCeilingAbove = true;
+              break;
+            }
+            if (!isWall(mapData[kIdx])) {
+              break;
+            }
+          }
+          if (!hasCeilingAbove) {
+            mapData[idx] = caveFloorTile;
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Cleanup pass to remove any orphaned walls (no ceiling above) or tiny floating ceiling specks.
+   */
+  function cleanupOrphanedWallsAndCeilings(
+    mapData,
+    width,
+    height,
+    caveCeilingTile,
+    caveWallTile,
+    caveFloorTile,
+    wallHeight = 2,
+    allFeatures = {}
+  ) {
+    if (!mapData || width <= 0 || height <= 0) return;
+
+    const ceilingTileSet = new Set();
+    if (caveCeilingTile !== undefined && caveCeilingTile !== null) ceilingTileSet.add(caveCeilingTile);
+    for (const name of ["Ceiling", "CaveCeiling", "MountainCeiling", "DungeonCeiling"]) {
+      for (const v of (allFeatures && allFeatures[name]) || []) {
+        const id = v.type === "single" ? v.tileId : (v.tiles && v.tiles[0] && v.tiles[0][0]);
+        if (id !== undefined && id !== null) ceilingTileSet.add(id);
+      }
+    }
+
+    const wallTileSet = new Set();
+    if (caveWallTile !== undefined && caveWallTile !== null) wallTileSet.add(caveWallTile);
+    for (const name of ["CaveWall", "MountainWall", "DungeonWall"]) {
+      for (const v of (allFeatures && allFeatures[name]) || []) {
+        const id = v.type === "single" ? v.tileId : (v.tiles && v.tiles[0] && v.tiles[0][0]);
+        if (id !== undefined && id !== null) wallTileSet.add(id);
+      }
+    }
+
+    const isCeiling = (tileId) => ceilingTileSet.has(tileId);
+    const isWall = (tileId) => wallTileSet.has(tileId);
+
+    // Pass 1: Prune small isolated ceiling clusters (< 6 tiles and not touching map borders)
+    const visited = new Uint8Array(width * height);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const idx = calculateIndex(x, y, 0, width, height);
+        if (visited[y * width + x] || !isCeiling(mapData[idx])) continue;
+
+        const cluster = [];
+        let touchesBorder = false;
+        const stack = [{ x, y }];
+        visited[y * width + x] = 1;
+
+        while (stack.length > 0) {
+          const p = stack.pop();
+          cluster.push(p);
+          if (p.x === 0 || p.x === width - 1 || p.y === 0 || p.y === height - 1) touchesBorder = true;
+
+          const neighbors = [
+            { x: p.x + 1, y: p.y },
+            { x: p.x - 1, y: p.y },
+            { x: p.x, y: p.y + 1 },
+            { x: p.x, y: p.y - 1 }
+          ];
+          for (const n of neighbors) {
+            if (n.x < 0 || n.x >= width || n.y < 0 || n.y >= height) continue;
+            const nPos = n.y * width + n.x;
+            if (!visited[nPos]) {
+              const nIdx = calculateIndex(n.x, n.y, 0, width, height);
+              if (isCeiling(mapData[nIdx])) {
+                visited[nPos] = 1;
+                stack.push(n);
+              }
+            }
+          }
+        }
+
+        if (cluster.length < 6 && !touchesBorder) {
+          for (const p of cluster) {
+            const cIdx = calculateIndex(p.x, p.y, 0, width, height);
+            mapData[cIdx] = caveFloorTile;
+          }
+        }
+      }
+    }
+
+    // Pass 2: Remove any CaveWall that cannot trace vertically upwards to a Ceiling
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        const idx = calculateIndex(x, y, 0, width, height);
+        if (isWall(mapData[idx])) {
+          let hasCeilingAbove = false;
+          for (let k = y - 1; k >= 0 && k >= y - wallHeight; k--) {
+            const kIdx = calculateIndex(x, k, 0, width, height);
+            if (isCeiling(mapData[kIdx])) {
+              hasCeilingAbove = true;
+              break;
+            }
+            if (!isWall(mapData[kIdx])) break;
+          }
+          if (!hasCeilingAbove) {
+            mapData[idx] = caveFloorTile;
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Generate mountain terrain using inverted cellular automata
    * Creates mountain peaks and cliff formations using inverted cellular automata
    * Reuses the cellular automata algorithm but inverts the result:
@@ -3749,7 +4087,8 @@
     // entire world. Multiple octaves make borders interlock with fingers/islands
     // instead of a single clean band. Different noise layers per direction avoid
     // correlation between opposite edges.
-    const directionSeed = seed + direction.charCodeAt(0) * 1000;
+    const baseSeed = (typeof getWorldSeed === "function" ? getWorldSeed() : (seed || 12345));
+    const directionSeed = baseSeed + direction.charCodeAt(0) * 1000;
     const noiseValue = fbmNoise(globalX * blendScale, globalY * blendScale, directionSeed, 4, 2.0, 0.6);
 
     // Map noise from [-1, 1] to [0, 1]
@@ -4379,6 +4718,9 @@
     generateCaveWithDrunkenWalk,
     generateCaveWithCellularAutomata,
     generateCaveWithVoronoi,
+    smoothCaveCeilingMask,
+    reconcileCaveWallsAndCeilings,
+    cleanupOrphanedWallsAndCeilings,
     generateMountainBiomeTerrain,
     generateMountainRangeTerrain,
     pickMountainStyle,

@@ -223,7 +223,7 @@
         // The cell the party stands on, when a window is up: without one the
         // whole map IS the square and its origin is 0,0.
         const cell = (stitch.active && stitch.active() && stitch.cellAt)
-            ? stitch.cellAt($gamePlayer.x, $gamePlayer.y) : null;
+            ? (stitch.cellAt($gamePlayer.x, $gamePlayer.y) || (stitch.window && stitch.window() && stitch.window().partyCell)) : null;
         const ox = cell ? cell.ox : 0;
         const oy = cell ? cell.oy : 0;
         if (cell) {
@@ -483,9 +483,10 @@
             centerX = playerX;
             centerY = playerY;
         } else {
-            // Otherwise use saved coordinates from variables 43 & 44
-            centerX = $gameVariables.value(43) || 0;
-            centerY = $gameVariables.value(44) || 0;
+            // Otherwise use saved / live world coordinates
+            const worldPos = playerWorldPosition();
+            centerX = worldPos.x;
+            centerY = worldPos.y;
         }
 
         // Full screen grid is 12288x12288 (8x8 tiles of 1536x1536 pixels each)
@@ -1385,8 +1386,8 @@
         const varY = Math.floor(worldPos.y);
 
         // 256 units / 8 blocks = 32 units per block
-        const col = Math.floor(varX / 32) + 1;
-        const row = Math.floor(varY / 32) + 1;
+        const col = Math.min(8, Math.max(1, Math.floor(varX / 32) + 1));
+        const row = Math.min(8, Math.max(1, Math.floor(varY / 32) + 1));
 
         // Load the specific tile image: img/worldmap/row-X-column-Y
         const filename = `row-${row}-column-${col}`;  // i18n-ignore  asset path
@@ -1458,10 +1459,11 @@
 
         drawDot(context, px, py, playerColor, 5);
 
-        // Draw coordinates on bottom right, including local player position
-        const playerLocalX = $gamePlayer.x;
-        const playerLocalY = $gamePlayer.y;
-        drawCoordinates(context, targetW, targetH, varX, varY, playerLocalX, playerLocalY);
+        // Draw coordinates on bottom right, including local player position inside the square
+        const localPos = (window.ProcStitch && window.ProcStitch.local && $gameMap.mapId() === PROC_MAP_ID)
+            ? window.ProcStitch.local($gamePlayer.x, $gamePlayer.y)
+            : { x: $gamePlayer.x, y: $gamePlayer.y };
+        drawCoordinates(context, targetW, targetH, varX, varY, localPos.x, localPos.y);
 
         setWorldMapSpriteBitmap(bitmap);
     }
@@ -1732,12 +1734,12 @@
             px = Math.floor(($gamePlayer.x / mw) * targetW) + targetW / (mw * 2);
             py = Math.floor(($gamePlayer.y / mh) * targetH) + targetH / (mh * 2);
         } else {
-            // Not on map 315: use the world position (0-255 range), fraction of
+            // Not on map 315: use the world position (0-256 range), fraction of
             // the square included, so crossing a procedural square walks the dot
             // over instead of teleporting it.
             const world = playerWorldPosition();
-            px = (world.x / 255) * targetW;
-            py = (world.y / 255) * targetH;
+            px = (world.x / WORLD_TILES) * targetW;
+            py = (world.y / WORLD_TILES) * targetH;
         }
         drawDot(context, px, py, playerColor, showLabels ? 8 : 4);
 
@@ -2181,6 +2183,9 @@
     const _Scene_Map_start = Scene_Map.prototype.start;
     Scene_Map.prototype.start = function() {
         _Scene_Map_start.call(this);
+
+        lastRenderedTileX = -1;
+        lastRenderedTileY = -1;
 
         const mapId = $gameMap.mapId();
 

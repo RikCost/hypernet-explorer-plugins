@@ -375,8 +375,15 @@
 
     const _Scene_Battle_terminate_VW = Scene_Battle.prototype.terminate;
     Scene_Battle.prototype.terminate = function() {
+        if (this._spriteset && this._spriteset._vwGroundSprite) {
+            if (this._spriteset._vwGroundSprite.parent) {
+                this._spriteset._vwGroundSprite.parent.removeChild(this._spriteset._vwGroundSprite);
+            }
+            this._spriteset._vwGroundSprite.destroy({ texture: false, baseTexture: false });
+            this._spriteset._vwGroundSprite = null;
+        }
         _Scene_Battle_terminate_VW.call(this);
-        if (VoxelWorldSystem.isActive() && VoxelWorldSystem._scene.endBattleView) {
+        if (VoxelWorldSystem.isActive() && VoxelWorldSystem._scene && VoxelWorldSystem._scene.endBattleView) {
             VoxelWorldSystem._scene.endBattleView();
         }
     };
@@ -389,7 +396,7 @@
             spriteset._back1Sprite, spriteset._back2Sprite,
             spriteset._animatedContainer, spriteset._animatedGradientContainer
         ];
-        for (const s of layers) { if (s) s.visible = false; }
+        for (const s of layers) { if (s && s.visible) s.visible = false; }
     }
 
     Spriteset_Battle.prototype.createVoxelWorldGround = function() {
@@ -417,13 +424,24 @@
     const _Spriteset_Battle_update_VW = Spriteset_Battle.prototype.update;
     Spriteset_Battle.prototype.update = function() {
         _Spriteset_Battle_update_VW.call(this);
-        if (!VoxelWorldSystem.isBattleView()) return;
+        if (!VoxelWorldSystem.isBattleView()) {
+            if (this._vwGroundSprite) {
+                if (this._vwGroundSprite.parent) {
+                    this._vwGroundSprite.parent.removeChild(this._vwGroundSprite);
+                }
+                this._vwGroundSprite.destroy({ texture: false, baseTexture: false });
+                this._vwGroundSprite = null;
+            }
+            return;
+        }
         if (!this._vwGroundSprite) this.createVoxelWorldGround();
         if (!this._vwGroundSprite) return;
         // The world drew a new frame into that canvas since the last tick;
         // this is what carries it up into the battle layer.
         hideBattleGround(this);
-        this._vwGroundSprite.texture.update();
+        if (this._vwGroundSprite.texture) {
+            this._vwGroundSprite.texture.update();
+        }
     };
 
     const _Spriteset_Battle_destroy_VW = Spriteset_Battle.prototype.destroy;

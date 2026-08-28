@@ -14,5 +14,27 @@
   "and": "and",
   "skillNamesOption": "Skill Names",
   "skillName": "Skill Name",
-  "skillAction": "Skill Action"
+  "skillAction": "Skill Action",
+  "pronouns": {
+    "he": {
+      "subject": "he",
+      "object": "him",
+      "possessive": "his"
+    },
+    "she": {
+      "subject": "she",
+      "object": "her",
+      "possessive": "her"
+    },
+    "they": {
+      "subject": "they",
+      "object": "them",
+      "possessive": "their"
+    },
+    "it": {
+      "subject": "it",
+      "object": "it",
+      "possessive": "its"
+    }
+  }
 }

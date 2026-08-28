@@ -291,25 +291,30 @@
         return 0;
     }
 
-    // A seam. The coarse cell is the seam itself - four voxels across and two
-    // tall - and the fine hash is how much of that cell the mineral actually
-    // fills, so ore comes out of the rock in blobs a pick can follow.
-    function oreAt(vx, vy, vz, depth) {
+    // A seam. In mountains and highlands, ore veins are rich and run close to or
+    // directly on the rock surface, so prospectors find abundant ores in mountains.
+    function oreAt(vx, vy, vz, depth, p) {
+        const isMountain = p && (p.massif || p.bed === MAT.GRANITE || (p.ridge && p.ridge >= 30) || p.cliffAt <= 1.1);
         const cell = hash3(vx >> 2, vy >> 1, vz >> 2);
-        const q = Math.min(0.10, 0.012 + depth * 0.0016);
+        let q = Math.min(0.10, 0.012 + depth * 0.0016);
+        if (isMountain) {
+            q = Math.max(q, 0.14);
+        }
         if (cell >= q) return 0;
         if (hash3(vx, vy, vz) > 0.62) return 0;
         // Which mineral: the ones this depth can carry, weighted.
         let total = 0;
         for (let i = 0; i < ORES.length; i++) {
             const o = ORES[i];
-            if (depth >= o.min && depth <= o.max) total += o.w;
+            const minD = isMountain ? Math.min(o.min, 1) : o.min;
+            if (depth >= minD && depth <= o.max) total += o.w;
         }
         if (total <= 0) return 0;
         let r = hash3(vx >> 2, (vy >> 1) + 977, vz >> 2) * total;
         for (let i = 0; i < ORES.length; i++) {
             const o = ORES[i];
-            if (depth < o.min || depth > o.max) continue;
+            const minD = isMountain ? Math.min(o.min, 1) : o.min;
+            if (depth < minD || depth > o.max) continue;
             r -= o.w;
             if (r <= 0) return o.mat;
         }
@@ -1390,180 +1395,34 @@
             return this.column(vx, vz);
         }
 
-        // The ground, once the caves have had their way with it. Everywhere but
-        // a shaft this is the generated surface; where a shaft comes up it is
-        // the lip of the hole, so the mouth of a cave reads as a pit somebody
-        // could fall into rather than as a lid drawn over one.
+        // The 3D world is solid terrain without 3D subterranean cave tunnels/cavities.
+        // Descending underground transfers to the 2D procedural underground map.
         caveTopY(vx, vz) {
-            const gen = this.genTopY(vx, vz);
-            // This is the hottest question in the whole field - the mesher asks
-            // it for every column of every chunk, and so does every ray and
-            // every footfall - so it must not pay for the caves. Only a SHAFT
-            // ever breaks the surface, and a shaft is one spot in a world square
-            // that most often has none: the square is asked first, and all but a
-            // handful of columns in the world stop here for the cost of a hash.
-            const wx = Math.floor(vx / VOX.PER_TILE), wy = Math.floor(vz / VOX.PER_TILE);
-            const oneIn = gen >= 26 ? SHAFT_ONE_IN_MTN : SHAFT_ONE_IN;
-            if (sqHash(wx, wy, 1) >= 1 / oneIn) return gen;
-            const sx = wx * VOX.PER_TILE + Math.floor(sqHash(wx, wy, 2) * VOX.PER_TILE);
-            const sz = wy * VOX.PER_TILE + Math.floor(sqHash(wx, wy, 3) * VOX.PER_TILE);
-            const reach = SHAFT_RADIUS + SHAFT_FLARE;
-            if (Math.abs(vx - sx) > reach || Math.abs(vz - sz) > reach) return gen;
-
-            const c = this.columnCaves(vx, vz);
-            if (!c || !c.shaftR || c.shaftTop < gen - 1) return gen;
-            let y = gen;
-            while (y > VOX.MIN_Y + 1 && this.caveAt(vx, y - 1, vz)) y--;
-            return y;
+            return this.genTopY(vx, vz);
         }
 
         // ---------------------------------------------------------------------
         // Caves
         // ---------------------------------------------------------------------
-        // What this column has under it, worked out once and remembered:
-        //
-        //   runs    [{ lo, hi }]  every passage through it, in voxels
-        //   lo/hi                 the whole carved extent, passages and room
-        //   shaft   0 | radius    the shaft down through it, if there is one
-        //
-        // Null where nothing is carved at all, which is most of the world.
-        // Everything else about the caves - whether a cube is air, what a
-        // chunk has to draw, where a walker's feet land - is answered off this.
         columnCaves(vx, vz) {
-            const key = (vx + 65536) * 131072 + (vz + 65536);
-            const hit = this._caveCache.get(key);
-            if (hit !== undefined) return hit;
-            const out = this._genColumnCaves(vx, vz);
-            if (this._caveCache.size > 200000) this._caveCache.clear();
-            this._caveCache.set(key, out);
-            return out;
+            return null;
         }
 
         _genColumnCaves(vx, vz) {
-            // Rock is only ever taken from between the roof and the floor. The
-            // roof is measured against this column AND its four neighbours, so
-            // a passage can never break out through the side of a cliff: the
-            // ground there is drawn as one solid face, and a hole behind it
-            // would be a hole in the world.
-            const own  = this.genTopY(vx, vz);
-            const ceil = Math.min(own,
-                this.genTopY(vx - 1, vz), this.genTopY(vx + 1, vz),
-                this.genTopY(vx, vz - 1), this.genTopY(vx, vz + 1)) - CAVE_ROOF;
-            const floor = VOX.MIN_Y + CAVE_FLOOR_CLEAR;
-            if (ceil <= floor) return null;
-
-            const runs = [];
-            const push = (a, b) => {
-                const lo = Math.max(floor, Math.ceil(a));
-                const hi = Math.min(ceil, Math.floor(b));
-                if (hi >= lo) runs.push({ lo, hi });
-            };
-
-            for (const L of CAVE_LAYERS) {
-                // A layer that follows the ground is only there where there IS
-                // ground to wind through: that is what keeps the mountain
-                // passages inside the mountains.
-                if (L.minTop !== undefined && own < L.minTop) continue;
-                const m = _perlin(vx * L.f + L.sx, vz * L.f + L.sz);
-                const a = Math.abs(m);
-                if (a >= L.th) continue;
-                // How far inside the band this column is: 1 along the middle of
-                // the passage, 0 at its edge. The square root spreads the wide
-                // part out, so a tunnel reads as a tunnel and not as a wedge.
-                const t = Math.sqrt(1 - a / L.th);
-                const r = L.rad * t;
-                if (r < 0.6) continue;
-                const wind = _perlin(vx * L.yf + L.sx + 17.3, vz * L.yf + L.sz - 5.1) * 2;
-                const cy = (L.depth !== undefined ? own - L.depth : L.y) + L.amp * wind;
-                push(cy - r, cy + r);
-            }
-
-            // The rooms. Broad and slow, so one covers a good many columns and
-            // the passages that cross it simply open out into it.
-            const c = _perlin(vx * CAVERN_F + 313.7, vz * CAVERN_F - 77.3);
-            if (c > CAVERN_TH) {
-                const t = Math.min(1, (c - CAVERN_TH) / (0.62 - CAVERN_TH));
-                const r = 2 + (CAVERN_RAD - 2) * t;
-                const wind = _perlin(vx * CAVERN_F * 1.7 - 41.1, vz * CAVERN_F * 1.7 + 9.4);
-                push(CAVERN_Y + wind * 6 - r, CAVERN_Y + wind * 6 + r);
-            }
-
-            // The way down. Its square decides whether there is one and where
-            // it stands; a mountain square carries one far more often, which is
-            // why a mountainside is where caves are found.
-            let shaft = 0;
-            const wx = Math.floor(vx / VOX.PER_TILE), wy = Math.floor(vz / VOX.PER_TILE);
-            const oneIn = own >= 26 ? SHAFT_ONE_IN_MTN : SHAFT_ONE_IN;
-            if (sqHash(wx, wy, 1) < 1 / oneIn) {
-                const sx = wx * VOX.PER_TILE + Math.floor(sqHash(wx, wy, 2) * VOX.PER_TILE);
-                const sz = wy * VOX.PER_TILE + Math.floor(sqHash(wx, wy, 3) * VOX.PER_TILE);
-                const d = Math.hypot(vx - sx, vz - sz);
-                if (d < SHAFT_RADIUS + SHAFT_FLARE) shaft = d;
-            }
-
-            if (!runs.length && !shaft) return null;
-
-            let lo = Infinity, hi = -Infinity;
-            for (const r of runs) { if (r.lo < lo) lo = r.lo; if (r.hi > hi) hi = r.hi; }
-
-            // A shaft is only worth sinking where it reaches something. It is
-            // taken from the surface down to the top of whatever this column
-            // already has under it, so it always comes out somewhere.
-            let shaftTop = 0, shaftBot = 0, shaftR = 0;
-            if (shaft && runs.length) {
-                shaftR = SHAFT_RADIUS;
-                shaftTop = own - 1;
-                shaftBot = hi;
-                if (shaftBot < shaftTop) {
-                    lo = Math.min(lo, shaftBot);
-                    hi = Math.max(hi, shaftTop);
-                } else {
-                    shaftR = 0;
-                }
-            }
-            if (!runs.length) return null;
-
-            return { runs, lo, hi, shaftR, shaftD: shaft, shaftTop, shaftBot, ceil };
+            return null;
         }
 
-        // Is this cube carved out by the caves? A handful of comparisons
-        // against the column's own remembered answer.
         caveAt(vx, vy, vz) {
-            if (vy <= VOX.MIN_Y || vy > VOX.MAX_Y) return false;
-            const c = this.columnCaves(vx, vz);
-            if (!c || vy < c.lo || vy > c.hi) return false;
-            for (const r of c.runs) if (vy >= r.lo && vy <= r.hi) return true;
-            // Inside the shaft's throat. It flares open at the top, so its
-            // mouth reads as a sinkhole rather than as a drilled hole.
-            if (c.shaftR && vy >= c.shaftBot && vy <= c.shaftTop) {
-                const up = (vy - c.shaftBot) / Math.max(1, c.shaftTop - c.shaftBot);
-                const rad = c.shaftR + SHAFT_FLARE * up * up;
-                if (c.shaftD < rad) return true;
-            }
             return false;
         }
 
-        // The whole carved extent of a column, for the mesher: it draws the
-        // cave faces over exactly this span and nothing else. Null where there
-        // is nothing to draw.
         caveSpan(vx, vz) {
-            const c = this.columnCaves(vx, vz);
-            return c ? { lo: c.lo, hi: c.hi } : null;
+            return null;
         }
 
-        // The bands of a column a mesher actually has to walk: each passage
-        // with a cube of margin round it, and the shaft if there is one. Walking
-        // these rather than the whole carved extent is most of what makes the
-        // caves cheap enough to draw - a column that carries two passages forty
-        // voxels apart costs the two passages, not the forty voxels.
-
         caveBands(vx, vz, out) {
-            const c = this.columnCaves(vx, vz);
             const bands = out || [];
             bands.length = 0;
-            if (!c) return bands;
-            for (const r of c.runs) bands.push(r.lo - 1, r.hi + 1);
-            if (c.shaftR) bands.push(c.shaftBot - 1, c.shaftTop + 1);
             return bands;
         }
 
@@ -1578,13 +1437,9 @@
         isSolid(vx, vy, vz) {
             if (vy <= VOX.MIN_Y) return true;
             if (vy > VOX.MAX_Y)  return false;
-            // What anybody has done to this cube outranks what was generated
-            // there, caves included: a passage can be filled back in, and rock
-            // put back into one stays put.
             const e = this.editAt(vx, vy, vz);
             if (e !== undefined) return e !== MAT.AIR;
-            if (vy >= this.genTopY(vx, vz)) return false;
-            return !this.caveAt(vx, vy, vz);
+            return vy < this.genTopY(vx, vz);
         }
 
         // What a cube is made of. AIR when there is nothing there.
@@ -1594,7 +1449,6 @@
             if (e !== undefined) return e;
             const c = this.genColumn(vx, vz, colOut);
             if (vy >= c.top) return MAT.AIR;
-            if (this.caveAt(vx, vy, vz)) return MAT.AIR;
             return this.genMaterial(c, vx, vy, vz);
         }
 
@@ -1602,8 +1456,15 @@
         // rock all the way down, salted with ore the deeper it goes.
         genMaterial(col, vx, vy, vz) {
             const depth = col.top - 1 - vy;
-            if (depth <= 0) return col.mat;
             const p = col.prof || TERRAIN.plain;
+            const isMountain = p && (p.massif || p.bed === MAT.GRANITE || (p.ridge && p.ridge >= 30));
+            if (depth <= 0) {
+                if (isMountain && col.mat === MAT.ROCK) {
+                    const surfOre = oreAt(vx, vy, vz, 1, p);
+                    if (surfOre) return surfOre;
+                }
+                return col.mat;
+            }
             if (col.mat === MAT.ASPHALT || col.mat === MAT.MARK) {
                 return depth <= 2 ? MAT.GRAVEL : MAT.ROCK;
             }
@@ -1615,6 +1476,10 @@
                 return [MAT.CLAY, MAT.SAND, MAT.ROCK, MAT.CLAY][band];
             }
             if (depth <= 3) {
+                if (isMountain && (col.mat === MAT.ROCK || col.mat === MAT.SNOW)) {
+                    const mtnOre = oreAt(vx, vy, vz, depth, p);
+                    if (mtnOre) return mtnOre;
+                }
                 if (col.mat === MAT.SAND)  return MAT.SAND;
                 if (col.mat === MAT.MUD)   return depth <= 1 ? MAT.MUD : MAT.CLAY;
                 if (col.mat === MAT.SNOW)  return depth <= 1 ? MAT.SNOW : (p.sub || MAT.ROCK);
@@ -1629,10 +1494,8 @@
             // mined out of a lava lake.
             const hot = hotAt(vx, vy, vz, p);
             if (hot) return hot;
-            // A seam. It never breaks the surface, it comes in blobs rather than
-            // in lucky single cubes, and what it is worth depends on how deep it
-            // is (see ORES).
-            const ore = oreAt(vx, vy, vz, depth);
+            // A seam.
+            const ore = oreAt(vx, vy, vz, depth, p);
             if (ore) return ore;
             return bedMat(vx, vy, vz, p, depth);
         }

@@ -99,22 +99,9 @@
         // around the camera, which is the price of not carrying the caves about
         // above ground - and it is paid once, on the way in and on the way out.
         setCavesVisible(on) {
-            on = !!on;
-            if (this._caves === on) return;
-            this._caves = on;
-            // The ring shrinks on the way down and opens back up on the way
-            // out. The surface radius is whatever it was set to, so a quality
-            // setting made above ground survives a trip through the caves.
-            if (on) {
-                this._surfaceRadius = this._radius;
-                this._radius = Math.min(this._radius, CAVE_RADIUS);
-            } else if (this._surfaceRadius != null) {
-                this._radius = this._surfaceRadius;
-                this._surfaceRadius = null;
-            }
-            this._clearChunks();
+            this._caves = false;
         }
-        cavesVisible() { return this._caves; }
+        cavesVisible() { return false; }
 
         // ---------------------------------------------------------------------
         // The height every other system asks for, in tile coordinates, exactly
