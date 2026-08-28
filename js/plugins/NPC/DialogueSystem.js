@@ -1336,12 +1336,28 @@ Imported.DialogueSystem = true;
         return name ? String(name).toLowerCase() : null;
     }
 
+    function vary(text) {
+        if (typeof text !== 'string' || text.indexOf('{') < 0) return text;
+        let out = text;
+        let guard = 0;
+        while (guard++ < 64) {
+            const next = out.replace(/\{([^{}]*\|[^{}]*)\}/g, (m, body) => {
+                const parts = body.split('|');
+                return parts[Math.floor(Math.random() * parts.length)];
+            });
+            if (next === out) break;
+            out = next;
+        }
+        return out;
+    }
+
     function pickRumor(personalityKey) {
         const key = personalityKey ? `Rumors.personality.${personalityKey}` : null;
         let pool = (key && T.has(key)) ? T.pool(key) : [];
         if (!pool.length) pool = T.pool('Rumors.generic');
         if (!pool.length) return '';
-        return pool[Math.floor(Math.random() * pool.length)];
+        const raw = pool[Math.floor(Math.random() * pool.length)];
+        return vary(raw);
     }
 
     // -------------------------------------------------------------------------
@@ -1443,7 +1459,7 @@ Imported.DialogueSystem = true;
         if (!interactions.length) return null;
         const def = interactions[Math.floor(Math.random() * interactions.length)];
 
-        const fill       = s => String(s || '').replace(/\{name\}/g, npcName);
+        const fill       = s => vary(String(s || '').replace(/\{name\}/g, npcName));
         const playerLine = fill(H._rand(def.player));
         if (!playerLine) return null;
 
@@ -1487,6 +1503,7 @@ Imported.DialogueSystem = true;
             npcLine = fill(H._rand(pool)) || fill(H._rand(def.responseGood)) || fill(H._rand(def.responseBad));
         }
         if (!npcLine) return null;
+        npcLine = vary(npcLine);
 
         if (profile && actorId != null && H._addNpcOpinion) {
             H._addNpcOpinion(profile, actorId, delta);
@@ -1534,8 +1551,8 @@ Imported.DialogueSystem = true;
 
         // The NPC's opener names the person they are talking to; the party's
         // answer names the person who just spoke to them.
-        const fillNpc    = s => String(s || '').replace(/\{name\}/g, actor ? actor.name() : '');
-        const fillPlayer = s => String(s || '').replace(/\{name\}/g, npcName);
+        const fillNpc    = s => vary(String(s || '').replace(/\{name\}/g, actor ? actor.name() : ''));
+        const fillPlayer = s => vary(String(s || '').replace(/\{name\}/g, npcName));
 
         let npcLine;
         if (ConfigManager.dialogueMode === 'markovian') {
@@ -1546,6 +1563,7 @@ Imported.DialogueSystem = true;
         // an NPC passing one on is its own outcome of this command.
         if (!npcLine) npcLine = fillNpc(H._rand(def.player));
         if (!npcLine) return null;
+        npcLine = vary(npcLine);
 
         const warm       = def.tone !== 'negative';
         const playerLine = fillPlayer(H._rand(warm ? def.responseGood : def.responseBad))
@@ -1597,6 +1615,7 @@ Imported.DialogueSystem = true;
     function buildRumorExchange(ev, npcName) {
         let line = pickRumor(rumorPersonalityKey(ev.eventId()));
         if (!line) return null;
+        line = vary(line);
         const EM = window.NPCEmpathize;
         // A non-sentient creature has no words, only a noise as long as the line
         // it would have spoken.

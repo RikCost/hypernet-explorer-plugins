@@ -1,3 +1,6 @@
+0.4.4a
+- steam deck resolution fixes
+- fixes for normal dialogue appearing wrong
 0.4.3a
 - fixed globally missing biome ID and mismatched biomes on worldmap
 - enemies no longer teleport after fleeing a fight on the procedural map

@@ -26,7 +26,7 @@
     _extractContacts, _countRecentInteractions, _lastInteractionDay,
     _joinChance, _joinLevelOk, _travellingPartyCount, _hasSelfSwitchAPage,
     _diseaseVialItems, _diseaseVialId, _infectChance,
-    _socialLines, _rand, _addNpcOpinion, _personalitySocialMult,
+    _socialLines, _rand, _vary, _addNpcOpinion, _personalitySocialMult,
     _hygienePenalty, _hygieneReadout,
     _addNpcAttraction, _npcEffectiveAttraction, _computePartyAttraction,
     _emPlaythrough, _isEmActor, _isBubbaNpc, _emContext, _emStanceKey, _emStanceData,
@@ -36,6 +36,20 @@
     _isStoryNpc, STORY_PROTECTED_ACTIONS,
   } = window.NPCEmpathize._helpers;
   const _getT = window.NPCEmpathize._getT;
+  const vary = _vary || function (text) {
+    if (typeof text !== 'string' || text.indexOf('{') < 0) return text;
+    let out = text;
+    let guard = 0;
+    while (guard++ < 64) {
+      const next = out.replace(/\{([^{}]*\|[^{}]*)\}/g, (m, body) => {
+        const parts = body.split('|');
+        return parts[Math.floor(Math.random() * parts.length)];
+      });
+      if (next === out) break;
+      out = next;
+    }
+    return out;
+  };
 
   // ============================================================================
   // Local UI helpers
@@ -1140,12 +1154,12 @@
       const src  = base.length
         ? base
         : (actorMode && actorObj ? _generatePartyThoughts(actorObj, profile) : []);
-      const thoughtEntries = src.map(t => ({ role: 'npc', text: String(t) }));
+      const thoughtEntries = src.map(t => ({ role: 'npc', text: vary(String(t)) }));
       // Lines this NPC actually spoke in a message box (MarkovTextGenerator's
       // "Generate NPC Dialogue" command), recorded via NPCEmpathize.recordNPCLine.
       const spokenEntries = (profile?.spokenLog ?? [])
         .slice(-8)
-        .map(s => ({ role: s.role === 'player' ? 'player' : 'npc', text: String(s.text ?? '') }))
+        .map(s => ({ role: s.role === 'player' ? 'player' : 'npc', text: vary(String(s.text ?? '')) }))
         .filter(s => s.text);
       if (convoEntries.length || thoughtEntries.length || spokenEntries.length)
         this._chatHistory = [...convoEntries, ...thoughtEntries, ...spokenEntries];
@@ -1996,9 +2010,10 @@
   Scene_NPCEmpathize.prototype._buildChatHTML = function (displayName, T, profile, opinion, npcName, remoteMode) {
     const bubblesHTML = this._chatHistory.map(entry => {
       if (entry.role === 'convo') return this._buildConvoBubble(entry);
+      const text = vary(entry.text);
       return entry.role === 'player'
-        ? `<div class="npc-bubble npc-bubble-player">${_escapeHtml(entry.text)}</div>`
-        : `<div class="npc-bubble npc-bubble-npc"><span class="npc-bubble-name">${_escapeHtml(displayName)}</span>${_escapeHtml(entry.text)}</div>`;
+        ? `<div class="npc-bubble npc-bubble-player">${_escapeHtml(text)}</div>`
+        : `<div class="npc-bubble npc-bubble-npc"><span class="npc-bubble-name">${_escapeHtml(displayName)}</span>${_escapeHtml(text)}</div>`;
     }).join('');
     const typingHTML = this._isTyping
       ? `<div class="npc-bubble npc-bubble-npc npc-typing">…</div>` : '';
@@ -4160,7 +4175,7 @@
     const profile = _getProfile(npcName);
     const actor   = this._focusActor();
     const actorId = actor && actor.actorId();
-    const fill    = s => String(s || '').replace(/\{name\}/g, npcName).replace(/\{style\}/g, nm(style));
+    const fill    = s => vary(String(s || '').replace(/\{name\}/g, npcName).replace(/\{style\}/g, nm(style)));
 
     const priorOpinion = this._focusOpinion(profile);
     if (_courtRefused(profile, actorId, priorOpinion)) { SoundManager.playBuzzer(); return; }
@@ -4253,7 +4268,7 @@
     const profile = _getProfile(npcName);
     const actor   = this._focusActor();
     const actorId = actor && actor.actorId();
-    const fill    = s => String(s || '').replace(/\{name\}/g, npcName);
+    const fill    = s => vary(String(s || '').replace(/\{name\}/g, npcName));
 
     // A complaint already on file takes Court off the menu, so this is only
     // reachable through a stale panel: refuse it rather than act on it.
@@ -4297,7 +4312,7 @@
     // Reputation is tracked apart from attraction: a move that lands moves how
     // much this NPC WANTS the focused member rather than how much they think
     // of them in general. Nothing is written to the NPCLifeSim partnership
-    // record here either, that is what Propose (below) is for.
+    // record either, that is what Propose (below) is for.
     if (profile && actorId != null) {
       _addNpcAttraction(profile, actorId, delta);
       (profile.eventLog ??= []).push({
@@ -4480,12 +4495,12 @@
     // which one it is pointing at.
     const key = entry.dist <= _DIR_HERE_RADIUS ? 'directionsHere'
       : (entry.count > 1 ? 'directionsAnswerNearest' : 'directionsAnswer');
-    const answer = T('Empathize.' + key, {
+    const answer = vary(T('Empathize.' + key, {
       target: entry.label,
       count: String(entry.count || 1),
       dist: String(entry.dist),
       dir: _compassLabel(T, entry.dx, entry.dy),
-    });
+    }));
 
     this._directionsMode = false;
     this._activeTab      = 'chat';

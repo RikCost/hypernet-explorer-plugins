@@ -24570,13 +24570,203 @@ cursor:pointer; font-size:16px; line-height:1.4;
         padding: 8px 10px;
     }
 
-    /* --- Character creation. Its step pages carry the deepest chrome in the
-           game (a dossier card inside a page inside the spread), so they give
-           back the most; the type floors below then land on that. */
+    /* --- Character creation: Complete Steam Deck (1280x800) Revision ---
+           Full responsive calibration for all steps of character creation so the
+           spread, sidebar, tab bar, grids, modals, and detail cards fit the
+           Steam Deck 1280x800 resolution with optimal spacing and crisp readability. */
+
+    /* 1. Top Folder Tabs Bar */
+    .cc-dossier-top-bar {
+        height: 40px;
+        padding: 0 12px;
+    }
+
+    .cc-folder-tabs-left,
+    .cc-folder-tabs-right {
+        gap: 4px;
+    }
+
+    .cc-folder-tab {
+        padding: 5px 10px;
+        font-size: 0.82rem;
+        gap: 5px;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .cc-folder-tab .cc-tab-portrait {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+    }
+
+    .cc-folder-tab .cc-tab-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .cc-tab-done-mark {
+        font-size: 0.7rem;
+    }
+
+    .cc-tab-remove-x {
+        width: 12px;
+        height: 12px;
+        font-size: 0.58rem;
+        margin-left: 3px;
+    }
+
+    .cc-tab-add-plus {
+        padding: 4px 8px;
+        font-size: 0.95rem;
+    }
+
+    /* 2. Dossier Main Container & Center Spine */
+    .cc-pockets-spread::after {
+        width: 14px;
+    }
+
+    /* 3. Compact Dossier Sidebar (Scaled from 440px to 320px for 1280px screen width) */
+    .cc-compact-sidebar {
+        width: 320px;
+        min-width: 300px;
+        max-width: 330px;
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .cc-compact-sidebar-body {
+        gap: 6px;
+    }
+
+    .cc-compact-identity-card {
+        padding: 6px 8px;
+        gap: 4px;
+    }
+
+    .cc-compact-avatar-wrap {
+        width: 42px;
+        height: 42px;
+    }
+
+    .cc-compact-avatar {
+        width: 38px;
+        height: 38px;
+    }
+
+    .cc-bio-identity {
+        padding: 2px 0 4px 0;
+        gap: 6px;
+    }
+
+    .cc-bio-identity-name {
+        font-size: 0.95rem;
+    }
+
+    .cc-bio-identity-class {
+        font-size: 0.78rem;
+    }
+
+    /* Portrait scaled from 320px to 185px height to fit within 800px vertical bounds */
+    .cc-compact-bust-full {
+        height: 185px;
+    }
+
+    .cc-dossier-large-bust {
+        width: 120px;
+        height: 150px;
+    }
+
+    .cc-compact-portrait-controls {
+        padding: 4px 6px;
+        gap: 4px;
+    }
+
+    .cc-compact-toggle-row {
+        gap: 4px;
+    }
+
+    .cc-compact-toggle-btn {
+        padding: 4px 6px;
+        font-size: 0.78rem;
+    }
+
+    .cc-compact-edit-btn {
+        padding: 4px 6px;
+        font-size: 0.78rem;
+        gap: 4px;
+    }
+
+    .cc-compact-type-pills {
+        gap: 4px;
+    }
+
+    .cc-compact-type-pill {
+        padding: 4px 5px;
+        font-size: 0.76rem;
+    }
+
+    .cc-compact-loadout-grid {
+        max-height: 105px;
+        gap: 2px;
+        padding: 1px 0;
+    }
+
+    .cc-compact-loadout-grid .cc-compact-loadout-item {
+        padding: 2px;
+        font-size: 0.82rem;
+    }
+
+    .cc-compact-loadout-grid .cc-compact-loadout-item .cc-loadout-name {
+        font-size: 0.82rem;
+    }
+
+    .cc-compact-loadout-grid.cc-loadout-grid-cols {
+        gap: 2px 10px;
+    }
+
+    .cc-compact-loadout-grid.cc-loadout-grid-cols-3 {
+        gap: 2px 6px;
+    }
+
+    .cc-compact-loadout-grid.cc-loadout-grid-cols-3 .cc-compact-loadout-item .cc-loadout-name {
+        font-size: 0.78rem;
+    }
+
+    .cc-compact-actions {
+        gap: 4px;
+        padding-top: 4px;
+    }
+
+    .cc-compact-btn,
+    .cc-sidebar-btn {
+        padding: 5px 8px;
+        font-size: 0.84rem;
+        height: 32px;
+    }
+
+    .cc-stat-grid {
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+
+    .cc-stat-box {
+        padding: 3px 4px;
+    }
+
+    .cc-stat-label {
+        font-size: 0.65rem;
+    }
+
+    .cc-stat-val {
+        font-size: 0.82rem;
+    }
+
+    /* 4. Spread Pages & Layout Metrics */
+    .cc-page,
     .cc-page-left,
     .cc-page-right,
     .cc-pockets-spread .cc-page {
-        padding: 18px 24px;
+        padding: 10px 14px;
     }
 
     .cc-dossier-card,
@@ -24584,7 +24774,7 @@ cursor:pointer; font-size:16px; line-height:1.4;
     .cc-option-card,
     .cc-party-card,
     .cc-bust-card {
-        padding: 8px 10px;
+        padding: 6px 8px;
     }
 
     .cc-categories-list,
@@ -24593,43 +24783,970 @@ cursor:pointer; font-size:16px; line-height:1.4;
         gap: 6px;
     }
 
-    /* --- Type: deliberately NOT overridden here, and that is the finding.
-           This block first carried a set of "floors" (.command-item: 1.12rem,
-           captions: 0.95rem, titles: 1.45rem !important). Measured against the
-           real cascade they were CAPS, not floors: a bare font-size replaces the
-           value outright, and every one of those targets already resolves above
-           the number written, so the rules made a handheld SMALLER than a
-           desktop -- -14% on the pockets rows, measured.
+    .cc-header-gothic {
+        font-size: 1.45rem;
+        margin: 0 0 8px 0;
+        padding-bottom: 4px;
+    }
 
-           They are not restored in a `max(Xrem, Yem)` form either, because the
-           measurement that killed them also showed there is nothing left to
-           lift. On this breakpoint 1rem is 16px and the panel is scaled 0.909,
-           so a rule renders at size x 14.5px; the smallest type in the pockets,
-           the .hotkey-badge at 0.748em of a 1.114em row on the 1.322rem spread,
-           lands at 1.10rem -> 16px. Every other target is larger. An absolute
-           floor here would have nothing to catch.
+    .cc-subheader {
+        font-size: 1.12rem;
+        margin-bottom: 6px;
+        padding-bottom: 3px;
+    }
 
-           What actually made handheld text bigger is upstream of this block, in
-           two places, and neither needs a rule here:
-             - every font-size in the file was raised at its own declaration;
-             - the space reclaimed above lets Core/GameOptions.js lay the panel
-               out in a 1400x880 box instead of 1560x960, so it is scaled to the
-               Deck's screen by 0.909 rather than 0.783.
-           Together that is about +39% on a 1280x800 panel, and it keeps the size
-           relationships the menus were designed with instead of flattening every
-           tier onto two or three hard-coded values.
+    .cc-weapon-slots {
+        font-size: 0.92rem;
+        margin: -4px 0 6px 0;
+    }
 
-           If a specific caption is ever found too small on a Deck, raise it at
-           its own rule (where the relationship to its neighbours is visible),
-           not with a blanket floor here. */
+    .cc-text-desc {
+        font-size: 0.9rem;
+        line-height: 1.35;
+        margin-bottom: 10px;
+    }
 
+    .cc-dossier-card {
+        padding: 6px 4px;
+        margin-bottom: 6px;
+    }
 
+    .cc-dossier-grid {
+        gap: 4px 14px;
+    }
 
-    /* --- Scrollbars. The default 6px track is a hard target on a trackpad and
-           a thumbstick cursor; widen it where a pane actually scrolls. */
-    ::-webkit-scrollbar {
-        width: 10px;
+    .cc-dossier-grid.cc-loadout-grid {
+        gap: 0 14px;
+        margin-top: 4px;
+    }
+
+    .cc-dossier-row {
+        font-size: 0.88rem;
+        margin-bottom: 4px;
+        padding-bottom: 2px;
+    }
+
+    .cc-card-tight {
+        padding: 6px 8px;
+        margin-bottom: 6px;
+    }
+
+    .cc-card-tight .cc-subheader {
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+        padding-bottom: 2px;
+    }
+
+    .cc-card-tight .cc-dossier-row {
+        font-size: 0.82rem;
+        margin-bottom: 2px;
+        padding-bottom: 1px;
+    }
+
+    /* 5. Name Input, Dice, & Trait Budget Bar */
+    .cc-step-single-page {
+        padding: 14px 20px;
+    }
+
+    .cc-name-input-group {
+        max-width: 380px;
+        margin: 8px auto 14px auto;
+        gap: 8px;
+    }
+
+    .cc-name-text-input {
+        padding: 6px 12px;
+        font-size: 1.15rem;
+    }
+
+    .cc-dice-btn {
+        padding: 6px 12px;
+        font-size: 1.1rem;
+    }
+
+    .cc-trait-budget-container {
+        padding: 6px 12px;
+        margin-bottom: 8px;
+    }
+
+    .cc-trait-budget-label {
+        font-size: 0.78rem;
+    }
+
+    .cc-trait-budget-val {
+        font-size: 1.15rem;
+    }
+
+    /* 6. Settings Mode (Initial Settings Screen) */
+    #character-creation-container .option-row {
+        padding: 8px 12px;
+    }
+
+    #character-creation-container .option-name {
+        font-size: 1.05rem;
+    }
+
+    #character-creation-container .option-status-toggle {
+        font-size: 0.92rem;
+    }
+
+    #character-creation-container .option-select-val {
+        min-width: 90px;
+        font-size: 0.92rem;
+    }
+
+    #character-creation-container .option-select .arrow-btn {
+        padding: 2px 6px;
+    }
+
+    .cc-settings-list {
+        gap: 6px;
+    }
+
+    .cc-settings-detail {
+        padding: 8px;
+    }
+
+    .cc-settings-detail-title {
+        font-size: 1.25rem;
+    }
+
+    .cc-settings-glyph {
+        font-size: 2.5rem;
+        margin: 8px 0;
+    }
+
+    .cc-settings-value {
+        font-size: 1.15rem;
+        margin: 4px 0;
+    }
+
+    .cc-settings-desc {
+        font-size: 0.92rem;
+        line-height: 1.35;
+        max-width: 28em;
+        margin-bottom: 6px;
+    }
+
+    .cc-settings-preview-img {
+        max-width: 320px;
+    }
+
+    .cc-settings-img-caption {
+        font-size: 0.92rem;
+        margin-top: 4px;
+        max-width: 320px;
+    }
+
+    .cc-settings-hint {
+        font-size: 0.84rem;
+        margin-top: 4px;
+    }
+
+    /* 7. Presets, Wanted Cards & Skin Selector */
+    .cc-presets-board {
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .cc-wanted-card {
+        padding: 8px 6px;
+        min-height: 115px;
+    }
+
+    .cc-wanted-sprite {
+        width: 36px;
+        height: 36px;
+        margin: 4px 0 6px;
+    }
+
+    .cc-wanted-name {
+        font-size: 1.05rem;
+        margin-bottom: 1px;
+    }
+
+    .cc-wanted-class {
+        font-size: 0.78rem;
+    }
+
+    .cc-presets-board .cc-wanted-card.cc-card-flat {
+        padding: 4px 8px;
+        gap: 6px;
+    }
+
+    .cc-card-flat .cc-wanted-name {
+        font-size: 0.95rem;
+    }
+
+    .cc-card-flat .cc-wanted-class {
+        font-size: 0.78rem;
+    }
+
+    .cc-roster-head {
+        font-size: 0.88rem;
+        margin: 6px 0 2px;
+        padding-bottom: 2px;
+    }
+
+    .cc-skins-row {
+        gap: 8px;
+        padding: 2px;
+    }
+
+    .cc-wanted-card.cc-skin-card {
+        width: 65px;
+        padding: 4px 3px 6px;
+    }
+
+    .cc-skin-name {
+        font-size: 0.76rem;
+    }
+
+    .cc-skins-hint {
+        font-size: 0.82rem;
+        margin-top: 6px;
+        gap: 5px;
+    }
+
+    /* 8. Class Selection Step */
+    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-class-board {
+        width: 54%;
+        flex: 1 1 54%;
+        padding: 10px 12px;
+        gap: 6px;
+    }
+
+    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-class-detail {
+        width: 46%;
+        flex: 1 1 46%;
+        padding: 10px 12px;
+        gap: 6px;
+    }
+
+    .cc-class-board-head .cc-subheader {
+        font-size: 1.1rem;
+    }
+
+    .cc-class-search {
+        height: 26px;
+        font-size: 0.85rem;
+        padding: 3px 6px;
+    }
+
+    .cc-select-grid.cc-class-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        padding: 2px 2px 10px 2px;
+    }
+
+    .cc-class-grid .cc-card-option.cc-class-card {
+        padding: 5px 7px;
+        gap: 1px;
+    }
+
+    .cc-class-grid .cc-class-card .cc-option-title {
+        font-size: 0.92rem;
+    }
+
+    .cc-class-detail-head .cc-header-gothic {
+        font-size: 1.25rem;
+    }
+
+    .cc-class-quote {
+        font-size: 0.8rem;
+        line-height: 1.25;
+    }
+
+    .cc-class-section {
+        padding: 4px 6px;
+        margin-bottom: 4px;
+    }
+
+    .cc-class-section .cc-subheader {
+        font-size: 0.84rem;
+        margin: 0 0 2px 0;
+    }
+
+    .cc-class-section .cc-dossier-row {
+        font-size: 0.8rem;
+        padding: 1px 0;
+    }
+
+    .cc-class-passive {
+        margin-top: 4px;
+        padding-top: 4px;
+    }
+
+    .cc-class-passive-name {
+        font-size: 0.85rem;
+        gap: 4px;
+    }
+
+    .cc-class-passive-desc {
+        font-size: 0.78rem;
+        line-height: 1.25;
+        margin-top: 2px;
+    }
+
+    .cc-class-stat-grid {
+        gap: 1px 8px;
+    }
+
+    .cc-class-growth {
+        font-size: 0.74rem;
+    }
+
+    .cc-class-confirm {
+        height: 30px;
+        margin-top: 4px;
+        font-size: 0.88rem;
+    }
+
+    /* 9. Traits Selection Step */
+    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-trait-board {
+        width: 62%;
+        flex: 1 1 62%;
+        padding: 10px 12px;
+    }
+
+    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-trait-detail {
+        width: 38%;
+        flex: 1 1 38%;
+        padding: 10px 12px;
+    }
+
+    .ts-purse {
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .ts-purse-cell {
+        padding: 4px;
+        gap: 1px;
+    }
+
+    .ts-purse-value {
+        font-size: 1.15rem;
+    }
+
+    .ts-purse-label {
+        font-size: 0.74rem;
+    }
+
+    .ts-tab-row {
+        gap: 4px;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+    }
+
+    .ts-tab {
+        padding: 3px 7px;
+        font-size: 0.78rem;
+    }
+
+    .ts-search-slot {
+        margin-top: 4px;
+    }
+
+    .cc-select-grid.cc-trait-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 2px 2px 12px 2px;
+    }
+
+    .cc-trait-grid .cc-card-option {
+        padding: 4px 6px;
+        gap: 4px;
+    }
+
+    .cc-trait-grid .cc-option-title {
+        font-size: 0.82rem;
+    }
+
+    .trait-cost {
+        font-size: 0.74rem;
+        min-width: 16px;
+        padding: 0 3px;
+    }
+
+    .ts-sheet-head {
+        gap: 6px;
+        margin-bottom: 6px;
+        padding-bottom: 6px;
+    }
+
+    .ts-purse--sheet .ts-purse-value {
+        font-size: 1.05rem;
+    }
+
+    .ts-detail {
+        max-height: 38%;
+        margin-bottom: 6px;
+    }
+
+    .ts-detail-head {
+        gap: 6px;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+    }
+
+    .ts-detail-label {
+        font-size: 1.02rem;
+    }
+
+    .ts-detail-desc {
+        font-size: 0.82rem;
+        line-height: 1.3;
+        margin-bottom: 4px;
+    }
+
+    .ts-detail-note {
+        font-size: 0.78rem;
+        padding: 3px 6px;
+        margin-bottom: 4px;
+    }
+
+    .ts-picked-list {
+        min-height: 50px;
+        padding: 3px 6px;
+        margin-bottom: 6px;
+    }
+
+    .cc-trait-picked {
+        padding: 3px 0;
+        gap: 4px;
+    }
+
+    .cc-trait-picked-name {
+        font-size: 0.82rem;
+    }
+
+    .cc-slot-remove {
+        font-size: 0.85rem;
+        padding: 0 4px;
+    }
+
+    .ts-summary {
+        padding: 4px 6px;
+        margin-bottom: 6px;
+    }
+
+    .ts-summary-row {
+        padding: 2px 0;
+        font-size: 0.78rem;
+    }
+
+    .cc-picked-row {
+        gap: 3px;
+        padding: 2px;
+        max-height: 72px;
+    }
+
+    .cc-picked-chip {
+        padding: 2px 5px;
+        font-size: 0.74rem;
+        gap: 3px;
+    }
+
+    /* 10. Specializations Step */
+    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-spec-board {
+        width: 68%;
+        flex: 1 1 68%;
+        padding: 10px 12px;
+    }
+
+    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-spec-detail {
+        width: 32%;
+        flex: 1 1 32%;
+        padding: 10px 12px;
+    }
+
+    .cc-spec-tab-row {
+        gap: 4px;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+    }
+
+    .cc-spec-tab {
+        padding: 3px 7px;
+        font-size: 0.78rem;
+    }
+
+    .cc-spec-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 2px;
+    }
+
+    .cc-spec-card {
+        padding: 4px 6px;
+        gap: 4px;
+    }
+
+    .cc-spec-title {
+        font-size: 0.82rem;
+    }
+
+    .cc-spec-meta {
+        font-size: 0.72rem;
+        gap: 3px;
+    }
+
+    .cc-spec-cat-label {
+        font-size: 0.68rem;
+    }
+
+    .cc-spec-stat-badge {
+        font-size: 0.72rem;
+        padding: 1px 4px;
+    }
+
+    .cc-spec-controls {
+        gap: 2px;
+    }
+
+    .cc-spec-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 0.8rem;
+    }
+
+    .cc-spec-pip {
+        width: 6px;
         height: 10px;
+    }
+
+    .cc-spec-badge-row {
+        padding: 3px 5px;
+        font-size: 0.76rem;
+        gap: 4px;
+    }
+
+    .cc-spec-badge-delete {
+        width: 16px;
+        height: 16px;
+        font-size: 0.7rem;
+    }
+
+    /* 11. Bio Step (Demographics, Gender, Ideology, Morality) */
+    .cc-bio-container {
+        gap: 4px;
+        padding-right: 2px;
+    }
+
+    .cc-bio-section {
+        padding: 3px 0 5px 0;
+    }
+
+    .cc-bio-section-title {
+        font-size: 0.92rem;
+        margin-bottom: 3px;
+        gap: 4px;
+    }
+
+    .cc-bio-chips-row {
+        gap: 3px;
+    }
+
+    .cc-bio-chip {
+        padding: 3px 7px;
+        font-size: 0.8rem;
+    }
+
+    .cc-bio-select {
+        padding: 3px 6px;
+        font-size: 0.84rem;
+    }
+
+    .cc-bio-slider-row {
+        gap: 6px;
+    }
+
+    .cc-bio-slider-end {
+        font-size: 0.78rem;
+    }
+
+    .cc-bio-slider-readout {
+        font-size: 0.8rem;
+        margin-top: 2px;
+    }
+
+    /* 12. Companion / Pet Step */
+    .cc-pet-grid {
+        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+        gap: 5px;
+        padding: 3px;
+    }
+
+    .cc-pet-card {
+        padding: 5px 3px;
+    }
+
+    .cc-pet-avatar {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 3px;
+    }
+
+    .cc-pet-name {
+        font-size: 0.78rem;
+        margin-bottom: 1px;
+    }
+
+    .cc-pet-kind {
+        font-size: 0.65rem;
+    }
+
+    .cc-pet-trait-toggle {
+        font-size: 0.72rem;
+        padding: 3px 5px;
+    }
+
+    .cc-pet-portrait {
+        min-height: 80px;
+        padding: 6px;
+        margin-bottom: 6px;
+    }
+
+    .cc-pet-sidebar .cc-pet-portrait {
+        min-height: 64px;
+        margin-bottom: 4px;
+    }
+
+    .cc-pet-sidebar-name {
+        font-size: 0.95rem;
+    }
+
+    /* 13. Generic Option Cards, Archetype & Dropdown Lists */
+    .cc-select-grid {
+        gap: 6px;
+        margin-top: 4px;
+    }
+
+    .cc-select-grid.cc-two-col {
+        gap: 6px;
+    }
+
+    .cc-select-grid.cc-three-col {
+        gap: 5px;
+    }
+
+    .cc-card-option {
+        padding: 6px 8px;
+    }
+
+    .cc-option-title {
+        font-size: 1.05rem;
+        margin-bottom: 3px;
+    }
+
+    .cc-option-desc {
+        font-size: 0.84rem;
+        line-height: 1.25;
+    }
+
+    .cc-select-grid.cc-compact .cc-option-title {
+        font-size: 0.92rem;
+    }
+
+    .cc-select-grid.cc-compact.cc-three-col.cc-align-left .cc-option-title {
+        font-size: 0.85rem;
+    }
+
+    .cc-select-grid.cc-archetype-grid .cc-card-option {
+        padding: 5px 4px;
+        min-height: 48px;
+        gap: 1px;
+    }
+
+    .cc-archetype-card-meta {
+        font-size: 0.72rem;
+    }
+
+    .cc-select-grid.cc-dropdown-list {
+        max-height: 50vh;
+        gap: 2px;
+        padding: 3px;
+    }
+
+    .cc-select-grid.cc-dropdown-list .cc-card-option {
+        padding: 4px 6px;
+    }
+
+    /* 14. Sprites & Busts Gallery */
+    .cc-sprite-tab-bar {
+        max-height: 72px;
+        margin-bottom: 4px;
+        gap: 4px;
+    }
+
+    .cc-sprite-portrait {
+        min-height: 200px;
+        margin: 4px 0 8px;
+        gap: 4px;
+    }
+
+    .cc-sprite-portrait-bust {
+        width: 150px;
+        height: 160px;
+    }
+
+    .cc-sprite-portrait.no-bust {
+        width: 110px;
+        height: 110px;
+        min-height: 110px;
+    }
+
+    .cc-bust-preview {
+        height: 25%;
+        margin-bottom: 6px;
+    }
+
+    .cc-categories-list .cc-card-option {
+        padding: 6px 10px !important;
+        gap: 8px !important;
+    }
+
+    .cc-categories-list .cc-option-title {
+        font-size: 0.9rem;
+    }
+
+    .cc-categories-list .cc-element-badge {
+        font-size: 0.74rem;
+        padding: 1px 5px;
+    }
+
+    .cc-species-search {
+        padding: 4px 8px;
+        font-size: 0.88rem;
+        margin-bottom: 4px;
+    }
+
+    .cc-presets-board.cc-sprite-board {
+        gap: 6px;
+    }
+
+    .cc-presets-board.cc-sprite-board .cc-sprite-card.cc-wanted-card {
+        height: 60px;
+        padding: 2px;
+    }
+
+    /* 15. Scenario Mode (Dedicated Scenario Dossier Spread) */
+    .cc-scenario-dossier .cc-scenario-list {
+        flex: 0 0 24%;
+        width: 24%;
+    }
+
+    .cc-scenario-dossier .cc-scenario-brief {
+        flex: 1 1 42%;
+    }
+
+    .cc-scenario-dossier .cc-scenario-roster-col {
+        flex: 0 0 34%;
+        width: 34%;
+    }
+
+    .cc-page.cc-scenario-list,
+    .cc-page.cc-scenario-brief,
+    .cc-page.cc-scenario-roster-col {
+        padding: 8px 10px;
+        gap: 5px;
+    }
+
+    .cc-scenario-brief-head .cc-header-gothic {
+        font-size: 1.2rem;
+    }
+
+    .cc-scenario-brief-head .cc-money-badge {
+        font-size: 0.88rem;
+        padding: 2px 6px;
+    }
+
+    .cc-scenario-brief .cc-class-quote {
+        font-size: 0.82rem;
+        padding-bottom: 4px;
+    }
+
+    .cc-scenario-grid .cc-scenario-card .cc-option-title {
+        font-size: 0.92rem;
+    }
+
+    .cc-scenario-grid .cc-card-option.cc-scenario-card {
+        padding: 5px 8px;
+    }
+
+    .cc-scenario-back {
+        height: 30px;
+        font-size: 0.84rem;
+    }
+
+    .cc-scenario-sheet {
+        padding: 4px 6px;
+    }
+
+    .cc-scenario-sheet-head {
+        gap: 6px;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+    }
+
+    .cc-scenario-sheet-bust {
+        width: 28px;
+        height: 38px;
+    }
+
+    .cc-scenario-sheet-name {
+        font-size: 0.92rem;
+    }
+
+    .cc-scenario-sheet-class,
+    .cc-scenario-sheet-money {
+        font-size: 0.8rem;
+    }
+
+    .cc-scenario-stat-grid {
+        gap: 2px 4px;
+        margin-bottom: 4px;
+    }
+
+    .cc-scenario-stat {
+        font-size: 0.72rem;
+    }
+
+    .cc-scenario-stat b {
+        font-size: 0.84rem;
+    }
+
+    .cc-scenario-dossier .cc-dossier-label,
+    .cc-scenario-dossier .cc-dossier-value {
+        font-size: 0.84rem !important;
+    }
+
+    .cc-scenario-dossier .cc-loadout-section-title {
+        font-size: 0.88rem !important;
+    }
+
+    .cc-scenario-dossier .cc-loadout-section-count {
+        font-size: 0.78rem !important;
+    }
+
+    .cc-scenario-dossier .cc-loadout-empty {
+        font-size: 0.8rem !important;
+    }
+
+    /* 16. Creature Lab & 3D Anatomy Editor */
+    .cc3d-top {
+        padding: 3px 6px;
+        gap: 4px;
+    }
+
+    .cc3d-title {
+        font-size: 0.88rem;
+    }
+
+    .cc3d-chip {
+        font-size: 0.74rem;
+        padding: 2px 6px;
+    }
+
+    .cc3d-anat {
+        width: 175px;
+        min-width: 150px;
+    }
+
+    .cc3d-parts {
+        width: 240px;
+        min-width: 190px;
+    }
+
+    .cc3d-part {
+        padding: 2px 5px;
+        font-size: 0.78rem;
+        gap: 3px;
+    }
+
+    .cc-alchemical-chamber {
+        width: 130px;
+        height: 170px;
+        padding-bottom: 14px;
+    }
+
+    .cc-chamber-label {
+        font-size: 1.15rem;
+    }
+
+    .cc-incubator-frame {
+        width: 150px;
+        height: 150px;
+        margin: 10px auto;
+    }
+
+    .cc-anatomy-checklist {
+        gap: 4px;
+        margin-top: 6px;
+    }
+
+    .cc-anatomy-row {
+        padding: 4px 8px;
+        font-size: 0.84rem;
+    }
+
+    .cc-balance-pockets {
+        margin-top: 8px;
+        padding: 8px;
+    }
+
+    .cc-balance-line {
+        font-size: 0.85rem;
+        margin-bottom: 3px;
+        padding-bottom: 2px;
+    }
+
+    /* 17. Signature Bottom Buttons Panel & Navigation */
+    .cc-button-panel {
+        padding-top: 6px;
+        padding-bottom: 4px;
+        gap: 8px;
+    }
+
+    .cc-button-panel.cc-nav {
+        min-height: 44px;
+        gap: 6px;
+    }
+
+    .cc-nav-slot {
+        gap: 6px;
+    }
+
+    .cc-btn-treaty {
+        font-size: 1.15rem;
+        padding: 6px 16px;
+        border-radius: 4px;
+    }
+
+    .cc-nav-slot > .cc-btn-treaty {
+        min-width: min(110px, 100%);
+    }
+
+    .cc-modal {
+        padding: 12px 16px;
+        width: min(380px, 85%);
+    }
+
+    .cc-modal-title {
+        font-size: 1.05rem;
+        margin-bottom: 6px;
+    }
+
+    .cc-modal-body {
+        font-size: 0.84rem;
+        margin-bottom: 12px;
+    }
+
+    .cc-modal-actions .cc-sidebar-btn {
+        min-width: 90px;
+        height: 30px;
+        font-size: 0.8rem;
     }
 }
 

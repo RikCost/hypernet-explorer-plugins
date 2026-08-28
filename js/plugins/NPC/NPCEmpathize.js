@@ -5380,7 +5380,7 @@
     // NPC so the line appears live rather than only on the next visit.
     recordNPCLine(npcName, text, role = 'npc') {
       const name = String(npcName ?? '').trim();
-      const line = String(text ?? '').trim();
+      const line = vary(String(text ?? '').trim());
       if (!name || !line) return;
       const profile = _getProfile(name);
       if (profile) {
@@ -5417,7 +5417,7 @@
       // not being seen doing it, both read by the UI layer's action row.
       _diseaseVialId, _diseaseVialItems, _infectChance,
       // Social/romance maths, shared with the UI layer's romance submenu.
-      _socialLines, _rand, _addNpcOpinion, _npcEffectiveOpinion,
+      _socialLines, _rand, _vary: vary, vary, _addNpcOpinion, _npcEffectiveOpinion,
       // Which Socialize moves are entertainment, so the submenu can mark the
       // ones that feed Fun as well as opinion.
       FUN_ACTIONS,
