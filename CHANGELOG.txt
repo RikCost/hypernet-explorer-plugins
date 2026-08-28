@@ -1,4 +1,5 @@
 0.4.4a
+
 - steam deck resolution fixes
 - fixes for normal dialogue appearing wrong
 0.4.3a
