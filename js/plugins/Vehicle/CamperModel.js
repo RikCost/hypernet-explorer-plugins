@@ -129,6 +129,14 @@
             this.setEnv('road');
         }
 
+        hideBody() {
+            if (this._body) this._body.visible = false;
+            if (this._wheels) for (const w of this._wheels) w.visible = false;
+            if (this._rotors) for (const r of this._rotors) r.visible = false;
+            if (this._props) for (const p of this._props) p.visible = false;
+            if (this._cockpit) this._cockpit.visible = false;
+        }
+
         // ---- helpers ----------------------------------------------------------
         _mat(hex, opts) {
             const m = new THREE.MeshLambertMaterial(Object.assign({ color: hex }, opts || {}));

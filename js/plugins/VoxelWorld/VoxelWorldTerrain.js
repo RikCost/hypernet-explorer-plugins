@@ -258,7 +258,8 @@
         _seaWithin(cwx, cwy, r) {
             for (let dy = -r; dy <= r; dy++) {
                 for (let dx = -r; dx <= r; dx++) {
-                    if (profileFor(sampleBiomeAt(cwx + dx, cwy + dy).name).water) return true;
+                    const biome = sampleBiomeAt(cwx + dx, cwy + dy);
+                    if (biome && profileFor(biome.name).water) return true;
                 }
             }
             return false;
@@ -279,7 +280,7 @@
         // ---------------------------------------------------------------------
         // Streaming
         // ---------------------------------------------------------------------
-        update(camperX, camperZ, buildAll = false) {
+        update(camperX, camperZ, buildAll = false, dirX = 0, dirZ = 0) {
             const cwx = Math.floor(camperX / this._ts);
             const cwy = Math.floor(camperZ / this._ts);
 
@@ -296,30 +297,44 @@
             this._lastRadius = this._radius;
             this.seaNear = this._seaWithin(cwx, cwy, 3);
 
+            const hasDir = dirX !== 0 || dirZ !== 0;
+            const dirLen = hasDir ? Math.hypot(dirX, dirZ) : 0;
+            const ndx = dirLen > 0.001 ? dirX / dirLen : 0;
+            const ndy = dirLen > 0.001 ? dirZ / dirLen : 0;
+
             const needed = [];
             for (let dx = -this._radius; dx <= this._radius; dx++) {
                 for (let dy = -this._radius; dy <= this._radius; dy++) {
                     const wx = cwx + dx, wy = cwy + dy;
-                    if (wx < 0 || wx >= WORLD_TILES_ACROSS || wy < 0 || wy >= WORLD_TILES_ACROSS) continue;
                     const key  = wx + ',' + wy;
                     const step = this._stepFor(Math.max(Math.abs(dx), Math.abs(dy)));
                     const have = this._chunks.get(key);
                     if (have && have.step === step) continue;
-                    needed.push({ wx, wy, key, step, dist: dx * dx + dy * dy, rebuild: !!have });
+                    const distSq = dx * dx + dy * dy;
+                    let prio = Math.sqrt(distSq);
+                    if (hasDir) {
+                        const forwardDot = dx * ndx + dy * ndy;
+                        prio -= forwardDot * 1.6;
+                    }
+                    needed.push({ wx, wy, key, step, dist: distSq, prio, rebuild: !!have });
                 }
             }
-            needed.sort((a, b) => a.dist - b.dist);
+            needed.sort((a, b) => (hasDir ? (a.prio - b.prio) : (a.dist - b.dist)));
 
-            // The budget is in patches, not tiles: a full-detail tile is sixteen
-            // twenty-five column patches and a far one is a fraction of one, so
-            // spending them at the same rate would hitch every time the camper
-            // crossed into a new square. One build always goes through, or a
-            // fast enough drive would outrun its own ground.
+            // The budget is in patches and execution time: a full-detail tile is sixteen
+            // twenty-five column patches and a far one is a fraction of one.
+            // Using a strict millisecond budget alongside patch credits guarantees smooth 60 FPS.
+            const isDriving = hasDir && dirLen > 0.5;
             const credits = buildAll ? Infinity
-                : Math.max(1, (this._lodMode ? 12 : this._buildBudget)) * 4;
+                : Math.max(1, (this._lodMode ? 12 : this._buildBudget)) * (isDriving ? 6 : 4);
+            const maxMs = buildAll ? Infinity : (this._lodMode ? 7.0 : (isDriving ? 6.5 : 5.0));
+            const tStart = (typeof performance !== 'undefined') ? performance.now() : Date.now();
             let spent = 0, built = 0;
             for (const job of needed) {
-                if (built > 0 && spent >= credits) break;
+                if (built > 0) {
+                    const now = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+                    if (now - tStart >= maxMs || spent >= credits) break;
+                }
                 spent += this._chunkCost(job.step);
                 built++;
                 if (job.rebuild) this._disposeChunk(job.key);

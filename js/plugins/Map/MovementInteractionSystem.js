@@ -1696,32 +1696,10 @@
     return _Game_Player_checkEventTriggerThere.call(this, triggers);
   };
 
-  // ---- What the leader can still walk on ---------------------------------
-  // A party walks at the pace of whoever is in front, and a character who has
-  // lost a leg does not walk at the same pace as one who has not. HealthCore
-  // answers in the anatomy's own terms, so a six-legged thing down one leg is
-  // barely slowed and a biped down one is halved, and a fitted prosthetic
-  // counts as a working leg.
-  //
-  // Floored well above zero: being maimed is meant to be a long limp home, not
-  // a character who can no longer leave the tile they are standing on.
-  const MIN_MOBILITY_SPEED = 0.55;
-
-  function leaderMobility() {
-    const HC = window.HealthCore;
-    if (!HC || typeof HC.mobility !== 'function') return 1;
-    try {
-      const leader = $gameParty && $gameParty.leader && $gameParty.leader();
-      if (!leader) return 1;
-      return MIN_MOBILITY_SPEED + (1 - MIN_MOBILITY_SPEED) * HC.mobility(leader);
-    } catch (e) { return 1; }
-  }
-
   const _Game_Player_realMoveSpeed = Game_Player.prototype.realMoveSpeed;
   Game_Player.prototype.realMoveSpeed = function () {
     let speed = _Game_Player_realMoveSpeed.call(this);
     if (this._isClimbing) speed *= Config.climbSpeed;
-    speed *= leaderMobility();
     return speed;
   };
 

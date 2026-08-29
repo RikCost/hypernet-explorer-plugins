@@ -292,45 +292,57 @@
         },
 
         render(renderer, scene, camera) {
-            if (!this.enabled || this.downscale >= 0.999 || typeof THREE === 'undefined') {
-                renderer.render(scene, camera);
+            if (!renderer || typeof THREE === 'undefined') return;
+            const gl = renderer.getContext ? renderer.getContext() : null;
+            if (!gl || (gl.isContextLost && gl.isContextLost())) return;
+
+            if (!this.enabled || this.downscale >= 0.999) {
+                try {
+                    renderer.render(scene, camera);
+                } catch (e) {
+                    console.warn("PSXShader: render failed", e);
+                }
                 return;
             }
 
-            const fullW = renderer.domElement.width;
-            const fullH = renderer.domElement.height;
-            const lowW = Math.max(1, Math.floor(fullW * this.downscale));
-            const lowH = Math.max(1, Math.floor(fullH * this.downscale));
+            try {
+                const fullW = (renderer.domElement && renderer.domElement.width) || 1;
+                const fullH = (renderer.domElement && renderer.domElement.height) || 1;
+                const lowW = Math.max(1, Math.floor(fullW * this.downscale));
+                const lowH = Math.max(1, Math.floor(fullH * this.downscale));
 
-            const ctx = this._ctx(renderer);
-            let rt = ctx.target;
-            if (!rt || rt.width !== lowW || rt.height !== lowH) {
-                if (rt) rt.dispose();
-                rt = new THREE.WebGLRenderTarget(lowW, lowH, {
-                    minFilter: THREE.NearestFilter,
-                    magFilter: THREE.NearestFilter,
-                    format: THREE.RGBAFormat,
-                    depthBuffer: true,
-                    stencilBuffer: false
-                });
-                ctx.target = rt;
-                ctx.quadMat.map = rt.texture;
-                ctx.quadMat.needsUpdate = true;
+                const ctx = this._ctx(renderer);
+                let rt = ctx.target;
+                if (!rt || rt.width !== lowW || rt.height !== lowH) {
+                    if (rt) rt.dispose();
+                    rt = new THREE.WebGLRenderTarget(lowW, lowH, {
+                        minFilter: THREE.NearestFilter,
+                        magFilter: THREE.NearestFilter,
+                        format: THREE.RGBAFormat,
+                        depthBuffer: true,
+                        stencilBuffer: false
+                    });
+                    ctx.target = rt;
+                    ctx.quadMat.map = rt.texture;
+                    ctx.quadMat.needsUpdate = true;
+                }
+
+                const prevTarget = renderer.getRenderTarget();
+
+                // Pass 1: render the scene into the low-res target.
+                renderer.setRenderTarget(rt);
+                renderer.clear();
+                renderer.render(scene, camera);
+
+                // Pass 2: blit the low-res target onto the canvas, upscaled with
+                // nearest filtering. NoBlending copies RGBA verbatim so the canvas
+                // ends up identical to a direct render, just pixelated (no alpha
+                // fringing for the transparent weapon overlay).
+                renderer.setRenderTarget(prevTarget);
+                renderer.render(ctx.quadScene, ctx.quadCam);
+            } catch (e) {
+                console.warn("PSXShader: render failed", e);
             }
-
-            const prevTarget = renderer.getRenderTarget();
-
-            // Pass 1: render the scene into the low-res target.
-            renderer.setRenderTarget(rt);
-            renderer.clear();
-            renderer.render(scene, camera);
-
-            // Pass 2: blit the low-res target onto the canvas, upscaled with
-            // nearest filtering. NoBlending copies RGBA verbatim so the canvas
-            // ends up identical to a direct render, just pixelated (no alpha
-            // fringing for the transparent weapon overlay).
-            renderer.setRenderTarget(prevTarget);
-            renderer.render(ctx.quadScene, ctx.quadCam);
         }
     };
 

@@ -3134,7 +3134,18 @@
     const width = Math.max(1, Math.round(rect.width) || 800);
     const height = Math.max(1, Math.round(rect.height) || 500);
 
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    } catch (e) {
+      return;
+    }
+    if (!renderer || !renderer.getContext || !renderer.getContext()) {
+      if (renderer && renderer.dispose) {
+        try { renderer.dispose(); } catch (e) {}
+      }
+      return;
+    }
     renderer.setSize(width, height, false);
     renderer.setPixelRatio(1);
 
@@ -3626,8 +3637,13 @@
       this._thumbRenderer = new THREE.WebGLRenderer({
         canvas: this._thumbCanvas, alpha: true, antialias: true, preserveDrawingBuffer: true
       });
-      this._thumbRenderer.setSize(THUMB_SIZE, THUMB_SIZE, false);
-      this._thumbRenderer.setPixelRatio(1);
+      if (this._thumbRenderer && (!this._thumbRenderer.getContext || !this._thumbRenderer.getContext())) {
+        try { this._thumbRenderer.dispose(); } catch (e) {}
+        this._thumbRenderer = null;
+      } else if (this._thumbRenderer) {
+        this._thumbRenderer.setSize(THUMB_SIZE, THUMB_SIZE, false);
+        this._thumbRenderer.setPixelRatio(1);
+      }
     } catch (e) {
       // No context to spare: the shelf still reads as names.
       this._thumbRenderer = null;

@@ -983,6 +983,8 @@
     // Mode-aware affordability used by every UI/placement path: gold in purchase
     // mode, materials in construct mode.
     function canObtainFurniture(furniture) {
+        if (!furniture) return false;
+        if (furniture.__placeKind === 'animal') return canPurchaseFurniture(furniture);
         return currentBuildMode() === 'purchase'
             ? canPurchaseFurniture(furniture)
             : canAffordFurniture(furniture);
@@ -3063,7 +3065,12 @@
             const mode = this.scene._fbBuildMode === 'purchase' ? 'purchase' : 'construct';
             const purchasing = mode === 'purchase';
             const topTab = this.topTab || 'buildables';
-            const affordFn = purchasing ? canPurchaseFurniture : canAffordFurniture;
+            const affordFn = (item) => {
+                if (free) return true;
+                if (!item) return false;
+                if (item.__placeKind === 'animal') return canPurchaseFurniture(item);
+                return purchasing ? canPurchaseFurniture(item) : canAffordFurniture(item);
+            };
 
             // The Animals tab is not carpentry: it sells livestock, and that is
             // a different skill. The badge follows the open tab.
@@ -3269,19 +3276,11 @@
                 cardsHTML = `<div class="fbuild-empty">${emptyMsg}</div>`;
             } else {
                 cardsHTML = items.map(item => {
-                    // Wall/Terrain/Feature always cost materials, regardless of
-                    // the Construct/Purchase toggle. Houses (and ordinary
-                    // furniture) carry both a material and a gold cost and
-                    // follow the toggle normally.
-                    const isMaterialOnly = item.category === 'Wall' || item.category === 'Terrain' || item.category === 'Feature'; // i18n-ignore: category ids
-                    // Livestock is bought, never built: always priced in money.
                     const isMoneyOnly = item.__placeKind === 'animal';
-                    const effectivePurchasing = isMaterialOnly ? false : (isMoneyOnly ? true : purchasing);
+                    const effectivePurchasing = purchasing || isMoneyOnly;
                     const imgSrc = furnitureImageSrc(item.__imageId || item.id);
                     const cost = getFurnitureCost(item);
-                    const affordable = isMaterialOnly ? (free || canAffordFurniture(item))
-                        : isMoneyOnly ? (free || canPurchaseFurniture(item))
-                        : affordFn(item);
+                    const affordable = affordFn(item);
                     let costHTML = '';
                     if (free) {
                         costHTML = `<span class="fbuild-cost ok">${T('Furniture.freeBuild')}</span>`;
@@ -3377,8 +3376,7 @@
                 const countLabel = (t.key === 'buildables' || n == null) ? '' : ` (${n})`;
                 return `<button class="fbuild-toptab-opt ${topTab === t.key ? 'active' : ''}" data-tab="${t.key}" type="button">${T(t.nameKey)}${countLabel}</button>`;
             }).join('');
-            const materialsLabel = (topTab === 'walls' || topTab === 'terrain' || topTab === 'features' || !purchasing)
-                ? T('Furniture.materials') : T('Furniture.materialsUnused');
+            const materialsLabel = T('Furniture.materials');
             this.container.innerHTML = `
                 <div class="fbuild-header">
                     <button class="fbuild-clear-all ${this._confirmClearArmed ? 'armed' : ''}"
@@ -3402,8 +3400,10 @@
                     <span class="fbuild-gold" title="${T('Furniture.tip.money')}">${iconHTML(UI_ICONS.money, 16)} ${formatEuros(goldAmount)}</span>
                 </div>
                 <div class="fbuild-toptabs" role="tablist">${tabsHTML}</div>
+                ${!purchasing ? `
                 <div class="fbuild-section-label">${materialsLabel}</div>
                 <div class="fbuild-materials">${materialsHTML}</div>
+                ` : ''}
                 ${catBarHTML}
                 <div class="fbuild-body">
                     <div class="fbuild-right">
@@ -3997,11 +3997,6 @@
         const info = resolvePlaceable(this._fbArmedId);
         if (!info) return false;
         if (isFreeBuild()) return true;
-        if (info.__placeKind === 'wall' || info.__placeKind === 'terrain' || info.__placeKind === 'feature') {
-            return canAffordFurniture(info);
-        }
-        // Livestock is always bought with money, whichever mode is active.
-        if (info.__placeKind === 'animal') return canPurchaseFurniture(info);
         return canObtainFurniture(info);
     };
 
@@ -4057,7 +4052,7 @@
     };
 
     // Places a wall/terrain autotile or a tileset feature at (x,y): pays its
-    // material cost, writes the tile straight into the map data, then (for
+    // material cost or purchase price, writes the tile straight into the map data, then (for
     // autotiles) blends it and its neighbours to the correct connected shape.
     Scene_Map.prototype.placeArmedTile = function (x, y, info) {
         if (!canPlaceTileAt(x, y, info.__placeKind)) { SoundManager.playBuzzer(); return; }
@@ -4068,13 +4063,8 @@
             !($gameMap && $gameMap.isValid(x, y + 1))) {
             SoundManager.playBuzzer(); return;
         }
-        const cost = info.__specialCost || {};
-        if (!isFreeBuild()) {
-            for (const [matId, qty] of Object.entries(cost)) {
-                if (!$gameSystem.hasMaterial(matId, qty)) { SoundManager.playBuzzer(); return; }
-            }
-            for (const [matId, qty] of Object.entries(cost)) $gameSystem.removeMaterial(matId, qty);
-        }
+        if (!canObtainFurniture(info)) { SoundManager.playBuzzer(); return; }
+        payForFurniture(info);
         chargeIllegalBuild(info);
         const mapKey = furnitureMapKey();
         // Wall <-> Terrain override: replace whatever Wall/Terrain tile was
@@ -4090,7 +4080,7 @@
         const baseTileId = isTileFeature ? info.__tileId : Tilemap.makeAutotileId(info.__autoKind, 0);
         const rec = $gameSystem.placeMapTile(mapKey, {
             kind: info.__placeKind, x, y, tileId: baseTileId,
-            layer: PLACED_TILE_LAYER, autoKind: info.__autoKind, name: info.name, cost
+            layer: PLACED_TILE_LAYER, autoKind: info.__autoKind, name: info.name, cost: getFurnitureCost(info)
         });
         writeMapDataTile(x, y, PLACED_TILE_LAYER, baseTileId);
         if (isTileFeature) {
@@ -4101,6 +4091,9 @@
         }
         this._fbPlaceCacheKey = null;
         fbPlayBuildSound(() => SoundManager.playOk());
+        if (!canObtainFurniture(info)) {
+            this.disarmFurniture();
+        }
         if (this._fbUI) this._fbUI.refresh();
     };
 

@@ -2301,6 +2301,7 @@
     };
 
     Scene_Map.prototype.spawnEnemiesFromEncounters = function() {
+        if (!$dataMap) return;
         const reDealt = BSE.Helpers.syncProcGenEnemyCache();
         // Same square, same fauna, and the events on it are the live ones: this
         // is the party coming back from a fled fight or out of a menu, so where
@@ -4857,7 +4858,8 @@
     Game_Map.prototype.encounterList = function () {
         const st = alienSurfaceState();
         if (st) return st.hasLife ? alienSpeciesEncounterList() : [];
-        return _BSE_Game_Map_encounterList.call(this);
+        if (!$dataMap) return [];
+        return _BSE_Game_Map_encounterList ? _BSE_Game_Map_encounterList.call(this) : ($dataMap ? $dataMap.encounterList : []);
     };
 
     // On battle setup, tag every enemy of a species troop with its procedural
@@ -5304,6 +5306,7 @@
     // any more than they are left to talk to.
     const _BSE_spawnEnemiesFromEncounters = Scene_Map.prototype.spawnEnemiesFromEncounters;
     Scene_Map.prototype.spawnEnemiesFromEncounters = function () {
+        if (!$dataMap) return;
         const st = alienSurfaceState();
         const WM = window.WorldManager;
         const deathWorld = !!(WM && typeof WM.isDeathWorld === "function" && WM.isDeathWorld());

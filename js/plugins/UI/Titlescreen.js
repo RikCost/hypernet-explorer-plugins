@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Titlescreen.js
 //=============================================================================
 
@@ -892,10 +892,10 @@
         (window.WorkSystem && window.WorkSystem.destinationName)
             ? window.WorkSystem.destinationName(key) : key;
 
-    // Only the ones there is actually a body to show for; walking always is.
+    // Only the ones there is actually a vehicle for; walking always is.
     function liminalVehicles() {
         const VM = window.VehicleModels;
-        return LIMINAL_VEHICLES.filter(v => !v.key || (VM && VM.has(v.key)));
+        return LIMINAL_VEHICLES.filter(v => !v.key || (VM && VM.has(v.key)) || v.key === 'broom');
     }
 
     function timeModeId(name, fallback) {

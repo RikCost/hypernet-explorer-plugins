@@ -909,7 +909,7 @@
 
   const CharacterCreationData = [
     {
-      // Initial Settings (options) - now shown FIRST, before difficulty.
+      // Initial Settings (options) - shown FIRST (includes difficulty, language, etc.).
       // Shown only once on the very first character creation.
       id: "settings",
       showOnlyOnce: true,
@@ -923,34 +923,18 @@
       handler: function () {
         ConfigManager.save();
         markStepCompleted(STEP.SETTINGS);
+        if (typeof STEP.DIFFICULTY !== 'undefined' && STEP.DIFFICULTY != null) {
+          markStepCompleted(STEP.DIFFICULTY);
+        }
+        if ($gameSystem && $gameSystem._difficultyMode) {
+          const mode = $gameSystem._difficultyMode;
+          $gameSwitches.setValue(9, mode === "permadeath" || mode === "blood_and_oil");
+          $gameSystem._bloodAndOilMode = (mode === "blood_and_oil");
+          $gameSystem._peacefulMode = (mode === "peaceful");
+          $gameSwitches.setValue(33, true);
+        }
         // Finalization (markFirstCreationComplete) now happens at the end of
         // creation (origin step) instead of here, since settings is shown first.
-        this.nextStep();
-      },
-    },
-    {
-      // Difficulty - Show only once
-      id: "difficulty",
-      get title() {
-        return T('CharCreate.selectDifficulty');
-      },
-      showOnlyOnce: true,
-      get choices() {
-        // Ordered from the harshest ruleset down to the gentlest, so Peaceful
-        // sits at the bottom of the list rather than leading it.
-        return [
-          getLocalizedChoice(T('CharCreate.choice.roguelite.name'), "roguelite", T('CharCreate.choice.roguelite.desc')),
-          getLocalizedChoice(T('CharCreate.choice.permadeath.name'), "permadeath", T('CharCreate.choice.permadeath.desc')),
-          getLocalizedChoice(T('CharCreate.choice.bloodAndOil.name'), "blood_and_oil", T('CharCreate.choice.bloodAndOil.desc')),
-          getLocalizedChoice(T('CharCreate.choice.peaceful.name'), "peaceful", T('CharCreate.choice.peaceful.desc')),
-        ];
-      },
-      handler: function (symbol) {
-        $gameSwitches.setValue(9, symbol === "permadeath" || symbol === "blood_and_oil");
-        $gameSystem._bloodAndOilMode = (symbol === "blood_and_oil");
-        $gameSystem._peacefulMode = (symbol === "peaceful");
-        $gameSwitches.setValue(33, true);
-        markStepCompleted(STEP.DIFFICULTY); // Mark this step as completed
         this.nextStep();
       },
     },
@@ -2101,7 +2085,7 @@
 
       if (isTutorial) {
         if (step === STEP.SETTINGS) return true;             // settings skipped
-        if (step === STEP.DIFFICULTY) return true;           // difficulty auto-applied
+        if (STEP.DIFFICULTY != null && step === STEP.DIFFICULTY) return true; // difficulty auto-applied
         if (step === STEP.COMBAT_MODE) return true;          // combat mode default (RPG)
         if (step === STEP.TRAITS) return true;               // traits skipped
         if (step === STEP.PERSONALITY) return true;          // personality left as rolled
@@ -2131,7 +2115,7 @@
       // getStartingStep) skip them. This keeps Back at the character-type step a
       // no-op for later members instead of dropping them into settings/mode.
       if (memberIndex >= 1 &&
-          (step === STEP.SETTINGS || step === STEP.DIFFICULTY || step === STEP.COMBAT_MODE ||
+          (step === STEP.SETTINGS || (STEP.DIFFICULTY != null && step === STEP.DIFFICULTY) || step === STEP.COMBAT_MODE ||
            step === STEP.CREATION_MODE || step === STEP.HOMETOWN)) {
         return true;
       }
@@ -2209,6 +2193,45 @@
         }
       }
       return "Random";
+    }
+
+    // Assigns a random sprite and its associated bust to an actor.
+    static assignRandomSpriteAndBust(actor) {
+      if (!actor) return null;
+      if (window.selectRandomSpriteForActor) {
+        const res = window.selectRandomSpriteForActor(actor.actorId());
+        if (res) return res;
+      }
+      const npcData = window.WorldGen && window.WorldGen.NPCs;
+      if (!npcData) return null;
+      let charName = window.SpriteCatalog
+        ? window.SpriteCatalog.pickNpcKey(Math.random())
+        : null;
+      if (!charName) {
+        const keys = Object.keys(npcData).filter((k) => npcData[k] && npcData[k].npc === true && npcData[k].vip !== true);
+        if (keys.length === 0) return null;
+        charName = keys[Math.floor(Math.random() * keys.length)];
+      }
+      const entry = npcData[charName] || {};
+      const maxIndex = charName.includes("$") ? 0 : 7;
+      const charIndex = Math.floor(Math.random() * (maxIndex + 1));
+
+      actor.setCharacterImage(charName, charIndex);
+
+      let bust = (entry.busts && (entry.busts[charIndex] ?? entry.busts[0])) || null;
+      if (!bust && window.Sprites && window.Sprites.SpritesAssociation && window.Sprites.SpritesAssociation[charName]) {
+        const assoc = window.Sprites.SpritesAssociation[charName];
+        bust = assoc[charIndex] ?? assoc[0];
+      }
+      if (bust) {
+        actor.setVnBust(bust);
+        if (actor.setPortraitMode) actor.setPortraitMode("bust");
+      }
+      const leader = $gameParty && $gameParty.leader();
+      if (leader && actor.actorId() === leader.actorId()) {
+        if ($gamePlayer) $gamePlayer.refresh();
+      }
+      return { name: charName, index: charIndex, bust: bust };
     }
 
     // Applied from the 3D Political Graph's onSelect callback, which fires
@@ -2341,6 +2364,7 @@
       // ask for it and only the first one pays.
       warmCreationAssets();
       this._seedDefaultMemberNames();
+      this._seedDefaultFirstMemberSpriteAndBust();
       this.createTitleWindow();
       this.createGridWindow();
       // The tutorial never builds a character step by step: it opens straight
@@ -2377,6 +2401,17 @@
         actor.setName(Scene_CharacterCreation.generateRandomMarkovName(idx));
         actor._ccNameSeeded = true;
       });
+    }
+
+    // Always assign a random sprite and associated bust to the first party member
+    // when creating character, so the protagonist starts with a valid sprite and matching bust.
+    _seedDefaultFirstMemberSpriteAndBust() {
+      const p1 = $gameActors.actor(1);
+      if (!p1 || p1._isPresetActor) return;
+      if (!p1.characterName() || !p1.vnBust() || !p1._ccSpriteSeeded) {
+        Scene_CharacterCreation.assignRandomSpriteAndBust(p1);
+        p1._ccSpriteSeeded = true;
+      }
     }
 
     // Applies the defaults the tutorial's SETTINGS/DIFFICULTY/COMBAT_MODE
@@ -3800,7 +3835,7 @@
         }
 
         // Difficulty: always apply roguelite silently.
-        if (this._step === STEP.DIFFICULTY) {
+        if (STEP.DIFFICULTY != null && this._step === STEP.DIFFICULTY) {
           $gameSwitches.setValue(9, false);
           $gameSystem._bloodAndOilMode = false;
           $gameSwitches.setValue(33, true);
@@ -4644,7 +4679,15 @@
       try {
         renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
       } catch (e) {
+        if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
         return; // no context to be had; the fallback icon/label stays up
+      }
+      if (!renderer || !renderer.getContext || !renderer.getContext()) {
+        if (renderer && renderer.dispose) {
+          try { renderer.dispose(); } catch (e) {}
+        }
+        if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+        return;
       }
       renderer.setSize(width, height, false);
       renderer.setPixelRatio(1);
@@ -5045,6 +5088,10 @@
     const actor = Scene_CharacterCreation.getCurrentActor();
     if (actor) {
       actor.changeClass(1, false);
+      if (!actor._isPresetActor) {
+        Scene_CharacterCreation.assignRandomSpriteAndBust(actor);
+        actor._ccSpriteSeeded = true;
+      }
     }
 
     SceneManager.push(Scene_CharacterCreation);

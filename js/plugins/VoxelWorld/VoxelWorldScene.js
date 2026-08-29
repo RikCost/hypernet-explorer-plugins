@@ -31,7 +31,7 @@
         BOOST_ACCEL_MULT, BOOST_FUEL_MULT, BOOST_RELEASE_DECAY, BRAKE_DECEL,
         BiomeEnemyManager, BuildingInteriors, CAMPER_BOUNDS, CAVE_SKY, CRITICAL_PARTS,
         VOXEL_STEP_MATERIAL, MATERIALS,
-        CRUISE_KMH, CamperHUD, CamperWeapon, CharacterBillboard, CityCrowd,
+        CRUISE_KMH, CamperHUD, CamperWeapon, CharacterBillboard, VehicleBillboard, CityCrowd,
         DOOR_AUTO_OPEN_RANGE, DRAG_K, DRIVER_SEAT, ENEMY_3D_CONTACT_R,
         ENGINE_ACCEL, EngineAudio, FOG_CAVE, FOG_DAY, FOG_FREE, FOG_UNDERWATER, FOOT_EYE,
         VEHICLE_STEP_UP,
@@ -209,12 +209,6 @@
                 const st = el.style;
                 if (st.display === 'none' || st.visibility === 'hidden' || st.opacity === '0') continue;
                 if (st.pointerEvents === 'none') continue;
-                if (typeof window !== 'undefined' && window.getComputedStyle) {
-                    try {
-                        const cs = window.getComputedStyle(el);
-                        if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0' || cs.pointerEvents === 'none') continue;
-                    } catch (e) {}
-                }
                 if (el.offsetWidth > 0 || el.offsetHeight > 0) { open = true; break; }
             }
             this.open = open;
@@ -361,7 +355,7 @@
     // How big the sun disc is drawn, in world units before the world scale. This
     // is Earth's own sun; _applyStarLight scales it by the apparent size of
     // whatever star a walk on another world is under.
-    const SUN_DISC = 420;
+    const SUN_DISC = 1600;
 
     // Which way somebody crossing from (x0,z0) to (x1,z1) was heading, as the
     // door list names it. The bigger of the two steps decides: a town is
@@ -2009,9 +2003,10 @@
             // Soft additive sun disc that arcs with the time of day.
             const sunMat = new THREE.SpriteMaterial({
                 map: this._makeGlowTexture('#fff3c0'),
-                transparent: true, depthWrite: false, depthTest: false,
+                transparent: true, depthWrite: false, depthTest: true,
                 blending: THREE.AdditiveBlending
             });
+            sunMat.fog = false;
             this._sunSprite = new THREE.Sprite(sunMat);
             this._sunSprite.scale.set(SUN_DISC * WORLD_SCALE, SUN_DISC * WORLD_SCALE, 1);
             this._scene.add(this._sunSprite);
@@ -2271,7 +2266,9 @@
                     // where the WALKER is, not by where the camper is parked.
                     if (!this._footOnly) this._env = this._footEnv();
                 } else {
-                    this._terrain.update(this._vanX, this._vanZ);
+                    const fwdX = Math.sin(this._driveAngle) * Math.max(1, this._speedKmh || 0);
+                    const fwdZ = Math.cos(this._driveAngle) * Math.max(1, this._speedKmh || 0);
+                    this._terrain.update(this._vanX, this._vanZ, false, fwdX, fwdZ);
                     if (this._tool) {
                         this._tool.setActive(false);
                         if (this._hud && this._hud.setDigReadout) this._hud.setDigReadout('', '', 0);
@@ -2297,6 +2294,19 @@
             }
             if (this._drivenModel && this._drivenModel.update) {
                 this._drivenModel.update(this._fxTime || 0);
+            }
+            if (this._driven2d) {
+                const fpdrive = this._viewMode === 'fpdrive';
+                this._driven2d.setVisible(!fpdrive);
+                if (!fpdrive) {
+                    this._driven2d.yaw = this._driveAngle;
+                    this._driven2d.setPosition(this._vanX, this._vanY, this._vanZ);
+                    const camYaw = this._cameraYaw();
+                    const camPos = this._camera.position;
+                    this._driven2d.setDaylight(this._dayFactor == null ? 1 : this._dayFactor);
+                    this._driven2d.update(camPos.x, camPos.z, camYaw);
+                    this._driven2d.faceCamera(camPos.x, camPos.z, camYaw);
+                }
             }
 
             // Whatever just moved the party - the walk, the swim, the flight or
@@ -2370,11 +2380,11 @@
             this._traffic.update(this._vanX, this._vanZ, delta,
                 this._dayFactor == null ? 1 : this._dayFactor, this._cameraYaw());
             if (this._parked) {
-                // The camper is under the party while they are driving it, and
+                // The vehicle being driven is under the party, and
                 // parked wherever they left it the moment they are not.
-                this._parked.setDriving(this._footOnly ? null : 'camper');
+                this._parked.setDriving(this._footOnly ? null : (this._vehicleId || 'camper'));
                 const p = this._contactPoint();
-                this._parked.update(delta, p.x, p.z);
+                this._parked.update(delta, p.x, p.z, this._cameraYaw());
             }
             // On foot the wildlife lives around the WALKER, not around the
             // parked camper: what spawns, what despawns and how big a name plate
@@ -2412,7 +2422,7 @@
                     const f = this._fpc;
                     const onFoot = this._viewMode === 'foot' &&
                         !(f && (f.swimming || f.flying));
-                    this._followers.refresh();
+                    this._followers.refresh(this._footOnly ? null : this._vehicleId);
                     // Aboard: they are IN the thing rather than behind it. The
                     // party used to vanish the moment the camper moved off.
                     const riding = !onFoot && !this._footOnly &&
@@ -2425,8 +2435,9 @@
                     }
                 }
             }
+            const at = this._contactPoint();
             this._underwaterFx.setActive(this._env === 'underwater');
-            this._underwaterFx.update(this._vanX, this._vanY, this._vanZ, delta);
+            this._underwaterFx.update(at.x, at.y != null ? at.y : this._vanY, at.z, delta);
             if (this._engine) {
                 const engineOn = this._isFastTravelActive() || this._viewMode === 'car' ||
                     this._viewMode === 'fpdrive' || this._env !== 'road';
@@ -2725,7 +2736,7 @@
             const cave         = !!this._underground;
 
             // Sun arcs across the sky (rises ~6h east, sets ~18h west). The sprite
-            // and the shadow-casting light share the same position.
+            // and the shadow-casting light share the same direction.
             const dayT = Math.max(0, Math.min(1, (hour - 6) / 12));
             const az   = Math.PI * (1 - dayT);
             const sx   = this._vanX + Math.cos(az) * 520;
@@ -2738,13 +2749,15 @@
             this._sun.target.position.set(this._vanX, this._vanY, this._vanZ);
             this._sun.target.updateMatrixWorld();
             if (this._sunSprite) {
-                // The sun disc, by contrast, is pushed out to WORLD_SCALE distance so
-                // it reads as a far sun over the enlarged world rather than a lamp a
-                // few metres off the bumper.
+                // The sun disc is pushed out to celestial distance so it sits
+                // behind mountains, trees, structures and terrain. With depthTest: true,
+                // mountain geometry cleanly occludes the sun.
+                const sunDist = 2000 * WORLD_SCALE;
+                const sunElevation = (120 + Math.sin(dayT * Math.PI) * 520) * (sunDist / 520);
                 this._sunSprite.position.set(
-                    this._vanX + Math.cos(az) * 520 * WORLD_SCALE,
-                    (120 + Math.sin(dayT * Math.PI) * 520) * WORLD_SCALE,
-                    this._vanZ + Math.sin(az) * 260 * WORLD_SCALE
+                    this._vanX + Math.cos(az) * sunDist,
+                    sunElevation,
+                    this._vanZ + Math.sin(az) * (sunDist * 0.5)
                 );
                 this._sunSprite.material.opacity = (0.2 + df * 0.8) * (underwater || cave ? 0 : 1);
             }
@@ -3497,6 +3510,7 @@
         //   solid at any speed, the way it is on foot.
         _checkPropCollision(delta) {
             if (!this._terrain || !this._terrain.propsAt) return;
+            if (this._flying || this._env === 'air' || this._isFastTravelActive()) return;
             const ts = WORLD_TILE_SIZE;
             const tx = Math.floor(this._vanX / ts), tz = Math.floor(this._vanZ / ts);
             const kmh = Math.abs(this._speedKmh || 0);
@@ -3508,6 +3522,7 @@
                     for (let k = list.length - 1; k >= 0; k--) {
                         const p = list[k];
                         if (p.kind === 'rock') continue;      // ridden over
+                        if (this._flying || this._env === 'air' || this._airborne || (p.y != null && this._vanY > p.y + 22)) continue;
                         const R  = p.r + FOOT_VAN_HALF_LEN * 0.7;
                         const dx = this._vanX - (ch.px + p.x);
                         const dz = this._vanZ - (ch.pz + p.z);
@@ -3541,6 +3556,7 @@
         // A tree taken down by a bumper: gone from the world, felt through the
         // wheel, and a shower of splinters where it stood.
         _smashProp(hit, kmh) {
+            if (this._flying || this._env === 'air' || this._isFastTravelActive() || this._airborne || (hit && hit.y != null && this._vanY > hit.y + 22)) return;
             if (!this._terrain.fellProp(hit)) return;
             this._speedKmh = Math.max(0, this._speedKmh - kmh * 0.16);
             this._fwdSpeed *= 0.84; this._velX *= 0.84; this._velZ *= 0.84;
@@ -3687,13 +3703,44 @@
             // walk into is what they meet.
             const here = this._contactPoint();
             const R = (this._viewMode === 'foot' ? 6 : FOOT_VAN_HALF_LEN) + ENEMY_3D_CONTACT_R;
+
+            // Determine player forward facing direction
+            let fwdX = 0, fwdZ = -1;
+            if (this._viewMode === 'foot' && this._fpc && this._fpc.yaw) {
+                const yaw = this._fpc.yaw.rotation.y;
+                fwdX = -Math.sin(yaw);
+                fwdZ = -Math.cos(yaw);
+            } else if (this._camera) {
+                const dir = new THREE.Vector3();
+                this._camera.getWorldDirection(dir);
+                fwdX = dir.x;
+                fwdZ = dir.z;
+            }
+            const fwdLen = Math.hypot(fwdX, fwdZ) || 1;
+            fwdX /= fwdLen;
+            fwdZ /= fwdLen;
+
             for (let i = ents.length - 1; i >= 0; i--) {
                 const ent = ents[i];
                 if (!ent.alive || !ent.root) continue;
                 if (ent.dead) continue;              // a body is looted, not fought
                 if (ent.spooked > 0) continue;       // it is running from the last fight
                 const dx = ent.x - here.x, dz = ent.z - here.z;
-                if (dx * dx + dz * dz > R * R) continue;
+                const distSq = dx * dx + dz * dz;
+                if (distSq > R * R) continue;
+
+                // Height check: if a flying enemy is still high in the sky, let it swoop down first
+                const hereY = here.y != null ? here.y : (this._terrain ? this._terrain.getTerrainHeight(here.x / WORLD_TILE_SIZE, here.z / WORLD_TILE_SIZE) : 0);
+                const entY = ent.y != null ? ent.y : hereY;
+                if (ent.flies && Math.abs(entY - hereY) > 28) continue;
+
+                // Trigger encounter only if enemy is in front of the player (forward vision cone)
+                const dist = Math.sqrt(distSq);
+                if (dist > 0.001) {
+                    const dot = (dx * fwdX + dz * fwdZ) / dist;
+                    if (dot < 0.2) continue; // Behind or to the side of the player
+                }
+
                 // Hit while driving: the party is behind a windscreen doing
                 // eighty, not squaring up to anything. Whatever it was gets
                 // shouldered out of the way and bolts, and no fight opens - a
@@ -4005,62 +4052,124 @@
             return out;
         }
 
-        // The machines themselves, built out of the garage the first time they
-        // are wanted and moved with the leader after that.
+        // The machines themselves, built as 2D billboard sprites for bike/broom
+        // or out of the garage for others, and moved with the leader after that.
         _syncAlongside(key, yaw, seats) {
             const VM = window.VehicleModels;
-            if (!VM) return;
+            if (key !== 'bike' && key !== 'broom') {
+                if (!VM) return;
+                if (this._alongsideKey !== key) {
+                    this._clearAlongside();
+                    this._alongsideKey = key;
+                    this._alongside = [];
+                    for (let i = 0; i < ALONGSIDE_MAX; i++) {
+                        const m = VM.build(key);
+                        if (!m) break;
+                        m.group.scale.multiplyScalar(VM.worldScale(key, m));
+                        this._scene.add(m.group);
+                        this._alongside.push(m);
+                    }
+                }
+                const cfg = RIDE_ALONGSIDE[key];
+                for (let i = 0; i < (this._alongside || []).length; i++) {
+                    const m = this._alongside[i];
+                    const seat = seats[i];
+                    const show = i < (this._followers ? this._followers.count() : 0);
+                    m.group.visible = show;
+                    if (!show || !seat) continue;
+                    m.group.position.set(seat.x, seat.y - (cfg ? cfg.seat.y : 0), seat.z);
+                    m.group.rotation.y = yaw;
+                    if (m.update) m.update((this._fxTime || 0));
+                }
+                return;
+            }
+
+            const isMagical = (window.VehicleSystem && window.VehicleSystem.isMagicalLeader)
+                ? window.VehicleSystem.isMagicalLeader() : false;
+            const sheet = (key === 'bike') ? 'Vehicles/!$BikeRiding'
+                : (isMagical ? 'Vehicles/!$BroomStickRidingArcane' : 'Vehicles/!$BroomStickRiding');
+            const len = (key === 'bike') ? 7 : 6;
             if (this._alongsideKey !== key) {
                 this._clearAlongside();
                 this._alongsideKey = key;
                 this._alongside = [];
                 for (let i = 0; i < ALONGSIDE_MAX; i++) {
-                    const m = VM.build(key);
-                    if (!m) break;
-                    m.group.scale.multiplyScalar(VM.worldScale(key, m));
-                    this._scene.add(m.group);
-                    this._alongside.push(m);
+                    const bb = new VehicleBillboard(sheet, len);
+                    this._scene.add(bb.mesh);
+                    this._alongside.push(bb);
                 }
             }
-            const cfg = RIDE_ALONGSIDE[key];
+            const camPos = this._camera.position;
+            const camYaw = this._cameraYaw();
             for (let i = 0; i < (this._alongside || []).length; i++) {
-                const m = this._alongside[i];
+                const bb = this._alongside[i];
                 const seat = seats[i];
-                // The rider sits on it, so the machine goes under the seat.
-                const show = i < this._followers.count();
-                m.group.visible = show;
+                const show = i < (this._followers ? this._followers.count() : 0);
+                bb.setVisible(show);
                 if (!show || !seat) continue;
-                m.group.position.set(seat.x, seat.y - cfg.seat.y, seat.z);
-                m.group.rotation.y = yaw;
-                if (m.update) m.update((this._fxTime || 0));
+                bb.yaw = yaw;
+                bb.setPosition(seat.x, seat.y, seat.z);
+                bb.setDaylight(this._dayFactor == null ? 1 : this._dayFactor);
+                bb.update(camPos.x, camPos.z, camYaw);
+                bb.faceCamera(camPos.x, camPos.z, camYaw);
             }
         }
 
         _clearAlongside() {
             if (!this._alongside) return;
-            for (const m of this._alongside) m.dispose();
+            for (const m of this._alongside) {
+                if (m.mesh) this._scene.remove(m.mesh);
+                if (m.dispose) m.dispose();
+            }
             this._alongside = null;
             this._alongsideKey = null;
         }
 
-        // The body of whatever is being driven. The camper is its own model
-        // (Camper.glb and its hardware); everything else is built out of the
-        // garage (window.VehicleModels) at true size and hung on the camper's
-        // own group, so the physics, the camera and the seats do not have to
-        // know which of them it is.
+        // The body of whatever is being driven. The camper and the starship have
+        // 3D models; all other vehicles (car, bike, boat, broom) are represented
+        // with 2D counterpart billboards so the camper model is never drawn.
         _buildDrivenModel() {
-            if (this._footOnly || this._vehicleId === 'camper') return;
+            if (this._footOnly) {
+                if (this._van && this._van.setVisible) this._van.setVisible(false);
+                return;
+            }
+            if (this._vehicleId === 'camper') {
+                if (this._van && this._van.setVisible) this._van.setVisible(true);
+                return;
+            }
+
+            // The camper's own body must never be drawn when driving another vehicle.
+            if (this._van && this._van.hideBody) this._van.hideBody();
+            if (this._van && this._van.setVisible) this._van.setVisible(false);
+            else if (this._van && this._van.group) this._van.group.visible = false;
+
             const VM = window.VehicleModels;
-            if (!VM || !VM.has(this._vehicleId)) return;
-            const m = VM.build(this._vehicleId);
-            if (!m) return;
-            m.group.scale.multiplyScalar(VM.worldScale(this._vehicleId, m));
-            this._van.group.add(m.group);
-            this._van.group.visible = true;
-            this._drivenModel = m;
-            // The camper's own body must not be inside whatever replaced it.
-            if (this._van.hideBody) this._van.hideBody();
-            else if (this._van._body) this._van._body.visible = false;
+            if (this._vehicleId === 'starship') {
+                if (!VM || !VM.has(this._vehicleId)) return;
+                const m = VM.build(this._vehicleId);
+                if (!m) return;
+                m.group.scale.multiplyScalar(VM.worldScale(this._vehicleId, m));
+                this._van.group.add(m.group);
+                this._van.group.visible = true;
+                this._drivenModel = m;
+                return;
+            }
+
+            // For all other player vehicles (car, bike, boat, broom), render 2D counterpart:
+            const isMagical = (window.VehicleSystem && window.VehicleSystem.isMagicalLeader)
+                ? window.VehicleSystem.isMagicalLeader() : false;
+            const VEHICLE_2D_DRIVEN = {
+                car:   { sheet: 'Vehicles/!$Car_large', length: 18 },
+                bike:  { sheet: 'Vehicles/!$BikeRiding', length: 7 },
+                boat:  { sheet: 'Vehicles/!$Boat_large', length: 14 },
+                broom: { sheet: isMagical ? 'Vehicles/!$BroomStickRidingArcane' : 'Vehicles/!$BroomStickRiding', length: 6 }
+            };
+            const cfg = VEHICLE_2D_DRIVEN[this._vehicleId];
+            if (cfg) {
+                const bb = new VehicleBillboard(cfg.sheet, cfg.length);
+                this._scene.add(bb.mesh);
+                this._driven2d = bb;
+            }
         }
 
         // ---------------------------------------------------------------------
@@ -4312,7 +4421,7 @@
                 // Only the walking modes hand the walker back its legs; seated
                 // at a wheel the controller is deactivated for its own reasons.
                 if (this._viewMode === 'foot' || this._viewMode === 'fp' ||
-                    this._viewMode === 'fpdrive') {
+                    this._viewMode === 'fpdrive' || this._footOnly) {
                     this._fpc.deactivated = false;
                 }
             }
@@ -4322,9 +4431,9 @@
         _contactPoint() {
             if (this._viewMode === 'foot') {
                 const p = this._fpc.getRig().position;
-                return { x: p.x, z: p.z };
+                return { x: p.x, y: p.y, z: p.z };
             }
-            return { x: this._vanX, z: this._vanZ };
+            return { x: this._vanX, y: this._vanY, z: this._vanZ };
         }
 
         // Open a fight against the touched creature's own troop. The world is
@@ -4465,7 +4574,11 @@
             // A fight that never swapped the canvas (it was opened and settled
             // before the battle scene was ever built) still took the controls on
             // its way in, so they are handed back here too.
-            if (!this._battleWatch) { this._unlockControls(true); return; }
+            if (!this._battleWatch) {
+                this._unlockControls(true);
+                if (this._pendingFought) this._settleFoughtEnemy();
+                return;
+            }
             this._battleWatch = false;
             this._battleSeen  = false;
             this._drawForWindow();
@@ -4495,11 +4608,19 @@
             this._battleDomMark = 0;
             if (this._hud && this._hud.setHidden) this._hud.setHidden(false);
             if (this._overlay) this._overlay.style.display = '';
-            if (this._fpc && this._fpc.clearMove) this._fpc.clearMove();
+            if (this._fpc) {
+                if (this._fpc.clearMove) this._fpc.clearMove();
+                this._fpc.deactivated = false;
+            }
             CamperWeapon.resumeFromBattle();
             CamperWeapon.refresh();
             if (this._followers) this._followers.refresh();
             if (this._pendingFought) this._settleFoughtEnemy();
+
+            // Clear any engine input/player locks left over by the battle scene
+            if (typeof $gamePlayer !== 'undefined' && $gamePlayer.unlock) $gamePlayer.unlock();
+            if (typeof Input !== 'undefined' && Input.clear) Input.clear();
+            if (typeof TouchInput !== 'undefined' && TouchInput.clear) TouchInput.clear();
 
             // The fight did not hand the party back to the map it was fought
             // on: a death, a game over, a teleport out of the world. Fall back
@@ -4527,6 +4648,14 @@
             // conversation is held over.
             this._holdBattleAim(delta);
             this._updateQuietFrame(delta, tsec);
+            this._drawBattleFrame();
+        }
+
+        // The fight's frame, drawn to the main renderer so the canvas texture
+        // Spriteset_Battle samples is alive.
+        _drawBattleFrame() {
+            this._scene.overrideMaterial = null;
+            this._renderer.render(this._scene, this._camera);
         }
 
         // The world, alive but taking nothing: everything that turns of its own
@@ -4557,7 +4686,7 @@
                 }
             }
             this._underwaterFx.setActive(this._env === 'underwater');
-            this._underwaterFx.update(at.x, this._vanY, at.z, delta);
+            this._underwaterFx.update(at.x, at.y != null ? at.y : this._vanY, at.z, delta);
             this._renderFrame(tsec);
         }
 
@@ -4618,11 +4747,21 @@
             const ent = this._pendingFought;
             this._pendingFought = null;
             if (!ent || !ent.alive) return;
+            const here = this._contactPoint();
+            const R = (this._viewMode === 'foot' ? 6 : FOOT_VAN_HALF_LEN) + ENEMY_3D_CONTACT_R;
             const BSE = window.BattleSystemEnhanced;
             const rec = BSE && BSE.State && BSE.State.persistentEnemyData
                 ? BSE.State.persistentEnemyData[ent.pid] : null;
-            if (rec) { ent.spooked = 12; return; }
+            if (rec) {
+                ent.spooked = 12;
+                this._shoveBioEnemy(ent, here, R + 35);
+                return;
+            }
             this._layOutBody(ent);
+            const dx = ent.x - here.x, dz = ent.z - here.z;
+            if (dx * dx + dz * dz < 100) {
+                this._shoveBioEnemy(ent, here, 16);
+            }
         }
 
         // Turn a defeated creature into a body on the ground: it stops moving,
@@ -5363,6 +5502,7 @@
             if (this._followers)    this._followers.dispose();
             this._clearAlongside();
             if (this._drivenModel)  { this._drivenModel.dispose(); this._drivenModel = null; }
+            if (this._driven2d)     { this._scene.remove(this._driven2d.mesh); this._driven2d.dispose(); this._driven2d = null; }
             if (this._engine)       this._engine.dispose();
             if (this._liminal)      this._liminal.dispose();
             if (this._speedFx)      this._speedFx.dispose();

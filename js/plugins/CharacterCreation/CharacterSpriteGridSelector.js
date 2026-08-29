@@ -310,6 +310,13 @@
 
     if (actor) {
       actor.setCharacterImage(randomSprite.name, randomSprite.index);
+      const bust = bustForSprite(randomSprite.name, randomSprite.index);
+      if (bust) {
+        actor.setVnBust(bust);
+        if (actor.setPortraitMode) actor.setPortraitMode("bust");
+      } else if (window.selectRandomBustForActor) {
+        window.selectRandomBustForActor(actorId);
+      }
       const leader = $gameParty && $gameParty.leader();
       if (leader && actorId === leader.actorId()) {
         $gamePlayer.refresh();

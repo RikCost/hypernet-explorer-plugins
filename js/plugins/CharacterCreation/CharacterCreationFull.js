@@ -787,7 +787,7 @@
       }
     }
     if (window.selectRandomSpriteForActor) window.selectRandomSpriteForActor(actor.actorId());
-    if (window.selectRandomBustForActor && actor.portraitMode() !== "model") {
+    if (window.selectRandomBustForActor && actor.portraitMode() !== "model" && !actor.vnBust()) {
       window.selectRandomBustForActor(actor.actorId());
     }
     if (window.randomizeTraitsForActor) {

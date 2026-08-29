@@ -792,6 +792,7 @@
 
     function refreshEnemiesForBiome() {
         if ($gameMap.mapId() !== PROC_MAP_ID) return;
+        if (!$dataMap) return;
         const procGenData = $gameSystem._procGenData;
         if (!procGenData || !procGenData.currentBiome) return;
         console.log(`[refreshEnemiesForBiome] Refreshing enemies for biome: ${procGenData.currentBiome}`);

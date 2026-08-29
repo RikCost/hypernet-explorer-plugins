@@ -1493,7 +1493,18 @@
     const width  = Math.max(1, Math.round(rect.width)  || 320);
     const height = Math.max(1, Math.round(rect.height) || 320);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    } catch (e) {
+      return;
+    }
+    if (!renderer || !renderer.getContext || !renderer.getContext()) {
+      if (renderer && renderer.dispose) {
+        try { renderer.dispose(); } catch (e) {}
+      }
+      return;
+    }
     renderer.setSize(width, height, false);
     renderer.setPixelRatio(1);
 

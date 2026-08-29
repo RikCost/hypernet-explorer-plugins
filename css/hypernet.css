@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     /* Archways XP Luna theme */
     --xp-bg: #ece9d8;
     --xp-border: #7f9db9;
@@ -176,7 +176,7 @@
                     }
 .hn-style-0001 { display:inline-block; flex-shrink:0; }
 .hn-style-0002 { overflow: hidden; display: inline-block; position: relative; flex-shrink: 0; border-radius: 4px; vertical-align: middle; background: transparent; }
-.hn-style-0003 { position: absolute; top: 0; left: 0; width: 512px; height: 2048px; background-image: url('img/system/IconSet.png'); background-repeat: no-repeat; transform-origin: 0 0; image-rendering: pixelated; }
+.hn-style-0003 { position: absolute; top: 0; left: 0; width: 512px; height: 2048px; background-image: url('../img/system/IconSet.png'); background-repeat: no-repeat; transform-origin: 0 0; image-rendering: pixelated; }
 .hn-style-0004 { display: flex; flex-direction: column; width: 100%; height: 100%; background: var(--xp-bg); color: var(--text-pure-black); box-sizing: border-box; padding: 8px; font-family: 'Tahoma', sans-serif; }
 .hn-style-0005 { background: linear-gradient(to right, var(--xp-blue), #2672ec); border: 1px solid var(--xp-border); padding: 6px 12px; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: var(--text-pure-white); display: flex; justify-content: space-between; align-items: center; box-shadow: inset 0 1px 1px var(--bg-white-translucent-30); }
 .hn-style-0006 { background: var(--shadow-black-translucent-25); padding: 2px 6px; border-radius: 3px; }

@@ -1,3 +1,14 @@
+0.4.5a
+- webgl crash fix when switching to voxel mode
+- using slopes instead of cubes
+- fixed buying furniture with moneu
+- removed low health slowdown
+- fix assign empty sprite on start
+- voxel mode optimizations
+- swimming mode in voxel mode
+- fixes forflying  broomstick
+- replaced 3d vehicles with 2d directional sprites
+
 0.4.4a
 
 - steam deck resolution fixes

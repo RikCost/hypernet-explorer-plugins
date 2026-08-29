@@ -1275,8 +1275,38 @@
     }
     function getAlienTerrain() { return _alienTerrain; }
 
+    // =========================================================================
+    // The Far Lands: infinite strange expanse beyond the world map borders
+    // =========================================================================
+    const FARLAND_BIOMES = [
+        'Farlands Monoliths',
+        'Glitch Void Fracture',
+        'Singularity Fault',
+        'Quantum Strata',
+        'Null Matrix Haywire',
+        'Eldritch Faultline',
+        'Infinite Cascade'
+    ];
+
+    function isFarlandsTile(wx, wy) {
+        return wx < 0 || wx >= WORLD_TILES || wy < 0 || wy >= WORLD_TILES;
+    }
+
+    function farlandsBiomeAt(wx, wy) {
+        const hash = Math.abs(Math.sin(wx * 12.9898 + wy * 78.233) * 43758.5453 + ((wx ^ wy) & 255));
+        const name = FARLAND_BIOMES[Math.floor(hash) % FARLAND_BIOMES.length];
+        const r = ((Math.abs((wx * 37) ^ (wy * 17)) + 128) & 255);
+        const g = ((Math.abs(wx * 19 + wy * 41) + 64) & 255);
+        const b = ((Math.abs((wx * 29) ^ (wy * 53)) + 190) & 255);
+        const color = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        return { name, color, farlands: true };
+    }
+
     function _sampleBiomeUncached(wx, wy) {
         if (_biomeOverride) return _biomeOverride;
+        if (isFarlandsTile(wx, wy) && !_alienTerrain) {
+            return farlandsBiomeAt(wx, wy);
+        }
         if (typeof $gameMap !== 'undefined' && $gameMap.mapId() === 315) {
             let tileId = 0;
             for (let z = 3; z >= 0; z--) {
@@ -1321,9 +1351,9 @@
     function getRenderType(biomeName) {
         let t = _renderTypeCache.get(biomeName);
         if (t !== undefined) return t;
-        const n = biomeName.toLowerCase();
+        const n = String(biomeName || '').toLowerCase();
         t = _SETTLED_RE.test(n) ? (n.includes('mountain') ? 'mountain' : 'flat')
-          : n.includes('mountain') ? 'mountain'
+          : (n.includes('mountain') || n.includes('monolith') || n.includes('fault') || n.includes('cascade')) ? 'mountain'
           : (n.includes('ocean') || n.includes('sea') || n === 'caveflooded' || n.includes('lake') || n.includes('river')) ? 'water'
           : (n.startsWith('road') || n === 'highway') ? 'road'
           : 'flat';
@@ -1744,7 +1774,10 @@
     // Turn every card in the world to a camera, and pick the right walking
     // frame for it. Called once before each viewport is drawn.
     function faceBillboards(camX, camZ, camYaw) {
-        for (const b of _billboards) b.faceCamera(camX, camZ, camYaw);
+        for (const b of _billboards) {
+            if (!b.mesh || (!b.mesh.visible && !b._wantVisible)) continue;
+            b.faceCamera(camX, camZ, camYaw);
+        }
     }
 
     class CharacterBillboard {
@@ -1946,6 +1979,7 @@
         characterFacingRow, characterSheetLayout, characterSheetTexture, faceBillboards,
         dayFactorForHour, getBiomeOverride, getRenderType, getRoadDirectionAt,
         initPerlinWithSeed, setBiomeOverride, setAlienTerrain, getAlienTerrain,
+        isFarlandsTile, farlandsBiomeAt,
         isRoadTile, loadTex, noiseHeight, parseRoadDirection, pickRandomRoadTile,
         placeNameAt, roadDataReady, roadExitsFrom, roadLabelAt, roadLinksAt,
         roadTileTable, sampleBiomeAt, sampleSkyColor, setTextureAnisotropy

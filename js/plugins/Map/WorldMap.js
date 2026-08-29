@@ -11,7 +11,7 @@
  * @type number
  * @min 50
  * @max 500
- * @default 200
+ * @default 240
  *
  * @param mapHeight
  * @text Map Height (Mini)
@@ -19,7 +19,21 @@
  * @type number
  * @min 50
  * @max 500
- * @default 150
+ * @default 180
+ *
+ * @param renderScale
+ * @text Render Scale (HiDPI Crispness)
+ * @desc Resolution multiplier for sharp/HiDPI rendering (1 = 1x, 2 = 2x HiDPI crisp, 3 = 3x ultra)
+ * @type number
+ * @min 1
+ * @max 4
+ * @default 2
+ *
+ * @param permanentMinimap
+ * @text Permanent Minimap
+ * @desc Keep the minimap active across maps, scenes, and transfers by default
+ * @type boolean
+ * @default true
  *
  * @param opacity
  * @text Map Opacity
@@ -103,8 +117,11 @@
     const pluginName = 'WorldMap';
     const parameters = PluginManager.parameters(pluginName);
 
-    const mapWidth = Number(parameters['mapWidth']) || 200;
-    const mapHeight = Number(parameters['mapHeight']) || 150;
+    const mapWidth = Number(parameters['mapWidth']) || 240;
+    const mapHeight = Number(parameters['mapHeight']) || 180;
+    const renderScale = Math.max(1, Math.min(4, Number(parameters['renderScale']) || 2));
+    const permanentMinimap = parameters['permanentMinimap'] !== 'false';
+    const MINIMAP_SCALE = renderScale;
     const paramOpacity = Number(parameters['opacity']) || 180;
     const playerColor = parameters['playerColor'] || '#FF0000';
     const labelFontSize = Number(parameters['labelFontSize']) || 14;
@@ -116,8 +133,8 @@
     const airshipColor = '#FFFF00';
     const questMarkerColor = '#FFD76A'; // matches the quest board's focus gold
 
-    // Map States: 0 = Hidden, 1 = Normal (Mini), 2 = Fullscreen (Zoomed)
-    let currentMapState = 0;
+    // Map States: 0 = Hidden, 1 = Normal (Mini Zoomed), 2 = Default (Mini Full), 3 = Fullscreen Interactive
+    let currentMapState = permanentMinimap ? 1 : 0;
 
     // Interactive Zoom Variables
     let zoomScale = 0.25; // MIN_ZOOM: the map always opens fully zoomed out
@@ -289,11 +306,13 @@
 
     PluginManager.registerCommand(pluginName, "showWorldMap", args => {
         currentMapState = 1;
+        if ($gameSystem) $gameSystem._minimapState = 1;
         refreshWorldMapDisplay();
     });
 
     PluginManager.registerCommand(pluginName, "hideWorldMap", args => {
         currentMapState = 0;
+        if ($gameSystem) $gameSystem._minimapState = 0;
         refreshWorldMapDisplay();
     });
 
@@ -301,8 +320,9 @@
         if (currentMapState > 0) {
             currentMapState = 0;
         } else {
-            currentMapState = 1;
+            currentMapState = ($gameSystem && $gameSystem._lastActiveMinimapState) || 1;
         }
+        if ($gameSystem) $gameSystem._minimapState = currentMapState;
         refreshWorldMapDisplay();
     });
 
@@ -506,17 +526,19 @@
     function drawSquare(ctx, x, y, color, size) {
         const half = size / 2;
         ctx.fillStyle = color;
-        ctx.fillRect(Math.round(x - half), Math.round(y - half), size, size);
+        ctx.fillRect(Math.round(x - half), Math.round(y - half), Math.round(size), Math.round(size));
     }
     
     function drawDot(ctx, x, y, color, radius) {
+        ctx.save();
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        ctx.arc(x, y, Math.max(1, radius), 0, 2 * Math.PI);
         ctx.fill();
         ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = Math.max(1, radius / 4);
         ctx.stroke();
+        ctx.restore();
     }
 
     // Quest objectives are drawn as gold diamonds so they never read as a
@@ -526,7 +548,7 @@
         ctx.save();
         ctx.fillStyle = color;
         ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = Math.max(1, size / 5);
         ctx.beginPath();
         ctx.moveTo(x, y - half);
         ctx.lineTo(x + half, y);
@@ -916,25 +938,26 @@
     }
 
     // Names are centred under their marker and kept inside the bitmap. A name
-    // that would land on one already drawn is dropped: the minimap is 200px
-    // wide and a pile of overlapping town names reads as noise.
-    function drawMinimapNames(ctx, entries, bitmapWidth, bitmapHeight) {
+    // that would land on one already drawn is dropped: the minimap is scaled
+    // and a pile of overlapping town names reads as noise.
+    function drawMinimapNames(ctx, entries, bitmapWidth, bitmapHeight, scale = 1) {
         if (!entries.length) return;
+        const fontSize = Math.round(MINIMAP_NAME_FONT * scale);
         ctx.save();
-        ctx.font = `bold ${MINIMAP_NAME_FONT}px GameFont, sans-serif`;
+        ctx.font = `bold ${fontSize}px GameFont, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         ctx.strokeStyle = 'black';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = Math.max(2, Math.round(3 * scale));
         const taken = [];
         for (const entry of entries) {
             if (!entry.name) continue;
-            const halfW = ctx.measureText(entry.name).width / 2 + 1;
-            const cx = Math.max(halfW + 1, Math.min(bitmapWidth - halfW - 1, entry.x));
-            let ty = entry.y + 5;
-            if (ty + MINIMAP_NAME_FONT > bitmapHeight - 14) ty = entry.y - 6 - MINIMAP_NAME_FONT;
+            const halfW = ctx.measureText(entry.name).width / 2 + 1 * scale;
+            const cx = Math.max(halfW + 1 * scale, Math.min(bitmapWidth - halfW - 1 * scale, entry.x));
+            let ty = entry.y + 5 * scale;
+            if (ty + fontSize > bitmapHeight - 14 * scale) ty = entry.y - (6 * scale) - fontSize;
             if (ty < 1) continue;
-            const box = { l: cx - halfW, r: cx + halfW, t: ty, b: ty + MINIMAP_NAME_FONT + 1 };
+            const box = { l: cx - halfW, r: cx + halfW, t: ty, b: ty + fontSize + 1 * scale };
             if (taken.some(o => box.l < o.r && box.r > o.l && box.t < o.b && box.b > o.t)) continue;
             taken.push(box);
             ctx.strokeText(entry.name, cx, ty);
@@ -946,6 +969,7 @@
 
     function drawLabel(ctx, x, y, text, color, sizePx) {
         const px = sizePx || labelFontSize;
+        ctx.save();
         ctx.font = `bold ${px}px GameFont, sans-serif`;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
@@ -958,9 +982,10 @@
         // Text Fill
         ctx.fillStyle = color || 'white';
         ctx.fillText(text, x + px * 0.6, y);
+        ctx.restore();
     }
 
-    function drawCoordinates(ctx, bitmapWidth, bitmapHeight, coordX, coordY, playerX, playerY) {
+    function drawCoordinates(ctx, bitmapWidth, bitmapHeight, coordX, coordY, playerX, playerY, scale = 1) {
         let text = `${coordX}, ${coordY}`;
 
         // Only append local coordinates if we have them and not on map 315
@@ -968,32 +993,35 @@
             text += ` | ${playerX}, ${playerY}`;
         }
 
-        const fontSize = 12;
-        const padding = 6;
+        const fontSize = Math.round(12 * scale);
+        const padding = Math.round(6 * scale);
         const x = bitmapWidth - padding;
         const y = bitmapHeight - padding;
 
-        ctx.font = `${fontSize}px GameFont, sans-serif`;
+        ctx.save();
+        ctx.font = `bold ${fontSize}px GameFont, sans-serif`;
         ctx.textAlign = 'right';
         ctx.textBaseline = 'bottom';
 
         // Text Outline (Stroke)
         ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = Math.max(2, Math.round(2.5 * scale));
         ctx.strokeText(text, x, y);
 
         // Text Fill
         ctx.fillStyle = 'white';
         ctx.fillText(text, x, y);
+        ctx.restore();
     }
 
-    function drawDetailedBlockGrid(ctx, bitmapWidth, bitmapHeight, proceduralZoom, tileScale) {
+    function drawDetailedBlockGrid(ctx, bitmapWidth, bitmapHeight, proceduralZoom, tileScale, scale = 1) {
         // Draw grid lines for the detailed block view minimap
         // proceduralZoom: how many units are shown (e.g., 16 units)
         // tileScale: pixels per unit in the zoomed view
 
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.lineWidth = 1;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.lineWidth = Math.max(1, Math.round(1 * scale));
 
         const pixelsPerUnit = (bitmapWidth / proceduralZoom);
 
@@ -1014,6 +1042,7 @@
             ctx.lineTo(bitmapWidth, y);
             ctx.stroke();
         }
+        ctx.restore();
     }
 
     // GalaxySim alien-planet surface: the planet's unwrapped equirectangular
@@ -1021,7 +1050,7 @@
     // see GalaxySim_Overlay.js's showLandingGrid) scaled to destW x destH,
     // divided into its landing grid, with the player's current cell marked.
     // Returns null when GalaxySim isn't available or no planet is landed.
-    function buildAlienPlanetBitmap(destW, destH) {
+    function buildAlienPlanetBitmap(destW, destH, scale = 1) {
         const GS = window.GalaxySim;
         if (!GS || !GS.Renderer3D || !GS.Renderer3D.drawPlanetGrid ||
             !GS.getAlienGridInfo || !GS.getAlienGridTextureCanvas) return null;
@@ -1030,6 +1059,9 @@
         if (!grid || !textureCanvas) return null;
 
         const bitmap = new Bitmap(destW, destH);
+        bitmap.context.imageSmoothingEnabled = true;
+        bitmap.context.imageSmoothingQuality = 'high';
+        bitmap.smooth = true;
         GS.Renderer3D.drawPlanetGrid(bitmap.context, {
             textureCanvas,
             destW, destH,
@@ -1045,8 +1077,8 @@
         drawDot(bitmap.context,
             (grid.gx + pos.fracX) * cellW,
             (grid.gy + pos.fracY) * cellH,
-            playerColor, 4);
-        drawCoordinates(bitmap.context, destW, destH, grid.gx, grid.gy, $gamePlayer.x, $gamePlayer.y);
+            playerColor, 4 * scale);
+        drawCoordinates(bitmap.context, destW, destH, grid.gx, grid.gy, $gamePlayer.x, $gamePlayer.y, scale);
         bitmap.baseTexture.update();
         return bitmap;
     }
@@ -1073,7 +1105,14 @@
             fullscreenBitmap = null;
             focusTileHint = null; // manual cycling follows the party again
         } else {
-            currentMapState = 1; // Fallback
+            currentMapState = 1; // Fallback / Turn ON
+        }
+
+        if ($gameSystem) {
+            $gameSystem._minimapState = currentMapState;
+            if (currentMapState === 1 || currentMapState === 2) {
+                $gameSystem._lastActiveMinimapState = currentMapState;
+            }
         }
 
         refreshWorldMapDisplay();
@@ -1082,6 +1121,11 @@
     function refreshWorldMapDisplay() {
         createWorldMapSprite();
         if (!isLiveSprite(worldMapSprite)) return;
+
+        if (currentMapState === 0) {
+            worldMapSprite.visible = false;
+            return;
+        }
 
         // We only hard-check worldMapBitmap for Fullscreen or Map 315.
         // If we are in Detail Mode (Map != 315), we load dynamic images.
@@ -1092,12 +1136,12 @@
         worldMapSprite.visible = true;
 
         if (currentMapState === 1 || currentMapState === 2) {
-            // --- MINI MODE ---
+            // --- MINI MODE (High-Resolution Supersampled Rendering) ---
             renderMiniMap();
             worldMapSprite.x = 10;
             worldMapSprite.y = Graphics.height - mapHeight - 10;
-            worldMapSprite.scale.x = 1;
-            worldMapSprite.scale.y = 1;
+            worldMapSprite.scale.x = 1 / MINIMAP_SCALE;
+            worldMapSprite.scale.y = 1 / MINIMAP_SCALE;
             worldMapSprite.opacity = paramOpacity;
         } else if (currentMapState === 3) {
             // --- FULLSCREEN ZOOM MODE ---
@@ -1162,10 +1206,13 @@
         const pos = getTravelVehiclePosition();
         if (!data || !pos) return;
 
-        const targetW = mapWidth;
-        const targetH = mapHeight;
+        const targetW = mapWidth * MINIMAP_SCALE;
+        const targetH = mapHeight * MINIMAP_SCALE;
 
         const bitmap = new Bitmap(targetW, targetH);
+        bitmap.context.imageSmoothingEnabled = true;
+        bitmap.context.imageSmoothingQuality = 'high';
+        bitmap.smooth = true;
         bitmap.blt(worldMapBitmap, 0, 0, worldMapBitmap.width, worldMapBitmap.height, 0, 0, targetW, targetH);
         const ctx = bitmap.context;
 
@@ -1180,8 +1227,8 @@
         ctx.save();
         // Full planned route (origin -> destination), dashed faint.
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([4, 3]);
+        ctx.lineWidth = 2 * MINIMAP_SCALE;
+        ctx.setLineDash([4 * MINIMAP_SCALE, 3 * MINIMAP_SCALE]);
         ctx.beginPath();
         ctx.moveTo(ox, oy);
         ctx.lineTo(dx, dy);
@@ -1190,7 +1237,7 @@
 
         // Distance already covered (origin -> current), solid bright.
         ctx.strokeStyle = '#FFD24A';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2 * MINIMAP_SCALE;
         ctx.beginPath();
         ctx.moveTo(ox, oy);
         ctx.lineTo(vx, vy);
@@ -1198,20 +1245,20 @@
         ctx.restore();
 
         // Origin and destination markers.
-        drawSquare(ctx, ox, oy, '#AAAAAA', 5);
-        drawSquare(ctx, dx, dy, '#00FF00', 6);
+        drawSquare(ctx, ox, oy, '#AAAAAA', 5 * MINIMAP_SCALE);
+        drawSquare(ctx, dx, dy, '#00FF00', 6 * MINIMAP_SCALE);
 
         // Moving vehicle dot, coloured by transport.
         const vColor = data.timerTransport === 'camper' ? shipColor
             : data.timerTransport === 'carsharing' ? boatColor
             : playerColor;
-        drawDot(ctx, vx, vy, vColor, 5);
+        drawDot(ctx, vx, vy, vColor, 5 * MINIMAP_SCALE);
 
         // Destination name + current interpolated world coordinates.
         if (data.timerDestination) {
-            drawLabel(ctx, dx, dy, String(data.timerDestination));
+            drawLabel(ctx, dx, dy, String(data.timerDestination), 'white', labelFontSize * MINIMAP_SCALE);
         }
-        drawCoordinates(ctx, targetW, targetH, Math.round(pos.x), Math.round(pos.y));
+        drawCoordinates(ctx, targetW, targetH, Math.round(pos.x), Math.round(pos.y), undefined, undefined, MINIMAP_SCALE);
 
         setWorldMapSpriteBitmap(bitmap);
     }
@@ -1242,8 +1289,8 @@
             renderTravelMiniMap();
             return;
         }
-        const targetW = mapWidth;
-        const targetH = mapHeight;
+        const targetW = mapWidth * MINIMAP_SCALE;
+        const targetH = mapHeight * MINIMAP_SCALE;
 
         // 1. If on World Map (315), show a zoomed-in view around the player
         if (mapId === 315) {
@@ -1252,6 +1299,9 @@
             if (!$dataMap) return;
 
             const bitmap = new Bitmap(targetW, targetH);
+            bitmap.context.imageSmoothingEnabled = true;
+            bitmap.context.imageSmoothingQuality = 'high';
+            bitmap.smooth = true;
 
             if (currentMapState === 1) {
                 // --- ZOOMED MINIMAP ---
@@ -1283,7 +1333,7 @@
                 const ppx = Math.floor(((playerX - srcXInTiles) / zoomTiles) * targetW) + gridCellWidth / 2;
                 const ppy = Math.floor(((playerY - srcYInTiles) / zoomTiles) * targetH) + gridCellHeight / 2;
 
-                drawDot(context, ppx, ppy, playerColor, 5);
+                drawDot(context, ppx, ppy, playerColor, 5 * MINIMAP_SCALE);
 
                 // Draw teleport events relative to cropped view. The teleport
                 // event list is precomputed per map (see getTeleportEvents) so we
@@ -1298,7 +1348,7 @@
                         const ex = Math.floor(((ev.x - srcXInTiles) / zoomTiles) * targetW) + gridCellWidth / 2;
                         const ey = Math.floor(((ev.y - srcYInTiles) / zoomTiles) * targetH) + gridCellHeight / 2;
 
-                        drawSquare(context, ex, ey, '#00FF00', 6);
+                        drawSquare(context, ex, ey, '#00FF00', 6 * MINIMAP_SCALE);
                         placeNames.push({ x: ex, y: ey, name: teleportEventLabel(ev.event().name) });
                     }
                 }
@@ -1307,7 +1357,7 @@
                 // two names collide the closer place is the one worth reading.
                 placeNames.sort((a, b) =>
                     Math.hypot(a.x - ppx, a.y - ppy) - Math.hypot(b.x - ppx, b.y - ppy));
-                drawMinimapNames(context, placeNames, targetW, targetH);
+                drawMinimapNames(context, placeNames, targetW, targetH, MINIMAP_SCALE);
 
                 // Active quest objectives inside the same cropped window.
                 for (const qt of getQuestMarkerTiles()) {
@@ -1315,16 +1365,16 @@
                         qt.y < srcYInTiles || qt.y >= srcYInTiles + zoomTiles) continue;
                     const qx = Math.floor(((qt.x - srcXInTiles) / zoomTiles) * targetW) + gridCellWidth / 2;
                     const qy = Math.floor(((qt.y - srcYInTiles) / zoomTiles) * targetH) + gridCellHeight / 2;
-                    drawQuestTileDiamonds(context, qx, qy, qt, 9);
+                    drawQuestTileDiamonds(context, qx, qy, qt, 9 * MINIMAP_SCALE);
                 }
 
                 // Draw coordinates
-                drawCoordinates(context, targetW, targetH, playerX, playerY);
+                drawCoordinates(context, targetW, targetH, playerX, playerY, undefined, undefined, MINIMAP_SCALE);
             } else {
                 // --- DEFAULT MINIMAP (FULL VIEW) ---
                 bitmap.blt(worldMapBitmap, 0, 0, worldMapBitmap.width, worldMapBitmap.height, 0, 0, targetW, targetH);
                 // Draw Entities Global
-                drawEntitiesOnBitmap(bitmap, targetW, targetH, false);
+                drawEntitiesOnBitmap(bitmap, targetW, targetH, false, MINIMAP_SCALE);
             }
 
             setWorldMapSpriteBitmap(bitmap);
@@ -1343,6 +1393,9 @@
             const tileBitmap = loadCachedTile(`img/worldmap/bologna/row-${row}-column-${col}.jpg`);
             if (!tileBitmap.isReady()) { tileBitmap.addLoadListener(refreshWorldMapDisplay); return; }
             const bitmap = new Bitmap(targetW, targetH);
+            bitmap.context.imageSmoothingEnabled = true;
+            bitmap.context.imageSmoothingQuality = 'high';
+            bitmap.smooth = true;
             const playerX = $gamePlayer.x;
             const playerY = $gamePlayer.y;
 
@@ -1361,8 +1414,8 @@
             const context = bitmap.context;
             const px = ((playerX - srcX) / viewTiles) * targetW;
             const py = ((playerY - srcY) / viewTiles) * targetH;
-            drawDot(context, px, py, playerColor, 5);
-            drawCoordinates(context, targetW, targetH, playerX, playerY);
+            drawDot(context, px, py, playerColor, 5 * MINIMAP_SCALE);
+            drawCoordinates(context, targetW, targetH, playerX, playerY, undefined, undefined, MINIMAP_SCALE);
             setWorldMapSpriteBitmap(bitmap);
             return;
         }
@@ -1371,7 +1424,7 @@
         // planet's own unwrapped landing grid instead of Earth's
         // row-N-column-M tiles, which don't exist for this coordinate space.
         if (isAlienPlanetSurface()) {
-            const alienBitmap = buildAlienPlanetBitmap(targetW, targetH);
+            const alienBitmap = buildAlienPlanetBitmap(targetW, targetH, MINIMAP_SCALE);
             if (alienBitmap) setWorldMapSpriteBitmap(alienBitmap);
             return;
         }
@@ -1400,6 +1453,9 @@
         }
 
         const bitmap = new Bitmap(targetW, targetH);
+        bitmap.context.imageSmoothingEnabled = true;
+        bitmap.context.imageSmoothingQuality = 'high';
+        bitmap.smooth = true;
 
         // Calculate local coordinates within the 32x32 block. These keep the
         // fraction: 12.25 is a quarter of the way across the block's 13th square.
@@ -1424,7 +1480,7 @@
         const context = bitmap.context;
 
         // Draw grid for detailed block view
-        drawDetailedBlockGrid(context, targetW, targetH, proceduralZoomLevel, tileScale);
+        drawDetailedBlockGrid(context, targetW, targetH, proceduralZoomLevel, tileScale, MINIMAP_SCALE);
 
         // Scale player position to zoomed minimap.
         // (localX - srcX) / proceduralZoomLevel gives position within the zoomed
@@ -1448,22 +1504,22 @@
             if (dest.y < viewWorldY || dest.y >= viewWorldY + proceduralZoomLevel) continue;
             const dx = Math.floor(((dest.x - viewWorldX) / proceduralZoomLevel) * targetW) + gridCellWidth / 2;
             const dy = Math.floor(((dest.y - viewWorldY) / proceduralZoomLevel) * targetH) + gridCellHeight / 2;
-            drawSquare(context, dx, dy, '#00FF00', 6);
+            drawSquare(context, dx, dy, '#00FF00', 6 * MINIMAP_SCALE);
             placeNames.push({ x: dx, y: dy, name: dest.name });
         }
         // Nearest the party first, so a crowded corner of the map keeps the
         // name of the place actually being walked towards.
         placeNames.sort((a, b) =>
             Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py));
-        drawMinimapNames(context, placeNames, targetW, targetH);
+        drawMinimapNames(context, placeNames, targetW, targetH, MINIMAP_SCALE);
 
-        drawDot(context, px, py, playerColor, 5);
+        drawDot(context, px, py, playerColor, 5 * MINIMAP_SCALE);
 
         // Draw coordinates on bottom right, including local player position inside the square
         const localPos = (window.ProcStitch && window.ProcStitch.local && $gameMap.mapId() === PROC_MAP_ID)
             ? window.ProcStitch.local($gamePlayer.x, $gamePlayer.y)
             : { x: $gamePlayer.x, y: $gamePlayer.y };
-        drawCoordinates(context, targetW, targetH, varX, varY, localPos.x, localPos.y);
+        drawCoordinates(context, targetW, targetH, varX, varY, localPos.x, localPos.y, MINIMAP_SCALE);
 
         setWorldMapSpriteBitmap(bitmap);
     }
@@ -1647,7 +1703,7 @@
         setWorldMapSpriteBitmap(fullscreenBitmap);
     }
 
-    function drawEntitiesOnBitmap(bitmap, targetW, targetH, showLabels) {
+    function drawEntitiesOnBitmap(bitmap, targetW, targetH, showLabels, scale = 1) {
         // This function draws global entities.
         // If we are in MiniMap mode on a non-315 map, this function is NOT called.
         // This is only for Global Views (Map 315 OR Fullscreen).
@@ -1674,12 +1730,12 @@
                 const ex = Math.floor((ev.x / wTiles) * targetW);
                 const ey = Math.floor((ev.y / hTiles) * targetH);
 
-                drawSquare(context, ex, ey, '#00FF00', showLabels ? 10 : 6);
+                drawSquare(context, ex, ey, '#00FF00', showLabels ? 10 * scale : 6 * scale);
 
                 if (showLabels) {
                     let labelText = name.replace(/^teleport\s*/i, '').replace(/^-\s*/, '').trim();
                     if (labelText) {
-                        drawLabel(context, ex, ey, labelText);
+                        drawLabel(context, ex, ey, labelText, undefined, labelFontSize * scale);
                     }
                 }
             }
@@ -1691,15 +1747,15 @@
         // The fullscreen sheet is 12288px wide and is drawn zoomed out, so a
         // 14px label on it renders about 7px on screen. Scale the marker and its
         // name with the bitmap so the quest name is actually readable.
-        const markerPx = Math.max(8, Math.round(targetW / 400));
-        const namePx = Math.max(labelFontSize, Math.round(targetW / 380));
+        const markerPx = Math.max(8 * scale, Math.round(targetW / 400));
+        const namePx = Math.max(labelFontSize * scale, Math.round(targetW / 380));
         for (const qt of questTiles) {
             const qx = Math.floor((qt.x / WORLD_TILES) * targetW);
             const qy = Math.floor((qt.y / WORLD_TILES) * targetH);
-            drawQuestTileDiamonds(context, qx, qy, qt, showLabels ? markerPx : 8);
+            drawQuestTileDiamonds(context, qx, qy, qt, showLabels ? markerPx : 8 * scale);
             if (showLabels) {
                 for (let i = 0; i < qt.labels.length; i++) {
-                    drawLabel(context, qx, qy + i * (namePx + 4), qt.labels[i], qt.colors[i] || questMarkerColor, namePx);
+                    drawLabel(context, qx, qy + i * (namePx + 4 * scale), qt.labels[i], qt.colors[i] || questMarkerColor, namePx);
                 }
             }
         }
@@ -1712,7 +1768,7 @@
         // procedural biome, an authored map, a cave), which is the same square the
         // vehicle is drawn on when the party does reach map 315. A vehicle left on
         // another planet has no Earth square and is not drawn.
-        const dotSize = showLabels ? 6 : 3;
+        const dotSize = showLabels ? 6 * scale : 3 * scale;
         const VEHICLE_DOT_COLOR = { camper: shipColor, airship: airshipColor };
         const owned = (window.MergedVehicleSystem && window.MergedVehicleSystem.getOwnedVehicles)
             ? window.MergedVehicleSystem.getOwnedVehicles() : [];
@@ -1722,7 +1778,7 @@
             const vx = Math.floor((v.parkedWorldX / WORLD_TILES) * targetW);
             const vy = Math.floor((v.parkedWorldY / WORLD_TILES) * targetH);
             drawDot(context, vx, vy, VEHICLE_DOT_COLOR[v.key] || boatColor, dotSize);
-            if (showLabels) drawLabel(context, vx, vy, v.name);
+            if (showLabels) drawLabel(context, vx, vy, v.name, undefined, labelFontSize * scale);
         }
 
         // 3. Player Global Position
@@ -1741,7 +1797,7 @@
             px = (world.x / WORLD_TILES) * targetW;
             py = (world.y / WORLD_TILES) * targetH;
         }
-        drawDot(context, px, py, playerColor, showLabels ? 8 : 4);
+        drawDot(context, px, py, playerColor, showLabels ? 8 * scale : 4 * scale);
 
         context.restore();
         bitmap.baseTexture.update();
@@ -1999,11 +2055,10 @@
             travelOrigin = null;
             if (autoOpenedForTravel) {
                 autoOpenedForTravel = false;
-                // Don't hide on maps that auto-show the minimap (315 / 636).
-                const mapId = $gameMap.mapId();
-                if (mapId !== 315 && mapId !== 636) {
-                    currentMapState = 0;
-                }
+                const savedState = ($gameSystem && typeof $gameSystem._minimapState === 'number')
+                    ? $gameSystem._minimapState
+                    : (permanentMinimap ? 1 : 0);
+                currentMapState = savedState;
                 refreshWorldMapDisplay();
             }
         }
@@ -2204,26 +2259,32 @@
             }
         }
 
-        // Auto-Open logic for specific maps. Map 636 is shared by the open-air
-        // world tile AND every roofed procedural interior (dungeon, crypt,
-        // sewer, cave...); the minimap only makes sense outdoors, so a roofed
-        // interior is treated like any other non-minimap map instead.
-        const isProcInterior = mapId === 636 && window.ProceduralInteriors &&
-            window.ProceduralInteriors.isCurrent && window.ProceduralInteriors.isCurrent();
-        if (mapId === 315 || (mapId === 636 && !isProcInterior)) {
-            currentMapState = 1;
-        } else if (mapId === BOLOGNA_MAP_ID) {
-            // Bologna cells transfer seamlessly at their edges (353 -> 353), which
-            // re-runs Scene_Map.start on every crossing. Keep the minimap in
-            // whatever state the player left it (currentMapState persists across
-            // scenes) instead of force-closing it on each cell transfer.
-        } else {
-            currentMapState = 0;
+        // Minimap permanence logic: check if the map explicitly disables minimap (<NoMinimap>)
+        const noMinimap = !!($dataMap && $dataMap.note && /<NoMinimap>/i.test($dataMap.note));
+
+        // Retrieve persistent minimap state (default to state 1: Zoomed Minimap)
+        let savedState = 1;
+        if ($gameSystem && typeof $gameSystem._minimapState === 'number') {
+            savedState = $gameSystem._minimapState;
+        } else if (!permanentMinimap) {
+            const isProcInterior = mapId === 636 && window.ProceduralInteriors &&
+                window.ProceduralInteriors.isCurrent && window.ProceduralInteriors.isCurrent();
+            savedState = (mapId === 315 || (mapId === 636 && !isProcInterior)) ? 1 : 0;
         }
+
+        // Revert Fullscreen (state 3) back to Minimap (state 1) on scene transfer
+        if (savedState === 3) {
+            savedState = 1;
+            if ($gameSystem) $gameSystem._minimapState = 1;
+        }
+
+        currentMapState = noMinimap ? 0 : savedState;
 
         if (currentMapState > 0) {
             createWorldMapSprite();
             refreshWorldMapDisplay();
+        } else if (worldMapSprite) {
+            worldMapSprite.visible = false;
         }
 
         // Initialize city labels on map

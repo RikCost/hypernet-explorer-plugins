@@ -226,6 +226,13 @@
       if (!p1 || !p1._classId) {
         if (p1) p1.changeClass(1, false);
       }
+      if (p1 && (!p1.characterName() || !p1.vnBust())) {
+        if (Scene_CharacterCreation && Scene_CharacterCreation.assignRandomSpriteAndBust) {
+          Scene_CharacterCreation.assignRandomSpriteAndBust(p1);
+        } else if (window.selectRandomSpriteForActor) {
+          window.selectRandomSpriteForActor(1);
+        }
+      }
       if (!$gameSystem._ccOriginSymbol) {
         $gameSystem._ccOriginSymbol = "origin_train";
       }

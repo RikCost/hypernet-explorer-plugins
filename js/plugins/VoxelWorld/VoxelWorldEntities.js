@@ -27,7 +27,7 @@
     if (!VW) { console.error('[VoxelWorld] core not loaded before VoxelWorldEntities.js'); return; }
 
     const {
-        CharacterBillboard, INTERIOR_FAR, INTERIOR_NEAR, PERSON_H, STAIR_REACH,
+        CharacterBillboard, VehicleBillboard, INTERIOR_FAR, INTERIOR_NEAR, PERSON_H, STAIR_REACH,
         STEP_UP, SettlementBatch, WORLD_MAP_ID, WORLD_TILE_SIZE, getRenderType,
         planBaseY, planForTile, planInterior, planSettlement, sampleBiomeAt,
         settleRnd, settlementKindAt
@@ -46,12 +46,10 @@
     //
     // The battle models carry no real size at all - every one of them is
     // normalised to fit the battle view - so the world has to decide for
-    // itself. The smallest thing that roams is a head taller than the party
-    // and the biggest is nearly four of them, spread by the species (so the
-    // same animal is always the same size) and by its level (so the things
-    // that would flatten you look like they would).
-    const CREATURE_MIN_H = PERSON_H * 0.9;
-    const CREATURE_MAX_H = PERSON_H * 3.8;
+    // itself. Small creatures stand noticeably larger than the player and
+    // apex beasts stand giant and towering.
+    const CREATURE_MIN_H = PERSON_H * 1.8;
+    const CREATURE_MAX_H = PERSON_H * 5.8;
     function creatureHeight(data, level) {
         // A stable hash of the species, not a die roll: come back tomorrow and
         // the same animal is the same size.
@@ -60,7 +58,7 @@
         const own = ((h ^ (h >>> 13)) >>> 0) / 4294967296;
         const lvl = Math.max(0, Math.min(1, ((level | 0) - 1) / 70));
         const mix = Math.max(0, Math.min(1, own * 0.6 + lvl * 0.4));
-        return CREATURE_MIN_H + (CREATURE_MAX_H - CREATURE_MIN_H) * mix * mix;
+        return CREATURE_MIN_H + (CREATURE_MAX_H - CREATURE_MIN_H) * (mix * 0.65 + Math.sqrt(mix) * 0.35);
     }
     const ENEMY_3D_DESPAWN   = 1250;   // world units before an enemy recycles
     const ENEMY_3D_SPAWN_INT = 0.5;    // seconds between spawn attempts
@@ -103,7 +101,7 @@
     // swoop at.
     const FLY_CRUISE_MIN = 45;
     const FLY_CRUISE_MAX = 100;
-    const FLY_SWOOP_H    = 9;         // how far over the party a diving flyer levels out
+    const FLY_SWOOP_H    = 4;         // how far over the party feet a diving flyer levels out
     // Frames, as the personality table counts them, into seconds.
     const FRAME = 1 / 60;
 
@@ -277,7 +275,7 @@
                 // Anything that can move, and anything that can react to being
                 // walked up to even if it cannot: a mimic never takes a step and
                 // still has to be able to spring.
-                if (ent.root && !ent.dead && (ent.moveSpeed > 0 || (ent.beh && ent.beh.react))) {
+                if (ent.root && !ent.dead && (ent.moveSpeed > 0 || (ent.beh && ent.beh.react) || ent.flies || ent.swims)) {
                     this._roam(ent, delta, vanX, vanZ);
                 }
                 if (ent.plate) this._sizePlate(ent, vanX, vanZ);
@@ -312,19 +310,23 @@
         // it does? Range, then the facing arc, then whether the ground between
         // them is in the way.
         _sees(ent, px, pz, beh) {
-            if (px == null || !beh || !(beh.sight > 0)) return false;
+            if (px == null) return false;
+            let sightSteps = (beh && beh.sight > 0) ? beh.sight : 0;
+            if (ent.flies && sightSteps < 14) sightSteps = 14;
+            if (ent.swims && sightSteps < 12) sightSteps = 12;
+            if (sightSteps <= 0) return false;
             const dx = px - ent.x, dz = pz - ent.z;
             const d2 = dx * dx + dz * dz;
-            const range = beh.sight * TILE_UNITS;
+            const range = sightSteps * TILE_UNITS;
             if (d2 > range * range) return false;
-            const cone = beh.cone == null ? 360 : beh.cone;
-            if (cone < 359) {
+            const cone = beh && beh.cone != null ? beh.cone : 360;
+            if (cone < 359 && !ent.flies && !ent.swims) {
                 let a = Math.atan2(dz, dx) - ent.heading;
                 while (a > Math.PI)  a -= Math.PI * 2;
                 while (a < -Math.PI) a += Math.PI * 2;
                 if (Math.abs(a) > (cone * Math.PI / 180) / 2) return false;
             }
-            if (beh.los && !this._clearLine(ent, px, pz)) return false;
+            if (beh && beh.los && !ent.flies && !this._clearLine(ent, px, pz)) return false;
             return true;
         }
 
@@ -358,6 +360,7 @@
                 ent.spooked -= delta;
                 ent.heading = faceParty + Math.PI;
                 ent.state = 'idle'; ent.stT = 0;
+                if (ent.flies) ent.diving = false;
                 this._advance(ent, delta, ent.moveSpeed * 2.2, px, pz);
                 return;
             }
@@ -370,13 +373,21 @@
                 case 'alert':
                     // The telegraph: stopped, turned to face whatever it noticed.
                     ent.heading = faceParty;
-                    speed = 0;
+                    speed = ent.flies ? ent.moveSpeed * 1.0 : (ent.swims ? ent.moveSpeed * 0.6 : 0);
+                    if (ent.flies) ent.diving = true;
                     ent.stT -= delta;
                     if (ent.stT <= 0) { ent.state = 'commit'; ent.memT = (beh.memory || 120) * FRAME; }
                     break;
 
                 case 'commit':
-                    speed = ent.moveSpeed * (1 + (beh.chaseSpeed || 0));
+                    if (ent.flies) {
+                        speed = ent.moveSpeed * (2.2 + (beh.chaseSpeed || 0.6));
+                        ent.diving = true;
+                    } else if (ent.swims) {
+                        speed = ent.moveSpeed * (1.6 + (beh.chaseSpeed || 0.5));
+                    } else {
+                        speed = ent.moveSpeed * (1 + (beh.chaseSpeed || 0));
+                    }
                     this._react(ent, beh, faceParty, toParty, seen, delta);
                     if (seen) ent.memT = (beh.memory || 120) * FRAME;
                     else ent.memT -= delta;
@@ -394,6 +405,7 @@
                     if (ent.lastX != null) {
                         ent.heading = Math.atan2(ent.lastZ - ent.z, ent.lastX - ent.x);
                     }
+                    if (ent.flies) ent.diving = false;
                     ent.stT -= delta;
                     if (seen) { ent.state = 'commit'; ent.memT = (beh.memory || 120) * FRAME; }
                     else if (ent.stT <= 0) { ent.state = beh.home ? 'return' : 'idle'; ent.stT = 0; }
@@ -401,17 +413,19 @@
 
                 case 'return':
                     ent.heading = Math.atan2(ent.homeZ - ent.z, ent.homeX - ent.x);
+                    if (ent.flies) ent.diving = false;
                     if (Math.hypot(ent.homeX - ent.x, ent.homeZ - ent.z) < TILE_UNITS) {
                         ent.state = 'idle'; ent.stT = 0;
                     }
-                    if (seen && beh.react) { ent.state = 'alert'; ent.stT = (beh.alert || 0) * FRAME; }
+                    if (seen && (beh.react || ent.flies || ent.swims)) { ent.state = 'alert'; ent.stT = (beh.alert || 15) * FRAME; }
                     break;
 
                 default:
                     speed = this._idle(ent, beh, delta);
-                    if (seen && beh.react) {
+                    if (ent.flies) ent.diving = false;
+                    if (seen && (beh.react || ent.flies || ent.swims)) {
                         ent.state = 'alert';
-                        ent.stT = (beh.alert || 0) * FRAME;
+                        ent.stT = (beh.alert || 20) * FRAME;
                     }
                     break;
             }
@@ -478,6 +492,17 @@
         // already worked out the speed.
         _react(ent, beh, faceParty, toParty, seen, delta) {
             const band = beh.band;
+            if (ent.flies) {
+                // Flying enemies swoop down directly at the player
+                ent.heading = faceParty;
+                ent.diving = true;
+                return;
+            }
+            if (ent.swims) {
+                // Swimming enemies swim directly towards the player
+                ent.heading = faceParty;
+                return;
+            }
             switch (beh.react) {
                 case 'flee':
                 case 'coward':
@@ -496,7 +521,6 @@
                         (band && toParty > band[1] * TILE_UNITS ? -0.7 : band && toParty < band[0] * TILE_UNITS ? 0.7 : 0);
                     break;
                 case 'swoop':
-                    // Straight down the line at you, and back up over your head.
                     ent.heading = faceParty;
                     ent.diving = toParty > TILE_UNITS * 2;
                     break;
@@ -554,20 +578,30 @@
             const gy = this._terrain.getTerrainHeight(ent.x / ts, ent.z / ts);
             let want = gy;
             if (ent.swims) {
+                const top = this._terrain.waterSurfaceAt(ent.x, ent.z);
+                if (top != null) {
+                    const bed = this._terrain.getBlockTop(ent.x, ent.z);
+                    if (ent.state === 'commit' || ent.state === 'alert') {
+                        const targetD = Math.max(ENEMY_WATER_MARGIN, Math.min(Math.max(ENEMY_WATER_MARGIN, top - bed - ENEMY_WATER_MARGIN), ENEMY_WATER_MARGIN * 1.5));
+                        ent.swimD = ent.swimD == null ? targetD : ent.swimD + (targetD - ent.swimD) * Math.min(1, delta * 3.0);
+                    }
+                }
                 const w = this._swimY(ent.x, ent.z, ent.swimD);
                 want = w == null ? gy + ENEMY_WATER_MARGIN : w;
             } else if (ent.flies) {
                 // Perched while it has nothing to do, cruising while it is
                 // getting somewhere, and down on the deck while it is diving.
                 const perched = ent.state === 'idle' && (ent.beh.idle === 'perch' || ent.beh.idle === 'still');
-                if (perched) want = gy;
-                else if (ent.diving && px != null) {
+                if (perched) {
+                    want = gy;
+                } else if (ent.diving && px != null) {
                     want = this._terrain.getTerrainHeight(px / ts, pz / ts) + FLY_SWOOP_H;
                 } else {
                     want = gy + ent.flyH;
                 }
             }
-            ent.y = ent.y == null ? want : ent.y + (want - ent.y) * Math.min(1, delta * 3);
+            const rate = ent.flies && (ent.diving || ent.state === 'commit') ? 4.2 : 3.0;
+            ent.y = ent.y == null ? want : ent.y + (want - ent.y) * Math.min(1, delta * rate);
             ent.root.position.set(ent.x, ent.y, ent.z);
         }
 
@@ -808,7 +842,7 @@
                 // the model came with is not uniform - it carries the whole
                 // species' proportions (shapeXYZ) - so writing over it would
                 // make every creature in the world the same shape.
-                let scale = 2.4;
+                let scale = 3.6;
                 let footOff = 0;
                 try {
                     root.updateMatrixWorld(true);
@@ -832,11 +866,11 @@
                 // is divided back out of that scale to keep it in world units.
                 try {
                     const box = new THREE.Box3().setFromObject(root);
-                    const top = Math.max(6, Math.min(70, box.max.y - root.position.y));
+                    const top = Math.max(8, Math.min(100, box.max.y - root.position.y));
                     const plate = makeEnemyPlate(ent.name, ent.level);
                     const inv = 1 / (scale || 1);
                     plate.position.set(0, (top + 2) * inv, 0);
-                    plate.scale.set(20 * inv, 20 * 0.1875 * inv, 1);
+                    plate.scale.set(24 * inv, 24 * 0.1875 * inv, 1);
                     root.add(plate);
                     ent.plate = plate;
                     ent.plateInv = inv;
@@ -1502,15 +1536,27 @@
         }
 
         // Rebuild the line whenever the party or the pet changes.
-        refresh() {
+        refresh(vehicleKey = null) {
             const wanted = [];
+            const isBike = vehicleKey === 'bike';
+            const isBroom = vehicleKey === 'broom';
+            const isMagical = window.VehicleSystem && window.VehicleSystem.isMagicalLeader
+                ? window.VehicleSystem.isMagicalLeader() : false;
+            const broomSheet = isMagical ? 'Vehicles/!$BroomStickRidingArcane' : 'Vehicles/!$BroomStickRiding';
+
             if (typeof $gameParty !== 'undefined' && $gameParty.members) {
                 const mem = $gameParty.members();
                 for (let i = 1; i < mem.length && i < 4; i++) {
                     const a = mem[i];
                     if (!a || !a.characterName || !a.characterName()) continue;
                     if (this._skipId && a.actorId && a.actorId() === this._skipId) continue;
-                    wanted.push({ sheet: a.characterName(), index: a.characterIndex() });
+                    if (isBike) {
+                        wanted.push({ sheet: 'Vehicles/!$BikeRiding', index: 0 });
+                    } else if (isBroom) {
+                        wanted.push({ sheet: broomSheet, index: 0 });
+                    } else {
+                        wanted.push({ sheet: a.characterName(), index: a.characterIndex() });
+                    }
                 }
             }
             const pet = window.PetSystem && window.PetSystem.getActivePet
@@ -1564,55 +1610,67 @@
         // `lead` is where the player is standing this frame.
         update(delta, lx, ly, lz, camYaw, df, groundFn) {
             if (!this._members.length) return;
-            // The head of the trail is always exactly where the leader is
-            // standing (a new breadcrumb is only dropped every couple of units),
-            // so the gap each follower keeps is measured from the leader and not
-            // from the last crumb behind them.
-            if (!this._trail.length) this._trail.push({ x: lx, y: ly, z: lz });
+            // Breadcrumbs: drop a marker whenever the leader has walked enough to
+            // matter (0.6 units), and throw old ones away when they are too far
+            // back for any member to reach.
+            const FOLLOWER_GAP = 13;
             const head = this._trail[0];
-            head.x = lx; head.y = ly; head.z = lz;
-            const next = this._trail[1];
-            if (!next || Math.hypot(lx - next.x, lz - next.z) > 2) {
-                this._trail.unshift({ x: lx, y: ly, z: lz });
-                if (this._trail.length > 240) this._trail.pop();
+            if (!head || Math.hypot(lx - head.x, lz - head.z) >= 0.6) {
+                this._trail.unshift({ x: lx, y: ly, z: lz, d: 0 });
+                let acc = 0;
+                for (let i = 1; i < this._trail.length; i++) {
+                    const prev = this._trail[i - 1];
+                    const curr = this._trail[i];
+                    acc += Math.hypot(curr.x - prev.x, curr.z - prev.z);
+                    curr.d = acc;
+                }
+                const maxD = (this._members.length + 1) * FOLLOWER_GAP + 2;
+                while (this._trail.length > 2 && this._trail[this._trail.length - 1].d > maxD) {
+                    this._trail.pop();
+                }
             }
-            const GAP = 13;   // how far back each one walks (3.2 m)
             for (let i = 0; i < this._members.length; i++) {
                 const m = this._members[i];
-                const spot = this._sample(GAP * (i + 1));
-                const nx = spot ? spot.x : lx, nz = spot ? spot.z : lz;
-                const dx = nx - m.x, dz = nz - m.z;
-                const moved = Math.hypot(dx, dz);
-                if (moved > 0.05) {
-                    m.bb.yaw = Math.atan2(dx, dz);
-                    m.bb.step += moved;
+                const wantD = (i + 1) * FOLLOWER_GAP;
+                const pos = this._sampleTrail(wantD);
+                if (pos) {
+                    const gy = groundFn ? groundFn(pos.x, pos.z) : ly;
+                    m.x = pos.x; m.y = gy; m.z = pos.z;
+                    m.bb.yaw = pos.yaw;
+                    m.bb.moving = pos.moving;
+                    m.bb.setPosition(pos.x, gy, pos.z);
+                    m.bb.setDaylight(df == null ? 1 : df);
+                    m.bb.update(lx, lz, camYaw);
                 }
-                m.bb.moving = moved > 0.05;
-                m.x = nx; m.z = nz;
-                const gy = groundFn ? groundFn(nx, nz, spot ? spot.y : ly) : (spot ? spot.y : ly);
-                m.bb.setPosition(nx, gy, nz);
-                m.bb.setDaylight(df == null ? 1 : df);
-                m.bb.update(lx, lz, camYaw);
             }
         }
 
-        // Walk back down the trail until `back` units have been covered.
-        _sample(back) {
-            let acc = 0;
-            for (let i = 1; i < this._trail.length; i++) {
-                const a = this._trail[i - 1], b = this._trail[i];
-                const seg = Math.hypot(b.x - a.x, b.z - a.z);
-                if (acc + seg >= back) {
-                    const t = seg > 0 ? (back - acc) / seg : 0;
-                    return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t };
-                }
-                acc += seg;
+        _sampleTrail(targetD) {
+            if (!this._trail.length) return null;
+            if (this._trail.length === 1 || targetD <= 0) {
+                return { x: this._trail[0].x, z: this._trail[0].z, yaw: 0, moving: false };
             }
-            return this._trail[this._trail.length - 1] || null;
+            for (let i = 0; i < this._trail.length - 1; i++) {
+                const a = this._trail[i];
+                const b = this._trail[i + 1];
+                if (a.d <= targetD && b.d >= targetD) {
+                    const span = (b.d - a.d) || 0.001;
+                    const t = (targetD - a.d) / span;
+                    const x = a.x + (b.x - a.x) * t;
+                    const z = a.z + (b.z - a.z) * t;
+                    const yaw = Math.atan2(a.x - b.x, a.z - b.z);
+                    return { x, z, yaw, moving: true };
+                }
+            }
+            const last = this._trail[this._trail.length - 1];
+            return { x: last.x, z: last.z, yaw: 0, moving: false };
         }
 
         dispose() {
-            for (const m of this._members) m.bb.dispose();
+            for (const m of this._members) {
+                this._scene.remove(m.bb.mesh);
+                m.bb.dispose();
+            }
             this._members.length = 0;
             this._trail.length = 0;
         }
@@ -1647,18 +1705,22 @@
         // Which vehicle the party is aboard, so it is not drawn twice.
         setDriving(key) { this._driving = key || null; }
 
-        update(delta, atX, atZ) {
+        update(delta, atX, atZ, camYaw = 0) {
             for (const rec of this._live.values()) {
-                if (rec.model.update) rec.model.update((rec.t = (rec.t || 0) + delta));
+                if (rec.model && rec.model.update) rec.model.update((rec.t = (rec.t || 0) + delta));
+                if (rec.bb) {
+                    rec.bb.update(atX, atZ, camYaw);
+                    rec.bb.faceCamera(atX, atZ, camYaw);
+                }
             }
             this._timer += delta;
             if (this._timer < PARKED_INT) return;
             this._timer = 0;
-            this._sweep(atX, atZ);
+            this._sweep(atX, atZ, camYaw);
         }
 
         // What should be standing here, and what should not be any more.
-        _sweep(atX, atZ) {
+        _sweep(atX, atZ, camYaw = 0) {
             const VM = window.VehicleModels;
             const VP = window.VehiclePosition;
             if (!VM || !VP) return;
@@ -1677,32 +1739,58 @@
                 const w = want.get(key);
                 // Gone out of range, driven away, or moved to another square.
                 if (!w || Math.abs(w.x - rec.x) > 1 || Math.abs(w.z - rec.z) > 1) {
-                    rec.model.dispose();
+                    if (rec.model && rec.model.dispose) rec.model.dispose();
+                    if (rec.bb) {
+                        this._scene.remove(rec.bb.mesh);
+                        rec.bb.dispose();
+                    }
                     this._live.delete(key);
                 }
             }
+            const VEHICLE_2D_PARKED = {
+                car:   { sheet: 'Vehicles/!$Car_large', length: 18 },
+                bike:  { sheet: 'Vehicles/!$Bike', length: 7 },
+                boat:  { sheet: 'Vehicles/!$Boat_large', length: 14 },
+                broom: { sheet: 'Vehicles/!$BroomStick', length: 6 }
+            };
             for (const [key, w] of want) {
                 if (this._live.has(key)) continue;
-                const model = VM.build(key);
-                if (!model) continue;
-                const s = VM.worldScale(key, model);
-                model.group.scale.multiplyScalar(s);
                 const gy = this._terrain.getTerrainHeight(w.x / WORLD_TILE_SIZE, w.z / WORLD_TILE_SIZE);
-                model.group.position.set(w.x, gy, w.z);
-                // Parked at whatever angle it happened to be left at, but the
-                // same angle every time this world is entered: the square it
-                // stands on decides, not the roll of a die.
-                model.group.rotation.y = ((w.x * 7 + w.z * 13) % 360) * Math.PI / 180;
-                if (window.PSXShader && window.PSXShader.applyToObject) {
-                    window.PSXShader.applyToObject(model.group);
+                const yaw = ((w.x * 7 + w.z * 13) % 360) * Math.PI / 180;
+
+                if (key !== 'camper' && key !== 'starship' && VEHICLE_2D_PARKED[key]) {
+                    const cfg = VEHICLE_2D_PARKED[key];
+                    const bb = new VehicleBillboard(cfg.sheet, cfg.length);
+                    bb.setPosition(w.x, gy, w.z);
+                    bb.yaw = yaw;
+                    this._scene.add(bb.mesh);
+                    bb.update(atX, atZ, camYaw);
+                    bb.faceCamera(atX, atZ, camYaw);
+                    this._live.set(key, { bb, x: w.x, z: w.z, t: 0 });
+                } else {
+                    const model = VM.build(key);
+                    if (!model) continue;
+                    const s = VM.worldScale(key, model);
+                    model.group.scale.multiplyScalar(s);
+                    model.group.position.set(w.x, gy, w.z);
+                    model.group.rotation.y = yaw;
+                    if (window.PSXShader && window.PSXShader.applyToObject) {
+                        window.PSXShader.applyToObject(model.group);
+                    }
+                    this._scene.add(model.group);
+                    this._live.set(key, { model, x: w.x, z: w.z, t: 0 });
                 }
-                this._scene.add(model.group);
-                this._live.set(key, { model, x: w.x, z: w.z, t: 0 });
             }
         }
 
         dispose() {
-            for (const rec of this._live.values()) rec.model.dispose();
+            for (const rec of this._live.values()) {
+                if (rec.model && rec.model.dispose) rec.model.dispose();
+                if (rec.bb) {
+                    this._scene.remove(rec.bb.mesh);
+                    rec.bb.dispose();
+                }
+            }
             this._live.clear();
         }
     }

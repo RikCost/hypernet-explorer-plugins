@@ -78,6 +78,11 @@
     VOX.LOD = [1, 1, 2, 2, 4, 4, 4, 10, 10, 10, 10, 10, 20];
     VOX.lodStep = d => VOX.LOD[Math.min(Math.max(0, d | 0), VOX.LOD.length - 1)];
 
+    function isFarlands(x, z) {
+        const span = 256 * WORLD_TILE_SIZE;
+        return x < 0 || x >= span || z < 0 || z >= span;
+    }
+
     // =========================================================================
     // Materials
     //
@@ -561,6 +566,11 @@
     defTerrain('rocky',    { land: 18, hill: 40, ridge: 26, fine: 9,
                              surface: MAT.ROCK, sub: MAT.ROCK, cliffAt: 1.1 });
     defTerrain('weird',    { land: 16, hill: 34, ridge: 26, fine: 8 });
+    defTerrain('farlands', {
+        land: 45, hill: 85, ridge: 130, ridgePow: 1.8, terrace: 25, terraceMix: 0.85,
+        fine: 16, surface: null, sub: MAT.OBSIDIAN, bed: MAT.BASALT, hot: 0.7,
+        cliff: MAT.GLOWSTONE, cliffAt: 0.95
+    });
     // Anywhere people have built or paved: dead level, so a house sits on the
     // ground and a carriageway does not ripple.
     defTerrain('settled',  { flat: true, island: 0.35 });
@@ -575,6 +585,7 @@
     // Name to profile. First pattern to match wins, so the specific names come
     // before the families they belong to.
     const TERRAIN_RULES = [
+        [/^farland|^glitch|^singularity|^quantum|^null matrix|^eldritch fault|^infinite cascade/, 'farlands'],
         [/^(road|highway|bridge)/, 'road'],
         [/^(city|burg|village|villa|houses|docks|farm|park|town|castle|temple|church|office|factory|laboratory|arena|metro|train|spacecenter|graveyard|abandoned|ruins)/, 'settled'],
         [/^seabed|^ocean/,                              'sea'],
@@ -1260,6 +1271,32 @@
                 if (omega > 0.5) { mat = MAT.ROCK; road = false; }
             }
 
+            // --- Far Lands: infinite haywire procedural generation beyond borders ---
+            if (isFarlands(x, z)) {
+                const fx = x * 0.008, fz = z * 0.008;
+                const sinLattice = Math.sin(fx * 3.7) * Math.cos(fz * 3.7) * 75;
+                const highWave = Math.sin(fx * 11.3 + fz * 7.1) * 35;
+                const bitwiseCut = (((Math.floor(x / 20) ^ Math.floor(z / 20)) & 7) - 3.5) * 14;
+                const terraceMonolith = Math.round(h / 30) * 30;
+                h = terraceMonolith * 0.6 + (h + sinLattice + highWave + bitwiseCut) * 0.4;
+
+                const bSeed = Math.abs((Math.floor(x / 10) ^ Math.floor(z / 10))) % 14;
+                if (bSeed === 0) mat = MAT.GLOWSTONE;
+                else if (bSeed === 1) mat = MAT.OBSIDIAN;
+                else if (bSeed === 2) mat = MAT.CRYSTAL;
+                else if (bSeed === 3) mat = MAT.LAVA;
+                else if (bSeed === 4) mat = MAT.ORE_QUANTUM;
+                else if (bSeed === 5) mat = MAT.ORE_ARCANE;
+                else if (bSeed === 6) mat = MAT.ORE_ETHEREAL;
+                else if (bSeed === 7) mat = MAT.BASALT;
+                else if (bSeed === 8) mat = MAT.MARBLE;
+                else if (bSeed === 9) mat = MAT.CONCRETE;
+                else if (bSeed === 10) mat = MAT.GLASS;
+                else if (bSeed === 11) mat = MAT.MAGMA;
+                else if (bSeed === 12) mat = MAT.ORE_METEOR;
+                else mat = MAT.BEDROCK;
+            }
+
             o.h = h; o.mat = mat; o.road = road; o.prof = pOwn; o.water = waterY;
             o.r = _clamp(r, 0, 1); o.g = _clamp(g, 0, 1); o.b = _clamp(b, 0, 1);
             return o;
@@ -1369,7 +1406,13 @@
                 r: c.r, g: c.g, b: c.b,
                 top: _clamp(Math.round(c.h / VOX.SIZE), VOX.MIN_Y + 1, VOX.MAX_Y)
             };
-            if (this._colCache.size > 200000) this._colCache.clear();
+            if (this._colCache.size > 80000) {
+                let count = 0;
+                for (const k of this._colCache.keys()) {
+                    this._colCache.delete(k);
+                    if (++count >= 10000) break;
+                }
+            }
             this._colCache.set(key, rec);
             return rec;
         }
@@ -1455,6 +1498,25 @@
         // The generated stack of a column: skin, a few cubes of subsoil, then
         // rock all the way down, salted with ore the deeper it goes.
         genMaterial(col, vx, vy, vz) {
+            if (isFarlands(vx * VOX.SIZE, vz * VOX.SIZE)) {
+                const cell = Math.abs((vx ^ vy ^ vz) + Math.floor(Math.sin(vy * 0.4) * 8)) % 16;
+                if (cell === 0) return MAT.GLOWSTONE;
+                if (cell === 1) return MAT.LAVA;
+                if (cell === 2) return MAT.MAGMA;
+                if (cell === 3) return MAT.OBSIDIAN;
+                if (cell === 4) return MAT.CRYSTAL;
+                if (cell === 5) return MAT.ORE_QUANTUM;
+                if (cell === 6) return MAT.ORE_ARCANE;
+                if (cell === 7) return MAT.ORE_ETHEREAL;
+                if (cell === 8) return MAT.ORE_METEOR;
+                if (cell === 9) return MAT.BASALT;
+                if (cell === 10) return MAT.MARBLE;
+                if (cell === 11) return MAT.CONCRETE;
+                if (cell === 12) return MAT.GLASS;
+                if (cell === 13) return MAT.BRICK;
+                if (cell === 14) return MAT.ASH;
+                return MAT.BEDROCK;
+            }
             const depth = col.top - 1 - vy;
             const p = col.prof || TERRAIN.plain;
             const isMountain = p && (p.massif || p.bed === MAT.GRANITE || (p.ridge && p.ridge >= 30));
@@ -1840,7 +1902,44 @@
             const at = (i, j) => (j + 1) * w + (i + 1);
             const skip = (i, j) => detail && detail[at(i, j)];
 
-            // Tops: merge equal (height, material, colour) rectangles.
+            // Precompute corner heights and slope state for natural terrain (1-block height gaps)
+            const yNW = new Int32Array(w * w);
+            const yNE = new Int32Array(w * w);
+            const ySE = new Int32Array(w * w);
+            const ySW = new Int32Array(w * w);
+            const sloped = new Uint8Array(w * w);
+
+            for (let j = 0; j < w; j++) {
+                for (let i = 0; i < w; i++) {
+                    const k = j * w + i;
+                    const h = top[k];
+                    if (detail && detail[k]) {
+                        yNW[k] = yNE[k] = ySE[k] = ySW[k] = h;
+                        continue;
+                    }
+                    const nbW = (i > 0) ? top[k - 1] : h;
+                    const nbE = (i < w - 1) ? top[k + 1] : h;
+                    const nbN = (j > 0) ? top[k - w] : h;
+                    const nbS = (j < w - 1) ? top[k + w] : h;
+
+                    const dropW = (h - nbW === step) ? step : 0;
+                    const dropE = (h - nbE === step) ? step : 0;
+                    const dropN = (h - nbN === step) ? step : 0;
+                    const dropS = (h - nbS === step) ? step : 0;
+
+                    if (dropW || dropE || dropN || dropS) {
+                        sloped[k] = 1;
+                        yNW[k] = h - Math.max(dropW, dropN);
+                        yNE[k] = h - Math.max(dropE, dropN);
+                        ySE[k] = h - Math.max(dropE, dropS);
+                        ySW[k] = h - Math.max(dropW, dropS);
+                    } else {
+                        yNW[k] = yNE[k] = ySE[k] = ySW[k] = h;
+                    }
+                }
+            }
+
+            // Tops: sloped columns get sloped quads; flat columns greedily merge.
             const done = new Uint8Array(n * n);
             for (let j = 0; j < n; j++) {
                 for (let i = 0; i < n; i++) {
@@ -1848,9 +1947,33 @@
                     const k = at(i, j);
                     const h = top[k], m = mat[k];
                     const r = col[k * 3], g = col[k * 3 + 1], b = col[k * 3 + 2];
+
+                    if (sloped[k]) {
+                        done[j * n + i] = 1;
+                        const x0 = (ox + i * step) * VOX.SIZE - bias.x;
+                        const z0 = (oz + j * step) * VOX.SIZE - bias.z;
+                        const x1 = x0 + bs;
+                        const z1 = z0 + bs;
+                        const y00 = yNW[k] * VOX.SIZE;
+                        const y10 = yNE[k] * VOX.SIZE;
+                        const y11 = ySE[k] * VOX.SIZE;
+                        const y01 = ySW[k] * VOX.SIZE;
+
+                        let cr = r * FACE_SHADE.top, cg = g * FACE_SHADE.top, cb = b * FACE_SHADE.top;
+                        const target = (m === MAT.GRASS) ? G : B;
+                        if (m === MAT.GRASS) {
+                            const t = grassTint(r, g, b);
+                            cr = t.r; cg = t.g; cb = t.b;
+                        }
+                        target.quadSlope(x0, y00, z0, x0, y01, z1, x1, y11, z1, x1, y10, z0,
+                                         cr, cg, cb, step, step);
+                        continue;
+                    }
+
                     const same = (ii, jj) => {
                         if (done[jj * n + ii] || skip(ii, jj)) return false;
                         const kk = at(ii, jj);
+                        if (sloped[kk]) return false;
                         return top[kk] === h && mat[kk] === m &&
                                Math.abs(col[kk * 3] - r) < 0.02 &&
                                Math.abs(col[kk * 3 + 1] - g) < 0.02 &&
@@ -1887,50 +2010,124 @@
                 const dx = dir === 0 ? -1 : dir === 1 ? 1 : 0;
                 const dz = dir === 2 ? -1 : dir === 3 ? 1 : 0;
                 const shade = dx ? FACE_SHADE.side : FACE_SHADE.end;
-                // An x-facing wall runs along z, and a z-facing wall along x.
                 const runI  = dx ? 1 : 0;
                 const seen  = new Uint8Array(n * n);
                 for (let j = 0; j < n; j++) {
                     for (let i = 0; i < n; i++) {
                         if (seen[j * n + i] || skip(i, j)) continue;
                         const k = at(i, j);
-                        const h = top[k], nb = top[at(i + dx, j + dz)];
-                        if (h <= nb) continue;
-                        const m = mat[k];
-                        const r = col[k * 3], g = col[k * 3 + 1], b = col[k * 3 + 2];
-                        let run = 1;
-                        for (;;) {
-                            const ii = i + (runI ? 0 : run), jj = j + (runI ? run : 0);
-                            if (ii >= n || jj >= n || seen[jj * n + ii] || skip(ii, jj)) break;
-                            const kk = at(ii, jj);
-                            if (top[kk] !== h || mat[kk] !== m) break;
-                            if (top[at(ii + dx, jj + dz)] !== nb) break;
-                            run++;
-                        }
-                        for (let s = 0; s < run; s++) {
-                            const ii = i + (runI ? 0 : s), jj = j + (runI ? s : 0);
-                            seen[jj * n + ii] = 1;
+                        const knb = at(i + dx, j + dz);
+
+                        let yTopA, yTopB, yBotA, yBotB;
+                        if (dir === 0) {
+                            yTopA = yNW[k]; yTopB = ySW[k];
+                            yBotA = yNE[knb]; yBotB = ySE[knb];
+                        } else if (dir === 1) {
+                            yTopA = yNE[k]; yTopB = ySE[k];
+                            yBotA = yNW[knb]; yBotB = ySW[knb];
+                        } else if (dir === 2) {
+                            yTopA = yNW[k]; yTopB = yNE[k];
+                            yBotA = ySW[knb]; yBotB = ySE[knb];
+                        } else {
+                            yTopA = ySW[k]; yTopB = ySE[k];
+                            yBotA = yNW[knb]; yBotB = yNE[knb];
                         }
 
-                        // The exposed wall is skinned with the column's own
-                        // surface cube for the first block and its subsoil under
-                        // that, which is what gives a voxel cliff its grass lip.
-                        const yTop = h * VOX.SIZE;
-                        const yLip = Math.max(nb, h - step) * VOX.SIZE;
-                        const yBot = nb * VOX.SIZE;
-                        const runLen = run * bs;
-                        const x0 = (ox + i * step) * VOX.SIZE - bias.x;
-                        const z0 = (oz + j * step) * VOX.SIZE - bias.z;
-                        const wall = (yA, yB, cr, cg, cb) => {
-                            if (yB <= yA) return;
-                            B.quadSide(dir, x0, z0, yA, yB - yA, runLen, bs,
-                                       cr * shade, cg * shade, cb * shade,
-                                       run * step, (yB - yA) / VOX.SIZE);
-                        };
-                        wall(yLip, yTop, r, g, b);
-                        if (yLip > yBot) {
-                            const c = MATERIALS[VoxelMesher.subMat(m)].rgb;
-                            wall(yBot, yLip, c.r, c.g, c.b);
+                        if (yTopA <= yBotA && yTopB <= yBotB) continue;
+
+                        const m = mat[k];
+                        const r = col[k * 3], g = col[k * 3 + 1], b = col[k * 3 + 2];
+
+                        if (yTopA === yTopB && yBotA === yBotB) {
+                            const h = yTopA, nb = yBotA;
+                            let run = 1;
+                            for (;;) {
+                                const ii = i + (runI ? 0 : run), jj = j + (runI ? run : 0);
+                                if (ii >= n || jj >= n || seen[jj * n + ii] || skip(ii, jj)) break;
+                                const kk = at(ii, jj);
+                                const kknb = at(ii + dx, jj + dz);
+                                let kkTopA, kkTopB, kkBotA, kkBotB;
+                                if (dir === 0) {
+                                    kkTopA = yNW[kk]; kkTopB = ySW[kk];
+                                    kkBotA = yNE[kknb]; kkBotB = ySE[kknb];
+                                } else if (dir === 1) {
+                                    kkTopA = yNE[kk]; kkTopB = ySE[kk];
+                                    kkBotA = yNW[kknb]; kkBotB = ySW[kknb];
+                                } else if (dir === 2) {
+                                    kkTopA = yNW[kk]; kkTopB = yNE[kk];
+                                    kkBotA = ySW[kknb]; kkBotB = ySE[kknb];
+                                } else {
+                                    kkTopA = ySW[kk]; kkTopB = ySE[kk];
+                                    kkBotA = yNW[kknb]; kkBotB = yNE[kknb];
+                                }
+                                if (kkTopA !== h || kkTopB !== h || kkBotA !== nb || kkBotB !== nb || mat[kk] !== m) break;
+                                run++;
+                            }
+                            for (let s = 0; s < run; s++) {
+                                const ii = i + (runI ? 0 : s), jj = j + (runI ? s : 0);
+                                seen[jj * n + ii] = 1;
+                            }
+
+                            const yTop = h * VOX.SIZE;
+                            const yLip = Math.max(nb, h - step) * VOX.SIZE;
+                            const yBot = nb * VOX.SIZE;
+                            const runLen = run * bs;
+                            const x0 = (ox + i * step) * VOX.SIZE - bias.x;
+                            const z0 = (oz + j * step) * VOX.SIZE - bias.z;
+                            const wall = (yA, yB, cr, cg, cb) => {
+                                if (yB <= yA) return;
+                                B.quadSide(dir, x0, z0, yA, yB - yA, runLen, bs,
+                                           cr * shade, cg * shade, cb * shade,
+                                           run * step, (yB - yA) / VOX.SIZE);
+                            };
+                            wall(yLip, yTop, r, g, b);
+                            if (yLip > yBot) {
+                                const c = MATERIALS[VoxelMesher.subMat(m)].rgb;
+                                wall(yBot, yLip, c.r, c.g, c.b);
+                            }
+                        } else {
+                            seen[j * n + i] = 1;
+                            const x0 = (ox + i * step) * VOX.SIZE - bias.x;
+                            const z0 = (oz + j * step) * VOX.SIZE - bias.z;
+                            const x1 = x0 + bs;
+                            const z1 = z0 + bs;
+
+                            const yTA = yTopA * VOX.SIZE, yTB = yTopB * VOX.SIZE;
+                            const yBA = Math.min(yTopA, yBotA) * VOX.SIZE;
+                            const yBB = Math.min(yTopB, yBotB) * VOX.SIZE;
+
+                            let p1, p2, p3, p4, nx, ny, nz;
+                            if (dir === 0) {
+                                nx = -1; ny = 0; nz = 0;
+                                p1 = [x0, yTA, z0];
+                                p2 = [x0, yBA, z0];
+                                p3 = [x0, yBB, z1];
+                                p4 = [x0, yTB, z1];
+                            } else if (dir === 1) {
+                                nx = 1; ny = 0; nz = 0;
+                                p1 = [x1, yTB, z1];
+                                p2 = [x1, yBB, z1];
+                                p3 = [x1, yBA, z0];
+                                p4 = [x1, yTA, z0];
+                            } else if (dir === 2) {
+                                nx = 0; ny = 0; nz = -1;
+                                p1 = [x1, yTB, z0];
+                                p2 = [x1, yBB, z0];
+                                p3 = [x0, yBA, z0];
+                                p4 = [x0, yTA, z0];
+                            } else {
+                                nx = 0; ny = 0; nz = 1;
+                                p1 = [x0, yTA, z1];
+                                p2 = [x0, yBA, z1];
+                                p3 = [x1, yBB, z1];
+                                p4 = [x1, yTB, z1];
+                            }
+
+                            const cr = r * shade, cg = g * shade, cb = b * shade;
+                            const uh = Math.max(0.1, (Math.max(yTA, yTB) - Math.min(yBA, yBB)) / VOX.SIZE);
+                            B.quadWall(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2],
+                                       p3[0], p3[1], p3[2], p4[0], p4[1], p4[2],
+                                       nx, ny, nz, cr, cg, cb, step, uh);
                         }
                     }
                 }
@@ -2180,8 +2377,40 @@
         _quad(ax, ay, az, bx, by, bz, cx, cy, cz, dx, dy, dz, nx, ny, nz, r, g, b, uw, uh) {
             const i = this.pos.length / 3;
             this.pos.push(ax, ay, az, bx, by, bz, cx, cy, cz, dx, dy, dz);
-            for (let k = 0; k < 4; k++) { this.nor.push(nx, ny, nz); this.col.push(r, g, b); }
+            this.nor.push(nx, ny, nz, nx, ny, nz, nx, ny, nz, nx, ny, nz);
+            this.col.push(r, g, b, r, g, b, r, g, b, r, g, b);
             this.uv.push(0, 0, uw, 0, uw, uh, 0, uh);
+            this.idx.push(i, i + 1, i + 2, i, i + 2, i + 3);
+        }
+        tri(ax, ay, az, bx, by, bz, cx, cy, cz, nx, ny, nz, r, g, b, uA, vA, uB, vB, uC, vC) {
+            const i = this.pos.length / 3;
+            this.pos.push(ax, ay, az, bx, by, bz, cx, cy, cz);
+            this.nor.push(nx, ny, nz, nx, ny, nz, nx, ny, nz);
+            this.col.push(r, g, b, r, g, b, r, g, b);
+            this.uv.push(uA, vA, uB, vB, uC, vC);
+            this.idx.push(i, i + 1, i + 2);
+        }
+        quadSlope(ax, ay, az, bx, by, bz, cx, cy, cz, dx, dy, dz, r, g, b, uw, uh) {
+            const ux = bx - ax, uy = by - ay, uz = bz - az;
+            const vx = cx - ax, vy = cy - ay, vz = cz - az;
+            let nx = uy * vz - uz * vy;
+            let ny = uz * vx - ux * vz;
+            let nz = ux * vy - uy * vx;
+            const len = Math.hypot(nx, ny, nz) || 1;
+            nx /= len; ny /= len; nz /= len;
+            const i = this.pos.length / 3;
+            this.pos.push(ax, ay, az, bx, by, bz, cx, cy, cz, dx, dy, dz);
+            this.nor.push(nx, ny, nz, nx, ny, nz, nx, ny, nz, nx, ny, nz);
+            this.col.push(r, g, b, r, g, b, r, g, b, r, g, b);
+            this.uv.push(0, 0, 0, uh, uw, uh, uw, 0);
+            this.idx.push(i, i + 1, i + 2, i, i + 2, i + 3);
+        }
+        quadWall(ax, ay, az, bx, by, bz, cx, cy, cz, dx, dy, dz, nx, ny, nz, r, g, b, uw, uh) {
+            const i = this.pos.length / 3;
+            this.pos.push(ax, ay, az, bx, by, bz, cx, cy, cz, dx, dy, dz);
+            this.nor.push(nx, ny, nz, nx, ny, nz, nx, ny, nz, nx, ny, nz);
+            this.col.push(r, g, b, r, g, b, r, g, b, r, g, b);
+            this.uv.push(0, 0, 0, uh, uw, uh, uw, 0);
             this.idx.push(i, i + 1, i + 2, i, i + 2, i + 3);
         }
         // Horizontal face at height y over a w by d footprint. `up` is +1 for a
@@ -2341,6 +2570,7 @@
         clearTerrainCaches, SEA_LEVEL, GROUND_BASE,
         voxelMaterial, voxelGrassMaterial, voxelWaterMaterial, disposeVoxelMaterial,
         voxelBlockMaterial, hotAt, oreAt, bedMat,
+        isFarlands,
         voxelHash3: hash3
     });
 })();

@@ -53,7 +53,131 @@
       // only covers a config that never had one.
       if (ConfigManager.enemySpawnMode === undefined) ConfigManager.enemySpawnMode = 0;
       if (ConfigManager.dialogueMode === undefined) ConfigManager.dialogueMode = 'empathize';
+
+      if (window.$gameSystem && $gameSystem._difficultyMode === undefined) {
+        if ($gameSystem._bloodAndOilMode) {
+          $gameSystem._difficultyMode = 'blood_and_oil';
+        } else if ($gameSystem._peacefulMode) {
+          $gameSystem._difficultyMode = 'peaceful';
+        } else if (window.$gameSwitches && $gameSwitches.value(9)) {
+          $gameSystem._difficultyMode = 'permadeath';
+        } else {
+          $gameSystem._difficultyMode = 'roguelite';
+          if (window.$gameSwitches) {
+            $gameSwitches.setValue(9, false);
+            $gameSwitches.setValue(33, true);
+          }
+          $gameSystem._bloodAndOilMode = false;
+          $gameSystem._peacefulMode = false;
+        }
+      }
+
+      const cleanDesc = (s) => (s || '').replace(/\\C\[\d+\]/gi, '').replace(/\\C/gi, '');
+
       return [
+        {
+          key: 'difficulty',
+          get label() {
+            return (typeof T === 'function' && (T.has('CharCreate.difficulty') ? T('CharCreate.difficulty') : (T.has('SaveSystem.difficulty') ? T('SaveSystem.difficulty') : T('CharCreate.selectDifficulty')))) || 'Difficulty';
+          },
+          get _modes() {
+            return [
+              {
+                symbol: 'roguelite',
+                get name() { return (typeof T === 'function' && T('CharCreate.choice.roguelite.name')) || 'Roguelite'; },
+                get description() { return cleanDesc((typeof T === 'function' && T('CharCreate.choice.roguelite.desc')) || 'If defeated you rewake at the base floor of the dungeon. Fallen allies stay in the party and can be resurrected after battle.'); },
+                apply() {
+                  if (window.$gameSwitches) {
+                    $gameSwitches.setValue(9, false);
+                    $gameSwitches.setValue(33, true);
+                  }
+                  if (window.$gameSystem) {
+                    $gameSystem._bloodAndOilMode = false;
+                    $gameSystem._peacefulMode = false;
+                    $gameSystem._difficultyMode = 'roguelite';
+                  }
+                }
+              },
+              {
+                symbol: 'permadeath',
+                get name() { return (typeof T === 'function' && T('CharCreate.choice.permadeath.name')) || 'Permadeath'; },
+                get description() { return cleanDesc((typeof T === 'function' && T('CharCreate.choice.permadeath.desc')) || 'If your character perishes in battle you must create a new one. Allies not resurrected by the end of the battle die permanently.'); },
+                apply() {
+                  if (window.$gameSwitches) {
+                    $gameSwitches.setValue(9, true);
+                    $gameSwitches.setValue(33, true);
+                  }
+                  if (window.$gameSystem) {
+                    $gameSystem._bloodAndOilMode = false;
+                    $gameSystem._peacefulMode = false;
+                    $gameSystem._difficultyMode = 'permadeath';
+                  }
+                }
+              },
+              {
+                symbol: 'blood_and_oil',
+                get name() { return (typeof T === 'function' && T('CharCreate.choice.bloodAndOil.name')) || 'Blood and Oil'; },
+                get description() { return cleanDesc((typeof T === 'function' && T('CharCreate.choice.bloodAndOil.desc')) || 'Body parts reduced to zero HP are lost, with permanent stat debuffs. Losing a vital organ kills the character instantly. Allies not resurrected by the end of the battle die permanently.'); },
+                apply() {
+                  if (window.$gameSwitches) {
+                    $gameSwitches.setValue(9, true);
+                    $gameSwitches.setValue(33, true);
+                  }
+                  if (window.$gameSystem) {
+                    $gameSystem._bloodAndOilMode = true;
+                    $gameSystem._peacefulMode = false;
+                    $gameSystem._difficultyMode = 'blood_and_oil';
+                  }
+                }
+              },
+              {
+                symbol: 'peaceful',
+                get name() { return (typeof T === 'function' && T('CharCreate.choice.peaceful.name')) || 'Peaceful'; },
+                get description() { return cleanDesc((typeof T === 'function' && T('CharCreate.choice.peaceful.desc')) || 'Enemies never attack or chase you unless provoked, and you can Talk to them in battle. Defeat just returns you to your last respawn point.'); },
+                apply() {
+                  if (window.$gameSwitches) {
+                    $gameSwitches.setValue(9, false);
+                    $gameSwitches.setValue(33, true);
+                  }
+                  if (window.$gameSystem) {
+                    $gameSystem._bloodAndOilMode = false;
+                    $gameSystem._peacefulMode = true;
+                    $gameSystem._difficultyMode = 'peaceful';
+                  }
+                }
+              }
+            ];
+          },
+          get description() {
+            const m = this._modes[this.currentIndex];
+            return m ? m.description : '';
+          },
+          get currentIndex() {
+            if (window.$gameSystem) {
+              if ($gameSystem._difficultyMode) {
+                const idx = this._modes.findIndex(m => m.symbol === $gameSystem._difficultyMode);
+                if (idx >= 0) return idx;
+              }
+              if ($gameSystem._bloodAndOilMode) return 2;
+              if ($gameSystem._peacefulMode) return 3;
+            }
+            if (window.$gameSwitches && $gameSwitches.value(9)) return 1;
+            return 0;
+          },
+          get currentLabel() {
+            const m = this._modes[this.currentIndex];
+            return m ? m.name : '';
+          },
+          _changeBy(delta) {
+            const modes = this._modes;
+            const count = modes.length;
+            if (!count) return;
+            const next = (this.currentIndex + delta + count) % count;
+            modes[next].apply();
+          },
+          next() { this._changeBy(1); },
+          prev() { this._changeBy(-1); },
+        },
         {
           key: 'language',
           label: T('CharCreate.language'),
@@ -339,6 +463,21 @@
             </div>
           </div>
         ` : '';
+      } else if (currentRow.key === 'difficulty') {
+        const glyphs = ['⚔', '💀', '🩸', '🕊'];
+        const glyph = glyphs[currentRow.currentIndex] || '⚔';
+        previewHtml = `
+          <div class="cc-settings-img-stack">
+            <div class="cc-settings-img-entry">
+              <div class="cc-settings-glyph">${glyph}</div>
+              <img src="img/pictures/Settings/EnemyDifficulty.png" class="cc-settings-preview-img"
+                   alt="${currentRow.currentLabel}"
+                   onload="if(this.naturalWidth<8){this.style.display='none'}else{this.previousElementSibling.style.display='none'}"
+                   onerror="this.style.display='none'">
+              <p class="cc-settings-value">${currentRow.currentLabel}</p>
+            </div>
+          </div>
+        `;
       } else if (currentRow.key === 'battleMusic') {
         previewHtml = `<div class="cc-settings-glyph">♪</div>`;
       } else if (currentRow.key === 'activeTheme') {

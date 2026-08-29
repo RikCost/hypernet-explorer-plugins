@@ -149,7 +149,7 @@
             this._moonPhaseDrawn = null;
             this._paintMoon(0.5);          // full, until the calendar is asked
             this._moonMat = new THREE.SpriteMaterial({
-                map: this._moonTex, transparent: true, depthWrite: false, depthTest: false, opacity: 0
+                map: this._moonTex, transparent: true, depthWrite: false, depthTest: true, opacity: 0
             });
             this._moonMat.fog = false;
 
@@ -310,7 +310,7 @@
                 cv.width = cv.height = MOON_TEX;
                 const tex = new THREE.CanvasTexture(cv);
                 const mat = new THREE.SpriteMaterial({
-                    map: tex, transparent: true, depthWrite: false, depthTest: false, opacity: 0
+                    map: tex, transparent: true, depthWrite: false, depthTest: true, opacity: 0
                 });
                 mat.fog = false;
                 const sp = new THREE.Sprite(mat);

@@ -3979,6 +3979,9 @@
 
     static _registerCommand(name, callback) {
       PluginManager.registerCommand(PLUGIN_NAME, name, callback);
+      if (PLUGIN_NAME !== 'Vehicle/' + PLUGIN_NAME) {
+        PluginManager.registerCommand('Vehicle/' + PLUGIN_NAME, name, callback);
+      }
     }
 
     /**
@@ -4612,7 +4615,10 @@
    * 'boat' vehicle, distinguished by $gameSystem._boatType.
    */
   function riddenPortableConfig() {
-    if (!$gamePlayer || !$gamePlayer.isInBoat()) return null;
+    if (!$gamePlayer) return null;
+    const vehicle = $gamePlayer.vehicle();
+    const driving = vehicle && vehicle._driving;
+    if (!driving && !$gamePlayer.isInBoat() && $gamePlayer._vehicleType !== 'boat') return null;
     const config = configForVehicleKey(vehicleManager.boatKey());
     return (config && isPortableConfig(config)) ? config : null;
   }
@@ -4633,15 +4639,15 @@
 
   const _Game_Follower_characterName = Game_Follower.prototype.characterName;
   Game_Follower.prototype.characterName = function () {
-    const sprite = this.isVisible() ? followerRidingSprite(this) : null;
-    if (sprite) return sprite.name;
+    const sprite = followerRidingSprite(this);
+    if (sprite && (!this.actor || this.actor())) return sprite.name;
     return _Game_Follower_characterName.call(this);
   };
 
   const _Game_Follower_characterIndex = Game_Follower.prototype.characterIndex;
   Game_Follower.prototype.characterIndex = function () {
-    const sprite = this.isVisible() ? followerRidingSprite(this) : null;
-    if (sprite) return sprite.index || 0;
+    const sprite = followerRidingSprite(this);
+    if (sprite && (!this.actor || this.actor())) return sprite.index || 0;
     return _Game_Follower_characterIndex.call(this);
   };
 
@@ -4669,7 +4675,13 @@
       this.setTransparent(hasReachedVehicle(this));
       return;
     }
-    if (this.isTransparent() && riddenPortableConfig()) this.setTransparent(false);
+    const portable = riddenPortableConfig();
+    if (portable) {
+      if (this.isTransparent()) this.setTransparent(false);
+      if (isFlyingConfig(portable)) {
+        this.setThrough(true);
+      }
+    }
   };
 
   // The leader sits down the same way, the moment they step onto the hull, rather

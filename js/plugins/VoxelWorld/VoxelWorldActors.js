@@ -455,9 +455,8 @@
             this.submerged = p.y < waterY;
 
             const spd = SWIM_SPEED * (sprint ? SWIM_SPRINT_MULT : 1);
-            // Only a submerged swimmer swims at an angle; on the surface the
-            // stroke is flat however far down they happen to be looking.
-            const pitch = this.submerged ? this.pitch.rotation.x : 0;
+            // Pitch drives underwater 3D swim angle, and duck-diving from the surface
+            const pitch = this.pitch.rotation.x;
             const cp = Math.cos(pitch);
             const k  = Math.min(1, delta * SWIM_DRAG);
             this.velocity.x += (this.direction.x * spd - this.velocity.x) * k;
@@ -467,6 +466,7 @@
             this._pushOutOfSolids(delta);
 
             const sink = !!this.crouching;
+            const divingDown = (pitch < -0.1 && this.direction.z > 0) || sink;
             let vy = Math.sin(pitch) * this.direction.z * spd;
             if (this._liftHeld()) vy += SWIM_RISE;
             if (sink) vy -= SWIM_SINK;
@@ -475,7 +475,7 @@
             // upward from any real depth, so being dropped in deep is never a
             // trap. Weak enough at either that a deliberate dive still goes
             // down, and reversed above the line: what comes up must come back.
-            if (!sink) {
+            if (!sink && !divingDown) {
                 const d = (waterY + SWIM_FLOAT) - p.y;
                 if (d > 0) {
                     const settle = d * SWIM_BUOYANCY * Math.exp(-d / 12);
@@ -484,6 +484,8 @@
                 } else {
                     vy += Math.max(-SWIM_RISE, d * SWIM_BUOYANCY);
                 }
+            } else if (p.y > waterY && divingDown) {
+                vy -= SWIM_SINK * 0.5;
             }
             this.vy = vy;
             p.y += vy * delta;
@@ -742,6 +744,15 @@
         }
         setEnv() {}
         update() {}
+        hideBody() {
+            if (this._body) this._body.visible = false;
+            if (this._wheels) for (const w of this._wheels) w.visible = false;
+        }
+        setVisible(on) {
+            if (this._body) this._body.visible = !!on;
+            if (this._wheels) for (const w of this._wheels) w.visible = !!on;
+            if (this.group) this.group.visible = !!on;
+        }
         toggleDoor() {}
         setDoorOpen() {}
         isDoorOpen() { return false; }
@@ -772,6 +783,19 @@
         setEnv(env)        { if (this._impl.setEnv) this._impl.setEnv(env); }
         getEnv()           { return this._impl.getEnv ? this._impl.getEnv() : 'road'; }
         update(dt)         { if (this._impl.update) this._impl.update(dt); }
+        hideBody() {
+            if (this._impl && this._impl.hideBody) this._impl.hideBody();
+            else if (this._impl && this._impl._body) this._impl._body.visible = false;
+        }
+        setVisible(on) {
+            if (this._impl && this._impl.setVisible) {
+                this._impl.setVisible(on);
+            } else {
+                if (this._impl && this._impl._body) this._impl._body.visible = !!on;
+                if (this._impl && this._impl._wheels) for (const w of this._impl._wheels) w.visible = !!on;
+            }
+            if (this.group) this.group.visible = !!on;
+        }
         toggleDoor(which)  { if (this._impl.toggleDoor) this._impl.toggleDoor(which); }
         setDoorOpen(open)  { if (this._impl.setDoorOpen) this._impl.setDoorOpen(open); }
         isDoorOpen()       { return this._impl.isDoorOpen ? this._impl.isDoorOpen() : false; }
