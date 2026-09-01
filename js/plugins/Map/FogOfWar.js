@@ -233,10 +233,10 @@
     // of every event on the map.
     const TRANSIENT_MAP_FIELDS = [
         '_fogOfWarData', '_fogTransitionTimers', '_dirtyChunks', '_dirtyChunkScratch',
-        '_activeTransitions', '_terrainCache', '_eventMap', '_eventMapSig',
+        '_activeTransitions', '_transitionDoneScratch', '_terrainCache', '_eventMap', '_eventMapOccupied', '_eventMapSig',
         '_visibleIndices', '_lastVisibleIndices', '_currentFrameVisible',
         '_fogExemptIndices', '_fogPeekDividerIndices', '_eventVisionConeTiles',
-        '_fogDiveWater', '_fogDiveKey'
+        '_fogDiveWater', '_fogDiveKey', '_wallBfsQueue', '_wallBfsVisitedStamp', '_wallBfsStamp'
     ];
 
     //=============================================================================
@@ -389,7 +389,7 @@
     registerFogCommand("resetFogOfWar", args => {
         const target = args.target || "current";
         if (target === "current") {
-            $gameSystem.resetFogOfWarForMap($gameMap.mapId());
+            $gameSystem.resetFogOfWarForMap($gameMap.fogDataKey());
         } else {
             $gameSystem.resetAllFogOfWar();
         }
@@ -475,11 +475,10 @@
     };
 
     Game_System.prototype.saveCurrentFogData = function () {
-        if (!$gameMap || !$gameMap._fogOfWarData || !$gameMap._fogTransitionTimers) return;
-        this.setFogOfWarData($gameMap.mapId(), {
-            states: Array.from($gameMap._fogOfWarData),
-            timers: Array.from($gameMap._fogTransitionTimers)
-        });
+        if (!$gameMap || !$gameMap._fogOfWarData) return;
+        const key = $gameMap.fogDataKey ? $gameMap.fogDataKey() : $gameMap.mapId();
+        // Store compact Uint8Array snapshot in memory without bloating with transition timers
+        this.setFogOfWarData(key, new Uint8Array($gameMap._fogOfWarData));
     };
 
     Game_System.prototype.resetFogOfWarForMap = function (mapId) {
@@ -506,9 +505,21 @@
         if ($gameSystem) $gameSystem.saveCurrentFogData();
         return _DataManager_saveGame.call(this, savefileId).then(contents => {
             if (window.$fogOfWarData) {
+                // Prepare a clean JSON-serializable object without saving redundant transition timers
+                const serializable = {};
+                for (const mapKey of Object.keys(window.$fogOfWarData)) {
+                    const entry = window.$fogOfWarData[mapKey];
+                    if (entry instanceof Uint8Array) {
+                        serializable[mapKey] = Array.from(entry);
+                    } else if (entry && entry.states) {
+                        serializable[mapKey] = Array.from(entry.states);
+                    } else if (Array.isArray(entry)) {
+                        serializable[mapKey] = entry;
+                    }
+                }
                 // Chain the fog write into the returned promise so the main save
                 // does not resolve until fog persistence completes (or fails).
-                return StorageManager.saveObject(`fog_${savefileId}`, window.$fogOfWarData)
+                return StorageManager.saveObject(`fog_${savefileId}`, serializable)
                     .catch(e => console.error("FogOfWar: Failed to save fog data", e))
                     .then(() => contents);
             }
@@ -543,8 +554,10 @@
         this._fogTransitionTimers = null;
         this._dirtyChunks = null;
         this._activeTransitions = new Set();
+        this._transitionDoneScratch = [];
         this._terrainCache = null;
         this._eventMap = [];
+        this._eventMapOccupied = [];
         this._eventMapSig = null;
         this._visibleIndices = [];
         this._lastVisibleIndices = [];
@@ -571,6 +584,56 @@
         this._dividerFogKey = null;
     };
 
+    //=============================================================================
+    // Procedural structures
+    //
+    // Every procedural interior shares map id 636 with the open-air square it
+    // was entered from, so the map id alone can neither say whether fog belongs
+    // here nor keep one cellar's explored tiles apart from the next one's.
+    // window.ProceduralInteriors is the only thing that can tell them apart,
+    // and the key below is what the fog is filed under while one is loaded.
+    //
+    // Only the surface structures are fogged. The layers below the surface are
+    // deliberately left alone: they are open descents, not rooms.
+    //=============================================================================
+
+    function proceduralInteriorFogKey() {
+        const api = window.ProceduralInteriors;
+        if (!api || typeof api.currentStructureBiome !== 'function') return null;
+        let biome = "";
+        try {
+            biome = api.currentStructureBiome() || "";
+        } catch (e) {
+            return null;
+        }
+        if (!biome) return null;
+        const data = ($gameSystem && $gameSystem._procGenData) || {};
+        const x = data.originX === undefined ? "?" : data.originX;
+        const y = data.originY === undefined ? "?" : data.originY;
+        return `636:${x},${y}:${biome}`;
+    }
+
+    // What the current map's fog is stored under. Every authored map is its own
+    // id; a procedural structure is its square and biome, so walking out of one
+    // cellar and into the next does not hand the second one the first one's
+    // explored tiles.
+    Game_Map.prototype.fogDataKey = function () {
+        return this._procInteriorFogKey || this._mapId;
+    };
+
+    // Only one procedural structure is ever the current one, and its explored
+    // tiles are worth nothing once the party has left the square, so drop the
+    // other structures' fog rather than let the table grow for a whole session.
+    function pruneStaleProceduralFog(keepKey) {
+        const store = window.$fogOfWarData;
+        if (!store) return;
+        for (const key of Object.keys(store)) {
+            if (typeof key === 'string' && key.startsWith('636:') && key !== keepKey) {
+                delete store[key];
+            }
+        }
+    }
+
     const _Game_Map_setup = Game_Map.prototype.setup;
     Game_Map.prototype.setup = function (mapId) {
         const previousMapId = this._mapId;
@@ -596,15 +659,25 @@
             this._isExteriorMap = $dataMap.note.includes("<Exterior>");
         }
 
+        // A procedural structure (Dungeon, Crypt, Sewer, LootCellar,
+        // TempleInside, CaveDen, PatronVault...) is generated onto map 636 and
+        // so inherits that map's <Exterior> note, which is only true of the
+        // open-air square it was entered from. Inside one, the roof is a roof.
+        this._procInteriorFogKey = proceduralInteriorFogKey();
+        if (this._procInteriorFogKey) this._isExteriorMap = false;
+
         // The world map (315) and the procedural map (636) are the same world
         // and must never carry fog. Force it off entirely, dividers included:
         // region 30 means something else on the world map, so the divider-only
-        // fog path below must not claim it either (#57).
-        this._fogOfWarForceOff = (mapId === 315 || mapId === 636);
+        // fog path below must not claim it either (#57). The one exception is a
+        // procedural structure standing on 636: it is an enclosed place of its
+        // own and is fogged like any authored dungeon.
+        this._fogOfWarForceOff = (mapId === 315 || (mapId === 636 && !this._procInteriorFogKey));
         if (this._fogOfWarForceOff) {
             $gameSystem.resetFogOfWarForMap(mapId);
             this._fogOfWarDisabled = true;
         }
+        pruneStaleProceduralFog(this._procInteriorFogKey);
 
         this.resetVisionTracking();
         this.initializeFogOfWar();
@@ -646,25 +719,32 @@
         hideTransientFields(this);
 
         const size = this.width() * this.height();
-        const savedData = $gameSystem ? $gameSystem.getFogOfWarData(this._mapId) : null;
+        const savedData = $gameSystem ? $gameSystem.getFogOfWarData(this.fogDataKey()) : null;
 
-        if (savedData && savedData.states && savedData.states.length === size) {
-            this._fogOfWarData = new Uint8Array(savedData.states);
-            this._fogTransitionTimers = new Int16Array(savedData.timers && savedData.timers.length === size ? savedData.timers : size);
-            if (!savedData.timers || savedData.timers.length !== size) {
-                for (let i = 0; i < size; i++) {
-                    this._fogTransitionTimers[i] = timerTargetFor(this._fogOfWarData[i]);
-                }
-            }
-        } else {
-            this._fogOfWarData = (savedData && savedData.length === size) ? new Uint8Array(savedData) : new Uint8Array(size);
-            this._fogTransitionTimers = new Int16Array(size);
-            for (let i = 0; i < size; i++) {
-                this._fogTransitionTimers[i] = timerTargetFor(this._fogOfWarData[i]);
+        let rawStates = null;
+        if (savedData) {
+            if (savedData instanceof Uint8Array && savedData.length === size) {
+                rawStates = savedData;
+            } else if (savedData.states && savedData.states.length === size) {
+                rawStates = savedData.states;
+            } else if (Array.isArray(savedData) && savedData.length === size) {
+                rawStates = savedData;
             }
         }
 
+        if (rawStates) {
+            this._fogOfWarData = new Uint8Array(rawStates);
+        } else {
+            this._fogOfWarData = new Uint8Array(size);
+        }
+
+        this._fogTransitionTimers = new Int16Array(size);
+        for (let i = 0; i < size; i++) {
+            this._fogTransitionTimers[i] = timerTargetFor(this._fogOfWarData[i]);
+        }
+
         this._activeTransitions = new Set();
+        this._transitionDoneScratch = [];
         this._terrainCache = new Uint8Array(size);
         this._terrainCacheDirty = true;
 
@@ -715,6 +795,7 @@
         }
 
         if (!(this._activeTransitions instanceof Set)) this._activeTransitions = new Set();
+        if (!Array.isArray(this._transitionDoneScratch)) this._transitionDoneScratch = [];
         if (!this._currentFrameVisible || typeof this._currentFrameVisible.fill !== 'function' || this._currentFrameVisible.length !== size) {
             this._currentFrameVisible = new Uint8Array(size);
         }
@@ -723,6 +804,7 @@
         if (!Array.isArray(this._fogExemptIndices)) this._fogExemptIndices = [];
         if (!Array.isArray(this._fogPeekDividerIndices)) this._fogPeekDividerIndices = [];
         if (!Array.isArray(this._eventMap)) this._eventMap = [];
+        if (!Array.isArray(this._eventMapOccupied)) this._eventMapOccupied = [];
 
         const chunkCount = Math.ceil(this.width() / CHUNK_SIZE) * Math.ceil(this.height() / CHUNK_SIZE);
         if (!this._dirtyChunks || typeof this._dirtyChunks.fill !== 'function' || this._dirtyChunks.length !== chunkCount) {
@@ -776,11 +858,18 @@
         const size = width * this.height();
         if (!Array.isArray(this._eventMap) || this._eventMap.length !== size) {
             this._eventMap = new Array(size);
-        }
-        for (let i = 0; i < size; i++) {
-            if (this._eventMap[i]) this._eventMap[i].length = 0;
+            this._eventMapOccupied = [];
+        } else {
+            // Fast sparse clear: only reset indices where events were actually recorded
+            const occupied = this._eventMapOccupied || [];
+            for (let i = 0; i < occupied.length; i++) {
+                const idx = occupied[i];
+                if (this._eventMap[idx]) this._eventMap[idx].length = 0;
+            }
+            occupied.length = 0;
         }
 
+        const occupied = this._eventMapOccupied || (this._eventMapOccupied = []);
         const events = this.events();
         for (let i = 0; i < events.length; i++) {
             const event = events[i];
@@ -789,7 +878,9 @@
                 const index = event.y * width + event.x;
                 if (!this._eventMap[index]) {
                     this._eventMap[index] = [event];
+                    occupied.push(index);
                 } else {
+                    if (this._eventMap[index].length === 0) occupied.push(index);
                     this._eventMap[index].push(event);
                 }
             }
@@ -1087,7 +1178,8 @@
         const timers = this._fogTransitionTimers;
         const data = this._fogOfWarData;
         const step = Math.ceil(255 / REVEAL_TRANSITION_DURATION);
-        const done = [];
+        const done = this._transitionDoneScratch || (this._transitionDoneScratch = []);
+        done.length = 0;
 
         for (const index of this._activeTransitions) {
             if (index < 0 || index >= data.length) { done.push(index); continue; }
@@ -1621,28 +1713,51 @@
     Game_Map.prototype.revealConnectedTerrainTiles = function (startX, startY) {
         const originTag = this.terrainTag(startX, startY);
         const width = this.width();
+        const height = this.height();
+        const size = width * height;
         const MAX_TILES = 300;
 
-        // A queue with a head index: Array.shift() on a 300-entry queue is
-        // quadratic and this runs on every newly sighted wall tile.
-        const queue = [startY * width + startX];
-        const visited = new Set(queue);
-        let head = 0;
+        // Reusable flat queue and stamp buffers to eliminate heap allocation
+        if (!this._wallBfsQueue || this._wallBfsQueue.length < MAX_TILES + 8) {
+            this._wallBfsQueue = new Int32Array(MAX_TILES + 16);
+        }
+        if (!this._wallBfsVisitedStamp || this._wallBfsVisitedStamp.length !== size) {
+            this._wallBfsVisitedStamp = new Int32Array(size);
+            this._wallBfsStamp = 1;
+        } else {
+            this._wallBfsStamp = (this._wallBfsStamp + 1) | 0;
+            if (this._wallBfsStamp <= 0) {
+                this._wallBfsVisitedStamp.fill(0);
+                this._wallBfsStamp = 1;
+            }
+        }
 
-        while (head < queue.length && visited.size <= MAX_TILES) {
+        const stamp = this._wallBfsStamp;
+        const visitedStamp = this._wallBfsVisitedStamp;
+        const queue = this._wallBfsQueue;
+        let head = 0;
+        let tail = 0;
+
+        const startIdx = startY * width + startX;
+        visitedStamp[startIdx] = stamp;
+        queue[tail++] = startIdx;
+
+        while (head < tail && tail <= MAX_TILES) {
             const idx = queue[head++];
             const x = idx % width;
             const y = (idx / width) | 0;
             for (let n = 0; n < 4; n++) {
                 const nx = x + (n === 0 ? -1 : n === 1 ? 1 : 0);
                 const ny = y + (n === 2 ? -1 : n === 3 ? 1 : 0);
-                if (!this.isValid(nx, ny)) continue;
+                if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
                 const nidx = ny * width + nx;
-                if (visited.has(nidx)) continue;
-                visited.add(nidx);
+                if (visitedStamp[nidx] === stamp) continue;
+                visitedStamp[nidx] = stamp;
                 if (this.terrainTag(nx, ny) === originTag) {
                     this.setFogOfWarStateByIndex(nidx, STATE_VISIBLE);
-                    queue.push(nidx);
+                    if (tail < queue.length) {
+                        queue[tail++] = nidx;
+                    }
                 }
             }
         }
@@ -1973,15 +2088,26 @@
                 event._transparent = false;
             }
         }
-        for (let i = 0; i < this._characterSprites.length; i++) {
-            this.clearFogFilter(this._characterSprites[i]);
+        if (this._characterSprites) {
+            for (let i = 0; i < this._characterSprites.length; i++) {
+                this.clearFogFilter(this._characterSprites[i]);
+            }
         }
     };
 
     Spriteset_Map.prototype.clearFogFilter = function (sprite) {
-        if (!sprite || !sprite._fogColorFilter || !sprite.filters) return;
-        sprite.filters = sprite.filters.filter(f => f !== sprite._fogColorFilter);
-        if (!sprite.filters.length) sprite.filters = null;
+        if (!sprite) return;
+        if (sprite._fogColorToneApplied) {
+            if (typeof sprite.setColorTone === 'function') {
+                sprite.setColorTone([0, 0, 0, 0]);
+            }
+            sprite._fogColorToneApplied = false;
+        }
+        if (sprite._fogColorFilter && sprite.filters) {
+            sprite.filters = sprite.filters.filter(f => f !== sprite._fogColorFilter);
+            if (!sprite.filters.length) sprite.filters = null;
+            sprite._fogColorFilter = null;
+        }
     };
 
     // Size the fog canvas to the map. Returns false when the map is not ready.
@@ -1999,6 +2125,7 @@
         this._fogCanvas.height = mapHeight;
         this._fogImageData = this._fogCtx.createImageData(mapWidth, mapHeight);
         this._fogPixels = this._fogImageData.data;
+        this._fogPixels32 = new Uint32Array(this._fogImageData.data.buffer);
 
         // Build the replacement BEFORE destroying the old one, so the sprite is
         // never left holding a destroyed texture for even one frame.
@@ -2087,6 +2214,7 @@
     // one that was never seen, so it takes the never-seen colour.
     Spriteset_Map.prototype.buildColorLut = function () {
         this._colorLut = new Uint8ClampedArray(256 * 4);
+        this._colorLut32 = new Uint32Array(256);
         const neverSeen = parseCssColor(NEVER_SEEN_COLOR);
         const prevSeen = parseCssColor(PREVIOUSLY_SEEN_COLOR);
 
@@ -2098,12 +2226,28 @@
         const psG = (prevSeen >> 8) & 0xFF;
         const psB = prevSeen & 0xFF;
 
+        // Determine endianness for 32-bit packed word writes
+        const testBuf = new ArrayBuffer(4);
+        new Uint32Array(testBuf)[0] = 0x11223344;
+        const isLittleEndian = new Uint8Array(testBuf)[0] === 0x44;
+
         for (let i = 0; i < 256; i++) {
             const isBlack = (i / 255) > BASE_ALPHA + 0.05;
-            this._colorLut[i * 4 + 0] = isBlack ? nsR : psR;
-            this._colorLut[i * 4 + 1] = isBlack ? nsG : psG;
-            this._colorLut[i * 4 + 2] = isBlack ? nsB : psB;
-            this._colorLut[i * 4 + 3] = i;
+            const r = isBlack ? nsR : psR;
+            const g = isBlack ? nsG : psG;
+            const b = isBlack ? nsB : psB;
+            const a = i;
+
+            this._colorLut[i * 4 + 0] = r;
+            this._colorLut[i * 4 + 1] = g;
+            this._colorLut[i * 4 + 2] = b;
+            this._colorLut[i * 4 + 3] = a;
+
+            if (isLittleEndian) {
+                this._colorLut32[i] = ((a << 24) | (b << 16) | (g << 8) | r) >>> 0;
+            } else {
+                this._colorLut32[i] = ((r << 24) | (g << 16) | (b << 8) | a) >>> 0;
+            }
         }
     };
 
@@ -2121,12 +2265,17 @@
             if (!this.resizeFogCanvas()) return;
         }
 
-        if (!this._colorLut) this.buildColorLut();
+        if (!this._colorLut32) this.buildColorLut();
 
         const chunksX = Math.ceil(mapWidth / CHUNK_SIZE);
         const chunksY = Math.ceil(mapHeight / CHUNK_SIZE);
-        const pixels = this._fogPixels;
-        const lut = this._colorLut;
+        const pixels32 = this._fogPixels32;
+        const lut32 = this._colorLut32;
+
+        let minDirtyX = mapWidth;
+        let minDirtyY = mapHeight;
+        let maxDirtyX = 0;
+        let maxDirtyY = 0;
 
         for (let i = 0; i < dirtyChunks.length; i++) {
             const chunkIndex = dirtyChunks[i];
@@ -2139,28 +2288,35 @@
             const endX = Math.min(startX + CHUNK_SIZE, mapWidth);
             const endY = Math.min(startY + CHUNK_SIZE, mapHeight);
 
+            if (startX < minDirtyX) minDirtyX = startX;
+            if (startY < minDirtyY) minDirtyY = startY;
+            if (endX > maxDirtyX) maxDirtyX = endX;
+            if (endY > maxDirtyY) maxDirtyY = endY;
+
             for (let y = startY; y < endY; y++) {
-                let pixelIndex = (y * mapWidth + startX) * 4;
-                let timerIndex = y * mapWidth + startX;
+                const rowOffset = y * mapWidth;
                 for (let x = startX; x < endX; x++) {
-                    const lutIdx = (timers[timerIndex++] & 0xFF) * 4;
-                    pixels[pixelIndex++] = lut[lutIdx];
-                    pixels[pixelIndex++] = lut[lutIdx + 1];
-                    pixels[pixelIndex++] = lut[lutIdx + 2];
-                    pixels[pixelIndex++] = lut[lutIdx + 3];
+                    const timerVal = timers[rowOffset + x] & 0xFF;
+                    pixels32[rowOffset + x] = lut32[timerVal];
                 }
             }
         }
 
-        this._fogCtx.putImageData(this._fogImageData, 0, 0);
-        if (this._fogTexture && this._fogTexture.baseTexture && this._fogTexture.baseTexture.resource) {
-            this._fogTexture.update();
+        if (maxDirtyX > minDirtyX && maxDirtyY > minDirtyY) {
+            const dirtyW = maxDirtyX - minDirtyX;
+            const dirtyH = maxDirtyY - minDirtyY;
+            this._fogCtx.putImageData(this._fogImageData, 0, 0, minDirtyX, minDirtyY, dirtyW, dirtyH);
+            if (this._fogTexture && this._fogTexture.baseTexture && this._fogTexture.baseTexture.resource) {
+                this._fogTexture.update();
+            }
         }
     };
 
     Spriteset_Map.prototype.updateEventVisibility = function () {
-        for (let i = 0; i < this._characterSprites.length; i++) {
-            const sprite = this._characterSprites[i];
+        const sprites = this._characterSprites;
+        if (!sprites) return;
+        for (let i = 0; i < sprites.length; i++) {
+            const sprite = sprites[i];
             if (!(sprite._character instanceof Game_Event)) continue;
             const event = sprite._character;
             sprite.opacity = event.opacity();
@@ -2169,15 +2325,13 @@
                 (event.isFogOfWarTransitioning && event.isFogOfWarTransitioning());
 
             if (isGrayscale) {
-                if (!sprite._fogColorFilter) {
-                    sprite._fogColorFilter = new PIXI.filters.ColorMatrixFilter();
-                    sprite._fogColorFilter.saturate(-1);
+                if (!sprite._fogColorToneApplied) {
+                    if (typeof sprite.setColorTone === 'function') {
+                        sprite.setColorTone([0, 0, 0, 255]);
+                    }
+                    sprite._fogColorToneApplied = true;
                 }
-                if (!sprite.filters || !sprite.filters.includes(sprite._fogColorFilter)) {
-                    sprite.filters = sprite.filters || [];
-                    sprite.filters.push(sprite._fogColorFilter);
-                }
-            } else {
+            } else if (sprite._fogColorToneApplied) {
                 this.clearFogFilter(sprite);
             }
         }

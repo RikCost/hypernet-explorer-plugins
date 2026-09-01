@@ -2691,6 +2691,104 @@
   };
 
   //=============================================================================
+  // MinigameOpponent - who sits in the other seat of a two-player minigame
+  //=============================================================================
+  // The split screen puts a second person in that seat. With nobody else
+  // holding a pad the seat used to read "CPU", which is nothing anybody in
+  // this world is called. It is filled instead by whoever is actually around:
+  // a companion when the party is more than one, a bystander off the map when
+  // the leader is travelling alone, and, when there is not even that, the only
+  // opponent left to somebody sitting in an empty room.
+  //
+  // A game asks for a stand-in ONCE, as its session opens, and keeps what it
+  // was given: the same face has to be across the table for the whole frame.
+  // Defensive throughout, so a minigame can call this at any load order.
+  window.MinigameOpponent = {
+    // What one evening's game is worth to an NPC who was talked into playing,
+    // on the same 0-100 leisure meter NPCSimulationCore drains.
+    NPC_FUN: 14,
+
+    // The party members who could be handed the other cue. The leader is the
+    // one already playing, and the dead are not playing anything.
+    partyCandidates() {
+      if (typeof $gameParty === 'undefined' || !$gameParty) return [];
+      const members = $gameParty.members() || [];
+      return members.slice(1).filter(m => m && !m.isDead());
+    },
+
+    // Everybody standing on this map who is a person. The live NPC controllers
+    // are the whole answer on a populated map; a hand-made map whose residents
+    // were never given a controller is read off the events themselves, where a
+    // society profile is what tells a resident apart from a door or a sign.
+    mapNpcNames() {
+      const seen = new Set();
+      const out = [];
+      const add = (name) => {
+        if (!name || name === "NPC" || seen.has(name)) return; // i18n-ignore: event name, not text
+        seen.add(name);
+        out.push(name);
+      };
+      try {
+        for (const c of ($gameSystem?.npcControllers || [])) {
+          if (!c || c.eventId == null) continue;
+          const ev = $gameMap?.event?.(c.eventId);
+          if (ev && !ev._erased) add(c.eventName);
+        }
+        if (!out.length) {
+          for (const ev of ($gameMap?.events?.() || [])) {
+            if (!ev || ev._erased) continue;
+            const name = ev.event?.()?.name;
+            if (name && window.NPCSocietyRegistry?.getProfile?.(name)) add(name);
+          }
+        }
+      } catch (e) { /* an empty room is a valid answer */ }
+      return out;
+    },
+
+    // The stand-in for one session: { kind, name, actorId }. `kind` is 'party'
+    // for a companion, 'npc' for a bystander and 'self' for the player's own
+    // subconscious, which is what an opponent is when nobody else is there.
+    pick(opts = {}) {
+      const party = opts.party === false ? [] : this.partyCandidates();
+      if (party.length) {
+        const m = party[Math.floor(Math.random() * party.length)];
+        return { kind: 'party', name: m.name(), actorId: m.actorId() };
+      }
+      const npcs = opts.npcs === false ? [] : this.mapNpcNames();
+      if (npcs.length) {
+        return { kind: 'npc', name: npcs[Math.floor(Math.random() * npcs.length)], actorId: 0 };
+      }
+      return { kind: 'self', name: T('TimeDate.opponent.subconscious'), actorId: 0 };
+    },
+
+    // The name to print in the other seat, with the game's own CPU label as
+    // the fallback for a stand-in that was never picked.
+    nameOf(stand, fallback) {
+      return (stand && stand.name) || fallback || T('TimeDate.opponent.subconscious');
+    },
+
+    // An NPC who spent the evening playing enjoyed it: pay their leisure meter
+    // when the session ends. A companion is already covered by MinigameFun,
+    // which pays the whole party, and a subconscious has no meter to pay.
+    payFun(stand, amount) {
+      if (!stand || stand.kind !== 'npc') return 0;
+      const profile = window.NPCSocietyRegistry?.getProfile?.(stand.name);
+      if (!profile) return 0;
+      const step = amount == null ? this.NPC_FUN : Number(amount);
+      if (!(step > 0)) return 0;
+      profile.leisure = Math.max(0, Math.min(100,
+        Math.round((profile.leisure ?? 100) + step)));
+      try {
+        window.ParchmentToast?.show(
+          T('TimeDate.opponent.funShared', { name: stand.name }),
+          { severity: 'good', duration: 150 }
+        );
+      } catch (e) { /* never let a popup break a minigame */ }
+      return step;
+    }
+  };
+
+  //=============================================================================
   // BattleMood - what a fight does to the Mood meter
   //=============================================================================
   // The sibling of MinigameFun above, on the same 0-100 Mood (leisure) meter:
@@ -3312,6 +3410,7 @@
     _Scene_Map_update_TDS_HUD.call(this);
     if (this._mapInfoHUD) this._mapInfoHUD.update();
     this.updateSleepSequence();
+    this.updateWaitSequence();
     this.updateCryoSequence();
   };
 
@@ -3353,19 +3452,162 @@
     $gameSystem._respawnPointSet = true;
   };
 
-  // isWait: Bethesda-style waiting. Same frame-by-frame clock advance, but the
-  // party only passes the time, it does not rest: no sleep meter refill, no
-  // healing, and no awakening menu at the end.
+  // Standard sleep sequence (beds/inns): fades the screen, heals the party, restores sleep meter.
   Scene_Map.prototype.startSleepSequence = function (hours, isWait) {
+    if (isWait) {
+      this.startWaitSequence(hours);
+      return;
+    }
     $gameScreen.startFadeOut(60);
     this._sleepSequenceState = 1;
     this._sleepSequenceTimer = 60;
     this._sleepHours = hours;
-    this._sleepIsWait = !!isWait;
+    this._sleepIsWait = false;
   };
 
+  // Live on-map waiting: does NOT darken or fade the screen. Time-of-day lighting,
+  // NPCs, cars, enemies, and autonomous party members move and simulate at super speed.
   Scene_Map.prototype.startWaitSequence = function (hours) {
-    this.startSleepSequence(hours, true);
+    if (this.closeSleepMenu) this.closeSleepMenu(true);
+    const FRAMES_PER_HOUR = 90; // ~1.5 real seconds per simulated hour for visual timelapse
+    const totalMinutes = hours * 60;
+    const totalFrames = Math.max(90, Math.round(hours * FRAMES_PER_HOUR));
+    const startTime = getGameTimeMinutes();
+    const leader = $gameParty.leader();
+    const sleepStart = leader ? leader._sleep : 0;
+
+    if ($gameTemp) {
+      $gameTemp._isWaitingFastForward = true;
+    }
+
+    this._waitAdvance = {
+      hours: hours,
+      totalMinutes: totalMinutes,
+      totalFrames: totalFrames,
+      doneMinutes: 0,
+      minutesPerFrame: totalMinutes / totalFrames,
+      startTime: startTime,
+      nextNpcTick: startTime + 60,
+      sleepStart: sleepStart,
+      sleepTarget: leader ? Math.max(0, sleepStart - (maxSleep * 0.0004) * totalMinutes) : 0,
+    };
+  };
+
+  Scene_Map.prototype.updateWaitSequence = function () {
+    if (this._waitAdvance) {
+      this._stepWaitAdvance();
+    }
+  };
+
+  Scene_Map.prototype._stepWaitAdvance = function () {
+    const a = this._waitAdvance;
+    if (!a) { this._finishWaitAdvance(); return; }
+
+    const prevDone = a.doneMinutes;
+    a.doneMinutes = Math.min(a.totalMinutes, a.doneMinutes + a.minutesPerFrame);
+    const deltaMin = a.doneMinutes - prevDone;
+    const currentTime = a.startTime + a.doneMinutes;
+
+    // Advance the displayed clock/date.
+    setGameTimeMinutes(Math.floor(currentTime));
+    updateGameDateVariable();
+
+    // Run NPC schedules for every simulated hour we cross during waiting.
+    while (a.nextNpcTick <= currentTime) {
+      if (window.NPCSim?.tick) {
+        try { window.NPCSim.tick(a.nextNpcTick); } catch (_) {}
+      }
+      a.nextNpcTick += 60;
+    }
+
+    // Party needs degradation
+    const leader = $gameParty.leader();
+    if (leader) {
+      leader.reduceHunger((maxHunger * 0.0003) * deltaMin);
+      if (leader.reduceHygiene) leader.reduceHygiene((maxSleep * 0.0005) * deltaMin);
+      if (leader.reduceSocial)  leader.reduceSocial((maxSleep * 0.0003) * deltaMin);
+      if (leader.reduceLeisure) leader.reduceLeisure((maxSleep * 0.0003) * deltaMin);
+      const frac = a.totalMinutes > 0 ? a.doneMinutes / a.totalMinutes : 1;
+      leader._sleep = a.sleepStart + (a.sleepTarget - a.sleepStart) * frac;
+    }
+
+    if (window.AddictionSystem) {
+      window.AddictionSystem.advanceMinutes(deltaMin, CRAVING_SLEEP_FACTOR);
+    }
+
+    // Accelerated Map Simulation: extra updates per frame so events, cars, enemies & followers zoom
+    if ($gameMap) {
+      const events = $gameMap.events();
+      for (let s = 0; s < 3; s++) {
+        for (let i = 0; i < events.length; i++) {
+          const ev = events[i];
+          if (ev && !ev._erased) {
+            ev.update();
+          }
+        }
+        if ($gamePlayer && $gamePlayer.followers()) {
+          $gamePlayer.followers().update();
+        }
+        if (window.AutoIdle && window.AutoIdle.loose) {
+          try { window.AutoIdle.loose.update(); } catch (_) {}
+        }
+      }
+    }
+
+    // Push the new state to the bottom-right card immediately this frame.
+    if (this._mapInfoHUD && this._mapInfoHUD._refresh) {
+      this._mapInfoHUD._refresh();
+    }
+
+    if (a.doneMinutes >= a.totalMinutes) {
+      this._finishWaitAdvance();
+    }
+  };
+
+  Scene_Map.prototype._finishWaitAdvance = function () {
+    const a = this._waitAdvance;
+    this._waitAdvance = null;
+
+    if (a) {
+      const endTime = a.startTime + a.totalMinutes;
+      setGameTimeMinutes(endTime);
+      updateGameDateVariable();
+      while (a.nextNpcTick <= endTime) {
+        if (window.NPCSim?.tick) {
+          try { window.NPCSim.tick(a.nextNpcTick); } catch (_) {}
+        }
+        a.nextNpcTick += 60;
+      }
+      if (window.NPCLifeSim?.catchUp) {
+        try { window.NPCLifeSim.catchUp(endTime); } catch (_) {}
+      }
+    }
+
+    if ($gameTemp) {
+      $gameTemp._isWaitingFastForward = false;
+    }
+
+    // Gather loose followers back to leader
+    if (window.AutoIdle && window.AutoIdle.loose) {
+      try {
+        window.AutoIdle.loose.resetStates();
+        window.AutoIdle.loose.gatherNear();
+      } catch (_) {}
+    }
+
+    if (this._mapInfoHUD && this._mapInfoHUD._refresh) {
+      this._mapInfoHUD._refresh();
+    }
+  };
+
+  // Boost character movement speeds during waiting fast-forward so they zoom across the map
+  const _Game_CharacterBase_realMoveSpeed_TDS_wait = Game_CharacterBase.prototype.realMoveSpeed;
+  Game_CharacterBase.prototype.realMoveSpeed = function () {
+    const speed = _Game_CharacterBase_realMoveSpeed_TDS_wait.call(this);
+    if (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._isWaitingFastForward && this !== $gamePlayer) {
+      return Math.max(speed, 5.0);
+    }
+    return speed;
   };
 
   Scene_Map.prototype.updateSleepSequence = function () {

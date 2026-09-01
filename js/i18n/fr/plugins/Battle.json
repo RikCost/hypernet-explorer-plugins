@@ -35,20 +35,6 @@
     ]
   },
   "unknownMap": "Carte inconnue",
-  "healthProtection": {
-    "messages": [
-      "{actor} a échappé de justesse à la mort !",
-      "{actor} a été sauvé par une intervention divine !",
-      "{actor} s'est accroché à la vie avec détermination !",
-      "{actor} a refusé d'abandonner !",
-      "{actor} a survécu par pure force de volonté !",
-      "{actor} a été protégé par le destin !"
-    ],
-    "reset": "Protection de santé réinitialisée pour tous les personnages !",
-    "available": "Disponible",
-    "used": "Utilisée",
-    "status": "{actor} : Protection {status}"
-  },
   "popup": {
     "miss": "Manqué",
     "evaded": "Esquivé"

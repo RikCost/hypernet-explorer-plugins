@@ -49,14 +49,15 @@
         setBiomeOverride, getBiomeOverride, setAlienTerrain, buildOmegaTower,
         OMEGA_HEIGHT, OMEGA_PROXY_D, OMEGA_SIGHT, OMEGA_SPAN, OMEGA_TILE, VIEW_FAR,
         ALONGSIDE_MAX, RIDER_SEATS, RIDE_ALONGSIDE, VEHICLE_DRIVE, SHIP_ATMOSPHERE_Y,
-        STEER_FALLOFF, STEP_SOUNDS, SURFACES, SkyFx, SpeedWarpFx, TALK_RANGE,
+        STEER_FALLOFF, STEP_SOUNDS, SURFACES, SkyFx, SolomonRitualFx, SpeedWarpFx, TALK_RANGE,
+        SpellCaster, SpellFx, SPELL_SLOTS, BAR_MODES, isHealingSkill,
         ParkedVehicles, TrafficManager, UnderwaterFx, VanModel, VoxelTerrain,
         WALK_LANTERN_INTENSITY, WARP_START_KMH, WHEELBASE, WORLD_MAP_ID,
         WORLD_SCALE, WORLD_TILES, WORLD_TILE_SIZE, WaterPlane, WeatherParticles, skyFogColor,
         VOX, VoxelTool, VoxelWorldState, WheelFx, ZOOM_MAX, _clearBiomeCaches, _perlin, camperCan,
         PROP_RADIUS, PROP_MIN_R, PROP_SMASH_KMH, TRAFFIC_CRASH_KMH,
         camperFuelConsume, camperFuelGet, camperFuelSet, camperMaxFuel,
-        dayFactorForHour, getRenderType, getRoadDirectionAt, initPerlinWithSeed,
+        dayFactorForHour, getRenderType, getRoadDirectionAt, initPerlinWithSeed, VOXEL_WORLD_SEED,
         isSandboxOrTest, pickRandomRoadTile, placeNameAt, planForTile, roadLabelAt,
         sampleBiomeAt, sampleSkyColor, setTextureAnisotropy, settlementKindAt,
         troopForBioEnemy
@@ -73,6 +74,55 @@
 
     // How close to a tree or a boulder counts as being at it (about two metres).
     const SCENERY_REACH = 9;
+
+    // The height at which the voxel world hands over to the 2D procedural
+    // underground. It is a few cubes off the bedrock floor of the field
+    // (VOX.MIN_Y), so the whole cave system - the galleries, the chambers, the
+    // sewers and the deep road - is walked in 3D, and the 2D map is reached
+    // only by digging a shaft the rest of the way down to the bottom of the
+    // world. Kept in world units because that is what the camera reports.
+    const UNDERGROUND_2D_Y = (VOX.MIN_Y + 4) * VOX.SIZE;
+
+    // How often the action prompt under the crosshair is worked out, in frames.
+    const PROMPT_EVERY = 6;
+
+    // How close to a chest counts as standing at it (about four metres): a
+    // little more generous than the scenery, because a chest is small and its
+    // billboard is the only thing telling you where it is.
+    const CHEST_REACH = 16;
+    // How close a walker has to stand to a parked vehicle before E gets them
+    // into it. A car is 18 units long, so this is arm's reach around it.
+    const BOARD_REACH = 34;
+
+    // Fishing. How far in front of a walker the water is looked for, how far in
+    // is too close to count as a bank, and how deep that water has to be before
+    // there is anything in it worth casting at.
+    const FISH_REACH     = 34;
+    const FISH_REACH_MIN = 6;
+    const FISH_MIN_DEPTH = 10;
+
+    // How many tiles are streamed while the party is inside the rock. It has to
+    // agree with VoxelWorldTerrain's own CAVE_RADIUS, which is what the terrain
+    // sets when the caves are switched on; the scene rewrites the radius every
+    // frame, so if the two disagree the drive one wins and the caves are paid
+    // for out to five tiles.
+    const CAVE_STREAM_RADIUS = 3;
+
+    // How deep an OPEN hole has to be before it reads as underground, and how
+    // far back up before it stops. Anything with rock over its head counts
+    // whatever its depth (see _updateUnderground); this is only for the shaft
+    // somebody has sunk themselves and not yet roofed. Two thresholds, not one:
+    // flipping the world rebuilds every tile around the camera, and a single
+    // line would rebuild it twice a second for anybody standing on the lip.
+    const CAVE_ENTER_DEPTH = VOX.SIZE * 8;
+    const CAVE_LEAVE_DEPTH = VOX.SIZE * 5;
+
+    // Which of VehicleSystemRepair's maintenance sheets belongs to the thing
+    // being driven. Keyed by the same vehicle id VehiclePosition uses.
+    const VEHICLE_MAINTENANCE_CMD = {
+        camper: 'camperMaintenance', car: 'carMaintenance',
+        bike: 'bikeMaintenance', airship: 'airshipMaintenance'
+    };
 
     // What the salvage table should call one of the world's scattered sprites.
     // The table is keyed by the procedural map's own feature names, and every
@@ -309,7 +359,17 @@
     //
     // WorldMapReturn owns the footprints and the doors; this only asks.
     // =========================================================================
+    function isOmegaTowerTile(wx, wy) {
+        const half = OMEGA_SPAN / 2;
+        const cx = OMEGA_TILE.x - (half - 1) + half;
+        const cz = OMEGA_TILE.y - (half - 1) + half;
+        return Math.abs(wx - cx) <= half && Math.abs(wy - cz) <= half;
+    }
+
     function reservedPlaceAt(wx, wy) {
+        if (isOmegaTowerTile(wx, wy)) {
+            return { name: 'Omega Tower', hand: true };
+        }
         const WMR = window.WorldMapReturn;
         if (!WMR || !WMR.placeAtWorldSquare) return null;
         if (wx < 0 || wy < 0 || wx >= WORLD_TILES || wy >= WORLD_TILES) return null;
@@ -482,6 +542,9 @@
             // pre-planned per-trip cost), so fuelCost is kept only for reference.
             this._fuelCost   = fuelCost || 0;
             this._totalKm    = totalKm;
+            // Kept so the readout can be built a second time when a walk turns
+            // into a drive (see _mountVehicle).
+            this._destination = destinationName;
             this._steerAngle = 0;
             this._animId     = null;
             this._lastTime   = null;
@@ -576,10 +639,15 @@
 
             this._driveAngle = this._computeDriveAngle(startWX, startWY);
 
-            // Seed Perlin noise from world seed for consistent mountain shapes
-            const worldSeed = (typeof $gameSystem !== 'undefined' && $gameSystem._historySeed)
-                ? $gameSystem._historySeed : 19002001;
-            initPerlinWithSeed(worldSeed);
+            // The shape of the 3D world is FIXED. It used to be seeded from the
+            // world's own history seed, which meant the same world square was a
+            // different hill in every world - and, worse, that a dig log saved
+            // against one seed described holes in ground that no longer existed
+            // when the same square was walked in another. The relief, the
+            // rivers, the caves and the islands are all one constant now: what
+            // changes between worlds is the biome MAP laid over them, which is
+            // where a world's character actually lives.
+            initPerlinWithSeed(VOXEL_WORLD_SEED);
             _clearBiomeCaches();   // fresh biome memo for this world / scene
 
             // Auto-travel destination tile (camper fast travel). The drive flies
@@ -624,6 +692,17 @@
             this._digHeld  = false;
             this._placeReq = false;
             this._cycleReq = 0;
+            // The spell bar, and the door onto the game's own battle animations
+            // out here (see VoxelWorldFx's SpellFx: Effekseer on this world's
+            // own GL context, because the game's own draws under the overlay).
+            this._spellFx = this._titleMode ? null : new SpellFx(this._renderer);
+            this._caster  = this._titleMode ? null : new SpellCaster(this._scene, this._terrain, {
+                onAnimation: (id, x, y, z) => {
+                    if (this._spellFx) this._spellFx.play(id, x, y, z);
+                },
+                onBurst: (x, y, z, radius, force, skill) => this._spellBurst(x, y, z, radius, force, skill)
+            });
+            this._castReq = false;
 
             this._van = new VanModel(this._scene);
             this._van.group.position.set(this._vanX, 0, this._vanZ);
@@ -665,7 +744,7 @@
             // (It only ever reaches the bar when the mouse is not grabbed - a
             // pointer-locked click is a swing at what the crosshair is on.)
             if (this._hud.onBlockPick && this._tool) {
-                this._hud.onBlockPick((i) => this._tool.bar.select(i));
+                this._hud.onBlockPick((i) => this._selectBarSlot(i));
             }
             this._fpc = new FirstPersonController(this._camera, CAMPER_BOUNDS);
             // The title background never grabs the mouse: the player is clicking
@@ -744,7 +823,15 @@
             this._freeCamPitch   = 0.8; // Approx 45 degrees looking down
 
             this._onWheel            = this._onWheel.bind(this);
-            this._onFreeCamKeyDown   = (e) => { if (VoxelWorldSystem.isActive()) this._freeMoveKeys.add(e.code); };
+            this._onFreeCamKeyDown   = (e) => {
+                if (!VoxelWorldSystem.isActive()) return;
+                this._freeMoveKeys.add(e.code);
+                if (this._viewMode !== 'foot') return;
+                if (/^Key[WASD]$/.test(e.code)) this._teachControl('voxWalk');
+                else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') this._teachControl('voxRun');
+                else if (e.code === 'Space') this._teachControl('voxJump');
+                else if (e.code === 'KeyG') this._teachControl('voxPlace');
+            };
             this._onFreeCamKeyUp     = (e) => { this._freeMoveKeys.delete(e.code); };
             
             // --- New Mouse Handlers ---
@@ -808,6 +895,8 @@
             this._liminal      = new LiminalFx(this._scene, this._overlay);
             this._liminalI     = 0;   // smoothed cosmic-horror intensity 0..1
             this._speedFx      = new SpeedWarpFx();
+            this._solomon      = new SolomonRitualFx(this._scene, this._terrain, this._overlay);
+            this._solomonShake = 0;
             this._warpCentre   = new THREE.Vector3();
 
             this._viewMode = 'fp'; // 'fpdrive' | 'fp' | 'car' | 'free' | 'foot'
@@ -853,16 +942,25 @@
                 // key names over the first drive, and everybody wants it once.
                 this._onHelpKey = (e) => {
                     if (e.code !== 'KeyH' || !VoxelWorldSystem.isActive()) return;
+                    // Shifted it is the codex, the same way shifted R is the
+                    // wait menu: two tables, one letter each way (_runMenuHotkey).
+                    if (e.shiftKey) return;
                     if (this.isPaused()) return;
                     if (this._hud && this._hud.toggleCommands) this._hud.toggleCommands();
                 };
                 document.addEventListener('keydown', this._onHelpKey);
 
+                // Tab means the quick bar on foot and the camera at the wheel.
+                // There is no bar to walk through while driving, and no camera
+                // to cycle while standing in a field, so the one key answers
+                // whichever question the party is actually in a position to ask
+                // (L2 on a pad does the same, see _updateBarInput).
                 this._onTabKey = (e) => {
                     if (e.code === 'Tab' && VoxelWorldSystem.isActive()) {
                         if (this.isPaused()) return;   // that Tab is the menu's
                         e.preventDefault();
-                        this._cycleViewMode();
+                        if (this._viewMode === 'foot') this._cycleBarMode(1);
+                        else this._cycleViewMode();
                     }
                 };
                 document.addEventListener('keydown', this._onTabKey);
@@ -875,6 +973,7 @@
                 this._onMapKey = (e) => {
                     if (e.code !== 'KeyM' || !VoxelWorldSystem.isActive() || !this._hud) return;
                     if (this.isPaused() && !this._isFullMapOpen()) return;
+                    this._teachControl('voxMap');
                     this._hud.cycleMapMode();
                     this._hud._drawMiniMap(this._vanX, this._vanZ);
                     // The map is dragged with the mouse, so the mouse has to be
@@ -893,16 +992,40 @@
                     if (e.code === 'KeyF')      this._toggleFlight();
                     else if (e.code === 'KeyC') this._toggleDive();
                     else if (e.code === 'KeyE') this._interact();
-                    else if (e.code === 'KeyR') this._respawnCamper();
+                    // Shifted, R is the wait menu instead (see _runMenuHotkey):
+                    // the world and the party menu both want this letter, and
+                    // only one of them can have the plain press.
+                    else if (e.code === 'KeyR' && !e.shiftKey) this._respawnCamper();
                     else if (e.code === 'KeyG') this._placeReq = true;
                     else if (e.code === 'KeyQ') this._cycleReq = e.shiftKey ? -1 : 1;
+                    else if (e.code === 'F7' || e.keyCode === 118) {
+                        if (this._isDeveloperMode()) {
+                            e.preventDefault();
+                            this.toggleSolomonRitual();
+                        }
+                    }
                     // 1..9 go straight to a slot of the quick bar: 1 is the
                     // weapon, the rest are the blocks in the order they were dug.
                     else if (/^Digit[1-9]$/.test(e.code) && this._tool) {
-                        this._tool.bar.select(Number(e.code.slice(5)) - 1);
+                        this._selectBarSlot(Number(e.code.slice(5)) - 1);
                     }
                 };
                 document.addEventListener('keydown', this._onActionKey);
+
+                // The party's own menus, from out here. I, J, U, C, O, R, B, F,
+                // K, H, N, Y - every key the map answers to answers here too,
+                // out of the ONE table that owns them (UI/CustomMainMenuLayout's
+                // HOTKEYS, handed over as window.MenuHotkeys). This world is a
+                // DOM overlay and Scene_Map.updateMenuHotkeys never sees a key
+                // while it is up, which is why the journal and the equipment
+                // screen were unreachable on a walk.
+                this._onMenuHotkey = (e) => {
+                    if (!VoxelWorldSystem.isActive() || this._standalone) return;
+                    if (this.isPaused()) return;
+                    if (e.ctrlKey || e.altKey || e.metaKey) return;
+                    this._runMenuHotkey(e);
+                };
+                document.addEventListener('keydown', this._onMenuHotkey);
 
                 // Digging is the swing itself: hold the attack button and the
                 // cube under the crosshair comes apart. Nothing new to learn,
@@ -911,6 +1034,10 @@
                     if (e.button !== 0 || !VoxelWorldSystem.isActive()) return;
                     if (document.pointerLockElement !== document.body) return;
                     this._digHeld = true;
+                    // The mouse is grabbed, so they are looking around with it
+                    // as well as swinging with it.
+                    this._teachControl('voxLook');
+                    this._teachControl('voxDig');
                 };
                 this._onDigUp = (e) => { if (e.button === 0) this._digHeld = false; };
                 document.addEventListener('mousedown', this._onDigDown);
@@ -1163,6 +1290,16 @@
                 const floor = this._interiors.floorAt(x, z, feetY);
                 if (floor != null) return floor;
             }
+            // Underground the surface is the ROOF, not the floor: what holds a
+            // walker up down there is the top of the first solid cube under
+            // them, which is the floor of whichever passage they are in.
+            //
+            // Asked BEFORE the town pad below, because a town has a sewer under
+            // it now: asking the pad first would hold a walker in the galleries
+            // at street level and there would be no standing in one.
+            if (feetY != null && this._terrain.isUnderground(x, z, feetY)) {
+                return this._terrain.supportY(x, z, feetY);
+            }
             const ts = WORLD_TILE_SIZE;
             const tx = Math.floor(x / ts), tz = Math.floor(z / ts);
             const kind = settlementKindAt(tx, tz);
@@ -1171,12 +1308,6 @@
             if (kind) {
                 return this._terrain.getTerrainHeight(tx + 0.5, tz + 0.5) +
                     (kind === 'city' ? SETTLE.paveH : 0);
-            }
-            // Underground the surface is the ROOF, not the floor: what holds a
-            // walker up down there is the top of the first solid cube under
-            // them, which is the floor of whichever passage they are in.
-            if (feetY != null && this._terrain.isUnderground(x, z, feetY)) {
-                return this._terrain.supportY(x, z, feetY);
             }
             return this._terrain.getTerrainHeight(x / ts, z / ts);
         }
@@ -1340,14 +1471,33 @@
         // steps straight out onto the ground, first-person just lets go of the
         // wheel and leaves you standing in the cabin so you can walk to the door.
         _interact() {
+            this._teachControl('voxInteract');
+            // At the wheel, E means one thing and one thing only: get out. The
+            // scenery, the chests and the people in front of the bonnet are all
+            // things to walk up to, and none of them may swallow the key that
+            // ends a drive.
+            if (this._viewMode === 'car' || this._viewMode === 'fpdrive') {
+                if (typeof SoundManager !== 'undefined') SoundManager.playOk();
+                this._setMode(this._viewMode === 'car' ? 'foot' : 'fp');
+                return;
+            }
             // A body at your feet, then somebody standing right there, then the
             // camper: whichever is actually in front of the party.
             if (this._lootBody()) return;
             if (this._talkToShopkeeper()) return;
             if (this._talkToCitizen()) return;
+            // A chest beats the scenery: it is a chest, not a crate to break up.
+            if (this._openChest()) return;
+            // The water in front of them, with a rod in the pack.
+            if (this._startFishing()) return;
             // ...and then whatever is growing or lying in front of them: a tree
             // to fell, a boulder to break, a bush to pick over.
             if (this._workScenery()) return;
+            // Anything the party owns and left standing here is boardable: walk
+            // up to the car and press E to drive it away, exactly as with the
+            // vehicle they arrived in. This is the only route in for a walk that
+            // started with no vehicle at all.
+            if (this._boardParked()) return;
             if (this._footOnly) return;   // nothing else out here to interact with
             // On foot: climb back into the camper when close enough.
             if (this._viewMode === 'foot') {
@@ -1399,6 +1549,164 @@
             }
         }
 
+        // Is a vehicle of the party's own standing within reach, and is it one
+        // they are not already driving? Returns true once it has put them in it.
+        _boardParked() {
+            if (this._titleMode || this._standalone) return false;
+            if (this._viewMode !== 'foot') return false;
+            if (!this._parked || !this._parked.nearest) return false;
+            const here = this._fpc.getRig().position;
+            const hit = this._parked.nearest(here.x, here.z, BOARD_REACH);
+            if (!hit || hit.key === this._vehicleId) return false;
+            this._mountVehicle(hit.key, hit.x, hit.z);
+            return true;
+        }
+
+        // Change what the party is driving without leaving the world. The one
+        // they step out of stays on the square they left it on (the park record
+        // is written from _vanX/_vanZ every frame), the new one is picked up
+        // where it stood, and the readout is rebuilt because a walk's HUD and a
+        // drive's are not the same panels.
+        _mountVehicle(key, x, z) {
+            if (typeof SoundManager !== 'undefined') SoundManager.playOk();
+            const wasWalk = this._footOnly;
+            this._footOnly = false;
+            this._vehicleId = key;
+            this._drive = VEHICLE_DRIVE[key] || VEHICLE_DRIVE.camper;
+
+            // The old body goes; _buildDrivenModel puts the new one up.
+            if (this._drivenModel) { this._drivenModel.dispose(); this._drivenModel = null; }
+            if (this._driven2d) {
+                this._scene.remove(this._driven2d.mesh);
+                this._driven2d.dispose();
+                this._driven2d = null;
+            }
+            if (this._van && this._van.setVisible) this._van.setVisible(true);
+            this._buildDrivenModel();
+
+            // Stand it where it was parked, motionless.
+            this._vanX = x; this._vanZ = z;
+            this._velX = 0; this._velZ = 0;
+            this._fwdSpeed = 0; this._latSpeed = 0;
+            this._speedKmh = 0; this._speedUnitsSigned = 0; this._steerSmooth = 0;
+            this._flying = false; this._dived = false;
+            this._terrain.update(this._vanX, this._vanZ, true);
+            this._vanY = this._resolveEnv();
+            this._van.group.position.set(this._vanX, this._vanY, this._vanZ);
+            if (this._parked) this._parked.setDriving(key);
+
+            // A walk has no fuel gauge, no speedo and no trip meter in it, so
+            // the whole readout is built again in the register of a drive.
+            if (wasWalk && this._hud) {
+                this._hud.dispose();
+                this._hud = new CamperHUD(this._overlay, this._destination,
+                    this._totalKm, false, false);
+                if (this._hud.setPlanet) this._hud.setPlanet(this._sky);
+                if (this._hud.onBlockPick && this._tool) {
+                    this._hud.onBlockPick((i) => this._selectBarSlot(i));
+                }
+            }
+            this._setMode('car');
+        }
+
+        // ---------------------------------------------------------------------
+        // The chests
+        // ---------------------------------------------------------------------
+        // The same three the 2D procedural maps carry, standing out here as
+        // billboards (VoxelWorldDecor's _scatterChests) and paying out of the
+        // same RandomLootSystem: one item, one piece of armour or one weapon,
+        // rolled at the party's own level with the map's rarity bonus applied.
+        //
+        // An emptied chest is remembered by the WORLD rather than by the save,
+        // the same way a felled tree is: come back in another savegame of the
+        // same world and it is still open.
+        _chestUnderfoot() {
+            if (this._viewMode !== 'foot' && this._viewMode !== 'fp') return null;
+            if (!this._terrain || !this._terrain.nearestProp) return null;
+            const p = this._contactPoint();
+            return this._terrain.nearestProp(p.x, p.z, CHEST_REACH,
+                rec => rec.kind === 'chest');
+        }
+
+        _openChest() {
+            const hit = this._chestUnderfoot();
+            if (!hit) return false;
+            if (this.isPaused()) return false;
+            const Decor = window.VoxelWorld || {};
+            const chest = Decor.chestKindOf ? Decor.chestKindOf(hit.rec) : null;
+            if (!chest) return false;
+            // Taken off the world first, so a second press cannot open the same
+            // chest twice while the loot toast is still going up.
+            this._terrain.fellProp(hit);
+            if (typeof SoundManager !== 'undefined') SoundManager.playOk();
+            // Cave and ruin loot is worth the walk, exactly as it is on the 2D
+            // map: RandomLootSystem reads this off $gameSystem when it rolls.
+            if (typeof $gameSystem !== 'undefined') {
+                $gameSystem._lootRarityBonus = this._underground ? 55 : 25;
+            }
+            try {
+                if (typeof PluginManager !== 'undefined' && PluginManager.callCommand) {
+                    PluginManager.callCommand(null, 'RandomLootSystem', chest.cmd, {});
+                }
+            } catch (e) { /* a chest that cannot pay out is still an open chest */ }
+            return true;
+        }
+
+        // ---------------------------------------------------------------------
+        // Fishing
+        // ---------------------------------------------------------------------
+        // Standing at the water's edge with a rod in the pack, the action key
+        // casts. The gear that counts and the minigame that follows are both
+        // MovementInteractionSystem's - the same rod, the same 3D minigame and
+        // the same catch table the 2D map uses - so nothing about fishing is
+        // written down twice.
+        _hasFishingRod() {
+            const M = window.MovementSystem;
+            return !!(M && M.hasFishingRod && M.hasFishingRod());
+        }
+
+        // The water a walker is facing, within reach, or null. Sampled a little
+        // way along their own heading rather than under their feet: fishing is
+        // something you do at the edge of the water, not in it.
+        _waterInFront() {
+            if (this._viewMode !== 'foot' || !this._fpc || !this._terrain) return null;
+            const rig = this._fpc.getRig();
+            const yaw = this._fpc.yaw ? this._fpc.yaw.rotation.y : 0;
+            const dx = -Math.sin(yaw), dz = -Math.cos(yaw);
+            for (let d = FISH_REACH_MIN; d <= FISH_REACH; d += 6) {
+                const x = rig.position.x + dx * d, z = rig.position.z + dz * d;
+                if (this._terrain.waterDepthAt(x, z) >= FISH_MIN_DEPTH) {
+                    return { x, z, kind: this._terrain.waterKindAt(x, z) };
+                }
+            }
+            return null;
+        }
+
+        // True when the action key should be offered as "cast": on foot, facing
+        // open water, carrying the gear, and not already under it.
+        _canFishHere() {
+            if (this._env === 'underwater' || this._underground) return false;
+            if (!this._hasFishingRod()) return false;
+            return !!this._waterInFront();
+        }
+
+        _startFishing() {
+            if (!this._canFishHere()) return false;
+            if (this.isPaused()) return false;
+            if (typeof window.Scene_FishingMinigame === 'undefined' || !window.Scene_FishingMinigame) return false;
+            if (!(SceneManager._scene instanceof Scene_Map)) return false;
+            if (typeof SoundManager !== 'undefined') SoundManager.playOk();
+            // The minigame is a scene of its own, so the world is suspended
+            // exactly the way it is for the party menu and comes back when the
+            // scene pops.
+            this._suspended = true;
+            if (this._overlay) this._overlay.style.display = 'none';
+            releasePointerLock();
+            window._fishingMinigameResult = null;
+            SceneManager.push(window.Scene_FishingMinigame);
+            return true;
+        }
+
         // ---------------------------------------------------------------------
         // Taking the scenery apart
         // ---------------------------------------------------------------------
@@ -1419,7 +1727,11 @@
             if (!TI || !TI.interactWithFeature || !this._terrain || !this._terrain.nearestProp) return false;
             if (this.isPaused()) return false;
             const rig = this._fpc.getRig();
-            const hit = this._terrain.nearestProp(rig.position.x, rig.position.z, SCENERY_REACH);
+            // A chest is opened, not taken apart: it is _openChest's, and it
+            // must not fall through to the salvage table when that one has
+            // declined it (a window already up, say).
+            const hit = this._terrain.nearestProp(rig.position.x, rig.position.z, SCENERY_REACH,
+                rec => rec.kind !== 'chest');
             if (!hit) return false;
             if (typeof $gameMessage === 'undefined' || $gameMessage.isBusy()) return false;
             const name = featureNameFor(hit.rec);
@@ -1585,6 +1897,7 @@
             this._camera.fov += (targetFov - this._camera.fov) * Math.min(1, delta * 4);
             let shake = Math.max(0, this._speedKmh - 480) * 0.0007;
             if (this._crashTimer > 0) shake += this._crashTimer * 0.5;   // collision rattle
+            if (this._solomonShake > 0) shake += this._solomonShake * 0.8;
             if (shake > 0) {
                 this._camera.position.x += (Math.random() - 0.5) * shake * 10;
                 this._camera.position.y += (Math.random() - 0.5) * shake * 10;
@@ -1924,6 +2237,15 @@
             const h = window.innerHeight;
 
             this._scene = new THREE.Scene();
+            // The world is streamed in chunk by chunk for as long as the scene
+            // runs, by a dozen modules that build their own materials, so the
+            // retro look is hung on the scene root: anything added to it is
+            // patched on the way in. Without this only the few models that ask
+            // the shader themselves (the wildlife, the parked vehicles) wear it
+            // and the terrain under them does not.
+            if (window.RetroShader && window.RetroShader.patchSceneAdds) {
+                window.RetroShader.patchSceneAdds(this._scene);
+            }
             this._scene.background = new THREE.Color(0x4387e0);
             // Much lighter haze so the world reads clearly into the distance. Fog
             // density is in 1/units, so it is divided by WORLD_SCALE to keep the
@@ -2072,6 +2394,9 @@
             if (this._lastTime === null) { this._lastTime = now; return; }
             const delta = Math.min((now - this._lastTime) / 1000, 0.1);
             this._lastTime = now;
+            // Kept for the draw pass: the burst effects are stepped where they
+            // are drawn, which is past every path that gets there.
+            this._frameDelta = delta;
 
             // The weapon in the driver's hands: in frame while they are walking,
             // put away at the wheel and whenever the drive itself is out of
@@ -2187,7 +2512,12 @@
             // Suspended while the main menu is open. Restore the overlay once the
             // player returns to the map scene; otherwise keep the scene frozen.
             if (this._suspended) {
-                if (SceneManager._scene instanceof Scene_Map) {
+                // The wait / sleep popup is not a scene: it opens ON the map,
+                // so being back on Scene_Map is not the same as being done with
+                // it. The world stays down until it is dismissed, or bringing
+                // the overlay back would drop it straight over the clock.
+                const waiting = (typeof $gameTemp !== 'undefined') && $gameTemp._sleepMenuOpen;
+                if (!waiting && SceneManager._scene instanceof Scene_Map) {
                     this._suspended = false;
                     if (this._overlay) this._overlay.style.display = '';
                     // Anything done in the menu - a weapon swapped, the party
@@ -2232,9 +2562,16 @@
             if (this._viewMode !== 'free') {
                 const ftBoost   = this._isFastTravelActive();
                 const fastDrive = !ftBoost && this._speedKmh > (this._drive.top || NATURAL_TOP);
-                const wantRadius = ftBoost ? LIMINAL_TERRAIN_RADIUS : (fastDrive ? 8 : 5);
+                // Underground the ring is drawn in hard (VoxelWorldTerrain's
+                // CAVE_RADIUS): a passage is meshed cube by cube, none of it can
+                // be seen through five voxels of rock, and streaming it out to
+                // five tiles is what a cave used to cost. Nothing is fast-
+                // travelling down there, so this simply wins.
+                const wantRadius = this._underground ? CAVE_STREAM_RADIUS
+                    : ftBoost ? LIMINAL_TERRAIN_RADIUS : (fastDrive ? 8 : 5);
                 if (this._terrain._radius !== wantRadius) this._terrain._radius = wantRadius;
-                this._terrain._buildBudget = ftBoost ? LIMINAL_BUILD_BUDGET : (fastDrive ? 18 : 6);
+                this._terrain._buildBudget = this._underground ? 4
+                    : ftBoost ? LIMINAL_BUILD_BUDGET : (fastDrive ? 18 : 6);
             }
 
             if (this._viewMode === 'free') {
@@ -2243,6 +2580,10 @@
                 this._updateCarCamera(delta);
             } else {
                 this._fpc.update(delta);
+                if (this._solomonShake > 0) {
+                    this._camera.position.x += (Math.random() - 0.5) * this._solomonShake * 4;
+                    this._camera.position.y += (Math.random() - 0.5) * this._solomonShake * 4;
+                }
                 if (this._titleMode) this._updateTitleLook(delta);
                 // On foot the player is free to walk any distance from the parked
                 // camper (no tether), so terrain streaming has to follow the
@@ -2459,6 +2800,14 @@
                 intensity: 0, time: tsec, delta, baseExposure: this._baseExposure
             });
 
+            // Solomon Ritual FX
+            if (this._solomon) {
+                this._solomon.update(at.x, at.y != null ? at.y : this._vanY, at.z, delta, tsec, this);
+            }
+            if (this._solomonShake > 0) {
+                this._solomonShake = Math.max(0, this._solomonShake - delta * 1.5);
+            }
+
             // Speed lens: while the turbo is HELD DOWN, and only then, light
             // starts to bend in a bubble around the camper above WARP_START_KMH,
             // harder the faster it goes. Nothing in the scene is displaced - it
@@ -2520,6 +2869,14 @@
             // player's view over both. A drive fast enough to bend space is a
             // drive, and a drive merges the screen anyway.
             if (this._splitNow && this._coop) { this._renderSplit(); return; }
+            // Effekseer draws straight onto the canvas, over whatever three.js
+            // has just put there, so every path out of this method goes through
+            // one line: the world, then the spells going off in it.
+            const bursts = () => {
+                if (this._spellFx) {
+                    this._spellFx.draw(this._renderer, this._camera, this._frameDelta || 1 / 60);
+                }
+            };
             if (this._coop) this._showBodies(false, true);
             const drawInto = (target) => {
                 this._renderer.setRenderTarget(target || null);
@@ -2542,9 +2899,10 @@
                     amount: this._warpAmount, time: tsec, center: this._warpCentre,
                     camera: this._camera, centered: fp
                 });
-                if (done) return;
+                if (done) { bursts(); return; }
             }
             drawInto(null);
+            bursts();
         }
 
         // Draw the world twice, into the two halves of the canvas. The split is
@@ -2776,6 +3134,11 @@
             if (this._hemiLight) {
                 this._hemiLight.intensity = cave ? 0.06 : underwater ? 0.18 : 0.08 + df * 0.26;
             }
+            if (this._solomon && this._solomon.isActive()) {
+                this._ambientLight.color.lerp(new THREE.Color(0xff2233), Math.min(1, delta * 2));
+            } else {
+                this._ambientLight.color.lerp(new THREE.Color(0xffffff), Math.min(1, delta * 2));
+            }
 
             // The free walk's hand light, on the same dusk-to-dawn schedule as
             // the headlights below.
@@ -2806,6 +3169,9 @@
             const targetFog = (cave || underwater)
                 ? this._tmpFog.copy(targetSky)
                 : skyFogColor(targetSky, this._tmpFog);
+            if (this._solomon) {
+                this._solomon.overrideSky(targetSky, targetFog, delta);
+            }
             const k = Math.min(1, delta * 1.5);
             if (!this._freeCamActive || underwater) {
                 this._scene.background.lerp(targetSky, k);
@@ -2813,7 +3179,7 @@
             }
             if (cave) this._scene.fog.density = FOG_CAVE;
             else if (underwater) this._scene.fog.density = FOG_UNDERWATER;
-            else if (this._viewMode !== 'free') this._scene.fog.density = FOG_DAY;
+            else if (this._viewMode !== 'free') this._scene.fog.density = (this._solomon && this._solomon.isActive()) ? 0.0022 : FOG_DAY;
 
             // Stars / moon / drifting clouds follow the camper.
             // No sky to draw stars, a moon or clouds on when the sky is rock.
@@ -2830,6 +3196,10 @@
             if (this._locked) return;      // a fight has the party
             if (typeof Input === 'undefined') return;
 
+            if (Input.isTriggered('debug_f7') && this._isDeveloperMode()) {
+                this.toggleSolomonRitual();
+            }
+
 
             // OK / Space is context-sensitive: on foot it jumps; while rolling in
             // a driving view it is the HANDBRAKE (hold to lock the rears and
@@ -2838,6 +3208,23 @@
             const rolling = this._speedKmh > 6;
             this._handbrake = drivingMode && rolling &&
                 (this._freeMoveKeys.has('Space') || Input.isPressed('ok'));
+
+            // The legend's rows have two faces, and a pad reaches most of them
+            // through Input rather than through the page's own key events, so
+            // the pad half of the block is read here.
+            if (this._viewMode === 'foot') {
+                const ASI = window.AnalogStickInput;
+                if (ASI && ASI.hasPad && ASI.hasPad()) {
+                    if (Math.abs(ASI.leftX ? ASI.leftX() : 0) > 0.4 ||
+                        Math.abs(ASI.leftY ? ASI.leftY() : 0) > 0.4) this._teachControl('voxWalk');
+                    if (Math.abs(ASI.rightX ? ASI.rightX() : 0) > 0.4 ||
+                        Math.abs(ASI.rightY ? ASI.rightY() : 0) > 0.4) this._teachControl('voxLook');
+                }
+                if (Input.isPressed('shift')) this._teachControl('voxRun');
+                if (Input.isTriggered('ok')) this._teachControl('voxJump');
+                if (Input.isPressed('pagedown')) this._teachControl('voxDig');
+                if (Input.isTriggered('pageup')) this._teachControl('voxSlot');
+            }
 
             if (Input.isTriggered('ok')) {
                 if (this._viewMode === 'foot') {
@@ -2854,7 +3241,13 @@
             if (Input.isTriggered('cancel') && VoxelWorldSystem.isActive()) {
                 this._openEscMenu();
             }
-            if (this._footOnly && Input.isTriggered('wmrToggle')) this._requestExit();
+            // T / Select is the way out of this world, walking or driving. It
+            // is the same key that puts the world map away everywhere else in
+            // the game, so it means one thing throughout: put me back on 315.
+            // Where exactly that is - the square walked to, the square driven
+            // to, the ship in orbit of an alien world, the menu a free-play
+            // session came from - is _endDriveToWorldMap's own answer.
+            if (!this._titleMode && Input.isTriggered('wmrToggle')) this._requestExit();
 
             // Controller right stick zooms the camera while driving / in free cam.
             if (window.AnalogStickInput && (this._viewMode === 'car' || this._viewMode === 'free')) {
@@ -2911,8 +3304,15 @@
             if (!this._lifted) this._lifted = new Map();
             for (const id of WORLD_UI_IDS) {
                 const el = document.getElementById(id);
-                if (!el || this._lifted.has(id)) continue;
-                this._lifted.set(id, el.style.zIndex);
+                if (!el) continue;
+                // Not "have we lifted this id", but "is THIS the element we
+                // lifted": the party HUD is thrown away and built again with
+                // every map scene (a menu, a fight, a transfer), and the id
+                // alone would have said yes to a node that was never raised,
+                // which is why the cards came and went.
+                const prev = this._lifted.get(id);
+                if (prev && prev.el === el) continue;
+                this._lifted.set(id, { el, z: el.style.zIndex });
                 el.style.zIndex = String(WORLD_UI_Z);
             }
         }
@@ -2925,9 +3325,8 @@
 
         _unsurfaceDom() {
             if (!this._lifted) return;
-            for (const [id, z] of this._lifted) {
-                const el = document.getElementById(id);
-                if (el) el.style.zIndex = z || '';
+            for (const rec of this._lifted.values()) {
+                if (rec.el && rec.el.isConnected) rec.el.style.zIndex = rec.z || '';
             }
             this._lifted = null;
         }
@@ -2954,6 +3353,73 @@
             this._hud.closeFullMap();
             this._hud._drawMiniMap(this._vanX, this._vanZ);
             return true;
+        }
+
+        // ---------------------------------------------------------------------
+        // The party's menus, from inside the world
+        // ---------------------------------------------------------------------
+        // Which keys are ours and which are the menu's. The world's own keys
+        // (WASD, F, C, E, R, G, Q, H, M, Tab, the digits) win wherever the two
+        // tables collide, because they are what the hands are on: R respawns
+        // the camper out here rather than opening the wait menu, H is the
+        // control legend rather than the codex, and M is the map.
+        //
+        // R and H therefore need somewhere else to go, and they get it: the
+        // wait menu opens on SHIFT+R and the codex on SHIFT+H, which is the
+        // only place in the game a menu key is doubled up and the only way to
+        // reach either from a drive.
+        _runMenuHotkey(e) {
+            const MH = window.MenuHotkeys;
+            if (!MH || !MH.list) return;
+            if (!(SceneManager._scene instanceof Scene_Map)) return;
+            // Typing into something the world put on the page is not a hotkey.
+            const el = document.activeElement;
+            if (el && /^(input|textarea|select)$/i.test(el.tagName)) return;
+            if (el && el.isContentEditable) return;
+
+            const code = e.code;
+            if (!/^Key[A-Z]$/.test(code)) return;
+            const letter = code.slice(3);
+            const shift = !!e.shiftKey;
+
+            // V is the vehicle, and out here the vehicle is the one under the
+            // party rather than a page of a menu: it opens the drive options -
+            // stop, step outside, maintenance, refuel - which is what the key
+            // means from inside a drive. On a free walk there is no vehicle and
+            // the key does nothing.
+            if (letter === 'V' && !shift) {
+                if (this._footOnly) return;
+                e.preventDefault();
+                this._openDriveMenu();
+                return;
+            }
+            // The world's own letters, and what a shifted press of them means.
+            const OURS = { F: null, C: null, E: null, G: null, Q: null, M: null,
+                           W: null, A: null, S: null, D: null,
+                           R: 'sleep_menu', H: 'help' };
+            let symbol = null;
+            if (Object.prototype.hasOwnProperty.call(OURS, letter)) {
+                // Only a shifted press, and only where there is somewhere for
+                // it to go. An unshifted one belongs to the world.
+                if (!shift || !OURS[letter]) return;
+                symbol = OURS[letter];
+            } else {
+                if (shift) return;
+                const hit = MH.list().find(h => h.key === letter);
+                if (!hit) return;
+                symbol = hit.symbol;
+            }
+            if (!MH.has(symbol)) return;
+            e.preventDefault();
+            this._suspended = true;
+            if (this._overlay) this._overlay.style.display = 'none';
+            releasePointerLock();
+            if (!MH.run(symbol, SceneManager._scene)) {
+                // Nothing opened after all: put the world straight back rather
+                // than leaving it hidden behind a menu that never came up.
+                this._suspended = false;
+                if (this._overlay) this._overlay.style.display = '';
+            }
         }
 
         // Which menu a back press opens out here. On foot it is the party's
@@ -2987,6 +3453,7 @@
         // so it never fires while the choice menu or main menu is already up.
         _requestExit() {
             if (this.isPaused()) return;
+            this._teachControl('voxReturn');
             if (typeof $gameMessage !== 'undefined' && $gameMessage.isBusy()) return;
             this._endDriveToWorldMap();
         }
@@ -3049,6 +3516,36 @@
                 handlers.push(() => { restore(); this._setMode('foot'); });
             }
 
+            // The vehicle's own business, out here rather than back on the map:
+            // what is broken on it and what it can be given. Both are pushed
+            // scenes, so the world suspends behind them and comes back when
+            // they pop, exactly as it does for the party menu.
+            //
+            // The maintenance sheet is the one place a critical part can be put
+            // right, and being stranded in the middle of a drive is precisely
+            // when somebody needs it: before this, the only way to it was to end
+            // the drive, cross the world map and find a garage.
+            if (window.VehicleSystemRepair) {
+                choices.push(T('CamperDrive.maintenance'));
+                handlers.push(() => {
+                    restore();
+                    this._suspended = true;
+                    if (this._overlay) this._overlay.style.display = 'none';
+                    releasePointerLock();
+                    this._callPluginCommand('VehicleSystemRepair',
+                        VEHICLE_MAINTENANCE_CMD[this._vehicleId || 'camper'] || 'camperMaintenance');
+                });
+            }
+
+            // Fuel out of the party's own cans, wherever they are standing. The
+            // station option below is the other half of this and only shows at
+            // a forecourt.
+            const sc = SceneManager._scene;
+            if (sc instanceof Scene_Map && typeof sc.showRefuelWindow === 'function') {
+                choices.push(T('CamperDrive.refuel'));
+                handlers.push(() => this._openStationRefuel());
+            }
+
             // At a city / village fuel station, "Continue" opens the refuel UI
             // (VehicleSystemRefuel) instead of just resuming; Esc out of it drops
             // straight back into the drive.
@@ -3066,6 +3563,18 @@
                 const h = handlers[idx];
                 if (h) h(); else restore();
             });
+        }
+
+        // One plugin command, guarded: a stripped build without the plugin that
+        // owns it must not take the drive down with it.
+        _callPluginCommand(plugin, command, args) {
+            try {
+                if (typeof PluginManager !== 'undefined' && PluginManager.callCommand) {
+                    PluginManager.callCommand(null, plugin, command, args || {});
+                    return true;
+                }
+            } catch (e) { /* the option simply does nothing */ }
+            return false;
         }
 
         // Opens the standard refuel UI (VehicleSystemRefuel) over the paused drive
@@ -3794,6 +4303,21 @@
             const ts = WORLD_TILE_SIZE;
             const tx = Math.floor(x / ts), tz = Math.floor(z / ts);
             const plan = this._planAt(tx, tz);
+            // Omega Tower: solid base collision across its entire footprint
+            if (this._omegaAt) {
+                const half = (OMEGA_SPAN * ts) * 0.5;
+                const ox = this._omegaAt.x, oz = this._omegaAt.z;
+                const dx = x - ox, dz = z - oz;
+                const hw = half + r, hd = half + r;
+                if (Math.abs(dx) < hw && Math.abs(dz) < hd) {
+                    if (hw - Math.abs(dx) < hd - Math.abs(dz)) {
+                        x = ox + (dx < 0 ? -hw : hw);
+                    } else {
+                        z = oz + (dz < 0 ? -hd : hd);
+                    }
+                    return { x, z };
+                }
+            }
             // Out in open country there is no town to be pushed out of, but
             // there are still trees and boulders, and a walker goes round those
             // rather than through them.
@@ -3938,6 +4462,13 @@
             if (!this._hud || !this._hud.setPrompt) return;
             const onFoot = this._viewMode === 'foot';
             if (!onFoot) { this._hud.setPrompt('', false); return; }
+            // Ten times a second rather than sixty. Working out what the action
+            // key would do walks the wildlife, the crowd, every prop on the nine
+            // tiles round the party and the water in front of them, and a
+            // prompt that appears a sixtieth of a second later than it could is
+            // a prompt nobody can tell from an instant one.
+            this._promptTick = (this._promptTick || 0) + 1;
+            if (this._promptTick % PROMPT_EVERY !== 0) return;
             const here = this._contactPoint();
             const key = T('CamperDrive.prompt.key');
             let text = '';
@@ -3955,6 +4486,18 @@
                 const ped = this._crowd.nearest(here.x, here.z, TALK_RANGE);
                 if (ped) text = T('CamperDrive.prompt.talk', { key, name: ped.name });
             }
+            // A chest is what the key would open before it is anything else,
+            // and it is the only prompt out here that says what is in it.
+            if (!text) {
+                const hit = this._chestUnderfoot();
+                const Decor = window.VoxelWorld || {};
+                const chest = hit && Decor.chestKindOf ? Decor.chestKindOf(hit.rec) : null;
+                if (chest) text = T('CamperDrive.prompt.chest.' + chest.kind, { key });
+            }
+            // ...and the water in front of them, with a rod in the pack. The
+            // ONE prompt fishing gets: no legend, no second line, nothing about
+            // the water anywhere else.
+            if (!text && this._canFishHere()) text = T('CamperDrive.prompt.fish', { key });
             if (!text && !this._footOnly) {
                 const dx = here.x - this._vanX, dz = here.z - this._vanZ;
                 if (dx * dx + dz * dz <= 60 * 60) text = T('CamperDrive.prompt.board', { key });
@@ -4249,16 +4792,17 @@
                 this._omegaGroundY = this._terrain.getTerrainHeight(
                     this._omegaAt.x / WORLD_TILE_SIZE, this._omegaAt.z / WORLD_TILE_SIZE);
             }
+            const baseY = (this._omegaGroundY != null ? this._omegaGroundY : 0) + 35;
             const eye = this._camera.getWorldPosition(this._omegaEye || (this._omegaEye = new THREE.Vector3()));
             const dx = this._omegaAt.x - eye.x;
             const dz = this._omegaAt.z - eye.z;
-            const dy = this._omegaGroundY - eye.y;
+            const dy = baseY - eye.y;
             const dist = Math.hypot(dx, dz);
             if (dist > OMEGA_SIGHT) { g.visible = false; return; }
             g.visible = true;
             // Near enough to walk up to: where it actually is, at its real size.
             if (dist <= OMEGA_PROXY_D) {
-                g.position.set(this._omegaAt.x, this._omegaGroundY, this._omegaAt.z);
+                g.position.set(this._omegaAt.x, baseY, this._omegaAt.z);
                 g.scale.setScalar(1);
                 return;
             }
@@ -4956,29 +5500,75 @@
             });
         }
 
+        // ---------------------------------------------------------------------
+        // Under the ground
+        // ---------------------------------------------------------------------
+        // There are now three places to be, not two. On the surface; inside the
+        // rock, which is a real 3D world of passages, chambers, shafts and (in
+        // town) brick sewer galleries; and the 2D procedural underground, which
+        // is where the world hands over once somebody has dug all the way to
+        // the bedrock at the bottom of the voxel field.
+        //
+        // Dropping into a cave used to teleport the party out of the 3D world
+        // after three cubes of digging, which meant the caves might as well not
+        // have existed. Now the whole depth of the field is walkable and the 2D
+        // map is only reached at the very bottom of it - and never from inside a
+        // natural passage, however deep that passage runs, because walking the
+        // deep road is not the same act as sinking a shaft through its floor.
         _updateUnderground() {
             if (this._standalone || this._titleMode || this._transitioningUnderground) return;
             const eye = (this._viewMode === 'foot' && this._fpc)
                 ? this._fpc.getRig().position
                 : { x: this._vanX, y: this._vanY + 6, z: this._vanZ };
+            if (!this._terrain) return;
 
-            // Ocean / sea water diving: keep diving in 3D without teleporting
-            const waterKind = this._terrain ? this._terrain.waterKindAt(eye.x, eye.z) : null;
-            const waterTop = this._terrain ? this._terrain.waterSurfaceAt(eye.x, eye.z) : null;
-            const isOceanOrSeaWater = (waterKind === 'sea' || (waterTop !== null && eye.y <= waterTop && waterKind !== 'inland'));
+            // Ocean / sea water diving: keep diving in 3D without teleporting.
+            const waterKind = this._terrain.waterKindAt(eye.x, eye.z);
+            const waterTop = this._terrain.waterSurfaceAt(eye.x, eye.z);
+            const isOceanOrSeaWater = (waterKind === 'sea' ||
+                (waterTop !== null && eye.y <= waterTop && waterKind !== 'inland'));
             if (isOceanOrSeaWater) {
-                this._underground = false;
+                this._setUnderground(false);
                 return;
             }
 
-            // Check if player goes more than X blocks underground (e.g. dug down or fell into a deep shaft/trench):
-            const groundTop = this._terrain ? this._terrain.field.blockTopAt(eye.x, eye.z) : 0;
-            const depthUnderground = groundTop - eye.y;
-            // X blocks underground: VOX.SIZE = 5 units per block (~1.25m). X = 3 blocks (15 units)
-            const X_BLOCKS = 3;
-            const threshold = X_BLOCKS * VOX.SIZE;
-            if (depthUnderground >= threshold) {
-                this._enterUnderground2D();
+            // Rock over their head is what makes a cave a cave: it is what the
+            // light, the fog, the sky, the sea sheet and the roster all answer
+            // to. Asked as "is there anything solid above me", not as "how far
+            // down am I", so a trench somebody dug in a field is still a field
+            // and a passage is a passage the moment its roof closes over.
+            //
+            // A deep open shaft counts too, and THAT is the one measured by
+            // depth - with two thresholds rather than one, because each flip
+            // rebuilds every tile round the camera and somebody standing in the
+            // mouth of a sinkhole must not make it do that twice a second.
+            const field = this._terrain.field;
+            const roofed = field.roofY(eye.x, eye.z, eye.y) != null;
+            const depth = field.blockTopAt(eye.x, eye.z) - eye.y;
+            this._setUnderground(roofed || depth >
+                (this._underground ? CAVE_LEAVE_DEPTH : CAVE_ENTER_DEPTH));
+
+            // ...and the floor of the world is where it stops being a cave and
+            // starts being the 2D map. A natural passage never counts, however
+            // low it runs: only a hole somebody dug themselves gets that far.
+            if (eye.y > UNDERGROUND_2D_Y) return;
+            const S = VOX.SIZE;
+            const inNatural = this._terrain.field.caveAt(
+                Math.floor(eye.x / S), Math.floor(eye.y / S), Math.floor(eye.z / S));
+            if (inNatural) return;
+            this._enterUnderground2D();
+        }
+
+        // Flip the whole world between daylight and rock. The caves are only
+        // meshed while somebody is inside them, so this is what builds them and
+        // what takes them away again; it is deliberately edge-triggered because
+        // each flip rebuilds the tiles around the camera.
+        _setUnderground(on) {
+            const want = !!on;
+            if (this._underground === want) return;
+            this._underground = want;
+            if (this._terrain && this._terrain.setCavesVisible) {
+                this._terrain.setCavesVisible(want);
             }
         }
 
@@ -5380,10 +5970,16 @@
             if (!this._tool) return;
             const live = this._viewMode === 'foot' && !this._menuOpen &&
                          !this._suspended && !this._stationRefuelWatch;
-            this._tool.setActive(live);
+            // The pick only works the world while the block bar is the one up:
+            // with items or spells in hand the swing is a use or a cast, not a
+            // blow against the rock.
+            const onBlocks = this._tool.onBlocks;
+            this._tool.setActive(live && onBlocks);
             if (!live) {
                 this._placeReq = false;
                 this._cycleReq = 0;
+                this._castReq = false;
+                if (this._caster) this._caster.aim(null, null, false);
                 if (this._hud && this._hud.setDigReadout) this._hud.setDigReadout('', '', 0);
                 if (this._hud && this._hud.setBlockBar) this._hud.setBlockBar(null);
                 return;
@@ -5405,24 +6001,143 @@
                 if (Input.isTriggered('pageup')) this._cycleReq = -1;
             }
 
-            this._tool.update(delta, {
+            // L2 walks the three bars the way Tab does, so a pad never has to
+            // reach for a key that is not on it.
+            const ASI = window.AnalogStickInput;
+            const l2 = !!(ASI && ASI.leftTrigger && ASI.leftTrigger() > 0.5);
+            if (l2 && !this._l2Held) this._cycleBarMode(1);
+            this._l2Held = l2;
+
+            this._tool.update(delta, onBlocks ? {
                 origin: this._digOrigin,
                 dir:    this._digDir,
                 dig:    this._digHeld || padDig,
                 place:  this._placeReq,
                 cycle:  this._cycleReq
-            });
+            } : null);
+
+            // Items and spells: the same swing, doing what is in hand instead.
+            if (!onBlocks) this._useHeldBar(this._digHeld || padDig, this._cycleReq);
+            if (this._caster) {
+                this._caster.aim(this._digOrigin, this._digDir,
+                    this._tool.barMode === 'spells');
+                this._caster.update(delta);
+            }
+
             this._placeReq = false;
             this._cycleReq = 0;
+            this._castReq = false;
 
             if (this._hud && this._hud.setDigReadout) {
-                this._hud.setDigReadout(this._tool.targetName, this._tool.selectedName,
-                    this._tool.progress);
+                this._hud.setDigReadout(onBlocks ? this._tool.targetName : '',
+                    onBlocks ? this._tool.selectedName : '', this._tool.progress);
             }
-            // The quick bar along the bottom: the weapon, then every kind of
-            // block dug up and not yet built with.
+            // The quick bar along the bottom: whichever of the three is up.
             if (this._hud && this._hud.setBlockBar) {
-                this._hud.setBlockBar(this._tool.bar.readout(this._tool.weaponName));
+                this._hud.setBlockBar(this._barRows());
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // The three quick bars
+        // ---------------------------------------------------------------------
+        // What the strip along the bottom is showing right now. Blocks is the
+        // tool's own readout; the other two are views onto what the game already
+        // keeps (the map's item favourites, the leader's battle loadout), so
+        // nothing out here holds an inventory of its own.
+        _barRows() {
+            if (!this._tool) return null;
+            const mode = this._tool.barMode;
+            if (mode === 'blocks') return this._tool.bar.readout(this._tool.weaponName);
+            if (mode === 'spells') return this._caster ? this._caster.readout() : null;
+            const IH = window.ItemHotbar;
+            if (!IH || !IH.itemAt) return null;
+            const sel = this._itemSlot || 0;
+            const rows = [];
+            for (let i = 0; i < SPELL_SLOTS; i++) {
+                const item = IH.itemAt(i);
+                if (!item) { rows.push(null); continue; }
+                const count = $gameParty.numItems(item);
+                rows.push({
+                    item: true, on: i === sel, iconIndex: item.iconIndex,
+                    count, enabled: count > 0, name: item.name
+                });
+            }
+            return rows;
+        }
+
+        // The legend sheet pinned in the corner (Map/MapLegend.js) teaches this
+        // world a block of rows of its own, and a row lights the first time the
+        // control behind it is used. It cannot read most of them for itself -
+        // this world is a DOM overlay and takes its keys and its mouse straight
+        // off the page, where Input never sees them - so every control says so
+        // here instead.
+        _teachControl(id) {
+            const ML = window.MapLegend;
+            if (ML && ML.markControl) ML.markControl(id);
+        }
+
+        // Tab / L2. The bar the party is holding changes, and the world is told
+        // which one in a line of its own rather than by the strip quietly
+        // becoming something else.
+        _cycleBarMode(dir) {
+            if (!this._tool) return;
+            this._teachControl('voxBar');
+            const mode = this._tool.cycleBarMode(dir);
+            if (typeof SoundManager !== 'undefined') SoundManager.playCursor();
+            if (window.ParchmentToast && window.ParchmentToast.show) {
+                window.ParchmentToast.show(T('VoxelWorld.bar.' + mode));
+            }
+        }
+
+        // A number key, whichever bar is up.
+        _selectBarSlot(index) {
+            if (!this._tool) return;
+            this._teachControl('voxSlot');
+            const mode = this._tool.barMode;
+            if (mode === 'blocks') { this._tool.bar.select(index); return; }
+            if (mode === 'spells') { if (this._caster) this._caster.select(index); return; }
+            this._itemSlot = Math.max(0, Math.min(SPELL_SLOTS - 1, index));
+        }
+
+        // The swing, with something other than a block in hand: an item is used
+        // on the spot, a spell is thrown down the crosshair.
+        _useHeldBar(pressed, cycle) {
+            const mode = this._tool.barMode;
+            if (cycle) {
+                if (mode === 'spells' && this._caster) this._caster.cycle(cycle);
+                else if (mode === 'items') {
+                    const IH = window.ItemHotbar;
+                    const next = IH && IH.stepSlot ? IH.stepSlot(this._itemSlot || 0, cycle) : -1;
+                    if (next >= 0) this._itemSlot = next;
+                }
+            }
+            if (!pressed || this._barHeld) { this._barHeld = pressed; return; }
+            this._barHeld = true;
+            if (mode === 'spells') {
+                if (this._caster) this._caster.cast(this._digOrigin, this._digDir);
+                return;
+            }
+            const IH = window.ItemHotbar;
+            if (IH && IH.use) IH.use(this._itemSlot || 0);
+        }
+
+        // Where a spell landed. The crater is the caster's own business (it
+        // knows the formula); this is the half only the scene can answer: who
+        // was standing in it. A creature caught in the blast is not damaged - no
+        // turn has been taken and nothing out here has hit points - it turns
+        // round and the fight opens, which is what casting across a valley is
+        // FOR: picking a fight before the thing has seen you.
+        _spellBurst(x, y, z, radius, force, skill) {
+            if (!this._bioEnemies || this._pendingFought) return;
+            if (this._noEncounters || isHealingSkill(skill)) return;
+            const ents = this._bioEnemies._ents || [];
+            for (const ent of ents) {
+                if (!ent.alive || !ent.root || ent.dead) continue;
+                const dx = ent.x - x, dz = ent.z - z;
+                if (dx * dx + dz * dz > radius * radius) continue;
+                this._startBioEnemyBattle(ent);
+                return;
             }
         }
 
@@ -5441,6 +6156,33 @@
             if ($gameSystem._voxelWorldEdits) delete $gameSystem._voxelWorldEdits;
         }
 
+        _isDeveloperMode() {
+            return (typeof Utils !== 'undefined' && Utils.isOptionValid && Utils.isOptionValid('test')) ||
+                   (typeof $gameTemp !== 'undefined' && $gameTemp && $gameTemp.isPlaytest && $gameTemp.isPlaytest()) ||
+                   (typeof $gameSystem !== 'undefined' && $gameSystem && $gameSystem._isSandboxMode) ||
+                   isSandboxOrTest();
+        }
+
+        toggleSolomonRitual() {
+            if (!this._solomon) return;
+            const on = this._solomon.toggle();
+            if (on) {
+                if (typeof AudioManager !== 'undefined' && AudioManager.playSe) {
+                    AudioManager.playSe({ name: 'Thunder1', volume: 100, pitch: 70, pan: 0 });
+                }
+                if (this._hud && this._hud.showToast) {
+                    this._hud.showToast('THE SOLOMON RITUAL HAS BEGUN');
+                }
+            } else {
+                if (typeof AudioManager !== 'undefined' && AudioManager.playSe) {
+                    AudioManager.playSe({ name: 'Collapse1', volume: 75, pitch: 120, pan: 0 });
+                }
+                if (this._hud && this._hud.showToast) {
+                    this._hud.showToast('Solomon Ritual Dismissed');
+                }
+            }
+        }
+
         dispose() {
             // The world is going: nothing is on the game's canvas any more, so
             // the map's spriteset takes its mirror down on its next tick.
@@ -5454,6 +6196,8 @@
             VoxelWorldState.setEnabled(true);
             this._saveVoxelEdits();
             if (this._tool) { this._tool.dispose(); this._tool = null; }
+            if (this._caster) { this._caster.dispose(); this._caster = null; }
+            if (this._spellFx) { this._spellFx.dispose(); this._spellFx = null; }
             if (this._onDigDown) {
                 document.removeEventListener('mousedown', this._onDigDown);
                 document.removeEventListener('mouseup',   this._onDigUp);
@@ -5486,6 +6230,7 @@
             if (this._onTabKey) document.removeEventListener('keydown', this._onTabKey);
             if (this._onMapKey) document.removeEventListener('keydown', this._onMapKey);
             if (this._onActionKey) document.removeEventListener('keydown', this._onActionKey);
+            if (this._onMenuHotkey) document.removeEventListener('keydown', this._onMenuHotkey);
             if (this._freeCamActive) this._scene.remove(this._camera);
             if (this._weatherFx)    this._weatherFx.dispose();
             if (this._water)        this._water.dispose();
@@ -5495,6 +6240,7 @@
             this._stopCoop();
             if (this._underwaterFx) this._underwaterFx.dispose();
             if (this._skyFx)        this._skyFx.dispose();
+            if (this._solomon)      this._solomon.dispose();
             if (this._wheelFx)      this._wheelFx.dispose();
             if (this._bioEnemies)   this._bioEnemies.dispose();
             if (this._crowd)        this._crowd.dispose();

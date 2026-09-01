@@ -419,6 +419,15 @@
         return null;
     }
 
+    // Published alongside mount() so every menu that shows a weapon asks ONE
+    // question of one place: the shop counter and the forge would otherwise
+    // each decide for themselves what counts as a thing with a model, and a
+    // shield -- which has no model of its own and is built through the weapon
+    // pipeline by WeaponSystemProcedural.shieldWeaponFor -- is exactly the case
+    // a second copy gets wrong. Attached outside the block that builds the
+    // service, so it is there whichever plugin happened to create it.
+    window.Weapon3DPreview.modelFor = previewModelFor;
+
     Scene_Equip.prototype.init3DWeaponPreview = function () {
         this.cleanup3DWeaponPreview();
 

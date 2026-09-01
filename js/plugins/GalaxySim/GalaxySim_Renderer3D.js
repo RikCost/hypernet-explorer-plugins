@@ -1953,7 +1953,10 @@
         return obj;
       }
       obj = builder();
-      if (window.PSXShader) window.PSXShader.applyToObject(obj);
+      // GalaxySim is EXEMPT from the retro looks (window.RetroShader.NONE):
+      // a star map is not a period 3D game, and banding a nebula or snapping a
+      // planet's limb to a low-res grid reads as a fault, not a style.
+      if (window.RetroShader) window.RetroShader.NONE.applyToObject(obj);
       this._cache.set(key, obj);
       if (this._cache.size > this._maxCache) {
         const oldestKey = this._cache.keys().next().value;
@@ -1982,8 +1985,8 @@
     // ------------------------------------------------------------------
     // Public (real-time 3D scene): build standalone planet / star groups the
     // caller owns and renders in its own THREE scene. Unlike renderPlanet /
-    // renderStar these are NOT cached and NOT run through PSXShader (the
-    // offscreen 2D-composite path keeps both). The returned group reuses the
+    // renderStar these are NOT cached (the offscreen 2D-composite path is).
+    // Neither wears a retro look: GalaxySim is exempt, see RetroShader.NONE. The returned group reuses the
     // shared sphere/cloud geometry, so the caller must release it ONLY via
     // disposeBodyGroup(group) -- never dispose its child geometry directly.
     //
@@ -2057,11 +2060,9 @@
 
         this._setFrustum(obj._half);
         this.scene.add(obj);
-        if (window.PSXShader) {
-          window.PSXShader.render(this.renderer, this.scene, this.camera);
-        } else {
-          this.renderer.render(this.scene, this.camera);
-        }
+        // Exempt: see the note on applyToObject above. Straight through, no
+        // low-res pass.
+        this.renderer.render(this.scene, this.camera);
         this.scene.remove(obj);
 
         const drawSize = radius * 2 * obj._half;
@@ -2191,11 +2192,9 @@
 
         this._setFrustum(obj._half);
         this.scene.add(obj);
-        if (window.PSXShader) {
-          window.PSXShader.render(this.renderer, this.scene, this.camera);
-        } else {
-          this.renderer.render(this.scene, this.camera);
-        }
+        // Exempt: see the note on applyToObject above. Straight through, no
+        // low-res pass.
+        this.renderer.render(this.scene, this.camera);
         this.scene.remove(obj);
 
         const drawSize = radius * 2 * obj._half;
@@ -2231,11 +2230,9 @@
         // star lights its own surface fully (MeshBasicMaterial ignores lights)
         this._setFrustum(obj._half);
         this.scene.add(obj);
-        if (window.PSXShader) {
-          window.PSXShader.render(this.renderer, this.scene, this.camera);
-        } else {
-          this.renderer.render(this.scene, this.camera);
-        }
+        // Exempt: see the note on applyToObject above. Straight through, no
+        // low-res pass.
+        this.renderer.render(this.scene, this.camera);
         this.scene.remove(obj);
 
         const drawSize = radius * 2 * obj._half;

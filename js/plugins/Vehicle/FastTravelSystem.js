@@ -218,6 +218,12 @@
             ? window.WorkSystem.destinationName(name)
             : String(name == null ? '' : name);
 
+    // What a row, a pin and a confirmation call the place. A point the party
+    // wrote down themselves carries its own name and never goes near the
+    // Destinations.json index, which knows nothing about it.
+    const rowLabel = (dest) =>
+        (dest && dest.customName) ? dest.customName : destLabel(dest && dest.name);
+
     // ------------------------------------------------------------------------
     // AFTER THE IMPACT
     // ------------------------------------------------------------------------
@@ -796,6 +802,130 @@
         return initializeDestinationCache();
     }
 
+    // ── Places of the party's own ───────────────────────────────────────────
+    //
+    // A vehicle needs no station: it can be pointed at any square of the world
+    // map. So the picker opened from the camper or the car offers a coordinate
+    // of the party's own choosing, written down with a name (the nation and the
+    // ground standing there, by default) and kept in THIS savegame alone. From
+    // then on the square is a pin of its own colour, offered to a vehicle and to
+    // nothing else, because nothing else stops in open country.
+    const CUSTOM_ADD_KEY = '__customAdd__';   // i18n-ignore  internal row id
+    const CUSTOM_KEY_PREFIX = 'custom:';      // i18n-ignore  internal id prefix
+    const CUSTOM_COORD_MIN = 1;
+    const CUSTOM_COORD_MAX = 256;
+    // The world map's own bounds. A square outside them is not a place.
+    const WORLD_TILE_MAX = 255;
+
+    function customTravelPoints() {
+        if (!$gameSystem) return [];
+        if (!Array.isArray($gameSystem._customTravelPoints)) $gameSystem._customTravelPoints = [];
+        return $gameSystem._customTravelPoints;
+    }
+
+    function isVehicleTravel(transportType) {
+        return transportType === 'camper' || transportType === 'carsharing';
+    }
+
+    // Every world square a Destinations.json entry already claims: its own base
+    // tile and every tile it reserves. A place already stands there, with a name
+    // and a door of its own, so nothing of the party's may be written over it.
+    let _reservedSquares = null;
+    function reservedSquares() {
+        if (_reservedSquares) return _reservedSquares;
+        const set = new Set();
+        for (const entry of Object.values(TRANSPORT_DESTINATIONS)) {
+            if (!entry) continue;
+            if (entry.base && typeof entry.base.x === 'number') {
+                set.add(entry.base.x + ',' + entry.base.y);   // i18n-ignore  coordinate key
+            }
+            const tiles = entry.reservedTiles ||
+                (entry.transportOverrides && entry.transportOverrides.reservedTiles);
+            if (Array.isArray(tiles)) tiles.forEach(t => set.add(String(t).replace(/\s+/g, '')));
+        }
+        _reservedSquares = set;
+        return set;
+    }
+
+    // The ground on a world square, read off the biome snapshot rather than the
+    // live tile column: the picker is open on some other map entirely.
+    function worldBiomeAt(x, y) {
+        try {
+            if ($gameSystem && $gameSystem.getBiomeFromCache) return $gameSystem.getBiomeFromCache(x, y);
+        } catch (e) { /* no snapshot loaded */ }
+        return null;
+    }
+
+    function hasRiverAt(x, y) {
+        const pg = $gameSystem && $gameSystem._procGenData;
+        const rivers = pg && pg.riverCoordMap;
+        return !!(rivers && rivers[x + ',' + y]);   // i18n-ignore  coordinate key
+    }
+
+    // Why a square cannot be written down, or null when it can. A mountain
+    // cannot be driven up, water cannot be driven across, a river cuts the
+    // square in two, and a named place is already there.
+    function customPointRefusal(x, y) {
+        if (!Number.isFinite(x) || !Number.isFinite(y)) return 'range';
+        if (x < 0 || y < 0 || x > WORLD_TILE_MAX || y > WORLD_TILE_MAX) return 'range';
+        if (reservedSquares().has(x + ',' + y)) return 'reserved';   // i18n-ignore  coordinate key
+        if (customTravelPoints().some(p => p.x === x && p.y === y)) return 'duplicate';
+        if (hasRiverAt(x, y)) return 'river';
+        const biome = String(worldBiomeAt(x, y) || '');
+        if (/^(ocean|sea|water|lake|river)/i.test(biome)) return 'water';
+        if (/^mountain/i.test(biome)) return 'mountain';
+        return null;
+    }
+
+    // The nation painted on a world square (map 315's region plane, cached in
+    // BiomesMap.json), or null on unclaimed ground.
+    function nationNameAt(x, y) {
+        const country = ($gameSystem && $gameSystem.getCountryFromWorldCoordinates)
+            ? $gameSystem.getCountryFromWorldCoordinates(x, y) : null;
+        return (country && country.name) ? country.name : null;
+    }
+
+    function biomeLabelAt(x, y) {
+        const biome = worldBiomeAt(x, y);
+        if (!biome) return null;
+        return (window.BiomeNames && window.BiomeNames.display)
+            ? window.BiomeNames.display(biome) : biome;
+    }
+
+    // "Austria - Fields (34, 56)": what a square is called until the party calls
+    // it something else.
+    function defaultCustomName(x, y) {
+        return T('FastTravel.custom.defaultName', {
+            nation: nationNameAt(x, y) || T('FastTravel.custom.unclaimed'),
+            biome: biomeLabelAt(x, y) || T('FastTravel.custom.unknownBiome'),
+            x: x, y: y,
+        });
+    }
+
+    // A written-down square, dressed as a destination: its world tile is its
+    // `base`, so distance, fuel and the arrival all work out exactly as they do
+    // for a town, and a vehicle is set down on the square itself.
+    function customDestination(point) {
+        return {
+            name: CUSTOM_KEY_PREFIX + point.x + ',' + point.y,   // i18n-ignore  internal id
+            customName: point.name,
+            custom: true,
+            type: 'custom',   // i18n-ignore  pin shape class
+            mapId: 315,
+            x: point.x,
+            y: point.y,
+            image: {
+                x: String(Math.round(point.x * MAP_SCALE_X + MAP_OFFSET_X)),
+                y: String(Math.round(point.y * MAP_SCALE_Y + MAP_OFFSET_Y)),
+            },
+            transportOverrides: { base: { x: point.x, y: point.y } },
+        };
+    }
+
+    function customDestinations() {
+        return customTravelPoints().map(customDestination);
+    }
+
     // Every arrival carries the town's WORLD square alongside the tile it lands
     // on. A transport override points at an interior map (a platform, a helipad)
     // whose local coordinates say nothing about where in the world the party now
@@ -1223,21 +1353,9 @@
             return;
         }
 
-        // If timer has started and ended, teleport to destination
+        // If timer has started and ended, ask how they want to get out
         if (data.timerActive && data.timerRemainingTime <= 0) {
-
-            // Teleport to destination using the mapId from finalDestination
-            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, data.finalDestination.direction || 2, 0);
-            const vehicle = $gameMap.vehicle("ship");
-            vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
-
-            // Persist the parked camper location to the position store.
-            const world = destWorld(data.finalDestination);
-            setVehiclePos('camper', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1, world.x, world.y);
-
-            setPlayerWorldFromDest(data.finalDestination);
-            $gameVariables.setValue(45, data.finalDestination.mapId);
-            clearFastTravelData();
+            offerArrival('camper', data.finalDestination);
         }
 
     }
@@ -1259,23 +1377,9 @@
             return;
         }
 
-        // If timer has started and ended, teleport to destination
+        // If timer has started and ended, ask how they want to get out
         if (data.timerActive && data.timerRemainingTime <= 0) {
-
-            // Teleport to destination using the mapId from finalDestination
-            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, data.finalDestination.direction || 2, 0);
-            // The shared engine slot must stand for the car before it is moved, so
-            // the move is recorded against the car rather than the bike or boat.
-            $gameSystem._boatType = 'car';
-            const vehicle = $gameMap.vehicle("boat");
-            vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
-
-            // Persist the parked car location to the position store.
-            const world = destWorld(data.finalDestination);
-            setVehiclePos('car', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1, world.x, world.y);
-            setPlayerWorldFromDest(data.finalDestination);
-            $gameVariables.setValue(45, data.finalDestination.mapId);
-            clearFastTravelData();
+            offerArrival('car', data.finalDestination);
         }
     }
 
@@ -1296,21 +1400,166 @@
             return;
         }
 
-        // If timer has started and ended, teleport to destination
+        // If timer has started and ended, ask how they want to get out
         if (data.timerActive && data.timerRemainingTime <= 0) {
-
-            // Teleport to destination using the mapId from finalDestination
-            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, data.finalDestination.direction || 2, 0);
-            const vehicle = $gameMap.vehicle("airship");
-            vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
-
-            // Persist the parked airship location to the position store.
-            const world = destWorld(data.finalDestination);
-            setVehiclePos('airship', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1, world.x, world.y);
-            setPlayerWorldFromDest(data.finalDestination);
-            $gameVariables.setValue(45, data.finalDestination.mapId);
-            clearFastTravelData();
+            offerArrival('airship', data.finalDestination);
         }
+    }
+
+    // -- Getting out where the journey ended ---------------------------------
+    //
+    // A vehicle arriving somewhere used to put the party straight down on the
+    // world map, which is a thing a journey is looked at ON rather than a place
+    // to stand. So the end of a drive or a flight asks: walk into the ground
+    // that is actually there, or stay up on the map. Either way the vehicle is
+    // parked where the party is - on the square itself, or on the world tile -
+    // and its world coordinates are written down, so it is drawn both inside the
+    // procedural square and on the world map above it.
+    //
+    // The engine slot each vehicle key is physically drawn in.
+    const ARRIVAL_ENGINE_SLOT = { camper: 'ship', car: 'boat', airship: 'airship' };   // i18n-ignore  engine slot ids
+
+    // The plain arrival: the world map, exactly where the journey was booked to.
+    function landOnWorldMap(key, dest) {
+        $gamePlayer.reserveTransfer(dest.mapId, dest.x, dest.y, dest.direction || 2, 0);
+        // The shared engine slot must stand for the car before it is moved, so
+        // the move is recorded against the car rather than the bike or the boat.
+        if (key === 'car') $gameSystem._boatType = 'car';
+        const vehicle = $gameMap.vehicle(ARRIVAL_ENGINE_SLOT[key]);
+        if (vehicle) vehicle.setLocation(dest.mapId, dest.x, dest.y + 1);
+
+        const world = destWorld(dest);
+        setVehiclePos(key, dest.mapId, dest.x, dest.y + 1, world.x, world.y);
+        setPlayerWorldFromDest(dest);
+        $gameVariables.setValue(45, dest.mapId);
+        clearFastTravelData();
+    }
+
+    // Walking into the ground the journey ended on: the square is built from the
+    // biome snapshot and the party is set down inside it, with the vehicle
+    // parked beside them. Answers false when the square cannot be built, leaving
+    // the plain world-map arrival as the only way out.
+    function landInsideSquare(key, dest) {
+        if (!$gameSystem || !$gameSystem.generateOriginBiomeMap) return false;
+        const world = destWorld(dest);
+        const built = $gameSystem.generateOriginBiomeMap({ worldX: world.x, worldY: world.y });
+        if (!built) return false;
+        // The two "the procedural map is live" flags (see WorldMapReturn's
+        // startProcGen); without them the square loads with no borders out of it.
+        $gameVariables.setValue(110, 1);
+        $gameVariables.setValue(111, 1);
+        const tile = procSquareCentre();
+        bookProcLandingFixup();
+        // Which tile of the square anybody stands on is only settled once the
+        // houses and the prefabs are stamped onto it, so the vehicle is dropped
+        // by the same map-load pass that settles the party (dropVehicleBeside).
+        if ($gameTemp) $gameTemp._ftVehicleDrop = key;
+        if (key === 'car') $gameSystem._boatType = 'car';
+        setVehiclePos(key, PROC_MAP_ID_FT, tile.x, tile.y, world.x, world.y);
+        $gamePlayer.reserveTransfer(PROC_MAP_ID_FT, tile.x, tile.y, 2, 0);
+        if (window.WorldMapTransfer) window.WorldMapTransfer.setPlayerWorld(world.x, world.y);
+        $gameVariables.setValue(45, PROC_MAP_ID_FT);
+        clearFastTravelData();
+        return true;
+    }
+
+    // Park the arriving vehicle on a tile the party can walk off, next to where
+    // they ended up standing, and put it on the map at once.
+    function dropVehicleBeside(key) {
+        const world = {
+            x: $gameVariables.value(playerXVar),
+            y: $gameVariables.value(playerYVar),
+        };
+        const passable = (x, y) =>
+            x >= 0 && y >= 0 && x < $gameMap.width() && y < $gameMap.height() &&
+            $gameMap.checkPassage(x, y, 0x0f) && $gameMap.eventsXy(x, y).length === 0;
+        let spot = { x: $gamePlayer.x, y: $gamePlayer.y };
+        const around = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]];
+        for (const [dx, dy] of around) {
+            const x = $gamePlayer.x + dx;
+            const y = $gamePlayer.y + dy;
+            if (passable(x, y)) { spot = { x: x, y: y }; break; }
+        }
+        setVehiclePos(key, $gameMap.mapId(), spot.x, spot.y, world.x, world.y);
+        const manager = window.MergedVehicleSystem && window.MergedVehicleSystem.manager;
+        if (manager && manager.reconcileToStore) manager.reconcileToStore();
+    }
+
+    // The question itself, asked as its own small overlay so a pad answers it
+    // the same way it answers the picker.
+    let _arrivalOverlayEl = null;
+
+    function offerArrival(key, dest) {
+        if (!dest) return;
+        if (_arrivalOverlayEl) return;
+        const world = destWorld(dest);
+        const biome = biomeLabelAt(world.x, world.y) || T('FastTravel.custom.unknownBiome');
+
+        const overlay = document.createElement('div');
+        overlay.id = 'travel-arrival-overlay';
+        overlay.innerHTML = `
+            <div class="travel-arrival-box">
+                <h2 class="travel-title">${T('FastTravel.arrival.title')}</h2>
+                <div class="travel-arrival-place">${dest.name ? destLabel(dest.name) : biome}</div>
+                <div class="travel-arrival-options">
+                    <div class="travel-btn travel-btn-confirm travel-arrival-option selected" data-answer="visit"
+                         onclick="SceneManager._scene.answerTravelArrival('visit')">${T('FastTravel.arrival.visit', { biome: biome })}</div>
+                    <div class="travel-btn travel-btn-cancel travel-arrival-option" data-answer="world"
+                         onclick="SceneManager._scene.answerTravelArrival('world')">${T('FastTravel.arrival.worldMap')}</div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        _arrivalOverlayEl = overlay;
+        _arrivalAnswerIndex = 0;
+        _arrivalPending = { key: key, dest: dest };
+        $gamePlayer.setMovementLock(true);
+    }
+
+    let _arrivalAnswerIndex = 0;
+    let _arrivalPending = null;
+
+    function closeArrivalOverlay() {
+        if (_arrivalOverlayEl && _arrivalOverlayEl.parentNode) {
+            _arrivalOverlayEl.parentNode.removeChild(_arrivalOverlayEl);
+        }
+        _arrivalOverlayEl = null;
+        _arrivalPending = null;
+        $gamePlayer.setMovementLock(false);
+    }
+
+    Scene_Map.prototype.answerTravelArrival = function (answer) {
+        const pending = _arrivalPending;
+        if (!pending) return;
+        SoundManager.playOk();
+        closeArrivalOverlay();
+        if (answer === 'visit' && landInsideSquare(pending.key, pending.dest)) return;
+        landOnWorldMap(pending.key, pending.dest);
+    };
+
+    // The overlay's own buttons, driven by the pad: left/right and up/down move
+    // between the two answers, OK takes the one under the cursor. There is no
+    // cancel: the journey is over and the party is getting out somewhere.
+    function updateArrivalInput() {
+        if (!_arrivalOverlayEl) return false;
+        const options = Array.from(document.querySelectorAll('.travel-arrival-option'));
+        if (options.length === 0) return true;
+        const move = (delta) => {
+            _arrivalAnswerIndex = (_arrivalAnswerIndex + delta + options.length) % options.length;
+            options.forEach((el, i) => el.classList.toggle('selected', i === _arrivalAnswerIndex));
+            SoundManager.playCursor();
+        };
+        if (Input.isRepeated('right') || Input.isRepeated('down')) { move(1); return true; }
+        if (Input.isRepeated('left') || Input.isRepeated('up')) { move(-1); return true; }
+        if (Input.isTriggered('ok')) {
+            const answer = options[_arrivalAnswerIndex].getAttribute('data-answer');
+            Input.clear();
+            if (SceneManager._scene && SceneManager._scene.answerTravelArrival) {
+                SceneManager._scene.answerTravelArrival(answer);
+            }
+            return true;
+        }
+        return true;
     }
 
     function teleportToAirship() {
@@ -1592,6 +1841,12 @@
         if ($gameTemp && $gameTemp._ftProcLanding && $gameMap.mapId() === PROC_MAP_ID_FT) {
             $gameTemp._ftProcLanding = false;
             placeOnStandableTile();
+            // A vehicle that carried them here is parked where they can see it.
+            if ($gameTemp._ftVehicleDrop) {
+                const key = $gameTemp._ftVehicleDrop;
+                $gameTemp._ftVehicleDrop = null;
+                dropVehicleBeside(key);
+            }
         }
         const booking = $gameSystem && $gameSystem._busTownArrival;
         if (!booking) return;
@@ -1817,6 +2072,18 @@
             }
         }
 
+        // The party's own squares ride along with the network's stops, but only
+        // for a vehicle: nothing else can be told to stop in open country. They
+        // are rebuilt from the store on every open, so a renamed point reads as
+        // its new name straight away.
+        const vehicleTravel = isVehicleTravel(transportType) && !offEarth && !isCCTravel;
+        if (vehicleTravel) {
+            data.destinations = data.destinations.filter(d => !d.custom);
+            const own = customDestinations();
+            own.forEach(dest => data.destinations.push(dest));
+            filtered = filtered.concat(own);
+        }
+
         // Gold is the transport network, and nothing else. A place reads as a hub
         // when its Destinations.json entry declares an arrival stop of its own -
         // any of them, a platform, a bus bay, a helipad - and that is the only
@@ -1881,6 +2148,7 @@
             }
 
             const disabledClass = enabled ? "" : "disabled";
+            const customClass = dest.custom ? " is-custom" : "";
             const hub = isHub(dest);
             const hubClass = hub ? " is-hub" : "";
             const hubBadge = hub
@@ -1888,8 +2156,8 @@
                 : "";
 
             return `
-                <div class="travel-dest-item ${disabledClass}${hubClass}${kindClass(dest)}" data-name="${dest.name}" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
-                    <span class="travel-dest-name">${destLabel(dest.name)}${hubBadge}</span>
+                <div class="travel-dest-item ${disabledClass}${hubClass}${customClass}${kindClass(dest)}" data-name="${dest.name}" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
+                    <span class="travel-dest-name">${rowLabel(dest)}${hubBadge}</span>
                     <span class="travel-dest-meta">
                         <span>Distance: ${distanceInKm} km</span>
                         <span class="travel-01">${costText}</span>
@@ -1898,6 +2166,14 @@
             `;
         }).join('');
 
+        // The row that opens the coordinate box. First in the list, so a pad
+        // reaches it with one press of up.
+        const addCustomHTML = vehicleTravel ? `
+                <div class="travel-dest-item travel-custom-add" data-name="${CUSTOM_ADD_KEY}" onclick="SceneManager._scene.selectTravelDestination('${CUSTOM_ADD_KEY}')">
+                    <span class="travel-dest-name">${T('FastTravel.custom.add')}</span>
+                </div>
+            ` : '';
+
         const markersHTML = destinationsWithDistance.slice().reverse().map(item => {
             const dest = item.destination;
             const pix = destPixel(dest);
@@ -1905,9 +2181,9 @@
             const y = pix.y;
 
             const hub = isHub(dest);
-            const hubClass = hub ? " is-hub" : "";
+            const hubClass = (hub ? " is-hub" : "") + (dest.custom ? " is-custom" : "");
             const baseLabel = hub
-                ? T('FastTravel.hubLabel', { place: destLabel(dest.name) }) : destLabel(dest.name);
+                ? T('FastTravel.hubLabel', { place: rowLabel(dest) }) : rowLabel(dest);
             const label = isSandbox ? `${baseLabel} (X: ${Math.round(x)}, Y: ${Math.round(y)})` : baseLabel;
 
             return `
@@ -1968,6 +2244,7 @@
                             </div>
                         </div>
                         <div class="travel-dest-list">
+                            ${addCustomHTML}
                             ${listItemsHTML}
                         </div>
                         ${backButtonHTML}
@@ -2033,6 +2310,39 @@
                     </div>
                 </div>
             </div>
+
+            <!-- COORDINATE BOX (initially hidden) -->
+            <div class="travel-custom-modal" id="travel-custom-modal" style="display:none">
+                <div class="travel-custom-box">
+                    <h2 class="travel-title">${T('FastTravel.custom.title')}</h2>
+                    <div class="travel-custom-field" id="travel-custom-field-0" onclick="SceneManager._scene.focusCustomField(0)">
+                        <span class="travel-custom-label">${T('FastTravel.custom.x')}</span>
+                        <span class="travel-custom-stepper">
+                            <span class="travel-custom-arrow" onclick="SceneManager._scene.stepCustomField(0, -1)">&#9664;</span>
+                            <span class="travel-custom-value" id="travel-custom-x">1</span>
+                            <span class="travel-custom-arrow" onclick="SceneManager._scene.stepCustomField(0, 1)">&#9654;</span>
+                        </span>
+                    </div>
+                    <div class="travel-custom-field" id="travel-custom-field-1" onclick="SceneManager._scene.focusCustomField(1)">
+                        <span class="travel-custom-label">${T('FastTravel.custom.y')}</span>
+                        <span class="travel-custom-stepper">
+                            <span class="travel-custom-arrow" onclick="SceneManager._scene.stepCustomField(1, -1)">&#9664;</span>
+                            <span class="travel-custom-value" id="travel-custom-y">1</span>
+                            <span class="travel-custom-arrow" onclick="SceneManager._scene.stepCustomField(1, 1)">&#9654;</span>
+                        </span>
+                    </div>
+                    <div class="travel-custom-field" id="travel-custom-field-2" onclick="SceneManager._scene.focusCustomField(2)">
+                        <span class="travel-custom-label">${T('FastTravel.custom.name')}</span>
+                        <input class="travel-custom-input" id="travel-custom-name" type="text" maxlength="48">
+                    </div>
+                    <div class="travel-custom-status" id="travel-custom-status"></div>
+                    <div class="travel-custom-hint">${T('FastTravel.custom.hint')}</div>
+                    <div class="travel-13">
+                        <div class="travel-btn travel-btn-cancel travel-03" onclick="SceneManager._scene.closeCustomPointModal()">${T('FastTravel.ui.cancel')}</div>
+                        <div class="travel-btn travel-btn-confirm travel-03" id="travel-custom-save" onclick="SceneManager._scene.saveCustomPoint()">${T('FastTravel.custom.save')}</div>
+                    </div>
+                </div>
+            </div>
         `;
 
         document.body.appendChild(overlay);
@@ -2063,6 +2373,8 @@
             if (!overlay) return;
             const listPanel = document.getElementById('panel-list');
             const isListVisible = listPanel && listPanel.style.display !== 'none';
+            const customBox = document.getElementById('travel-custom-modal');
+            if (customBox && customBox.style.display !== 'none') return;
 
             // Up/Down navigation (ArrowUp/ArrowDown and W/S remapped to up/down) is
             // handled solely by the RMMZ Input handler in Scene_Map.update so the
@@ -2250,6 +2562,16 @@ Scene_Map.prototype.printTravelCoordinates = function () {
     Scene_Map.prototype.highlightTravelDestination = function (destName) {
         const data = getFastTravelData();
 
+        // The row that opens the coordinate box is not a place: it highlights
+        // like any other row and moves nothing on the map.
+        if (destName === CUSTOM_ADD_KEY) {
+            SoundManager.playCursor();
+            document.querySelectorAll('.travel-dest-item').forEach(item => {
+                item.classList.toggle('selected', item.getAttribute('data-name') === destName);
+            });
+            return;
+        }
+
         const dest = data.destinations.find(d => d.name === destName);
         if (!dest) return;
 
@@ -2329,6 +2651,11 @@ Scene_Map.prototype.printTravelCoordinates = function () {
     Scene_Map.prototype.selectTravelDestination = function (destName) {
         const data = getFastTravelData();
         const transportType = data.selectedTransport;
+
+        if (destName === CUSTOM_ADD_KEY) {
+            this.openCustomPointModal();
+            return;
+        }
 
         const dest = data.destinations.find(d => d.name === destName);
         if (!dest) return;
@@ -2454,7 +2781,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             timeText = `${travelTime}s`;
         }
 
-        document.getElementById('sidebar-dest-title').innerText = T('FastTravel.ui.travelTo', { name: destLabel(dest.name) });
+        document.getElementById('sidebar-dest-title').innerText = T('FastTravel.ui.travelTo', { name: rowLabel(dest) });
         document.getElementById('sidebar-transport-val').innerText = transportDisplayName;
         document.getElementById('sidebar-distance-val').innerText = `${distanceInKm} km`;
         document.getElementById('sidebar-cost-val').innerText = costValueText;
@@ -2505,6 +2832,134 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         // Hide list panel and show confirmation panel in sidebar
         document.getElementById('panel-list').style.display = 'none';
         document.getElementById('panel-confirm').style.display = 'flex';
+    };
+
+    // -- The coordinate box --------------------------------------------------
+    //
+    // Three fields, driven the same way by a keyboard and by a pad: up and down
+    // move between them, left and right change the number under the cursor, the
+    // shoulders move it ten at a time, and OK writes the square down. The name
+    // begins as the nation and the ground standing there and stays that way
+    // until somebody types over it.
+    Scene_Map.prototype.openCustomPointModal = function () {
+        const modal = document.getElementById('travel-custom-modal');
+        if (!modal) return;
+        SoundManager.playOk();
+        const px = $gameVariables.value(playerXVar);
+        const py = $gameVariables.value(playerYVar);
+        this._customPoint = {
+            x: Math.max(CUSTOM_COORD_MIN, Math.min(CUSTOM_COORD_MAX, px || CUSTOM_COORD_MIN)),
+            y: Math.max(CUSTOM_COORD_MIN, Math.min(CUSTOM_COORD_MAX, py || CUSTOM_COORD_MIN)),
+        };
+        this._customPointField = 0;
+        this._customNameEdited = false;
+        modal.style.display = 'flex';
+
+        const nameInput = document.getElementById('travel-custom-name');
+        if (nameInput) {
+            nameInput.oninput = () => { this._customNameEdited = true; };
+            nameInput.onkeydown = (e) => {
+                // Enter finishes the name rather than travelling: the box still
+                // has a Save button of its own to press.
+                if (e.key === 'Enter') { e.preventDefault(); nameInput.blur(); }
+                e.stopPropagation();
+            };
+        }
+        this.refreshCustomPointModal();
+    };
+
+    Scene_Map.prototype.refreshCustomPointModal = function () {
+        const point = this._customPoint;
+        if (!point) return;
+        const xEl = document.getElementById('travel-custom-x');
+        const yEl = document.getElementById('travel-custom-y');
+        if (xEl) xEl.textContent = String(point.x);
+        if (yEl) yEl.textContent = String(point.y);
+
+        const nameInput = document.getElementById('travel-custom-name');
+        if (nameInput && !this._customNameEdited) nameInput.value = defaultCustomName(point.x, point.y);
+
+        for (let i = 0; i < 3; i++) {
+            const field = document.getElementById('travel-custom-field-' + i);
+            if (field) field.classList.toggle('selected', i === this._customPointField);
+        }
+
+        const refusal = customPointRefusal(point.x, point.y);
+        const status = document.getElementById('travel-custom-status');
+        if (status) {
+            status.textContent = refusal
+                ? T('FastTravel.custom.refused.' + refusal)
+                : T('FastTravel.custom.allowed', {
+                    biome: biomeLabelAt(point.x, point.y) || T('FastTravel.custom.unknownBiome') });
+            status.classList.toggle('refused', !!refusal);
+        }
+        const save = document.getElementById('travel-custom-save');
+        if (save) save.classList.toggle('disabled', !!refusal);
+    };
+
+    Scene_Map.prototype.focusCustomField = function (index) {
+        if (!this._customPoint) return;
+        this._customPointField = index;
+        SoundManager.playCursor();
+        this.refreshCustomPointModal();
+    };
+
+    Scene_Map.prototype.stepCustomField = function (field, delta) {
+        const point = this._customPoint;
+        if (!point || field > 1) return;
+        const key = field === 0 ? 'x' : 'y';   // i18n-ignore  field id
+        let value = point[key] + delta;
+        // The numbers wrap, so a pad reaches 256 from 1 without crossing the map.
+        const span = CUSTOM_COORD_MAX - CUSTOM_COORD_MIN + 1;
+        value = ((value - CUSTOM_COORD_MIN) % span + span) % span + CUSTOM_COORD_MIN;
+        point[key] = value;
+        this._customPointField = field;
+        SoundManager.playCursor();
+        this.refreshCustomPointModal();
+    };
+
+    Scene_Map.prototype.saveCustomPoint = function () {
+        const point = this._customPoint;
+        if (!point) return;
+        const refusal = customPointRefusal(point.x, point.y);
+        if (refusal) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        const nameInput = document.getElementById('travel-custom-name');
+        const name = (nameInput && nameInput.value.trim()) || defaultCustomName(point.x, point.y);
+        customTravelPoints().push({ x: point.x, y: point.y, name: name });
+        SoundManager.playOk();
+        if (window.ParchmentToast) {
+            window.ParchmentToast.show(T('FastTravel.custom.saved', { name: name }), {
+                title: T('FastTravel.custom.savedTitle'), duration: 180,
+            });
+        }
+        this.closeCustomPointModal(true);
+        // The list and the pins are rebuilt so the new square stands on both.
+        this.refreshTravelOverlay();
+    };
+
+    Scene_Map.prototype.closeCustomPointModal = function (skipSound) {
+        const modal = document.getElementById('travel-custom-modal');
+        const nameInput = document.getElementById('travel-custom-name');
+        if (nameInput) nameInput.blur();
+        if (modal) modal.style.display = 'none';
+        this._customPoint = null;
+        if (!skipSound) SoundManager.playCancel();
+    };
+
+    // Draw the picker again from the data behind it, without ending the visit to
+    // it: the overlay is replaced in place and the world stays frozen under it.
+    Scene_Map.prototype.refreshTravelOverlay = function () {
+        const overlay = document.getElementById('travel-overlay');
+        if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        _travelOverlayEl = null;
+        if (this._travelKeyHandler) {
+            document.removeEventListener('keydown', this._travelKeyHandler);
+            this._travelKeyHandler = null;
+        }
+        this.openFastTravelUIOverlay();
     };
 
     Scene_Map.prototype.closeTravelConfirmModal = function () {
@@ -2607,6 +3062,43 @@ Scene_Map.prototype.printTravelCoordinates = function () {
     function updateTravelPickerInput(scene) {
         if (!_travelOverlayEl) return false;
         const self = scene;
+
+        // The coordinate box takes every button while it is up: the list under
+        // it must not scroll, and cancel closes the box rather than the map.
+        const customModal = document.getElementById('travel-custom-modal');
+        if (customModal && customModal.style.display !== 'none') {
+            const nameInput = document.getElementById('travel-custom-name');
+            if (nameInput && document.activeElement === nameInput) {
+                // The name is being typed: only cancel is ours, and all it does
+                // is hand the keyboard back.
+                if (Input.isTriggered('cancel')) { nameInput.blur(); Input.clear(); }
+                return true;
+            }
+            if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+                self.closeCustomPointModal();
+                Input.clear();
+                TouchInput.clear();
+                return true;
+            }
+            if (Input.isRepeated('left'))  { self.stepCustomField(self._customPointField, -1); return true; }
+            if (Input.isRepeated('right')) { self.stepCustomField(self._customPointField, 1); return true; }
+            // The shoulders move ten at a time, so the far side of a 256 square
+            // world is a few presses away rather than a hundred.
+            if (Input.isRepeated('pageup'))   { self.stepCustomField(self._customPointField, -10); return true; }
+            if (Input.isRepeated('pagedown')) { self.stepCustomField(self._customPointField, 10); return true; }
+            if (Input.isRepeated('down')) { self.focusCustomField((self._customPointField + 1) % 3); return true; }
+            if (Input.isRepeated('up'))   { self.focusCustomField((self._customPointField + 2) % 3); return true; }
+            if (Input.isTriggered('ok')) {
+                // OK on the name field is "let me type it"; anywhere else it
+                // writes the square down.
+                if (self._customPointField === 2 && nameInput) nameInput.focus();
+                else self.saveCustomPoint();
+                Input.clear();
+                return true;
+            }
+            return true;
+        }
+
         if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
             const confirmPanel = document.getElementById('panel-confirm');
             if (confirmPanel && confirmPanel.style.display !== 'none') {
@@ -2693,6 +3185,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             $gameTemp._characterCreationTravelType = null;
             this.startFastTravel(ccType);
         }
+        if (updateArrivalInput()) return;
         if (updateTravelPickerInput(this)) return;
         _Scene_Map_update.call(this);
     };
@@ -2703,7 +3196,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
     // before this), so the picker stays interactive while the world is paused (#34).
     const _Scene_Map_updateMain_FTS = Scene_Map.prototype.updateMain;
     Scene_Map.prototype.updateMain = function () {
-        if (_travelOverlayEl) {
+        if (_travelOverlayEl || _arrivalOverlayEl) {
             return;
         }
         _Scene_Map_updateMain_FTS.call(this);
@@ -2711,7 +3204,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
 
     const _Scene_Map_isMenuEnabled = Scene_Map.prototype.isMenuEnabled;
     Scene_Map.prototype.isMenuEnabled = function () {
-        if (_travelOverlayEl) {
+        if (_travelOverlayEl || _arrivalOverlayEl) {
             return false;
         }
         return _Scene_Map_isMenuEnabled.call(this);

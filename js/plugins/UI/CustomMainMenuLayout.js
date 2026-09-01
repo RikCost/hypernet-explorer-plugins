@@ -1081,6 +1081,32 @@
         this.refreshUIMenuDOM(false);
     };
 
+    // Climbing onto a ridable companion. The mount is not a vehicle anyone can
+    // summon: it is the animal already travelling with the party, so the menu
+    // closes back onto the map and the party is put on its back there.
+    Scene_Menu.prototype.ridePet = function (petId) {
+        const vs = window.MergedVehicleSystem;
+        if (!vs || !vs.mountPet || !window.PetSystem?.isRidable?.(petId)) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        SoundManager.playOk();
+        this.popScene();
+        setTimeout(() => {
+            if (window.MergedVehicleSystem) window.MergedVehicleSystem.mountPet(petId);
+        }, 100);
+    };
+
+    // Getting off again, which can be done from where the menu stands: the
+    // animal is left standing on the tile the party stopped at.
+    Scene_Menu.prototype.dismountPet = function () {
+        const vs = window.MergedVehicleSystem;
+        if (!vs || !vs.dismount) return;
+        SoundManager.playOk();
+        vs.dismount();
+        this.refreshUIMenuDOM(false);
+    };
+
     // Abandoning a companion. A follower came along of its own accord and may
     // leave the same way, but a pet or a child left behind is a charge with a
     // bounty on it, so the row asks once and says what it will cost.
@@ -1759,6 +1785,8 @@
             ? [
                 (window.PetSystem?.getPets?.() ?? []).map(p => `${p.id}.${p.name}`).join('-'),
                 window.PetSystem?.getActivePet?.()?.id ?? 0,
+                // Getting on or off a companion swaps its buttons over.
+                window.MergedVehicleSystem?.getMountedPet?.()?.id ?? 0,
                 this._petRenameId || 0,
                 this._petAbandonId || 0,
                 this._petTrainId || 0,
@@ -2190,6 +2218,8 @@
                 const activeTag = isActive ? ` · ${T('MainMenu.pets.active')}` : '';
                 const isSummoned = (summonPetId === pet.id);
                 const summonTag = isSummoned ? ` · ${T('MainMenu.pets.summoned')}` : '';
+                const isMounted = !!window.MergedVehicleSystem?.isMounted?.(pet.id);
+                const mountTag = isMounted ? ` · ${T('MainMenu.pets.mounted')}` : '';
                 // While a pet is being renamed its row hands the whole button
                 // strip over to the name field, so there is no way to abandon or
                 // re-leash it by mistake with the keyboard captured by typing.
@@ -2231,8 +2261,20 @@
                     } else if (window.PetSystem?.canTrain?.(pet.id)) {
                         drillBtns = `<div class="command-item focusable mainmenu-07" onclick="SceneManager._scene?.startPetTraining?.(${pet.id})">${T('MainMenu.pets.train')}</div>`;
                     }
+                    // A creature the party can sit on is offered the saddle
+                    // instead of a place in the vehicle menu: there is no
+                    // summoning a mount, only climbing onto the one that is
+                    // already here. Party members are actors and never appear
+                    // on this page at all, so none of them is ever ridable.
+                    let rideBtns = '';
+                    if (isMounted) {
+                        rideBtns = `<div class="command-item focusable mainmenu-07" onclick="SceneManager._scene?.dismountPet?.()">${T('MainMenu.pets.dismount')}</div>`;
+                    } else if (window.PetSystem?.isRidable?.(pet.id)) {
+                        rideBtns = `<div class="command-item focusable mainmenu-07" onclick="SceneManager._scene?.ridePet?.(${pet.id})">${T('MainMenu.pets.ride')}</div>`;
+                    }
                     buttons = `${activeBtn}
                         ${isSummoned ? dismissBtn : ''}
+                        ${rideBtns}
                         ${drillBtns}
                         <div class="command-item focusable mainmenu-07" onclick="SceneManager._scene?.startPetAbandon?.(${pet.id})">${T('MainMenu.pets.abandon')}</div>
                         <div class="command-item focusable mainmenu-07" onclick="SceneManager._scene?.startPetRename?.(${pet.id})">${T('MainMenu.pets.rename')}</div>`;
@@ -2288,7 +2330,7 @@
                         <div class="mainmenu-07">
                             <div class="mainmenu-38">
                                 ${escapeHtml(pet.name)}
-                                <span class="mainmenu-12">${typeLabel}${activeTag}${summonTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
+                                <span class="mainmenu-12">${typeLabel}${activeTag}${summonTag}${mountTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
                             </div>
                             ${isSummoned ? `<div class="mainmenu-35">${summonNote(summon)}</div>` : ''}
                             ${traitsLine}
@@ -3275,6 +3317,29 @@
         SoundManager.playOk();
         SceneManager.push(sceneClass);
     }
+
+    // The hotkey layout, handed out so that a world drawn OVER the map can run
+    // the same keys the map runs. VoxelWorld is a DOM overlay with its own
+    // keyboard handling and Scene_Map's updateMenuHotkeys never gets a look in
+    // while it is up, so it asks for this table instead of keeping a second
+    // copy of it that would drift (which is exactly what the badges and the
+    // bindings did before they were merged into HOTKEYS).
+    //
+    //   list()   every hotkey: { symbol, key, input, code }
+    //   run(sym) do what that key does on the map. False when the key opens
+    //            nothing from the field (Vehicles and Pets are pages inside
+    //            Scene_Menu; the digits are the item hotbar out there).
+    window.MenuHotkeys = {
+        list: () => HOTKEYS.slice(),
+        labels: () => Object.assign({}, HOTKEY_LABELS),
+        has: symbol => !!MAP_HOTKEY_ACTIONS[symbol],
+        run(symbol, scene) {
+            const action = MAP_HOTKEY_ACTIONS[symbol];
+            if (!action) return false;
+            action(scene || SceneManager._scene);
+            return true;
+        }
+    };
 
     // Scenes that read $gameParty.menuActor(): point them at the party leader,
     // the same actor the menu preselects.

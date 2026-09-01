@@ -1,7 +1,7 @@
 {
   "noThree": "THREE.JS IZ NOT LOADED - BOWLIN' UNAVAILABLE",
   "player1": "PLAYER 1",
-  "cpuThinking": "CPU STUDIES DA PIN DECK...",
+  "cpuThinking": "{opponent} STUDIES DA PIN DECK...",
   "victory": "VICTORY!",
   "defeat": "DEFEAT",
   "draw": "DRAW",

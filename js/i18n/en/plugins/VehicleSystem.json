@@ -5,7 +5,8 @@
     "Bike": "Bike",
     "Boat": "Boat",
     "Starship": "Starship",
-    "Broom": "Flying broom"
+    "Broom": "Flying broom",
+    "Mount": "Mount"
   },
   "genericVehicle": "vehicle",
   "noGasPump": "No gas pump near",

@@ -152,6 +152,18 @@
         // True while the walk is on another world rather than on Earth.
         isAlienWalk() { return !!(this._scene && this._scene._alien); },
 
+        // Which vehicle the party is actually aboard out here ('camper', 'car',
+        // ...), or null on foot. The party HUD asks this so the vehicle row over
+        // the cards is the thing being driven in the 3D world rather than
+        // whatever the 2D map still has the player sitting in
+        // (Vehicle/VehicleSystem's getHudVehicleStatus).
+        ridingKey() {
+            const s = this._scene;
+            if (!s || s._titleMode || s._footOnly) return null;
+            if (s._viewMode === 'foot') return null;
+            return s._vehicleId || 'camper';
+        },
+
         // Walk the world on foot from wherever the party stands on the world map
         // (the travel menu's "Free walk"). Same world, same weather and wildlife,
         // no camper anywhere in it. Leaving puts the party back on map 315 on the

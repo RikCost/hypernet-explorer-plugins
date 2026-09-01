@@ -953,10 +953,13 @@
       // `label` is the readable name of a system whose key is a catalog id
       // (patron systems live under a "GX.<seed>.*" key like every other body of
       // a procedural galaxy, but are shown by name).
+      // Actions ride directly under the title, above the stat rows: on a long
+      // panel the buttons would otherwise sit below the fold and read as if
+      // the body could not be acted on at all.
       this.els.info.innerHTML =
         `<div class="${titleCls}">${esc(system.label || system.name)}</div>` +
-        `<div class="gx-divider"></div>${rows}` +
-        (actions ? `<div class="gx-actions">${actions}</div>` : "");
+        (actions ? `<div class="gx-actions gx-actions-top">${actions}</div>` : "") +
+        `<div class="gx-divider"></div>${rows}`;
       this._openInfo();
     }
 
@@ -1050,8 +1053,8 @@
       this.els.info.innerHTML =
         `<div class="gx-title">${esc(body.name)}${star}</div>` +
         `<div class="gx-sub">${esc(system ? (system.label || system.name) : "")}</div>` +
-        `<div class="gx-divider"></div>${rows}${note}` +
-        (actions ? `<div class="gx-actions">${actions}</div>` : "");
+        (actions ? `<div class="gx-actions gx-actions-top">${actions}</div>` : "") +
+        `<div class="gx-divider"></div>${rows}${note}`;
       this._openInfo();
     }
 
@@ -1071,8 +1074,8 @@
       this.els.info.innerHTML =
         `<div class="gx-title${obj.home ? " gx-hard" : ""}">${esc(obj.name)}</div>` +
         (obj.home ? `<div class="gx-sub">${T('Galaxy.row.currentLocation')}</div>` : "") +
-        `<div class="gx-divider"></div>${rows}` +
-        `<div class="gx-actions">${actions}</div>`;
+        `<div class="gx-actions gx-actions-top">${actions}</div>` +
+        `<div class="gx-divider"></div>${rows}`;
       this._openInfo();
     }
 

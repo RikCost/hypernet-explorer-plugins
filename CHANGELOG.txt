@@ -1,3 +1,47 @@
+0.5.0a MAJOR UPDATE
+
+- ridable animals and creatures can be mounted from the pets menu
+- new weapons sound FX every weapon and gun sound
+- stat chip multiplier no longer touches the stat name
+- default retro shader is vertexsnap, selectable during character creation
+- dice roll window reads as rolled over needed, autocloses in battle
+- party hud stat and state chips aligned to the hp and mp bars
+- every weapon has its own hit effect, trail and sounds
+- softer buzzer and battle start sounds, shop sound levelled
+- raman graph redone in gold, zoomable and hoverable
+- refactor army overview ui
+- minimap hidden by default and toggled off with m
+- talking to npcs opens full conversations, rumors only a 25% of the time (i still need to replace hardcoded rumors)
+- more complex library interactions, multiple books per library, you can find item books and spell books and also put books to be saved in the world and be accessible to all savegames
+- voxel world: party hud, swtichable quick bars with tab, castable spells
+- one shot 1 hp save from 80%+, once per battle per member
+- dark ocean floor and caves, glowing mushrooms and lit torches
+- goblin stats reworked across every level bracket
+- dark dungeon interiors
+- party member walk closer in dungeon
+- hotbar number keys arm on hold, fire on release
+- pixelart shader option, psx shader renamed snapvertex
+- thematic encounters for every tower floor and room
+- tower floors picked now from one unified pool, encounters capped by floor bracket
+- steal window reaches every shop within 20 tiles
+- huts merged into houses, villas are patron vaults only
+- creatures roam the procedural map, rarer in towns, reworked per world mode
+- custom fast travel points for vehicles, and a choice on arrival
+- fog of war now works in procedural interiors
+- npcpools and biomesmap rebuilt at build time, not from a play session
+- patron hatches open a seeded villa, vaults are now a rare dungeon
+- creature sprite picker opens on monsters and keeps the 3d model
+- dialogue name tag no longer shows the npc class
+- shop counters talk under the covering persona name, not "Shop"
+- save menu reworked: quicksaves on top, world date and destiny countdown
+- dungeon walls one height with full-height corners and rpg maker shadows
+- adjacent biomes on one tileset load seamlessly, no chevron crossing
+- parked starship shows the info marker instead of a hull
+- star map fly here and bookmark buttons moved above the stats
+- steam deck css split out, with per-screen handheld overrides
+- voxel mode: 3d caves, sewers with manholes, no more tile-sized frame spikes
+
+
 0.4.5a
 - webgl crash fix when switching to voxel mode
 - using slopes instead of cubes

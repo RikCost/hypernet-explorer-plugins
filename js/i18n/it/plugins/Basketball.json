@@ -2,7 +2,7 @@
   "noThree": "three.js non è caricato, il basket non è disponibile.",
   "player": "Giocatore",
   "cpu": "CPU",
-  "cpuLiningUp": "La CPU prende la mira...",
+  "cpuLiningUp": "{opponent} prende la mira...",
   "aimPrompt": "Il giocatore prende la mira",
   "powerPrompt": "Imposta la potenza",
   "setTouch": "Imposta il tocco",
@@ -10,5 +10,5 @@
   "swish": "TUTTA RETE!",
   "score": "SEGNATO!",
   "miss": "SBAGLIATO",
-  "finalScore": "Giocatore: {player}  CPU: {cpu}"
+  "finalScore": "Giocatore: {player}  {opponent}: {opponentScore}"
 }

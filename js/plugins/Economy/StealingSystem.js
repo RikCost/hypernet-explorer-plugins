@@ -21,8 +21,8 @@
  * - Shows stealable items with success percentages
  * - Handles steal attempts and stores results
  * - Italian translation support
- * - Compatible with RandomDailyShop plugin: automatically generates daily item lists
- *   for events within 5 tiles using the RandomDailyShop OpenDailyShop command
+ * - Compatible with RandomDailyShop, SearchableItemShop and the vending machines:
+ *   rebuilds each nearby shop's real stock through its own generator
  *
  * Item Note Tags:
  * <Weight: X> - Sets item weight in grams (e.g., <Weight: 500>)
@@ -35,14 +35,20 @@
  * - Call Common Event 125 only when a steal attempt fails (caught)
  *
  * Proximity Rules:
- * - Standard shops (Shop Processing command): Scanned entire map
- * - RandomDailyShop merchants: Only scanned if within 5 tiles of player
+ * - Every shop within 20 tiles of the player is scanned, and nothing beyond it:
+ *   standard Shop Processing counters, RandomDailyShop themed shops (plugin
+ *   command or script call), the coordinate seeded local bazaar
+ *   (SearchableItemShop OpenLimitedShop) and vending machines.
  *
- * RandomDailyShop Integration:
- * If an event uses the RandomDailyShop plugin command (OpenDailyShop) and is within
- * 5 tiles of the player, the stealing system will automatically detect it and generate
- * the daily random items for that event's location based on coordinates and current date.
- * This allows stealing from dynamic shop inventory at nearby locations.
+ * Shop Integration:
+ * A themed shop's shelf is rebuilt through RandomDailyShop's own generator for
+ * that event's coordinates and date; the bazaar and the vending machines answer
+ * through theirs, so a lifted item is always one that is really on sale there.
+ *
+ * Invisible:
+ * While a party member carries the Invisible state, the whole party steals from
+ * behind that cover: that member's INT and DEX modifiers raise both the listed
+ * chance and the modifier on the roll.
  */
 
 (() => {
@@ -103,12 +109,94 @@
             return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
         }
 
+        // Unseen hands. While a party member is Invisible the whole party
+        // works behind that cover, and how much it is worth is that member's
+        // own wits and fingers: INT and DEX modifiers, a few points each.
+        static INVISIBLE_STATE_ID = 46;
+        static INVISIBLE_POINTS_PER_MOD = 3;
+
+        static invisibleBonus() {
+            if (!window.$gameParty || !$gameParty.members) return 0;
+            let best = 0;
+            for (const actor of $gameParty.members()) {
+                if (!actor || !actor.isStateAffected(this.INVISIBLE_STATE_ID)) continue;
+                const intMod = Math.floor((actor.param(4) - 10) / 2);
+                const dexMod = Math.floor((actor.param(6) - 10) / 2);
+                best = Math.max(best, (intMod + dexMod) * this.INVISIBLE_POINTS_PER_MOD);
+            }
+            return Math.max(0, Math.floor(best));
+        }
+
+        static isNightTime() {
+            if (typeof $gameWeather !== 'undefined' && $gameWeather) {
+                const mode = $gameWeather.sunlightMode;
+                if (mode === 'night') return true;
+                if (mode === 'day') return false;
+                if ($gameWeather.currentHour !== undefined) {
+                    const h = $gameWeather.currentHour;
+                    return h >= 20 || h < 6;
+                }
+            }
+            if (typeof $gameVariables !== 'undefined' && $gameVariables) {
+                const dateStr = $gameVariables.value(113);
+                if (dateStr && typeof dateStr === 'string') {
+                    const timePart = dateStr.split(' ')[3];
+                    if (timePart) {
+                        const h = parseInt(timePart.split(':')[0], 10);
+                        if (!isNaN(h)) return h >= 20 || h < 6;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Night / Darkness advantage: applies on exterior maps at night or maps tagged <Dark>,
+        // but does NOT apply in interior maps (<Interior>) unless explicitly tagged <Dark>.
+        static isDarkOrNightCrimeEnvironment() {
+            if ($dataMap && $dataMap.note) {
+                const note = $dataMap.note;
+                if (/<Dark>/i.test(note)) return true;
+                if (/<Interior>/i.test(note)) return false;
+            }
+            if (typeof window.isProceduralInteriorMap === "function" && window.isProceduralInteriorMap()) {
+                return true;
+            }
+            if (window.DungeonFloors && typeof window.DungeonFloors.currentFloor === "function" && window.DungeonFloors.currentFloor() < 0) {
+                return true;
+            }
+            if ($gameVariables && typeof $gameVariables.value(1) === "number" && $gameVariables.value(1) < 0) {
+                return true;
+            }
+            if ($gameMap && $gameMap.mapId() === 636) {
+                const data = $gameSystem && $gameSystem._procGenData;
+                if (data) {
+                    if (data._dungeonSession && data._dungeonSession.type === "tower") return true;
+                    if (data.biomeLayerStack && data.biomeLayerStack.length > 0) return true;
+                    const b = (data.currentBiome || "").toLowerCase();
+                    if (b.includes("cave") || b.includes("dungeon") || b.includes("crypt") || b.includes("sewer") || b.includes("cellar") || b.includes("vault")) {
+                        return true;
+                    }
+                    if (typeof window.isInteriorBiome === "function" && window.isInteriorBiome(data.currentBiome)) {
+                        return false;
+                    }
+                }
+            }
+            return this.isNightTime();
+        }
+
+        // The die is thrown with the same hands that set the odds: the
+        // leader's DEX plus whatever the invisible member is worth, plus cover of night/darkness.
+        static rollModifier(agility) {
+            const nightMod = this.isDarkOrNightCrimeEnvironment() ? 2 : 0;
+            return Math.floor(((agility || 10) - 10) / 2) + this.invisibleBonus() + nightMod;
+        }
+
         static calculateStealChance(item, agility) {
             if (this.isEmptyWorld()) return 100;
             const baseChance = 50;
             const dexMod = Math.floor(((agility || 10) - 10) / 2);
             const agilityBonus = dexMod * 5; // 5% per point of DEX modifier
-            const value = item.price || 0;
+            const value = item ? (item.price || 0) : 0;
             const weight = DataManager.getItemWeight(item);
             
             // Penalties
@@ -120,7 +208,12 @@
             const trained = window.SpecializationXP
                 ? (window.SpecializationXP.partyLevel('Pickpocketing') - 1) * 4 : 0;
 
-            let chance = baseChance + agilityBonus + trained - valuePenalty - weightPenalty;
+            // Night/Dark cover bonus: darkness and low visibility make crimes significantly harder to catch (+20%)
+            // Does not apply in interior maps unless tagged with <Dark>.
+            const nightBonus = this.isDarkOrNightCrimeEnvironment() ? 20 : 0;
+
+            let chance = baseChance + agilityBonus + trained + this.invisibleBonus() + nightBonus
+                - valuePenalty - weightPenalty;
 
             // Clamp between 5% and 95%
             return Math.max(5, Math.min(95, Math.floor(chance)));
@@ -148,20 +241,32 @@
     //=============================================================================
     
     class ShopScanner {
-        static DAILY_SHOP_PROXIMITY = 5; // Tiles
+        // A shoplifter works the block, not the map: every counter, stall,
+        // shelf and machine standing within this many tiles of the player is
+        // fair game, and nothing beyond it is.
+        static SHOP_PROXIMITY = 20;
 
         // Every shop RandomDailyShop runs is one themed shop behind one plugin
         // command, so a lifted shelf is that command's shopType argument put
-        // back through the plugin's own generator.
-        static DAILY_SHOP_PLUGIN = 'RandomDailyShop';
-        static DAILY_SHOP_COMMAND = 'openThemedShop';
+        // back through the plugin's own generator. The coordinate seeded bazaar
+        // and the vending machines answer the same way, each through its own.
+        static SHOP_COMMANDS = {
+            themed:  { plugin: 'RandomDailyShop',         command: 'openThemedShop' },
+            limited: { plugin: 'SearchableItemShop',      command: 'OpenLimitedShop' },
+            vending: { plugin: 'RealisticVendingMachine', command: 'openVendingMachine' }
+        };
 
         // Event pages store the plugin's path-prefixed name on newer maps
         // ("Economy/RandomDailyShop") and the bare one on older ones.
+        static matchesCommand(params, kind) {
+            const spec = this.SHOP_COMMANDS[kind];
+            return !!params && !!spec &&
+                String(params[0] || '').split('/').pop() === spec.plugin &&
+                params[1] === spec.command;
+        }
+
         static isDailyShopCommand(params) {
-            return !!params &&
-                String(params[0] || '').split('/').pop() === this.DAILY_SHOP_PLUGIN &&
-                params[1] === this.DAILY_SHOP_COMMAND;
+            return this.matchesCommand(params, 'themed');
         }
 
         static shopTypeOf(params) {
@@ -196,111 +301,114 @@
         }
 
         static isWithinProximity(eventX, eventY, playerX, playerY, distance) {
-            // Manhattan distance
-            const dist = Math.abs(eventX - playerX) + Math.abs(eventY - playerY);
+            // Chebyshev distance: a square block of tiles around the player,
+            // so a counter is as reachable diagonally as it is straight ahead.
+            const dist = Math.max(Math.abs(eventX - playerX), Math.abs(eventY - playerY));
             return dist <= distance;
+        }
+
+        // A page can also open a shop from a script line rather than a plugin
+        // command, which is how the convenience wrappers are called.
+        static scriptShopType(text) {
+            const themed = text.match(/openRandomThemedShop\s*\(\s*['"]([A-Za-z]+)['"]/);
+            if (themed) return themed[1];
+            const wrapper = text.match(/openRandomDaily([A-Za-z]+)\s*\(/);
+            if (wrapper) {
+                const suffix = wrapper[1];
+                if (suffix === 'SpellShop' || suffix === 'SkillShop') return null;
+                const shops = window.RandomDailyThemedShops || {};
+                const key = suffix.charAt(0).toLowerCase() + suffix.slice(1);
+                return shops[key] ? key : null;
+            }
+            return null;
         }
 
         static extractShopItems(event, playerX, playerY) {
             const items = [];
             const pages = event.event().pages;
-            let hasStandardShop = false;
-            let dailyShopType = null; // stores the matched themed shop type
 
-            // First pass: check what types of shops this event has
-            for (const page of pages) {
-                const list = page.list;
-                for (const command of list) {
-                    if (command.code === 302) {
-                        hasStandardShop = true;
-                    }
-                    if (command.code === 357 && this.isDailyShopCommand(command.parameters)) {
-                        const shopType = this.shopTypeOf(command.parameters);
-                        if (shopType) dailyShopType = shopType;
-                    }
-                }
-            }
-
-            // Daily shops are only scanned when player is within proximity
-            if (dailyShopType && !this.isWithinProximity(event.x, event.y, playerX, playerY, this.DAILY_SHOP_PROXIMITY)) {
-                dailyShopType = null;
+            // Nothing on this event is within reach, so nothing on it is read.
+            if (!this.isWithinProximity(event.x, event.y, playerX, playerY, this.SHOP_PROXIMITY)) {
+                return items;
             }
 
             const sourceMapId = $gameMap.mapId();
             const sourceEventId = event.eventId();
+            const push = (list) => {
+                for (const entry of list) {
+                    entry.sourceMapId = sourceMapId;
+                    entry.sourceEventId = sourceEventId;
+                    items.push(entry);
+                }
+            };
+            const goodsEntry = (type, id) => {
+                let data = null;
+                let itemType = '';
+                if (type === 0 && id > 0)      { data = $dataItems[id];   itemType = 'item'; }
+                else if (type === 1 && id > 0) { data = $dataWeapons[id]; itemType = 'weapon'; }
+                else if (type === 2 && id > 0) { data = $dataArmors[id];  itemType = 'armor'; }
+                return data ? { type: itemType, id, data } : null;
+            };
 
-            // Second pass: extract items
+            const seenThemed = new Set();
+            let hasLimited = false;
+            let hasVending = false;
+            let scriptBuffer = '';
+
             for (const page of pages) {
                 const list = page.list;
                 for (let i = 0; i < list.length; i++) {
                     const command = list[i];
 
-                    // Command 302: standard Shop Processing ,  scan entire map
+                    // Command 302: standard Shop Processing, plus its 605 rows
                     if (command.code === 302) {
-                        const firstGoods = command.parameters;
-                        if (firstGoods && firstGoods.length >= 2) {
-                            const type = firstGoods[0];
-                            const id = firstGoods[1];
-                            let itemData = null;
-                            let itemType = '';
-
-                            if (type === 0 && id > 0) {
-                                itemData = $dataItems[id];
-                                itemType = 'item';
-                            } else if (type === 1 && id > 0) {
-                                itemData = $dataWeapons[id];
-                                itemType = 'weapon';
-                            } else if (type === 2 && id > 0) {
-                                itemData = $dataArmors[id];
-                                itemType = 'armor';
-                            }
-
-                            if (itemData) {
-                                items.push({ type: itemType, id, data: itemData, sourceMapId, sourceEventId });
-                            }
-                        }
+                        const first = goodsEntry(command.parameters[0], command.parameters[1]);
+                        if (first) push([first]);
 
                         let j = i + 1;
                         while (j < list.length && list[j].code === 605) {
                             const goods = list[j].parameters;
                             if (goods && goods.length >= 2) {
-                                const type = goods[0];
-                                const id = goods[1];
-                                let itemData = null;
-                                let itemType = '';
-
-                                if (type === 0 && id > 0) {
-                                    itemData = $dataItems[id];
-                                    itemType = 'item';
-                                } else if (type === 1 && id > 0) {
-                                    itemData = $dataWeapons[id];
-                                    itemType = 'weapon';
-                                } else if (type === 2 && id > 0) {
-                                    itemData = $dataArmors[id];
-                                    itemType = 'armor';
-                                }
-
-                                if (itemData) {
-                                    items.push({ type: itemType, id, data: itemData, sourceMapId, sourceEventId });
-                                }
+                                const entry = goodsEntry(goods[0], goods[1]);
+                                if (entry) push([entry]);
                             }
                             j++;
                         }
                     }
 
-                    // Command 357: RandomDailyShop plugin command ,  only when within proximity
-                    if (command.code === 357 && dailyShopType &&
-                        this.isDailyShopCommand(command.parameters) &&
-                        this.shopTypeOf(command.parameters) === dailyShopType) {
-                        const dailyItems = this.getDailyShopItems(event, dailyShopType);
-                        for (const di of dailyItems) {
-                            di.sourceMapId = sourceMapId;
-                            di.sourceEventId = sourceEventId;
+                    // Command 357: a shop opened by one of the shop plugins
+                    if (command.code === 357) {
+                        if (this.matchesCommand(command.parameters, 'themed')) {
+                            const shopType = this.shopTypeOf(command.parameters);
+                            if (shopType && !seenThemed.has(shopType)) {
+                                seenThemed.add(shopType);
+                                push(this.getDailyShopItems(event, shopType));
+                            }
+                        } else if (this.matchesCommand(command.parameters, 'limited')) {
+                            hasLimited = true;
+                        } else if (this.matchesCommand(command.parameters, 'vending')) {
+                            hasVending = true;
                         }
-                        items.push(...dailyItems);
+                    }
+
+                    // Commands 355 / 655: a shop opened from a script line
+                    if (command.code === 355 || command.code === 655) {
+                        scriptBuffer += String(command.parameters[0] || '') + '\n';
                     }
                 }
             }
+
+            if (scriptBuffer) {
+                const shopType = this.scriptShopType(scriptBuffer);
+                if (shopType && !seenThemed.has(shopType)) {
+                    seenThemed.add(shopType);
+                    push(this.getDailyShopItems(event, shopType));
+                }
+                if (/OpenLimitedShop|limitedSelection/.test(scriptBuffer)) hasLimited = true;
+            }
+
+            if (hasLimited) push(this.getLimitedShopItems(event));
+            if (hasVending) push(this.getVendingMachineItems(event));
 
             // Fallback: If no shop items found, and the event is the currently active interpreter event (e.g. NPC Pickpocketing)
             if (items.length === 0 && event.eventId() === $gameMap._interpreter.eventId()) {
@@ -310,6 +418,48 @@
 
             return items;
         }
+
+        // A row off any of the shelves reduced to the one shape the steal
+        // list understands.
+        static toStealEntries(entries) {
+            const out = [];
+            for (const entry of entries || []) {
+                if (!entry || !entry.name) continue;
+                let itemType = '';
+                if (DataManager.isItem(entry))        itemType = 'item';
+                else if (DataManager.isWeapon(entry)) itemType = 'weapon';
+                else if (DataManager.isArmor(entry))  itemType = 'armor';
+                if (itemType) out.push({ type: itemType, id: entry.id, data: entry });
+            }
+            return out;
+        }
+
+        static getLimitedShopItems(event) {
+            const api = window.SearchableItemShop;
+            if (!api || typeof api.limitedSelection !== 'function') return [];
+            try {
+                const seed = api.limitedSeedString($gameMap.mapId(), event.x, event.y);
+                const selection = api.limitedSelection(seed, 6);
+                return this.toStealEntries(selection && selection.items);
+            } catch (e) {
+                console.error('StealingSystem: Error reading the local bazaar stock:', e);
+                return [];
+            }
+        }
+
+        static getVendingMachineItems(event) {
+            const api = window.VendingMachine;
+            if (!api || typeof api.stockAt !== 'function') return [];
+            try {
+                const stock = api.stockAt($gameMap.mapId(), event.x, event.y);
+                const slots = (stock && stock.slots) || {};
+                return this.toStealEntries(Object.keys(slots).map(code => slots[code].item));
+            } catch (e) {
+                console.error('StealingSystem: Error reading vending machine stock:', e);
+                return [];
+            }
+        }
+
 
         static generateNPCItems(event) {
             const items = [];
@@ -438,6 +588,8 @@
         scanItems:    () => ShopScanner.scanMapForShops(),
         calcChance:   (item, agi) => StealCalculator.calculateStealChance(item, agi),
         performSteal: (chance, options) => StealCalculator.performSteal(chance, options),
+        invisibleBonus: () => StealCalculator.invisibleBonus(),
+        rollModifier: (agi) => StealCalculator.rollModifier(agi),
         fmt:          goldToEuros,
         translate,
         reduceStock: (entry) => {

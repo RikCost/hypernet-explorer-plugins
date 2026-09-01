@@ -102,24 +102,38 @@
 
     // === Text wrapping util ===
     function wrapText(text, maxChars) {
-        const result = [];
-        // Preserve any explicit line breaks already present in the text.
-        for (const paragraph of String(text).split('\n')) {
-            let line = '';
-            for (const word of paragraph.split(' ')) {
-                if (word === '') continue;
-                if (line === '') {
-                    line = word;
-                } else if ((line + ' ' + word).length > maxChars) {
-                    result.push(line);
-                    line = word;
-                } else {
-                    line += ' ' + word;
-                }
-            }
-            result.push(line);
+        if (typeof window.autoWrapText === 'function') {
+            return window.autoWrapText(text, maxChars || 68);
         }
-        return result.join('\n');
+        const maxLen = maxChars || 68;
+        const flat = String(text).replace(/\r?\n/g, ' ').replace(/  +/g, ' ').trim();
+        if (!flat) return '';
+        const sentences = flat.replace(/\.(\s+|$)/g, '.\n').split('\n')
+            .map(s => s.trim()).filter(s => s.length > 0);
+
+        const isHtml = typeof document !== 'undefined' && !!document.getElementById('html-msg-text');
+        if (isHtml) return sentences.join('\n');
+
+        return sentences.map(s => {
+            let result = '';
+            let lineLen = 0;
+            const words = s.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+                if (!word) continue;
+                if (lineLen + word.length + (lineLen > 0 ? 1 : 0) > maxLen) {
+                    result += '\n';
+                    lineLen = 0;
+                }
+                if (lineLen > 0) {
+                    result += ' ';
+                    lineLen++;
+                }
+                result += word;
+                lineLen += word.length;
+            }
+            return result;
+        }).join('\n');
     }
 
     // === Historical-date helpers ===
@@ -218,11 +232,23 @@
         } catch (e) { /* the Fun is paid whether or not it is announced */ }
     }
 
+    let _onMessageComplete = null;
+
     // Show text across as many message boxes as needed. colorPrefix (e.g. "\\C[6]")
     // is re-applied at the start of every page so coloring survives the page break.
-    function showPaged(text, colorPrefix) {
+    function showPaged(text, colorPrefix, onComplete) {
+        _onMessageComplete = onComplete || null;
         const prefix = colorPrefix || '';
-        const pages = paginate(text, MSG_MAX_LINES).map(p => prefix + p);
+
+        const isHtmlMsg = typeof document !== 'undefined' && !!document.getElementById('html-msg-text');
+        if (isHtmlMsg) {
+            const formatted = prefix ? prefix + text : text;
+            $gameMessage.add(formatted);
+            return;
+        }
+
+        const formatted = wrapText(text, 68);
+        const pages = paginate(formatted, MSG_MAX_LINES).map(p => prefix + p);
         addPagedMessage(pages.shift());
         for (const p of pages) _pageQueue.push(p);
     }
@@ -234,6 +260,10 @@
         _Window_Message_terminateMessage.call(this);
         if (_pageQueue.length > 0) {
             addPagedMessage(_pageQueue.shift());
+        } else if (_onMessageComplete) {
+            const cb = _onMessageComplete;
+            _onMessageComplete = null;
+            setTimeout(() => cb(), 0);
         }
     };
 
@@ -617,11 +647,90 @@ function createSeededRNG(eventId = null) {
         return { title, description: pick(filled) };
     }
 
-    // Core function to display a random book with seeded randomness and wrapped text
-    function displayRandomBook(eventId = null) {
-        const random = createSeededRNG(eventId);
+    // === Category Book Helpers ===
+    function isCategoryBook(item) {
+        if (!item || !item.name) return false;
+        if (typeof item.name === 'string' && item.name.startsWith('<--')) return false;
+        if (item.meta && item.meta.category && String(item.meta.category).trim().toLowerCase() === 'books') return true;
+        if (item.note && /<category:\s*Books\s*>/i.test(item.note)) return true;
+        return false;
+    }
+
+    function getCategoryBookItems() {
+        if (typeof $dataItems === 'undefined' || !$dataItems) return [];
+        const list = [];
+        for (let i = 1; i < $dataItems.length; i++) {
+            const item = $dataItems[i];
+            if (item && isCategoryBook(item)) {
+                list.push(item);
+            }
+        }
+        return list;
+    }
+
+    // === Library World State Persistence ===
+    function getMapCompositeKey() {
+        const mapId = $gameMap ? $gameMap.mapId() : 0;
+        let key = String(mapId);
+        const fs = window.FurnitureSystem;
+        if (fs && typeof fs.furnitureMapKey === 'function') {
+            try {
+                const k = fs.furnitureMapKey();
+                if (k != null) key = String(k);
+            } catch (e) {}
+        }
+        return key;
+    }
+
+    function libraryPlaceKey(eventId) {
+        const mapKey = getMapCompositeKey();
+        if (eventId !== null && eventId !== undefined && eventId !== "") {
+            const sourceEventId = getSeedSourceEventId(eventId);
+            return `${mapKey}:event_${sourceEventId}`;
+        }
+        const x = $gamePlayer ? $gamePlayer.x : 0;
+        const y = $gamePlayer ? $gamePlayer.y : 0;
+        return `${mapKey}:pos_${x},${y}`;
+    }
+
+    function getLibrariesWorldStore() {
+        if (window.WorldManager && typeof window.WorldManager.getFile === 'function') {
+            try {
+                const store = window.WorldManager.getFile('libraries');
+                if (store) {
+                    if (!store.libraries) store.libraries = {};
+                    return store.libraries;
+                }
+            } catch (e) {}
+        }
+        if (typeof $gameSystem !== 'undefined' && $gameSystem) {
+            $gameSystem._libraryBooks = $gameSystem._libraryBooks || {};
+            return $gameSystem._libraryBooks;
+        }
+        return null;
+    }
+
+    function getLibraryData(placeKey) {
+        const store = getLibrariesWorldStore();
+        if (!store || !placeKey) return { taken: false, placedItemId: null };
+        if (!store[placeKey]) {
+            store[placeKey] = { taken: false, placedItemId: null };
+        }
+        return store[placeKey];
+    }
+
+    function saveLibraryData(placeKey, data) {
+        const store = getLibrariesWorldStore();
+        if (store && placeKey) {
+            store[placeKey] = data;
+        }
+        if (window.WorldManager && typeof window.WorldManager.flush === 'function') {
+            try { window.WorldManager.flush(); } catch (e) {}
+        }
+    }
+
+    function generateProceduralBook(random) {
         const histEvent = getRandomHistoryEvent(random);
-        
         let title, description;
         if (histEvent && random() < 0.35) { // chance to write about a lore event
             const book = generateHistoricalBook(random, histEvent);
@@ -631,26 +740,267 @@ function createSeededRNG(eventId = null) {
             title = generateTitle(random);
             description = generateDescription(random);
         }
-        
         const author = generateAuthor(random);
+        return { title, author, description };
+    }
 
-        // Wrap each part, then color whole lines so the coloring survives paging.
-        const titleLines = wrapText('"' + title + '"', 40)
-            .split('\n').map(l => "\\C[4]" + l + "\\C[0]").join('\n');
-        const authorLines = wrapText('by ' + author, 40)
-            .split('\n').map(l => "\\C[3]" + l + "\\C[0]").join('\n');
-        const descLines = wrapText(description, 40);
-
-        const messageText = titleLines + '\n' + authorLines + '\n' + descLines;
+    function displayProceduralBook(book, eventId) {
+        const titleLine = `\\C[4]"${book.title}"\\C[0] \\C[3]by ${book.author}.\\C[0]`;
+        const messageText = `${titleLine}\n${book.description}`;
         showPaged(messageText, '');
         payReadingFun("book", eventId);  // i18n-ignore  reading-log id
+    }
+
+    function hasRamanProbe() {
+        const scanner = window.RamanScanner;
+        if (!scanner) return false;
+        if (typeof scanner.available === 'function') return scanner.available();
+        if (typeof scanner.hasProbe === 'function') return scanner.hasProbe();
+        return false;
+    }
+
+    function triggerRamanScan(eventId) {
+        const ev = ($gameMap && eventId) ? $gameMap.event(eventId) : null;
+        if (ev && window.RamanScanner && typeof window.RamanScanner.scanEvent === 'function') {
+            window.RamanScanner.scanEvent(ev);
+        } else if (window.RamanScanner && typeof window.RamanScanner.scanFront === 'function') {
+            window.RamanScanner.scanFront();
+        }
+    }
+
+    function interactProceduralBook(book, eventId) {
+        if (!hasRamanProbe()) {
+            displayProceduralBook(book, eventId);
+            return;
+        }
+
+        const readLabel = T.language() === 'it' ? 'Leggi' : 'Read';
+        const scanLabel = (window.RamanScanner && typeof window.RamanScanner.analyzeLabel === 'function' && window.RamanScanner.analyzeLabel()) || (T.language() === 'it' ? 'Analizza' : 'Analyze');
+        const cancelLabel = T.language() === 'it' ? 'Annulla' : 'Cancel';
+        const choices = [readLabel, scanLabel, cancelLabel];
+        const cancelIndex = choices.length - 1;
+
+        $gameMessage._eventActivator = "p1";
+        window.skipLocalization = true;
+        $gameMessage.setChoices(choices, 0, cancelIndex);
+        window.skipLocalization = false;
+        $gameMessage.setChoiceCallback((n) => {
+            if (n === 0) {
+                setTimeout(() => displayProceduralBook(book, eventId), 0);
+            } else if (n === 1) {
+                setTimeout(() => triggerRamanScan(eventId), 0);
+            }
+        });
+    }
+
+    function interactItemBook(placeKey, eventId, item, isPlaced) {
+        const withProbe = hasRamanProbe();
+        const readLabel = T.language() === 'it' ? 'Leggi' : 'Read';
+        const takeLabel = T.language() === 'it' ? 'Prendi' : 'Take';
+        const scanLabel = (window.RamanScanner && typeof window.RamanScanner.analyzeLabel === 'function' && window.RamanScanner.analyzeLabel()) || (T.language() === 'it' ? 'Analizza' : 'Analyze');
+        const cancelLabel = T.language() === 'it' ? 'Annulla' : 'Cancel';
+
+        const choices = withProbe ? [readLabel, takeLabel, scanLabel, cancelLabel] : [readLabel, takeLabel, cancelLabel];
+        const cancelIndex = choices.length - 1;
+
+        $gameMessage._eventActivator = "p1";
+        window.skipLocalization = true;
+        $gameMessage.setChoices(choices, 0, cancelIndex);
+        window.skipLocalization = false;
+        $gameMessage.setChoiceCallback((n) => {
+            if (n === 0) { // Read
+                setTimeout(() => {
+                    const title = `\\I[${item.iconIndex}]\\C[4]${item.name}.\\C[0]`;
+                    const desc = item.description || '';
+                    const text = desc ? `${title}\n${desc}` : title;
+                    payReadingFun("book", eventId);
+                    showPaged(text, '', () => {
+                        interactItemBook(placeKey, eventId, item, isPlaced);
+                    });
+                }, 0);
+            } else if (n === 1) { // Take
+                setTimeout(() => {
+                    takeItemBook(placeKey, eventId, item, isPlaced);
+                }, 0);
+            } else if (withProbe && n === 2) { // Scan / Analyze
+                setTimeout(() => {
+                    triggerRamanScan(eventId);
+                }, 0);
+            }
+        });
+    }
+
+    function takeItemBook(placeKey, eventId, item, isPlaced) {
+        if (!item) return;
+        $gameParty.gainItem(item, 1);
+        try {
+            AudioManager.playSe({ name: 'Item1', volume: 80, pitch: 100, pan: 0 });
+        } catch (e) {}
+
+        const libData = getLibraryData(placeKey);
+        if (isPlaced) {
+            libData.placedItemId = null;
+        } else {
+            libData.taken = true;
+        }
+        saveLibraryData(placeKey, libData);
+
+        const msg = T.language() === 'it'
+            ? `Hai ottenuto \\I[${item.iconIndex}]\\C[4]${item.name}\\C[0]!`
+            : `Obtained \\I[${item.iconIndex}]\\C[4]${item.name}\\C[0]!`;
+        showPaged(msg, '');
+        payReadingFun("book", eventId);
+    }
+
+    function handlePutBookMenu(placeKey, eventId, hasItemBook) {
+        if (hasItemBook) {
+            const msg = T.language() === 'it'
+                ? 'Questa libreria contiene già un volume speciale.'
+                : 'There is already a special book in this library.';
+            showPaged(msg, '');
+            return;
+        }
+
+        const ownedBooks = [];
+        if ($gameParty && typeof $gameParty.items === 'function') {
+            for (const item of $gameParty.items()) {
+                if (isCategoryBook(item) && $gameParty.numItems(item) > 0) {
+                    ownedBooks.push(item);
+                }
+            }
+        }
+
+        if (ownedBooks.length === 0) {
+            const msg = T.language() === 'it'
+                ? 'Non possiedi nessun libro da riporre.'
+                : 'You do not have any books to place.';
+            showPaged(msg, '');
+            return;
+        }
+
+        const labels = [];
+        for (const b of ownedBooks) {
+            const count = $gameParty.numItems(b);
+            labels.push(`\\I[${b.iconIndex}] ${b.name}${count > 1 ? ` x${count}` : ''}`);
+        }
+        const cancelLabel = T.language() === 'it' ? 'Annulla' : 'Cancel';
+        labels.push(cancelLabel);
+        const cancelIdx = labels.length - 1;
+
+        $gameMessage._eventActivator = "p1";
+        window.skipLocalization = true;
+        $gameMessage.setChoices(labels, 0, cancelIdx);
+        window.skipLocalization = false;
+        $gameMessage.setChoiceCallback((idx) => {
+            if (idx < 0 || idx === cancelIdx || idx >= ownedBooks.length) return;
+            const chosenBook = ownedBooks[idx];
+            setTimeout(() => {
+                $gameParty.loseItem(chosenBook, 1);
+                const libData = getLibraryData(placeKey);
+                libData.placedItemId = chosenBook.id;
+                saveLibraryData(placeKey, libData);
+
+                try {
+                    AudioManager.playSe({ name: 'Book1', volume: 80, pitch: 100, pan: 0 });
+                } catch (e) {}
+                const placedMsg = T.language() === 'it'
+                    ? `Hai riposto \\I[${chosenBook.iconIndex}]\\C[4]${chosenBook.name}\\C[0] nella libreria.`
+                    : `Placed \\I[${chosenBook.iconIndex}]\\C[4]${chosenBook.name}\\C[0] in the library.`;
+                showPaged(placedMsg, '');
+            }, 0);
+        });
+    }
+
+    // Core function to display the library choice selection menu with 1-4 random procedural books,
+    // rare item book discovery, and book placement.
+    function openLibraryMenu(eventId = null) {
+        const placeKey = libraryPlaceKey(eventId);
+        const random = createSeededRNG(eventId);
+
+        // 1 to 4 random procedural books
+        const numProcedural = 1 + Math.floor(random() * 4);
+        const proceduralBooks = [];
+        for (let i = 0; i < numProcedural; i++) {
+            proceduralBooks.push(generateProceduralBook(random));
+        }
+
+        // Rare chance to roll a natural item book from <category:Books>
+        const naturalRoll = random();
+        let naturalItemId = null;
+        if (naturalRoll < 0.15) { // 15% rare chance
+            const allBooks = getCategoryBookItems();
+            if (allBooks.length > 0) {
+                naturalItemId = allBooks[Math.floor(random() * allBooks.length)].id;
+            }
+        }
+
+        const libData = getLibraryData(placeKey);
+        let activeItemBookId = null;
+        let isPlaced = false;
+
+        if (libData.placedItemId != null) {
+            activeItemBookId = libData.placedItemId;
+            isPlaced = true;
+        } else if (naturalItemId != null && !libData.taken) {
+            activeItemBookId = naturalItemId;
+            isPlaced = false;
+        }
+
+        const choiceLabels = [];
+        const choiceActions = [];
+
+        // Add procedural books to choices
+        for (let i = 0; i < proceduralBooks.length; i++) {
+            const b = proceduralBooks[i];
+            choiceLabels.push(b.title);
+            choiceActions.push({ type: 'procedural', book: b });
+        }
+
+        // Add item book if present
+        if (activeItemBookId != null && typeof $dataItems !== 'undefined' && $dataItems[activeItemBookId]) {
+            const item = $dataItems[activeItemBookId];
+            choiceLabels.push(`\\I[${item.iconIndex}] ${item.name}`);
+            choiceActions.push({ type: 'item', item: item, isPlaced: isPlaced });
+        }
+
+        // Add "Put book" choice before cancel
+        const putBookLabel = T.language() === 'it' ? 'Riponi libro' : 'Put book';
+        choiceLabels.push(putBookLabel);
+        choiceActions.push({ type: 'put_book' });
+
+        // Add "Cancel" choice
+        const cancelLabel = T.language() === 'it' ? 'Annulla' : 'Cancel';
+        choiceLabels.push(cancelLabel);
+        const cancelIndex = choiceLabels.length - 1;
+
+        $gameMessage._eventActivator = "p1";
+        window.skipLocalization = true;
+        $gameMessage.setChoices(choiceLabels, 0, cancelIndex);
+        window.skipLocalization = false;
+        $gameMessage.setChoiceCallback((index) => {
+            if (index < 0 || index === cancelIndex || index >= choiceActions.length) return;
+            const action = choiceActions[index];
+            setTimeout(() => {
+                if (action.type === 'procedural') {
+                    interactProceduralBook(action.book, eventId);
+                } else if (action.type === 'item') {
+                    interactItemBook(placeKey, eventId, action.item, action.isPlaced);
+                } else if (action.type === 'put_book') {
+                    handlePutBookMenu(placeKey, eventId, activeItemBookId != null);
+                }
+            }, 0);
+        });
+    }
+
+    // Core function to display a random book (now opens library choice selection window)
+    function displayRandomBook(eventId = null) {
+        openLibraryMenu(eventId);
     }
 
     // Core function to display a statue description with seeded randomness
     function displayStatueDescription(customSubject = "", eventId = null) {
         const random = createSeededRNG(eventId);
-        let description = generateStatueDescription(random, customSubject);
-        description = wrapText(description, 40);
+        const description = generateStatueDescription(random, customSubject);
         showPaged(description, "\\C[6]");
         payReadingFun("statue", eventId);  // i18n-ignore  reading-log id
     }
@@ -658,20 +1008,18 @@ function createSeededRNG(eventId = null) {
     // Core function to display a painting description with seeded randomness
     function displayPaintingDescription(customSubject = "", eventId = null) {
         const random = createSeededRNG(eventId);
-        let description = generatePaintingDescription(random, customSubject);
-        description = wrapText(description, 40);
+        const description = generatePaintingDescription(random, customSubject);
         showPaged(description, "\\C[5]");
         payReadingFun("painting", eventId);  // i18n-ignore  reading-log id
     }
 
-// Core function to display a mask description with seeded randomness
-function displayMaskDescription(customSubject = "", eventId = null) {
-    const random = createSeededRNG(eventId);
-    let description = generateMaskDescription(random, customSubject);
-    description = wrapText(description, 40);
-    showPaged(description, "\\C[2]");
-    payReadingFun("mask", eventId);  // i18n-ignore  reading-log id
-}
+    // Core function to display a mask description with seeded randomness
+    function displayMaskDescription(customSubject = "", eventId = null) {
+        const random = createSeededRNG(eventId);
+        const description = generateMaskDescription(random, customSubject);
+        showPaged(description, "\\C[2]");
+        payReadingFun("mask", eventId);  // i18n-ignore  reading-log id
+    }
 
 // Generate a deterministic mask description
 function generateMaskDescription(random = Math.random, customSubject = "") {
@@ -976,8 +1324,8 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
 
     function displayFossilDescription(fossilType, eventId) {
         const random = createSeededRNG(eventId);
-        const text   = wrapText(generateFossilDescription(random, fossilType), 40);
-        showPaged("\\C[6][ FOSSIL SPECIMEN ]\\C[0]\n" + text, '');
+        const desc = generateFossilDescription(random, fossilType);
+        showPaged("\\C[6][ FOSSIL SPECIMEN ]\\C[0]\n" + desc, '');
         payReadingFun("fossil", eventId);  // i18n-ignore  reading-log id
     }
 
@@ -996,10 +1344,7 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
     // Plugin command handlers
     PluginManager.registerCommand(pluginName, "ShowRandomBook", function (args) {
         const eventId = this._eventId;
-        handleRamanChoice.call(this,
-            () => displayRandomBook(eventId),
-            () => PluginManager.callCommand(this, 'RamanSpectroscopy', 'ScanFront', {})
-        );
+        openLibraryMenu(eventId);
     });
 
 
@@ -1043,11 +1388,16 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
     // poem" social interactions, the inventory "Read" verb) can borrow the book
     // title/subject generators and the paged message display.
     window.RandomBookGenerator = window.RandomBookGenerator || {
-        wrapText:  (text, maxChars) => wrapText(text, maxChars || 40),
+        wrapText:  (text, maxChars) => wrapText(text, maxChars || 68),
         showPaged: (text, colorPrefix) => showPaged(text, colorPrefix),
         generateTitle:  (random) => generateTitle(random || Math.random),
         generateAuthor: (random) => generateAuthor(random || Math.random),
         generateDescription: (random) => generateDescription(random || Math.random),
+        generateProceduralBook: (random) => generateProceduralBook(random || Math.random),
+        displayProceduralBook: (book, eventId) => displayProceduralBook(book, eventId),
+        displayRandomBook: (eventId) => displayRandomBook(eventId),
+        openLibraryMenu: (eventId) => openLibraryMenu(eventId),
+        isCategoryBook: (item) => isCategoryBook(item),
         randomSubject:  (random) => {
             const subjects = (titleSubjects()).concat(getMonsterSubjects());
             const r = random || Math.random;

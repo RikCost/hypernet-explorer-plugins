@@ -718,9 +718,17 @@
     }
 
     // =========================================================
-    // PIXI RAMAN DISPLAY
-    // States: 'scan' → 'reveal' → 'done'
+    // RAMAN DISPLAY (DOM overlay)
+    // States: 'scan' -> 'reveal' -> 'done'
+    // The spectrum is painted on a canvas the way the trading terminal paints
+    // its price chart, in the gold on black the rest of the game wears. The
+    // view can be zoomed (wheel, L2/R2, left/right or A/D) and any point read
+    // off by hovering it.
     // =========================================================
+
+    const RAMAN_MIN_SHIFT = 100;
+    const RAMAN_MAX_SHIFT = 3500;
+    const RAMAN_MIN_SPAN  = 120;
 
     class RamanDisplay {
         constructor(materialKey, objectType, evName) {
@@ -733,313 +741,406 @@
             this.scanPos    = 0;  // 0..1
             this.revealPos  = 0;  // 0..1
 
+            // Visible window of the x axis, in cm-1
+            this.viewMin = RAMAN_MIN_SHIFT;
+            this.viewMax = RAMAN_MAX_SHIFT;
+            this.hover   = null;  // the sampled point under the pointer
+
             const rng = seededRNG(materialKey.split('').reduce((a, c) => a * 31 + c.charCodeAt(0), 7));
-            this.spectrum = generateSpectrum(this.mat, 500, rng);
+            this.spectrum = generateSpectrum(this.mat, 900, rng);
 
-            // Pre-create reusable styles
-            this._stylePeak = new PIXI.TextStyle({ fontFamily: 'monospace', fontSize: 9, fill: 0xFFFF55 });
-
+            // Kept so the scene still has something to add to the stage; the
+            // display itself lives in the DOM above the game canvas.
             this.container = new PIXI.Container();
-            this._buildUI();
+            this._buildDom();
         }
 
-        // ---- UI construction ----
+        // ---- Colours ----
 
-        _buildUI() {
-            const W = Graphics.width, H = Graphics.height;
-
-            const overlay = new PIXI.Graphics();
-            overlay.beginFill(0x000000, 0.72).drawRect(0, 0, W, H).endFill();
-            this.container.addChild(overlay);
-
-            this.pW = Math.min(730, W * 0.90);
-            this.pH = Math.min(510, H * 0.84);
-            this.pX = (W - this.pW) / 2;
-            this.pY = (H - this.pH) / 2;
-
-            // Panel body
-            const panel = new PIXI.Graphics();
-            panel.lineStyle(1, 0x005588, 1)
-                 .beginFill(0x04101E, 0.99)
-                 .drawRoundedRect(this.pX, this.pY, this.pW, this.pH, 6)
-                 .endFill();
-            panel.lineStyle(1, 0x0088BB, 0.55)
-                 .drawRoundedRect(this.pX + 3, this.pY + 3, this.pW - 6, this.pH - 6, 5);
-            this.container.addChild(panel);
-
-            // Title bar
-            const tb = new PIXI.Graphics();
-            tb.beginFill(0x071828).drawRect(this.pX + 4, this.pY + 4, this.pW - 8, 34).endFill();
-            this.container.addChild(tb);
-
-            this._addCenteredText(
-                '\u25C8 RAMAN SPECTROSCOPY ANALYZER  v2.4 \u25C8',
-                12, 0x00CCFF, this.pY + 11, 3
-            );
-
-            this._addText(
-                T('Raman.targetLine', { target: this.evName, type: T('Raman.objectType.' + this.objectType).toUpperCase() }),
-                10, 0x6699AA, this.pX + 12, this.pY + 46
-            );
-
-            // Graph area
-            this.gL = this.pX + 66;
-            this.gT = this.pY + 66;
-            this.gW = this.pW - 84;
-            this.gH = this.pH - 136;
-            this.gB = this.gT + this.gH;
-            this.gR = this.gL + this.gW;
-
-            const gbg = new PIXI.Graphics();
-            gbg.beginFill(0x010812).drawRect(this.gL, this.gT, this.gW, this.gH).endFill();
-            this.container.addChild(gbg);
-
-            this._drawGrid();
-            this._drawAxes();
-            this._drawAxisLabels();
-
-            // Animation layers
-            this.layerScan     = new PIXI.Container(); this.container.addChild(this.layerScan);
-            this.layerSpectrum = new PIXI.Container(); this.container.addChild(this.layerSpectrum);
-            this.layerPeaks    = new PIXI.Container(); this.container.addChild(this.layerPeaks);
-            this.layerInfo     = new PIXI.Container(); this.container.addChild(this.layerInfo);
-            this.layerInfo.visible = false;
-
-            this._buildInfoPanel();
-
-            // Status bar
-            const statusY = this.pY + this.pH - 46;
-            const sbar = new PIXI.Graphics();
-            sbar.beginFill(0x020E1C).drawRect(this.pX + 4, statusY, this.pW - 8, 26).endFill();
-            this.container.addChild(sbar);
-
-            this.statusTxt = this._addText('INITIALIZING LASER...', 10, 0x00FF88, this.pX + 10, statusY + 6);
+        _matColor() {
+            return '#' + this.mat.color.toString(16).padStart(6, '0');
         }
 
-        _addText(str, size, fill, x, y, letterSpacing = 0) {
-            const t = new PIXI.Text(str, new PIXI.TextStyle({
-                fontFamily: '"Courier New", Courier, monospace',
-                fontSize: size, fill, letterSpacing,
-            }));
-            t.x = x; t.y = y;
-            this.container.addChild(t);
-            return t;
-        }
+        // ---- DOM construction ----
 
-        _addCenteredText(str, size, fill, y, letterSpacing = 0) {
-            const t = new PIXI.Text(str, new PIXI.TextStyle({
-                fontFamily: '"Courier New", Courier, monospace',
-                fontSize: size, fill, letterSpacing,
-            }));
-            t.x = this.pX + (this.pW - t.width) / 2;
-            t.y = y;
-            this.container.addChild(t);
-            return t;
-        }
-
-        _drawGrid() {
-            const g = new PIXI.Graphics();
-            for (const s of [500, 1000, 1500, 2000, 2500, 3000]) {
-                g.lineStyle(1, 0x0A2540, 0.9)
-                 .moveTo(this._shiftToX(s), this.gT)
-                 .lineTo(this._shiftToX(s), this.gB);
-            }
-            for (let i = 0; i <= 4; i++) {
-                const py = this.gT + (1 - i / 4) * this.gH;
-                g.lineStyle(1, 0x0A2540, 0.9).moveTo(this.gL, py).lineTo(this.gR, py);
-            }
-            this.container.addChild(g);
-        }
-
-        _drawAxes() {
-            const g = new PIXI.Graphics();
-            g.lineStyle(1.5, 0x1A6090)
-             .moveTo(this.gL, this.gT).lineTo(this.gL, this.gB)
-             .moveTo(this.gL, this.gB).lineTo(this.gR, this.gB);
-            this.container.addChild(g);
-        }
-
-        _drawAxisLabels() {
-            const s9  = new PIXI.TextStyle({ fontFamily: 'monospace', fontSize: 9,  fill: 0x446688 });
-            const s10 = new PIXI.TextStyle({ fontFamily: 'monospace', fontSize: 10, fill: 0x4499BB });
-
-            // X tick labels
-            for (const v of [500, 1000, 1500, 2000, 2500, 3000, 3500]) {
-                const t = new PIXI.Text(v, s9);
-                t.x = this._shiftToX(v) - t.width / 2;
-                t.y = this.gB + 5;
-                this.container.addChild(t);
-            }
-            // X axis title
-            const xt = new PIXI.Text(T('Raman.axisX'), s10);
-            xt.x = this.gL + (this.gW - xt.width) / 2;
-            xt.y = this.gB + 20;
-            this.container.addChild(xt);
-
-            // Y tick labels
-            for (let i = 0; i <= 4; i++) {
-                const pct = i * 25;
-                const t = new PIXI.Text(pct + '%', s9);
-                const py = this.gT + (1 - i / 4) * this.gH;
-                t.x = this.gL - t.width - 5;
-                t.y = py - t.height / 2;
-                this.container.addChild(t);
-            }
-            // Y axis title (rotated)
-            const yt = new PIXI.Text(T('Raman.axisY'), s10);
-            yt.rotation = -Math.PI / 2;
-            yt.x = this.pX + 10;
-            yt.y = this.gT + this.gH / 2 + yt.width / 2;
-            this.container.addChild(yt);
-        }
-
-        _buildInfoPanel() {
-            const y0 = this.pY + this.pH - 44;
-
-            const s1 = new PIXI.TextStyle({ fontFamily: 'monospace', fontSize: 11, fill: 0xFFDD00, fontWeight: 'bold' });
-            const s2 = new PIXI.TextStyle({ fontFamily: 'monospace', fontSize: 10, fill: 0xAADDFF });
-
-            const t1 = new PIXI.Text('\u25A0 MATERIAL IDENTIFIED:', s1);
-            t1.x = this.gL; t1.y = y0;
-            this.layerInfo.addChild(t1);
-
-            const t2 = new PIXI.Text(
-                `   ${this.mat.name}   [${this.mat.subname}]   MATCH: ${this.mat.confidence}%`,
-                s2
-            );
-            t2.x = this.gL; t2.y = y0 + 16;
-            this.layerInfo.addChild(t2);
-
-            // Large material name label inside the graph area (top-right)
-            const sName = new PIXI.TextStyle({
-                fontFamily: 'monospace', fontSize: 15,
-                fill: this.mat.color, fontWeight: 'bold', letterSpacing: 2,
+        _buildDom() {
+            const root = document.createElement('div');
+            root.id = 'raman-overlay';
+            root.innerHTML = `
+                <style>
+                #raman-overlay {
+                    position: fixed; left: 0; top: 0; width: 100%; height: 100%;
+                    display: flex; align-items: center; justify-content: center;
+                    background: rgba(0, 0, 0, 0.88);
+                    z-index: 100000;
+                    font-family: 'Courier New', Courier, monospace;
+                    color: var(--text-text-alt-9, #c8a064);
+                    user-select: none;
+                }
+                #raman-overlay * { box-sizing: border-box; }
+                .raman-panel {
+                    width: min(860px, 92vw); height: min(600px, 88vh);
+                    display: flex; flex-direction: column;
+                    background: var(--bg-panel, #0a0a0a);
+                    border: 2px solid var(--border-gold-amber, #d4a050);
+                    border-radius: 4px;
+                    box-shadow: 0 0 24px rgba(212, 160, 80, 0.25);
+                }
+                .raman-title {
+                    padding: 8px 12px; text-align: center;
+                    letter-spacing: 3px; font-size: 14px; font-weight: bold;
+                    color: var(--text-primary-hover, #ffcc66);
+                    border-bottom: 1px solid var(--border-gold-amber, #d4a050);
+                    background: rgba(212, 160, 80, 0.08);
+                }
+                .raman-target {
+                    padding: 6px 12px; font-size: 12px;
+                    color: var(--text-text-alt-9, #c8a064);
+                    display: flex; justify-content: space-between; gap: 12px;
+                }
+                .raman-ident { color: var(--text-primary-hover, #ffcc66); font-weight: bold; }
+                .raman-plot {
+                    position: relative; flex: 1; margin: 0 12px;
+                    border: 1px solid var(--border-border-alt-1, #5a4a2a);
+                    background: #000000;
+                }
+                .raman-plot canvas { display: block; width: 100%; height: 100%; }
+                .raman-tip {
+                    position: absolute; pointer-events: none;
+                    padding: 3px 7px; font-size: 11px; line-height: 1.4;
+                    background: rgba(0, 0, 0, 0.92);
+                    border: 1px solid var(--border-gold-amber, #d4a050);
+                    color: var(--text-primary-hover, #ffcc66);
+                    white-space: pre; display: none;
+                }
+                .raman-status {
+                    padding: 6px 12px; font-size: 11px;
+                    color: var(--text-text-alt-9, #c8a064);
+                }
+                .raman-hint {
+                    padding: 0 12px 8px; font-size: 11px;
+                    color: var(--text-disabled, #777777);
+                    display: flex; justify-content: space-between; gap: 12px;
+                }
+                </style>
+                <div class="raman-panel">
+                    <div class="raman-title">${T('Raman.title')}</div>
+                    <div class="raman-target">
+                        <span class="raman-target-line"></span>
+                        <span class="raman-ident"></span>
+                    </div>
+                    <div class="raman-plot">
+                        <canvas></canvas>
+                        <div class="raman-tip"></div>
+                    </div>
+                    <div class="raman-status"></div>
+                    <div class="raman-hint">
+                        <span>${T('Raman.hintZoom')}</span>
+                        <span class="raman-range"></span>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(root);
+            this.root      = root;
+            this.canvas    = root.querySelector('canvas');
+            this.tip       = root.querySelector('.raman-tip');
+            this.statusEl  = root.querySelector('.raman-status');
+            this.identEl   = root.querySelector('.raman-ident');
+            this.rangeEl   = root.querySelector('.raman-range');
+            root.querySelector('.raman-target-line').textContent = T('Raman.targetLine', {
+                target: this.evName,
+                type: T('Raman.objectType.' + this.objectType).toUpperCase(),
             });
-            const tName = new PIXI.Text(this.mat.subname.toUpperCase(), sName);
-            tName.x = this.gR - tName.width - 8;
-            tName.y = this.gT + 6;
-            this.layerInfo.addChild(tName);
 
-            // Formula below it
-            const sForm = new PIXI.TextStyle({ fontFamily: 'monospace', fontSize: 10, fill: this.mat.color, alpha: 0.75 });
-            const tForm = new PIXI.Text(this.mat.name, sForm);
-            tForm.x = this.gR - tForm.width - 8;
-            tForm.y = this.gT + 24;
-            this.layerInfo.addChild(tForm);
+            this._onWheel = (e) => {
+                e.preventDefault();
+                this.zoomAt(e.deltaY < 0 ? 0.85 : 1 / 0.85, this._pointerShift(e));
+            };
+            this._onMove = (e) => {
+                this._pointer = { x: e.clientX, y: e.clientY };
+                this._updateHover();
+            };
+            this._onLeave = () => { this._pointer = null; this.hover = null; this._paintTip(); };
+            this.canvas.addEventListener('wheel', this._onWheel, { passive: false });
+            this.canvas.addEventListener('mousemove', this._onMove);
+            this.canvas.addEventListener('mouseleave', this._onLeave);
         }
 
-        // ---- Coordinate helpers ----
+        // ---- View maths ----
 
-        _shiftToX(shift) { return this.gL + (shift - 100) / 3400 * this.gW; }
-        _intensityToY(v) { return this.gB - v * this.gH; }
+        _plotBox() {
+            const c = this.canvas;
+            return { L: 62, T: 14, R: c.width - 16, B: c.height - 34 };
+        }
+
+        _shiftToX(shift) {
+            const b = this._plotBox();
+            return b.L + (shift - this.viewMin) / (this.viewMax - this.viewMin) * (b.R - b.L);
+        }
+
+        _xToShift(px) {
+            const b = this._plotBox();
+            return this.viewMin + (px - b.L) / (b.R - b.L) * (this.viewMax - this.viewMin);
+        }
+
+        _intensityToY(v) {
+            const b = this._plotBox();
+            return b.B - v * (b.B - b.T);
+        }
+
+        _pointerShift(e) {
+            const r = this.canvas.getBoundingClientRect();
+            const px = (e.clientX - r.left) * (this.canvas.width / r.width);
+            return this._xToShift(px);
+        }
+
+        // Zoom keeping `anchor` (a Raman shift) under the same screen position.
+        zoomAt(factor, anchor) {
+            const span = this.viewMax - this.viewMin;
+            const full = RAMAN_MAX_SHIFT - RAMAN_MIN_SHIFT;
+            const newSpan = Math.max(RAMAN_MIN_SPAN, Math.min(full, span * factor));
+            if (!isFinite(anchor)) anchor = (this.viewMin + this.viewMax) / 2;
+            anchor = Math.max(this.viewMin, Math.min(this.viewMax, anchor));
+            const t = (anchor - this.viewMin) / span;
+            let min = anchor - t * newSpan;
+            let max = min + newSpan;
+            if (min < RAMAN_MIN_SHIFT) { min = RAMAN_MIN_SHIFT; max = min + newSpan; }
+            if (max > RAMAN_MAX_SHIFT) { max = RAMAN_MAX_SHIFT; min = max - newSpan; }
+            this.viewMin = min;
+            this.viewMax = max;
+            this._updateHover();
+        }
+
+        _updateHover() {
+            if (!this._pointer || this.state !== 'done' || !this.canvas) {
+                this.hover = null; this._paintTip(); return;
+            }
+            const r = this.canvas.getBoundingClientRect();
+            const px = (this._pointer.x - r.left) * (this.canvas.width / r.width);
+            const b = this._plotBox();
+            if (px < b.L || px > b.R) { this.hover = null; this._paintTip(); return; }
+            const shift = this._xToShift(px);
+            let best = null;
+            for (const pt of this.spectrum) {
+                if (!best || Math.abs(pt.shift - shift) < Math.abs(best.shift - shift)) best = pt;
+            }
+            this.hover = best;
+            this._paintTip();
+        }
+
+        _paintTip() {
+            if (!this.tip) return;
+            if (!this.hover) { this.tip.style.display = 'none'; return; }
+            const r = this.canvas.getBoundingClientRect();
+            const px = this._shiftToX(this.hover.shift) * (r.width / this.canvas.width);
+            const py = this._intensityToY(this.hover.y) * (r.height / this.canvas.height);
+            this.tip.textContent = T('Raman.readout', {
+                shift: Math.round(this.hover.shift),
+                intensity: (this.hover.y * 100).toFixed(1),
+            });
+            this.tip.style.display = 'block';
+            const w = this.tip.offsetWidth;
+            this.tip.style.left = Math.max(2, Math.min(r.width - w - 2, px + 10)) + 'px';
+            this.tip.style.top  = Math.max(2, py - 30) + 'px';
+        }
+
+        // ---- Input from the scene (keyboard / gamepad) ----
+
+        handleInput() {
+            let factor = 1;
+            if (Input.isPressed('pageup')   || Input.isPressed('right')) factor = 0.94;     // R2 / D
+            if (Input.isPressed('pagedown') || Input.isPressed('left'))  factor = 1 / 0.94; // L2 / A
+            if (factor !== 1) this.zoomAt(factor, (this.viewMin + this.viewMax) / 2);
+        }
+
+        // ---- Painting ----
+
+        _resize() {
+            const box = this.canvas.parentElement;
+            const w = Math.max(320, box.clientWidth);
+            const h = Math.max(200, box.clientHeight);
+            if (this.canvas.width !== w || this.canvas.height !== h) {
+                this.canvas.width = w;
+                this.canvas.height = h;
+            }
+        }
+
+        _paintFrame(ctx) {
+            const b = this._plotBox();
+            const grid  = 'rgba(212, 160, 80, 0.16)';
+            const label = '#c8a064';
+
+            ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            // Grid and x ticks, on a step that suits the current zoom
+            const span = this.viewMax - this.viewMin;
+            const step = span > 2000 ? 500 : span > 900 ? 250 : span > 400 ? 100 : span > 200 ? 50 : 20;
+            ctx.font = '10px "Courier New", monospace';
+            ctx.textAlign = 'center';
+            for (let v = Math.ceil(this.viewMin / step) * step; v <= this.viewMax; v += step) {
+                const x = this._shiftToX(v);
+                ctx.strokeStyle = grid;
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(x, b.T); ctx.lineTo(x, b.B); ctx.stroke();
+                ctx.fillStyle = label;
+                ctx.fillText(String(v), x, b.B + 14);
+            }
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 4; i++) {
+                const y = b.T + (1 - i / 4) * (b.B - b.T);
+                ctx.strokeStyle = grid;
+                ctx.beginPath(); ctx.moveTo(b.L, y); ctx.lineTo(b.R, y); ctx.stroke();
+                ctx.fillStyle = label;
+                ctx.fillText(i * 25 + '%', b.L - 6, y + 3);
+            }
+
+            // Axes
+            ctx.strokeStyle = '#d4a050';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(b.L, b.T); ctx.lineTo(b.L, b.B); ctx.lineTo(b.R, b.B);
+            ctx.stroke();
+
+            // Axis titles
+            ctx.fillStyle = label;
+            ctx.textAlign = 'center';
+            ctx.fillText(T('Raman.axisX'), (b.L + b.R) / 2, b.B + 28);
+            ctx.save();
+            ctx.translate(14, (b.T + b.B) / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(T('Raman.axisY'), 0, 0);
+            ctx.restore();
+        }
+
+        _paintTrace(ctx, upTo, color, width, alpha) {
+            const b = this._plotBox();
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(b.L, b.T, b.R - b.L, b.B - b.T);
+            ctx.clip();
+            ctx.globalAlpha = alpha;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            let started = false;
+            for (const pt of this.spectrum) {
+                if (pt.shift > upTo) break;
+                if (pt.shift < this.viewMin - 20 || pt.shift > this.viewMax + 20) { started = false; continue; }
+                const x = this._shiftToX(pt.shift);
+                const y = this._intensityToY(pt.y);
+                if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        _paintPeaks(ctx, upTo) {
+            const b = this._plotBox();
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(b.L, b.T - 14, b.R - b.L, b.B - b.T + 14);
+            ctx.clip();
+            ctx.font = 'bold 10px "Courier New", monospace';
+            ctx.textAlign = 'center';
+            for (const pk of this.mat.peaks) {
+                if (pk.height < 0.22 || pk.pos > upTo) continue;
+                if (pk.pos < this.viewMin || pk.pos > this.viewMax) continue;
+                const x = this._shiftToX(pk.pos);
+                const y = this._intensityToY(pk.height);
+                ctx.strokeStyle = 'rgba(255, 204, 102, 0.75)';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(x, y - 2); ctx.lineTo(x, y - 16); ctx.stroke();
+                ctx.fillStyle = '#ffcc66';
+                ctx.fillText(String(pk.pos), x, y - 20);
+            }
+            ctx.restore();
+        }
+
+        _paintHover(ctx) {
+            if (!this.hover) return;
+            const b = this._plotBox();
+            const x = this._shiftToX(this.hover.shift);
+            const y = this._intensityToY(this.hover.y);
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255, 215, 0, 0.45)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath(); ctx.moveTo(x, b.T); ctx.lineTo(x, b.B); ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+        }
+
+        _paint() {
+            if (!this.canvas || !this.canvas.parentElement) return;
+            this._resize();
+            const ctx = this.canvas.getContext('2d');
+            const b = this._plotBox();
+            this._paintFrame(ctx);
+
+            if (this.state === 'scan') {
+                const upTo = RAMAN_MIN_SHIFT + this.scanPos * (RAMAN_MAX_SHIFT - RAMAN_MIN_SHIFT);
+                this._paintTrace(ctx, upTo, 'rgba(200, 160, 100, 0.45)', 1, 1);
+                const x = this._shiftToX(upTo);
+                ctx.save();
+                ctx.strokeStyle = '#ffd700';
+                ctx.globalAlpha = 0.18; ctx.lineWidth = 14;
+                ctx.beginPath(); ctx.moveTo(x, b.T); ctx.lineTo(x, b.B); ctx.stroke();
+                ctx.globalAlpha = 1; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(x, b.T); ctx.lineTo(x, b.B); ctx.stroke();
+                ctx.restore();
+            } else {
+                const upTo = this.state === 'done'
+                    ? RAMAN_MAX_SHIFT
+                    : RAMAN_MIN_SHIFT + this.revealPos * (RAMAN_MAX_SHIFT - RAMAN_MIN_SHIFT);
+                this._paintTrace(ctx, upTo, this._matColor(), 4, 0.18);
+                this._paintTrace(ctx, upTo, this._matColor(), 1.6, 0.95);
+                this._paintPeaks(ctx, upTo);
+                if (this.state === 'done') this._paintHover(ctx);
+            }
+
+            this.rangeEl.textContent = T('Raman.rangeLine', {
+                min: Math.round(this.viewMin), max: Math.round(this.viewMax),
+            });
+        }
 
         // ---- Per-frame update ----
 
         update(delta) {
-            if (this.closed) return;
+            if (this.closed || !this.root) return;
             this.frame += delta;
 
             if (this.state === 'scan') {
                 this.scanPos = Math.min(1, this.frame / 90);
-                this._renderScan();
+                const shift = Math.round(RAMAN_MIN_SHIFT + this.scanPos * (RAMAN_MAX_SHIFT - RAMAN_MIN_SHIFT));
+                const dots = '.'.repeat(Math.floor(this.frame / 8) % 4);
+                this.statusEl.textContent = T('Raman.statusScanning', { dots: dots, shift: shift });
                 if (this.scanPos >= 1) {
                     this.state = 'reveal';
                     this.frame = 0;
-                    this.layerScan.visible = false;
-                    this.statusTxt.text = T('Raman.statusAnalyzing');
+                    this.statusEl.textContent = T('Raman.statusAnalyzing');
                 }
             } else if (this.state === 'reveal') {
                 this.revealPos = Math.min(1, this.frame / 110);
-                this._renderReveal();
+                const dots = '.'.repeat(Math.floor(this.frame / 10) % 4);
+                this.statusEl.textContent = T('Raman.statusRendering', { dots: dots });
                 if (this.revealPos >= 1) {
                     this.state = 'done';
-                    this.statusTxt.text =
-                        T('Raman.statusComplete');
-                    this.layerInfo.visible = true;
+                    this.statusEl.textContent = T('Raman.statusComplete');
+                    this.identEl.style.color = this._matColor();
+                    this.identEl.textContent = T('Raman.identLine', {
+                        name: this.mat.subname.toUpperCase(),
+                        formula: this.mat.name,
+                        confidence: this.mat.confidence,
+                    });
                 }
-            }
-        }
-
-        _renderScan() {
-            // Destroy the removed Graphics so their geometry/GPU buffers are freed
-            // rather than leaked each frame.
-            this.layerScan.removeChildren().forEach(c => c.destroy(true));
-            const nPts   = this.spectrum.length;
-            const cutIdx = Math.max(2, Math.floor(this.scanPos * nPts));
-            const sub    = this.spectrum.slice(0, cutIdx);
-
-            // Rough noisy preview behind the laser
-            const rough = new PIXI.Graphics();
-            rough.lineStyle(1, 0x005522, 0.55);
-            sub.forEach((pt, i) => {
-                const px = this._shiftToX(pt.shift);
-                const py = this._intensityToY(pt.y * 0.9);
-                if (i === 0) rough.moveTo(px, py); else rough.lineTo(px, py);
-            });
-            this.layerScan.addChild(rough);
-
-            // Laser scan line
-            const scanX = this._shiftToX(sub[sub.length - 1].shift);
-            const line  = new PIXI.Graphics();
-            // Glow halo
-            line.lineStyle(14, 0x00FF66, 0.10).moveTo(scanX, this.gT).lineTo(scanX, this.gB);
-            // Core beam
-            line.lineStyle(2,  0x00FF66, 1.00).moveTo(scanX, this.gT).lineTo(scanX, this.gB);
-            this.layerScan.addChild(line);
-
-            const shift = Math.round(sub[sub.length - 1].shift);
-            const dots  = '.'.repeat(Math.floor(this.frame / 8) % 4);
-            this.statusTxt.text = T('Raman.statusScanning', { dots: dots, shift: shift });
-        }
-
-        _renderReveal() {
-            // Destroy the removed Graphics/Text so their buffers are freed each frame.
-            this.layerSpectrum.removeChildren().forEach(c => c.destroy(true));
-            this.layerPeaks.removeChildren().forEach(c => c.destroy(true));
-
-            const nPts   = this.spectrum.length;
-            const cutIdx = Math.max(2, Math.floor(this.revealPos * nPts));
-            const sub    = this.spectrum.slice(0, cutIdx);
-
-            // Glow layer
-            const glow = new PIXI.Graphics();
-            glow.lineStyle(4, this.mat.color, 0.18);
-            sub.forEach((pt, i) => {
-                const px = this._shiftToX(pt.shift);
-                const py = this._intensityToY(pt.y);
-                if (i === 0) glow.moveTo(px, py); else glow.lineTo(px, py);
-            });
-            this.layerSpectrum.addChild(glow);
-
-            // Main spectrum line
-            const line = new PIXI.Graphics();
-            line.lineStyle(1.5, this.mat.color, 0.95);
-            sub.forEach((pt, i) => {
-                const px = this._shiftToX(pt.shift);
-                const py = this._intensityToY(pt.y);
-                if (i === 0) line.moveTo(px, py); else line.lineTo(px, py);
-            });
-            this.layerSpectrum.addChild(line);
-
-            // Peak annotations (appear as the reveal line passes each peak)
-            const currentShift = sub[sub.length - 1].shift;
-            for (const pk of this.mat.peaks) {
-                if (pk.height < 0.22 || pk.pos > currentShift) continue;
-                const px = this._shiftToX(pk.pos);
-                const py = this._intensityToY(pk.height);
-
-                const tick = new PIXI.Graphics();
-                tick.lineStyle(1, 0xFFFF55, 0.75).moveTo(px, py - 2).lineTo(px, py - 18);
-                this.layerPeaks.addChild(tick);
-
-                const lbl = new PIXI.Text(String(pk.pos), this._stylePeak);
-                lbl.x = px - lbl.width / 2;
-                lbl.y = py - 30;
-                this.layerPeaks.addChild(lbl);
+            } else {
+                this.handleInput();
             }
 
-            const dots = '.'.repeat(Math.floor(this.frame / 10) % 4);
-            this.statusTxt.text = T('Raman.statusRendering', { dots: dots });
+            this._paint();
         }
 
         // ---- Lifecycle ----
@@ -1047,7 +1148,14 @@
         close() {
             if (this.closed) return;
             this.closed = true;
-            // console.log('[Raman] RamanDisplay.close() called');
+            if (this.canvas) {
+                this.canvas.removeEventListener('wheel', this._onWheel);
+                this.canvas.removeEventListener('mousemove', this._onMove);
+                this.canvas.removeEventListener('mouseleave', this._onLeave);
+            }
+            if (this.root && this.root.parentElement) this.root.parentElement.removeChild(this.root);
+            this.root = null;
+            this.canvas = null;
         }
     }
 
@@ -1078,9 +1186,10 @@
             if (!this._display) return;
             this._display.update(1);
 
+            // A click is a reading gesture now (hover, wheel zoom), so only
+            // the explicit close inputs leave the analyzer.
             if (Input.isTriggered('cancel') || Input.isTriggered('ok') ||
-                TouchInput.isCancelled() || TouchInput.isTriggered()) {
-                // console.log('[Raman] Scene_RamanScan: close input detected');
+                TouchInput.isCancelled()) {
                 this._display.close();
                 this.popScene();
             }
@@ -1088,8 +1197,7 @@
 
         terminate() {
             super.terminate();
-            // console.log('[Raman] Scene_RamanScan.terminate()');
-            if (this._display) this._display.closed = true;
+            if (this._display) this._display.close();
         }
     }
 

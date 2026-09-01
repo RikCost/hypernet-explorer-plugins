@@ -256,6 +256,22 @@ const GameOptions = {
      * @param {function} cursorRightFn - Optional function for custom right action
      * @param {function} cursorLeftFn - Optional function for custom left action
      */
+    // Hide a row unless fn() says otherwise. The shader tab uses it to show
+    // only the knobs the look the player picked actually has: SnapVertex has a
+    // vertex snap, pixel art has a palette, and listing both at once is a page
+    // of settings half of which do nothing.
+    setVisibility: function (symbol, fn) {
+        const opt = this._options[symbol];
+        if (opt) opt.visible = fn;
+    },
+
+    // Mark a row whose value changes WHICH rows exist, so the list is rebuilt
+    // and not just repainted when it moves.
+    markRebuildsList: function (symbol) {
+        const opt = this._options[symbol];
+        if (opt) opt.rebuildsList = true;
+    },
+
     registerOption: function (symbol, name, getter, setter, category = 'gameplay', type = 'boolean', statusTextFn = null, cursorRightFn = null, cursorLeftFn = null) {
         this._options[symbol] = { name, getter, setter, category, type, statusTextFn, cursorRightFn, cursorLeftFn };
     },
@@ -281,8 +297,8 @@ const GameOptions = {
             nameKey: 'video',
             categories: ['video'],
             symbols: [
-                'enemyBattlers', 'fullscreen', 'uiScale', 'fontScale', 'globalLighting', 'nightLight',
-                'activeTheme', 'partyHud', 'showFps', 'titleBackground'
+                'enemyBattlers', 'fullscreen', 'uiScale', 'fontScale', 'nightLight',
+                'activeTheme', 'partyHud', 'proceduralHitFX', 'showFps', 'titleBackground'
             ]
         },
         {
@@ -296,7 +312,11 @@ const GameOptions = {
             nameKey: 'shader',
             categories: ['shader'],
             symbols: [
-                'retroEnabled', 'retroDownscale', 'retroColorLevels', 'retroVertexSnap', 'retroDither'
+                'retroShaderMode',
+                'retroDownscale', 'retroColorLevels', 'retroVertexSnap', 'retroDither',
+                'pixelArtPixelSize', 'pixelArtWeaponDetail', 'pixelArtPalette',
+                'pixelArtColorLevels', 'pixelArtLightSteps', 'pixelArtSaturation',
+                'pixelArtInk', 'pixelArtDither'
             ]
         },
         {
@@ -335,7 +355,7 @@ window.GameOptions = GameOptions;
     // stored as raw tunables; downscale and dither are stored as 0..100
     // percentages so they map cleanly onto the slider UI.
     const RETRO_DEFAULTS = {
-        enabled: true,
+        mode: 'snapvertex',
         vertexSnap: 420,   // lower = chunkier
         colorLevels: 48,   // fewer = more banding
         downscale: 88,     // percent of full resolution; lower = more pixelated
@@ -345,22 +365,66 @@ window.GameOptions = GameOptions;
     // Bumped whenever the defaults above are retuned. A config written before
     // the current tuning is pulled back onto the new defaults once, otherwise
     // every existing player keeps the old heavy settings forever.
-    const RETRO_TUNE = 2;
+    const RETRO_TUNE = 6;
+
+    // The pixel-art look's own tunables (window.PixelArtShader). Same storage
+    // convention: raw numbers for the counts, 0..100 percentages for anything
+    // that is a slider. pixelSize and weaponDetail are the two halves of the
+    // pixel size: the scene's, and the finer one the first person weapon gets
+    // so a gun that covers a few dozen pixels still reads as a sprite.
+    const PIXELART_DEFAULTS = {
+        pixelSize: 50,      // percent of full resolution
+        weaponDetail: 200,  // percent of that, for the weapon overlay
+        palette: 'none',    // which palette the colours are snapped to ('none' = unlimited colours)
+        colorLevels: 0,     // shades per channel when the palette is off (0 = unlimited)
+        lightSteps: 5,      // cel bands
+        saturation: 115,    // percent, 100 = untouched
+        ink: 25,            // percent, how dark the darkest band is pushed
+        dither: 25          // percent dither strength
+    };
 
     // Push the stored config onto the live shader helper. Vertex snap, color
     // levels and dither are baked into the GLSL when a material is patched, so
     // those take effect for models built after the change (next battle/scene);
     // enabled and downscale are read per frame and update instantly.
     function applyRetroConfig() {
-        const shader = window.PSXShader;
-        if (!shader) return;
-        shader.enabled = ConfigManager.retroEnabled !== false;
-        shader.vertexSnap = ConfigManager.retroVertexSnap != null ? ConfigManager.retroVertexSnap : RETRO_DEFAULTS.vertexSnap;
-        shader.colorLevels = ConfigManager.retroColorLevels != null ? ConfigManager.retroColorLevels : RETRO_DEFAULTS.colorLevels;
-        const down = ConfigManager.retroDownscale != null ? ConfigManager.retroDownscale : RETRO_DEFAULTS.downscale;
-        shader.downscale = Math.max(0.1, down / 100);
-        const dith = ConfigManager.retroDither != null ? ConfigManager.retroDither : RETRO_DEFAULTS.dither;
-        shader.dither = dith / 100;
+        const cfg = (key, fallback) => (ConfigManager[key] != null ? ConfigManager[key] : fallback);
+
+        // Which look every 3D scene wears. RetroShader owns the answer and the
+        // two shaders' enabled flags; window.PSXShader is only the facade that
+        // forwards to whichever it names.
+        if (window.RetroShader) {
+            window.RetroShader.setMode(cfg('retroShaderMode', RETRO_DEFAULTS.mode));
+        }
+
+        const snap = window.SnapVertexShader;
+        if (snap) {
+            snap.vertexSnap = cfg('retroVertexSnap', RETRO_DEFAULTS.vertexSnap);
+            snap.colorLevels = cfg('retroColorLevels', RETRO_DEFAULTS.colorLevels);
+            snap.downscale = Math.max(0.1, cfg('retroDownscale', RETRO_DEFAULTS.downscale) / 100);
+            snap.dither = cfg('retroDither', RETRO_DEFAULTS.dither) / 100;
+        }
+
+        const pxa = window.PixelArtShader;
+        if (pxa) {
+            // The palette is baked into a lookup texture, so changing which one
+            // is in force has to throw the built one away.
+            const paletteName = cfg('pixelArtPalette', PIXELART_DEFAULTS.palette);
+            if (pxa.setPalette) {
+                pxa.setPalette(paletteName);
+            } else {
+                const palette = paletteName !== 'none' && paletteName !== false;
+                if (!!pxa.palette !== palette && pxa.invalidatePalette) pxa.invalidatePalette();
+                pxa.palette = palette;
+            }
+            pxa.downscale = Math.max(0.1, cfg('pixelArtPixelSize', PIXELART_DEFAULTS.pixelSize) / 100);
+            pxa.weaponBoost = Math.max(1, cfg('pixelArtWeaponDetail', PIXELART_DEFAULTS.weaponDetail) / 100);
+            pxa.levels = cfg('pixelArtColorLevels', PIXELART_DEFAULTS.colorLevels);
+            pxa.lightSteps = cfg('pixelArtLightSteps', PIXELART_DEFAULTS.lightSteps);
+            pxa.saturation = cfg('pixelArtSaturation', PIXELART_DEFAULTS.saturation) / 100;
+            pxa.inkStrength = cfg('pixelArtInk', PIXELART_DEFAULTS.ink) / 100;
+            pxa.dither = cfg('pixelArtDither', PIXELART_DEFAULTS.dither) / 100;
+        }
     }
 
     //=============================================================================
@@ -584,6 +648,13 @@ window.GameOptions = GameOptions;
             ? config.bgmVolumeBeforeMute
             : defaultBgmVolume;
 
+        // Weapon hits drawn as procedural 3D effects (WeaponHitFX) rather
+        // than played out of Animations.json. On by default.
+        this.proceduralHitFX = config.proceduralHitFX !== undefined
+            ? !!config.proceduralHitFX
+            : true;
+        if (window.WeaponHitFX) window.WeaponHitFX.enabled = this.proceduralHitFX;
+
         // MUSH Audio Engine defaults
         if (this.uisVolume === undefined) this.uisVolume = 100;
         if (this.vscVolume === undefined) this.vscVolume = 100;
@@ -678,11 +749,30 @@ window.GameOptions = GameOptions;
             return fallback;
         };
         this.retroTune = RETRO_TUNE;
-        this.retroEnabled = retro('retroEnabled', 'psxEnabled', RETRO_DEFAULTS.enabled);
+        // The old boolean becomes the three-way look picker: a player who had
+        // the shader off keeps it off, everyone else lands on SnapVertex, which
+        // is what the boolean used to mean.
+        this.retroShaderMode = config.retroShaderMode !== undefined
+            ? config.retroShaderMode
+            : ((config.retroEnabled === false || config.psxEnabled === false)
+                ? 'off' : RETRO_DEFAULTS.mode);
         this.retroVertexSnap = retro('retroVertexSnap', 'psxVertexSnap', RETRO_DEFAULTS.vertexSnap);
         this.retroColorLevels = retro('retroColorLevels', 'psxColorLevels', RETRO_DEFAULTS.colorLevels);
         this.retroDownscale = retro('retroDownscale', 'psxDownscale', RETRO_DEFAULTS.downscale);
         this.retroDither = retro('retroDither', 'psxDither', RETRO_DEFAULTS.dither);
+
+        // Pixel-art look. No legacy names to migrate: it did not exist before.
+        const pxa = (key, fallback) => (stale ? fallback : (config[key] !== undefined ? config[key] : fallback));
+        this.pixelArtPixelSize = pxa('pixelArtPixelSize', PIXELART_DEFAULTS.pixelSize);
+        this.pixelArtWeaponDetail = pxa('pixelArtWeaponDetail', PIXELART_DEFAULTS.weaponDetail);
+        const paletteCfg = pxa('pixelArtPalette', PIXELART_DEFAULTS.palette);
+        this.pixelArtPalette = (paletteCfg === false || paletteCfg === 'none') ? 'none'
+            : (paletteCfg === true) ? 'aurora256' : paletteCfg;
+        this.pixelArtColorLevels = pxa('pixelArtColorLevels', PIXELART_DEFAULTS.colorLevels);
+        this.pixelArtLightSteps = pxa('pixelArtLightSteps', PIXELART_DEFAULTS.lightSteps);
+        this.pixelArtSaturation = pxa('pixelArtSaturation', PIXELART_DEFAULTS.saturation);
+        this.pixelArtInk = pxa('pixelArtInk', PIXELART_DEFAULTS.ink);
+        this.pixelArtDither = pxa('pixelArtDither', PIXELART_DEFAULTS.dither);
         applyRetroConfig();
 
         // Interface scaling
@@ -718,6 +808,7 @@ window.GameOptions = GameOptions;
         config.enemyBattlers = this.enemyBattlers;
         config.charBasedSprites = this.charBasedSprites;
         config.activeTheme = this.activeTheme;
+        config.proceduralHitFX = this.proceduralHitFX;
         config.showFps = this.showFps;
         config.titleBackground = this.titleBackground;
         config.cpuPartyMembers = this.cpuPartyMembers;
@@ -729,11 +820,19 @@ window.GameOptions = GameOptions;
         config.enemySpawnModeV4 = true;
         config.enemyDifficulty = this.enemyDifficulty;
         config.retroTune = RETRO_TUNE;
-        config.retroEnabled = this.retroEnabled;
+        config.retroShaderMode = this.retroShaderMode;
         config.retroVertexSnap = this.retroVertexSnap;
         config.retroColorLevels = this.retroColorLevels;
         config.retroDownscale = this.retroDownscale;
         config.retroDither = this.retroDither;
+        config.pixelArtPixelSize = this.pixelArtPixelSize;
+        config.pixelArtWeaponDetail = this.pixelArtWeaponDetail;
+        config.pixelArtPalette = this.pixelArtPalette;
+        config.pixelArtColorLevels = this.pixelArtColorLevels;
+        config.pixelArtLightSteps = this.pixelArtLightSteps;
+        config.pixelArtSaturation = this.pixelArtSaturation;
+        config.pixelArtInk = this.pixelArtInk;
+        config.pixelArtDither = this.pixelArtDither;
         config.uiScale = this.uiScale;
         config.fontScale = this.fontScale;
         return config;
@@ -798,8 +897,14 @@ window.GameOptions = GameOptions;
         const optionName = opt => (typeof opt.name === 'function' ? opt.name() : opt.name);
 
         const coreSymbols = ['alwaysDash', 'commandRemember', 'bgmVolume', 'bgsVolume', 'meVolume', 'seVolume'];
+        const shown = (opt) => {
+            if (!opt || typeof opt.visible !== 'function') return true;
+            try { return !!opt.visible(); } catch (e) { return true; }
+        };
+
         tab.symbols.forEach(symbol => {
             const custom = GameOptions._options[symbol];
+            if (custom && !shown(custom)) return;
             if (custom) {
                 this.addCommand(optionName(custom), symbol);
             } else if (coreSymbols.includes(symbol)) {
@@ -817,7 +922,7 @@ window.GameOptions = GameOptions;
         const tabCategories = tab.categories || [tab.id];
         for (const symbol in GameOptions._options) {
             const opt = GameOptions._options[symbol];
-            if (tabCategories.includes(opt.category) && !tab.symbols.includes(symbol)) {
+            if (tabCategories.includes(opt.category) && !tab.symbols.includes(symbol) && shown(opt)) {
                 this.addCommand(optionName(opt), symbol);
             }
         }
@@ -1152,7 +1257,10 @@ window.GameOptions = GameOptions;
         TDDP_allowStretching:  { on: 'StretchingON',   off: 'StretchingOFF' },
         // Shader (the low-poly/low-res retro pass, PSXShader.js). Every one of
         // these changes what the 3D scenes look like, so each gets its own shot.
-        retroEnabled:    { on: 'RetroShaderON',     off: 'RetroShaderOFF' },
+        retroShaderMode: { img: 'RetroShaderON' },
+        pixelArtPixelSize: { img: 'RetroResolution' },
+        pixelArtDither:  { img: 'RetroDither' },
+        pixelArtColorLevels: { img: 'RetroColorLevels' },
         retroDownscale:  { img: 'RetroResolution' },
         retroDither:     { img: 'RetroDither' },
         retroColorLevels: { img: 'RetroColorLevels' },
@@ -1626,8 +1734,19 @@ window.GameOptions = GameOptions;
             w.redrawItem(idx);
         }
         SoundManager.playCursor();
+        if (custom && custom.rebuildsList) this._rebuildRows();
         this.renderOptions();
         this.updateHighlight();
+    };
+
+    // A row whose value decides which OTHER rows exist (the shader style) has
+    // to rebuild the list, not just repaint it, and the cursor has to survive
+    // the list getting shorter.
+    Scene_Options.prototype._rebuildRows = function () {
+        this._optionsWindow.refresh();
+        const n = this._optionsList().length;
+        this._selectedIndex = Math.max(0, Math.min(this._selectedIndex, n - 1));
+        this._optionsWindow.select(this._selectedIndex);
     };
 
     // OK on an option: sliders do nothing; select/boolean advance/toggle
@@ -1823,6 +1942,20 @@ window.GameOptions = GameOptions;
         }
     );
 
+    // Register Procedural Weapon Hits: the 3D impact effect each weapon type
+    // draws where a blow lands. Off falls back to the Effekseer animation the
+    // weapon names in the database.
+    GameOptions.registerOption('proceduralHitFX', T('GameOptions.label.proceduralHitFX'),
+        () => ConfigManager.proceduralHitFX !== false,
+        (value) => {
+            ConfigManager.proceduralHitFX = value;
+            if (window.WeaponHitFX) {
+                window.WeaponHitFX.enabled = value;
+                if (!value) window.WeaponHitFX.clear();
+            }
+        },
+        'video', 'boolean');
+
     // Register Show FPS
     GameOptions.registerOption('showFps', T('GameOptions.label.showFps'),
         () => ConfigManager.showFps,
@@ -1896,11 +2029,25 @@ window.GameOptions = GameOptions;
     //=========================================================================
     // Retro shader options (the low-poly/low-res 3D shader, PSXShader.js)
     //=========================================================================
-    // Master toggle.
-    GameOptions.registerOption('retroEnabled', T('GameOptions.label.retroShader'),
-        () => ConfigManager.retroEnabled,
-        (value) => { ConfigManager.retroEnabled = value; applyRetroConfig(); },
-        'shader', 'boolean');
+    // Which look every three.js viewport in the game wears: the battle scene,
+    // the voxel world, the minigames, GalaxySim, the menu previews and the title
+    // screen all render through whichever this names.
+    const SHADER_MODES = ['off', 'snapvertex', 'pixelart'];
+    const shaderModeName = (value) => {
+        const key = SHADER_MODES.indexOf(value) === -1 ? 'off' : value;
+        return T('GameOptions.shaderMode.' + key);
+    };
+    const stepShaderMode = (dir) => function () {
+        const cur = SHADER_MODES.indexOf(this.getConfigValue('retroShaderMode'));
+        const idx = (Math.max(0, cur) + dir + SHADER_MODES.length) % SHADER_MODES.length;
+        this.setConfigValue('retroShaderMode', SHADER_MODES[idx]);
+    };
+    GameOptions.registerOption('retroShaderMode', T('GameOptions.label.shaderStyle'),
+        () => ConfigManager.retroShaderMode || RETRO_DEFAULTS.mode,
+        (value) => { ConfigManager.retroShaderMode = value; applyRetroConfig(); },
+        'shader', 'boolean',
+        shaderModeName, stepShaderMode(1), stepShaderMode(-1)
+    );
 
     // Internal render resolution slider (lower = more pixelated). 100% disables
     // the low-res downsample pass entirely.
@@ -1952,6 +2099,76 @@ window.GameOptions = GameOptions;
             this.setConfigValue('retroVertexSnap', v);
         }
     );
+
+    //=========================================================================
+    // Pixel-art shader options (window.PixelArtShader)
+    //=========================================================================
+    // The same knobs the SnapVertex look has, in the terms this one is built
+    // from: how big a pixel is, how many bands of light, how inked the darks,
+    // and whether the colours are snapped to AAP-Splendor128 (the palette the
+    // background converter tool reduces to) or just quantized.
+    const registerPixelArtStep = (symbol, name, min, max, step, fmt) => {
+        const move = (dir) => function () {
+            const cur = Number(this.getConfigValue(symbol));
+            const v = Math.min(max, Math.max(min, cur + dir * step));
+            this.setConfigValue(symbol, v);
+        };
+        GameOptions.registerOption(symbol, name,
+            () => ConfigManager[symbol],
+            (value) => { ConfigManager[symbol] = value; applyRetroConfig(); },
+            'shader', 'boolean',
+            fmt || ((value) => String(value)),
+            move(1), move(-1)
+        );
+    };
+    const pct = (value) => value + '%';
+
+    // Pixel size: the whole look. Lower = bigger pixels.
+    registerPixelArtStep('pixelArtPixelSize', T('GameOptions.label.pixelSize'), 10, 100, 5, pct);
+    // The weapon overlay renders this much finer than the scene.
+    registerPixelArtStep('pixelArtWeaponDetail', T('GameOptions.label.weaponDetail'), 100, 400, 25, pct);
+
+    // Which set of inks the colours are snapped to: None (unlimited colours, default),
+    // Aurora 256, Splendor 128, or LCD (monochrome Game Boy).
+    const PIXEL_PALETTES = ['none', 'aurora256', 'splendor128', 'lcd'];
+    const stepPalette = (dir) => function () {
+        const cur = PIXEL_PALETTES.indexOf(this.getConfigValue('pixelArtPalette'));
+        const idx = (Math.max(0, cur) + dir + PIXEL_PALETTES.length) % PIXEL_PALETTES.length;
+        this.setConfigValue('pixelArtPalette', PIXEL_PALETTES[idx]);
+    };
+    GameOptions.registerOption('pixelArtPalette', T('GameOptions.label.pixelPalette'),
+        () => ConfigManager.pixelArtPalette,
+        (value) => { ConfigManager.pixelArtPalette = value; applyRetroConfig(); },
+        'shader', 'boolean',
+        (value) => T('GameOptions.palette.' + (PIXEL_PALETTES.indexOf(value) === -1 ? 'none' : value)),
+        stepPalette(1), stepPalette(-1)
+    );
+    GameOptions.markRebuildsList('pixelArtPalette');
+
+    registerPixelArtStep('pixelArtColorLevels', T('GameOptions.label.colorLevels'), 2, 32, 1);
+    registerPixelArtStep('pixelArtLightSteps', T('GameOptions.label.lightBands'), 2, 12, 1);
+    registerPixelArtStep('pixelArtSaturation', T('GameOptions.label.saturation'), 50, 200, 5, pct);
+    registerPixelArtStep('pixelArtInk', T('GameOptions.label.inkedShadows'), 0, 80, 5, pct);
+    registerPixelArtStep('pixelArtDither', T('GameOptions.label.dithering'), 0, 100, 5, pct);
+
+    //=========================================================================
+    // The shader tab shows one look's knobs at a time
+    //=========================================================================
+    // Vertex snap means nothing to the pixel-art look and a palette means
+    // nothing to SnapVertex, so each row is listed only while the look it
+    // belongs to is the one the player picked.
+    const shaderModeIs = (mode) => () =>
+        (ConfigManager.retroShaderMode || RETRO_DEFAULTS.mode) === mode;
+    ['retroDownscale', 'retroColorLevels', 'retroVertexSnap', 'retroDither']
+        .forEach((sym) => GameOptions.setVisibility(sym, shaderModeIs('snapvertex')));
+    ['pixelArtPixelSize', 'pixelArtWeaponDetail', 'pixelArtPalette', 'pixelArtColorLevels',
+     'pixelArtLightSteps', 'pixelArtSaturation', 'pixelArtInk', 'pixelArtDither']
+        .forEach((sym) => GameOptions.setVisibility(sym, shaderModeIs('pixelart')));
+    // Shades per channel is what the pixel-art look quantizes with when it is
+    // NOT snapping to a palette; with one on it does nothing.
+    GameOptions.setVisibility('pixelArtColorLevels', () =>
+        shaderModeIs('pixelart')() && ConfigManager.pixelArtPalette === 'none');
+    GameOptions.markRebuildsList('retroShaderMode');
 
     //=========================================================================
     // Interface scaling (Video tab)

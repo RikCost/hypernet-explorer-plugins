@@ -2,9 +2,7 @@
   "anItem": "un oggetto",
   "mapFallback": "Mappa {id}",
   "homePool": {
-    "huts": "capanna",
     "houses": "casa",
-    "villas": "villa",
     "skyscrapers": "grattacielo"
   },
   "log": {

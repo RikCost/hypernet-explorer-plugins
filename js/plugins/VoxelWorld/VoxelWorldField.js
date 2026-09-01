@@ -665,6 +665,135 @@
     }
 
     // -------------------------------------------------------------------------
+    // The islands nobody drew
+    //
+    // The world map's own islands are the squares the sea has nearly surrounded
+    // (islandRiseAt above). Out in the open ocean there is nothing at all for
+    // hundreds of squares together, and that is not what an ocean looks like
+    // from a boat: it looks like mostly nothing with the occasional rock,
+    // sandbar or wooded islet in it.
+    //
+    // So a rare open-sea square carries an island of its own. Everything about
+    // one - whether it is there at all, where in the square it stands, how far
+    // it reaches and how high it rises - is a hash of that square, so nothing
+    // is stored and it is in the same place every time. The rise is radial in
+    // WORLD units rather than per-square, which is what lets an islet be far
+    // smaller than the square it sits in while a big one still reads as a
+    // landmass with a shoreline of its own.
+    // -------------------------------------------------------------------------
+    const OCEAN_ISLE_ONE_IN = 30;      // open-sea squares that carry one
+    // r: how far the land reaches from its middle, in world units.
+    // rise: how high that middle stands OVER SEA LEVEL.
+    // w: this size's share of the roll.
+    const OCEAN_ISLE_SIZES = [
+        { r: 58,  rise: 14, w: 0.32 },   // a rock with a bird on it
+        { r: 116, rise: 26, w: 0.29 },   // a sandbar
+        { r: 198, rise: 48, w: 0.22 },   // an islet with trees on it
+        { r: 312, rise: 84, w: 0.12 },   // an island worth landing on
+        { r: 448, rise: 140, w: 0.05 },  // a proper one, with a hill in the middle
+    ];
+    // The biggest r above must stay under a world square, or a point could be
+    // reached by an island two squares away and the 3x3 scan below would miss
+    // its edge. Nothing enforces it but this line and the sizes over it.
+    const OCEAN_ISLE_MAX_R = 448;
+
+    const _oceanIsleCache = new Map();
+    // The island a sea square carries, or null. { cx, cz, r, rise, size } in
+    // world units, `size` being the index into the table above (which is what
+    // decides whether anything is built or grown on it).
+    function oceanIslandOf(wx, wy) {
+        const key = tileKey(wx, wy);
+        const hit = _oceanIsleCache.get(key);
+        if (hit !== undefined) return hit;
+        let out = null;
+        // Only the open sea. A coastal square is already shaped by the shore
+        // blend and an island dropped into it would be a lump on a beach.
+        if (profileFor(sampleBiomeAt(wx, wy).name).water &&
+            sqHash(wx, wy, 8101) < 1 / OCEAN_ISLE_ONE_IN) {
+            let open = true;
+            for (let dy = -1; dy <= 1 && open; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    if (!dx && !dy) continue;
+                    if (!profileFor(sampleBiomeAt(wx + dx, wy + dy).name).water) { open = false; break; }
+                }
+            }
+            if (open) {
+                let r = sqHash(wx, wy, 8102), pick = 0;
+                for (let i = 0; i < OCEAN_ISLE_SIZES.length; i++) {
+                    r -= OCEAN_ISLE_SIZES[i].w;
+                    if (r <= 0) { pick = i; break; }
+                    pick = i;
+                }
+                const S = OCEAN_ISLE_SIZES[pick];
+                const ts = WORLD_TILE_SIZE;
+                // Kept clear of the square's edges by its own reach, so it never
+                // straddles a square whose neighbour is not open water.
+                const room = Math.max(0, ts * 0.5 - S.r) * 0.9;
+                out = {
+                    cx: (wx + 0.5) * ts + (sqHash(wx, wy, 8103) - 0.5) * 2 * room,
+                    cz: (wy + 0.5) * ts + (sqHash(wx, wy, 8104) - 0.5) * 2 * room,
+                    r: S.r, rise: S.rise, size: pick
+                };
+            }
+        }
+        if (_oceanIsleCache.size > 20000) _oceanIsleCache.clear();
+        _oceanIsleCache.set(key, out);
+        return out;
+    }
+
+    // Every island that can reach into a square, its own and its neighbours'.
+    // Squares with no island anywhere near remember that too, which is what
+    // keeps the check off the hot path for the rest of the world - and the rest
+    // of the world is nearly all of it.
+    //
+    // This is riverNearAt's trick, and it is here for the same reason: every
+    // column in the world asks this question, and asking it as nine lookups
+    // into the per-square memo cost thirteen per cent of a column ANYWHERE,
+    // including in the middle of a continent a thousand squares from the sea.
+    // One lookup that answers "nothing here" costs nothing.
+    const _isleNearCache = new Map();
+    function oceanIslandsNear(wx, wy) {
+        const key = tileKey(wx, wy);
+        let near = _isleNearCache.get(key);
+        if (near !== undefined) return near;
+        near = null;
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                const isl = oceanIslandOf(wx + dx, wy + dy);
+                if (isl) (near || (near = [])).push(isl);
+            }
+        }
+        if (_isleNearCache.size > 20000) _isleNearCache.clear();
+        _isleNearCache.set(key, near);
+        return near;
+    }
+
+    // How high the ground stands at a point because of an open-ocean island, as
+    // a fraction (0 at the edge of the island, 1 at its middle) and the island
+    // it belongs to. Null out at sea, which is nearly everywhere.
+    const _isleHit = { isl: null, k: 0 };
+    function oceanIslandAt(x, z) {
+        const ts = WORLD_TILE_SIZE;
+        const near = oceanIslandsNear(Math.floor(x / ts), Math.floor(z / ts));
+        if (!near) return null;
+        let best = null, bestK = 0;
+        for (let i = 0; i < near.length; i++) {
+            const isl = near[i];
+            const ddx = x - isl.cx, ddz = z - isl.cz;
+            const d2 = ddx * ddx + ddz * ddz;
+            if (d2 >= isl.r * isl.r) continue;
+            const t = 1 - Math.sqrt(d2) / isl.r;
+            // Eased, so the middle is a rounded top and the edge meets the
+            // sea floor without a crease anywhere.
+            const k = t * t * (3 - 2 * t);
+            if (k > bestK) { bestK = k; best = isl; }
+        }
+        if (!best) return null;
+        _isleHit.isl = best; _isleHit.k = bestK;
+        return _isleHit;
+    }
+
+    // -------------------------------------------------------------------------
     // The height one biome would give a point, on its own
     //
     // Every corner of the blend is asked this at the SAME world position, with
@@ -716,7 +845,17 @@
     // neighbouring squares always meet at the same point on their shared edge.
     // -------------------------------------------------------------------------
     const RIVER_SEG      = 9;     // samples per leg of the channel
-    const RIVER_BANK     = 34;    // how far the muddy bank reaches past the water
+    const RIVER_BANK     = 46;    // how far the muddy bank reaches past the water
+    // How wide a channel actually runs, in world units from its centre line.
+    // A world square is WORLD_TILE_SIZE (500) across, so a river of 70-130
+    // either side is a real river - a quarter to a half of the square, wide
+    // enough that the far bank is somewhere to swim to and a bridge is a
+    // bridge. The old 20-36 was a stream you could step over, which is not
+    // what the world map's blue lines are meant to be.
+    const RIVER_HALF_MIN = 70;
+    const RIVER_HALF_VAR = 60;
+    const RIVER_DEEP_MIN = 26;
+    const RIVER_DEEP_VAR = 16;
     const _riverPathCache = new Map();
     const _riverNearCache = new Map();
     const _EDGE = { n: [0, -0.5], s: [0, 0.5], w: [-0.5, 0], e: [0.5, 0] };
@@ -730,8 +869,8 @@
             const ts   = WORLD_TILE_SIZE;
             const cx   = (wx + 0.5) * ts, cz = (wy + 0.5) * ts;
             const seed = hash3(wx, wy, 7);
-            let half   = 20 + seed * 16;
-            let depth  = 18 + seed * 12;
+            let half   = RIVER_HALF_MIN + seed * RIVER_HALF_VAR;
+            let depth  = RIVER_DEEP_MIN + seed * RIVER_DEEP_VAR;
             // Where the river reaches open water it spreads into an estuary.
             let mouth = false;
             for (const d of ['n', 's', 'e', 'w']) {
@@ -739,7 +878,7 @@
                 const nb = sampleBiomeAt(wx + e[0] * 2, wy + e[1] * 2);
                 if (profileFor(nb.name).water && !isRiverTile(wx + e[0] * 2, wy + e[1] * 2)) mouth = true;
             }
-            if (mouth) { half *= 1.9; depth *= 1.3; }
+            if (mouth) { half *= 1.55; depth *= 1.3; }
 
             const links = riverLinksAt(wx, wy);
             const pts = [];
@@ -824,6 +963,9 @@
     function clearTerrainCaches() {
         _profileCache.clear();
         _islandCache.clear();
+        _oceanIsleCache.clear();
+        _isleNearCache.clear();
+        _sewerCache.clear();
         _riverPathCache.clear();
         _riverNearCache.clear();
     }
@@ -1037,6 +1179,111 @@
         return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
     }
 
+    // =========================================================================
+    // The sewers
+    // =========================================================================
+    // Under a town there is no cave: there is a sewer, and it is a built thing.
+    // A rectilinear grid of brick galleries on ONE level, running unbroken from
+    // one side of a city to the other and on into the next city square, at a
+    // depth a pick can reach: break the asphalt of a street and keep going and
+    // you drop into it, and a tunnel driven sideways out of any hole in town
+    // runs into it too.
+    //
+    // The grid is laid out in ABSOLUTE voxel coordinates rather than per
+    // square, so two neighbouring city squares share their galleries instead of
+    // meeting at a wall.
+    const SEWER_PITCH    = 24;    // voxels between parallel galleries (30 m)
+    const SEWER_HALF     = 2;     // half-width of one, in voxels (~6 m across)
+    const SEWER_H        = 4;     // headroom, in voxels (5 m)
+    // The level the galleries run at, in voxels. GROUND_BASE is what a paved
+    // square is levelled to, so this is a fixed depth under every street in the
+    // world and a sewer never staircases with the ground over it.
+    const SEWER_TOP_Y    = Math.round(GROUND_BASE / VOX.SIZE) - 6;
+    // ...but never closer than this to daylight, wherever the ground over a
+    // town square happens to sit lower than the paving level.
+    const SEWER_MIN_ROOF = 4;
+
+    // Which squares are sewered. A town's own square, and the ring of squares
+    // around it: a gallery that stopped dead at the edge of the built-up area
+    // could not be reached by digging in from the field next door, and the
+    // outfall of a real sewer is outside the town anyway.
+    const SEWER_NAMES = /^(city|metro|burg|village|villa|houses|town|docks|office|factory|spacecenter|omegatower)/;
+    const _sewerCache = new Map();
+    function sewerTileAt(wx, wy) {
+        const key = tileKey(wx, wy);
+        const hit = _sewerCache.get(key);
+        if (hit !== undefined) return hit;
+        let on = false;
+        for (let dy = -1; dy <= 1 && !on; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                if (SEWER_NAMES.test((sampleBiomeAt(wx + dx, wy + dy).name || '').toLowerCase())) {
+                    on = true; break;
+                }
+            }
+        }
+        if (_sewerCache.size > 20000) _sewerCache.clear();
+        _sewerCache.set(key, on);
+        return on;
+    }
+
+    // Is this column inside one of the galleries? Two modulos: the grid is the
+    // set of columns near a line of the lattice in either axis, so a crossing
+    // is a junction without anything having to say so.
+    function sewerGalleryAt(vx, vz) {
+        const ox = ((vx % SEWER_PITCH) + SEWER_PITCH) % SEWER_PITCH;
+        const oz = ((vz % SEWER_PITCH) + SEWER_PITCH) % SEWER_PITCH;
+        const dx = Math.min(ox, SEWER_PITCH - ox);
+        const dz = Math.min(oz, SEWER_PITCH - oz);
+        return Math.min(dx, dz);
+    }
+
+    // -------------------------------------------------------------------------
+    // Manholes
+    // -------------------------------------------------------------------------
+    // A sewer nobody can find is a sewer nobody uses. Digging a street at random
+    // until you drop into one is not discovery, it is a lottery, so some of the
+    // gallery crossings carry a shaft up to the pavement with an iron cover over
+    // it: a cube of plate, plainly not asphalt, sitting in the road.
+    //
+    // The cover is a BLOCK, not an interaction. Break it - one swing, iron is
+    // hard 6 - and the shaft under it is already open all the way down to the
+    // gallery. That is the whole mechanism: nothing to press, nothing to learn,
+    // and it works the same for a pick, a bumper and a stick of anything else
+    // that takes cubes out of the world.
+    const MANHOLE_R      = 1;    // voxels either side of the crossing centre
+    const MANHOLE_ONE_IN = 5;    // crossings that carry one
+
+    // Is this column inside a manhole shaft? Only at a gallery crossing, which
+    // is where both lattice lines meet, and only at some of those.
+    function manholeAt(vx, vz) {
+        const ox = ((vx % SEWER_PITCH) + SEWER_PITCH) % SEWER_PITCH;
+        const oz = ((vz % SEWER_PITCH) + SEWER_PITCH) % SEWER_PITCH;
+        const dx = Math.min(ox, SEWER_PITCH - ox);
+        const dz = Math.min(oz, SEWER_PITCH - oz);
+        if (dx > MANHOLE_R || dz > MANHOLE_R) return false;
+        // Which crossing this is, in lattice steps, so every column of the same
+        // shaft asks the same question and gets the same answer.
+        const cx = Math.round(vx / SEWER_PITCH), cz = Math.round(vz / SEWER_PITCH);
+        return sqHash(cx, cz, 8301) < 1 / MANHOLE_ONE_IN;
+    }
+
+    // The band a gallery occupies at this column, or null. `ownTop` is the
+    // generated surface of the column, which caps how close to daylight the
+    // roof may come. `pad` widens the test past the void itself, which is how
+    // the brick shell around a gallery is found.
+    function sewerBandAt(vx, vz, ownTop, pad) {
+        // The square first: it is false for all but a few hundred squares in
+        // the world and answers out of a memo, so nothing else here is paid for
+        // by the countryside.
+        const wx = Math.floor(vx / VOX.PER_TILE), wy = Math.floor(vz / VOX.PER_TILE);
+        if (!sewerTileAt(wx, wy)) return null;
+        if (sewerGalleryAt(vx, vz) > SEWER_HALF + (pad || 0)) return null;
+        const hi = Math.min(SEWER_TOP_Y, ownTop - SEWER_MIN_ROOF);
+        const lo = hi - SEWER_H;
+        if (lo <= VOX.MIN_Y + CAVE_FLOOR_CLEAR) return null;
+        return { lo, hi };
+    }
+
 
     class VoxelField {
         constructor() {
@@ -1161,6 +1408,18 @@
                 const flatK = Math.exp(-Math.pow(d / (d >= 0 ? 34 : 70), 2));
                 h += (SEA_LEVEL + 12 - h) * 0.55 * flatK *
                      Math.min(1, landW * 3) * Math.min(1, seaW * 4);
+            }
+
+            // --- the rare island out in the open sea --------------------------
+            // Added AFTER the shoreline blend, because it is a radial dome in
+            // world units rather than a per-square rise the four-corner blend
+            // could carry. It is raised from wherever the sea floor happens to
+            // be to its own top, so the shelf around it slopes out of the
+            // seabed and there is somewhere to wade ashore.
+            const isle = oceanIslandAt(x, z);
+            if (isle) {
+                const top = SEA_LEVEL + isle.isl.rise;
+                if (top > h) h += (top - h) * isle.k;
             }
 
             // --- the coastline's sand, in the colour blend --------------------
@@ -1404,8 +1663,15 @@
             const rec = {
                 h: c.h, mat: c.mat, road: c.road, prof: c.prof, water: c.water,
                 r: c.r, g: c.g, b: c.b,
-                top: _clamp(Math.round(c.h / VOX.SIZE), VOX.MIN_Y + 1, VOX.MAX_Y)
+                top: _clamp(Math.round(c.h / VOX.SIZE), VOX.MIN_Y + 1, VOX.MAX_Y),
+                // The roof of the sewer gallery under this column, or 0 where
+                // no town stands over it. Kept on the column so genMaterial -
+                // which runs for every cube of every wall in the world - can
+                // rule the sewers out with one comparison.
+                sewerHi: 0
             };
+            const band = sewerBandAt(vx, vz, rec.top, 1);
+            if (band) rec.sewerHi = band.hi;
             if (this._colCache.size > 80000) {
                 let count = 0;
                 for (const k of this._colCache.keys()) {
@@ -1438,34 +1704,206 @@
             return this.column(vx, vz);
         }
 
-        // The 3D world is solid terrain without 3D subterranean cave tunnels/cavities.
-        // Descending underground transfers to the 2D procedural underground map.
+        // The ground, once the caves have had their way with it. Everywhere but
+        // a shaft this is the generated surface; where a shaft comes up it is
+        // the lip of the hole, so the mouth of a cave reads as a pit somebody
+        // could fall into rather than as a lid drawn over one.
         caveTopY(vx, vz) {
-            return this.genTopY(vx, vz);
+            const gen = this.genTopY(vx, vz);
+            // This is the hottest question in the whole field - the mesher asks
+            // it for every column of every chunk, and so does every ray and
+            // every footfall - so it must not pay for the caves. Only a SHAFT
+            // ever breaks the surface, and a shaft is one spot in a world square
+            // that most often has none: the square is asked first, and all but a
+            // handful of columns in the world stop here for the cost of a hash.
+            const wx = Math.floor(vx / VOX.PER_TILE), wy = Math.floor(vz / VOX.PER_TILE);
+            const oneIn = gen >= 26 ? SHAFT_ONE_IN_MTN : SHAFT_ONE_IN;
+            if (sqHash(wx, wy, 1) >= 1 / oneIn) return gen;
+            const sx = wx * VOX.PER_TILE + Math.floor(sqHash(wx, wy, 2) * VOX.PER_TILE);
+            const sz = wy * VOX.PER_TILE + Math.floor(sqHash(wx, wy, 3) * VOX.PER_TILE);
+            const reach = SHAFT_RADIUS + SHAFT_FLARE;
+            if (Math.abs(vx - sx) > reach || Math.abs(vz - sz) > reach) return gen;
+
+            const c = this.columnCaves(vx, vz);
+            if (!c || !c.shaftR || c.shaftTop < gen - 1) return gen;
+            let y = gen;
+            while (y > VOX.MIN_Y + 1 && this.caveAt(vx, y - 1, vz)) y--;
+            return y;
         }
 
         // ---------------------------------------------------------------------
         // Caves
         // ---------------------------------------------------------------------
+        // What this column has under it, worked out once and remembered:
+        //
+        //   runs    [{ lo, hi }]  every passage through it, in voxels
+        //   lo/hi                 the whole carved extent, passages and room
+        //   shaft   0 | radius    the shaft down through it, if there is one
+        //   sewer   null | {lo,hi} the brick gallery, where a town stands over it
+        //
+        // Null where nothing is carved at all, which is most of the world.
+        // Everything else about the caves - whether a cube is air, what a
+        // chunk has to draw, where a walker's feet land - is answered off this.
         columnCaves(vx, vz) {
-            return null;
+            const key = (vx + 65536) * 131072 + (vz + 65536);
+            const hit = this._caveCache.get(key);
+            if (hit !== undefined) return hit;
+            const out = this._genColumnCaves(vx, vz);
+            if (this._caveCache.size > 200000) this._caveCache.clear();
+            this._caveCache.set(key, out);
+            return out;
         }
 
         _genColumnCaves(vx, vz) {
-            return null;
+            // Rock is only ever taken from between the roof and the floor. The
+            // roof is measured against this column AND its four neighbours, so
+            // a passage can never break out through the side of a cliff: the
+            // ground there is drawn as one solid face, and a hole behind it
+            // would be a hole in the world.
+            const own  = this.genTopY(vx, vz);
+            const ceil = Math.min(own,
+                this.genTopY(vx - 1, vz), this.genTopY(vx + 1, vz),
+                this.genTopY(vx, vz - 1), this.genTopY(vx, vz + 1)) - CAVE_ROOF;
+            const floor = VOX.MIN_Y + CAVE_FLOOR_CLEAR;
+
+            const runs = [];
+            const push = (a, b, hardCeil) => {
+                const lo = Math.max(floor, Math.ceil(a));
+                const hi = Math.min(hardCeil === undefined ? ceil : hardCeil, Math.floor(b));
+                if (hi >= lo) runs.push({ lo, hi });
+            };
+
+            // The sewer first: it is a built gallery at its own fixed level and
+            // it does not answer to the natural roof clearance the way a cave
+            // passage does - it is meant to be a pick's depth under a street.
+            const sewer = sewerBandAt(vx, vz, own);
+            if (sewer) {
+                push(sewer.lo, sewer.hi, sewer.hi);
+                // ...and the manhole up to the road, where there is one. It
+                // stops one cube short of the surface: that last cube is the
+                // iron cover (see genMaterial), and breaking it is the way in.
+                if (manholeAt(vx, vz) && own - 2 > sewer.hi) {
+                    push(sewer.hi + 1, own - 2, own - 2);
+                }
+            }
+
+            if (ceil > floor) {
+                for (const L of CAVE_LAYERS) {
+                    // A layer that follows the ground is only there where there IS
+                    // ground to wind through: that is what keeps the mountain
+                    // passages inside the mountains.
+                    if (L.minTop !== undefined && own < L.minTop) continue;
+                    const m = _perlin(vx * L.f + L.sx, vz * L.f + L.sz);
+                    const a = Math.abs(m);
+                    if (a >= L.th) continue;
+                    // How far inside the band this column is: 1 along the middle of
+                    // the passage, 0 at its edge. The square root spreads the wide
+                    // part out, so a tunnel reads as a tunnel and not as a wedge.
+                    const t = Math.sqrt(1 - a / L.th);
+                    const r = L.rad * t;
+                    if (r < 0.6) continue;
+                    const wind = _perlin(vx * L.yf + L.sx + 17.3, vz * L.yf + L.sz - 5.1) * 2;
+                    const cy = (L.depth !== undefined ? own - L.depth : L.y) + L.amp * wind;
+                    push(cy - r, cy + r);
+                }
+
+                // The rooms. Broad and slow, so one covers a good many columns and
+                // the passages that cross it simply open out into it.
+                const c = _perlin(vx * CAVERN_F + 313.7, vz * CAVERN_F - 77.3);
+                if (c > CAVERN_TH) {
+                    const t = Math.min(1, (c - CAVERN_TH) / (0.62 - CAVERN_TH));
+                    const r = 2 + (CAVERN_RAD - 2) * t;
+                    const wind = _perlin(vx * CAVERN_F * 1.7 - 41.1, vz * CAVERN_F * 1.7 + 9.4);
+                    push(CAVERN_Y + wind * 6 - r, CAVERN_Y + wind * 6 + r);
+                }
+            }
+
+            // The way down. Its square decides whether there is one and where
+            // it stands; a mountain square carries one far more often, which is
+            // why a mountainside is where caves are found.
+            let shaft = 0;
+            const wx = Math.floor(vx / VOX.PER_TILE), wy = Math.floor(vz / VOX.PER_TILE);
+            const oneIn = own >= 26 ? SHAFT_ONE_IN_MTN : SHAFT_ONE_IN;
+            if (sqHash(wx, wy, 1) < 1 / oneIn) {
+                const sx = wx * VOX.PER_TILE + Math.floor(sqHash(wx, wy, 2) * VOX.PER_TILE);
+                const sz = wy * VOX.PER_TILE + Math.floor(sqHash(wx, wy, 3) * VOX.PER_TILE);
+                const d = Math.hypot(vx - sx, vz - sz);
+                if (d < SHAFT_RADIUS + SHAFT_FLARE) shaft = d;
+            }
+
+            if (!runs.length) return null;
+
+            let lo = Infinity, hi = -Infinity;
+            for (const r of runs) { if (r.lo < lo) lo = r.lo; if (r.hi > hi) hi = r.hi; }
+
+            // A shaft is only worth sinking where it reaches something. It is
+            // taken from the surface down to the top of whatever this column
+            // already has under it, so it always comes out somewhere.
+            let shaftTop = 0, shaftBot = 0, shaftR = 0;
+            if (shaft) {
+                shaftR = SHAFT_RADIUS;
+                shaftTop = own - 1;
+                shaftBot = hi;
+                if (shaftBot < shaftTop) {
+                    lo = Math.min(lo, shaftBot);
+                    hi = Math.max(hi, shaftTop);
+                } else {
+                    shaftR = 0;
+                }
+            }
+
+            return { runs, lo, hi, shaftR, shaftD: shaft, shaftTop, shaftBot, ceil, sewer };
         }
 
+        // Is a WORLD-unit point inside a sewer gallery rather than a natural
+        // passage? What lives down there answers to this (VoxelWorldEntities):
+        // a brick tunnel under a town holds different things from a limestone
+        // one under a wood.
+        sewerAt(x, z, y) {
+            const S = VOX.SIZE;
+            const c = this.columnCaves(Math.floor(x / S), Math.floor(z / S));
+            if (!c || !c.sewer) return false;
+            const vy = Math.floor(y / S);
+            return vy >= c.sewer.lo - 1 && vy <= c.sewer.hi + 1;
+        }
+
+        // Is this cube carved out by the caves? A handful of comparisons
+        // against the column's own remembered answer.
         caveAt(vx, vy, vz) {
+            if (vy <= VOX.MIN_Y || vy > VOX.MAX_Y) return false;
+            const c = this.columnCaves(vx, vz);
+            if (!c || vy < c.lo || vy > c.hi) return false;
+            for (const r of c.runs) if (vy >= r.lo && vy <= r.hi) return true;
+            // Inside the shaft's throat. It flares open at the top, so its
+            // mouth reads as a sinkhole rather than as a drilled hole.
+            if (c.shaftR && vy >= c.shaftBot && vy <= c.shaftTop) {
+                const up = (vy - c.shaftBot) / Math.max(1, c.shaftTop - c.shaftBot);
+                const rad = c.shaftR + SHAFT_FLARE * up * up;
+                if (c.shaftD < rad) return true;
+            }
             return false;
         }
 
+        // The whole carved extent of a column, for the mesher: it draws the
+        // cave faces over exactly this span and nothing else. Null where there
+        // is nothing to draw.
         caveSpan(vx, vz) {
-            return null;
+            const c = this.columnCaves(vx, vz);
+            return c ? { lo: c.lo, hi: c.hi } : null;
         }
 
+        // The bands of a column a mesher actually has to walk: each passage
+        // with a cube of margin round it, and the shaft if there is one. Walking
+        // these rather than the whole carved extent is most of what makes the
+        // caves cheap enough to draw - a column that carries two passages forty
+        // voxels apart costs the two passages, not the forty voxels.
         caveBands(vx, vz, out) {
+            const c = this.columnCaves(vx, vz);
             const bands = out || [];
             bands.length = 0;
+            if (!c) return bands;
+            for (const r of c.runs) bands.push(r.lo - 1, r.hi + 1);
+            if (c.shaftR) bands.push(c.shaftBot - 1, c.shaftTop + 1);
             return bands;
         }
 
@@ -1480,9 +1918,13 @@
         isSolid(vx, vy, vz) {
             if (vy <= VOX.MIN_Y) return true;
             if (vy > VOX.MAX_Y)  return false;
+            // What anybody has done to this cube outranks what was generated
+            // there, caves included: a passage can be filled back in, and rock
+            // put back into one stays put.
             const e = this.editAt(vx, vy, vz);
             if (e !== undefined) return e !== MAT.AIR;
-            return vy < this.genTopY(vx, vz);
+            if (vy >= this.genTopY(vx, vz)) return false;
+            return !this.caveAt(vx, vy, vz);
         }
 
         // What a cube is made of. AIR when there is nothing there.
@@ -1492,6 +1934,7 @@
             if (e !== undefined) return e;
             const c = this.genColumn(vx, vz, colOut);
             if (vy >= c.top) return MAT.AIR;
+            if (this.caveAt(vx, vy, vz)) return MAT.AIR;
             return this.genMaterial(c, vx, vy, vz);
         }
 
@@ -1519,6 +1962,23 @@
             }
             const depth = col.top - 1 - vy;
             const p = col.prof || TERRAIN.plain;
+            // The lining of a sewer gallery. Only the shell of one is brick -
+            // the cube either side of the void and the cube over and under it -
+            // so what a pick breaks into from the street is a built tunnel and
+            // not a hole in the clay. Gated on the column's own flag, which is
+            // false everywhere but a town, so the rest of the world pays one
+            // comparison for it.
+            if (col.sewerHi !== 0) {
+                // The cover in the road: the last cube of a manhole shaft,
+                // which is what is left standing between the street and the
+                // drop. Iron, so it reads as a lid rather than as a patch of
+                // road, and one swing to take out.
+                if (vy === col.top - 1 && manholeAt(vx, vz)) return MAT.IRON;
+                if (vy >= col.sewerHi - SEWER_H - 1 && vy <= col.sewerHi + 1 &&
+                    sewerGalleryAt(vx, vz) <= SEWER_HALF + 1) {
+                    return MAT.BRICK;
+                }
+            }
             const isMountain = p && (p.massif || p.bed === MAT.GRANITE || (p.ridge && p.ridge >= 30));
             if (depth <= 0) {
                 if (isMountain && col.mat === MAT.ROCK) {
@@ -2567,6 +3027,7 @@
         VOX, MAT, MATERIALS, PLACEABLE, ORE_ITEMS, ORES,
         VoxelEdits, VoxelField, VoxelMesher, MeshBuffer,
         TERRAIN, profileFor, islandRiseAt, riverPathAt, riverAt, shapeAt,
+        oceanIslandOf, oceanIslandAt, OCEAN_ISLE_MAX_R,
         clearTerrainCaches, SEA_LEVEL, GROUND_BASE,
         voxelMaterial, voxelGrassMaterial, voxelWaterMaterial, disposeVoxelMaterial,
         voxelBlockMaterial, hotAt, oreAt, bedMat,

@@ -35,20 +35,6 @@
     ]
   },
   "unknownMap": "UNKNOWN MAP",
-  "healthProtection": {
-    "messages": [
-      "{actor} NARROWLY AVOIDED DEATH!",
-      "{actor} WAZ SAVED BY DIVINE INTERVENTION!",
-      "{actor} CLUNG TA LIFE WIT DETERMINATION!",
-      "{actor} REFUSED TA GIVE UP!",
-      "{actor} SURVIVED THROUGH SHEER WILLPOWER!",
-      "{actor} WAZ PROTECTED BY FATE!"
-    ],
-    "reset": "HEALTH PROTECTION RESET FOR ALL ACTORS!",
-    "available": "AVAILABLE",
-    "used": "USED",
-    "status": "{actor}: PROTECTION {status}"
-  },
   "popup": {
     "miss": "MISS",
     "evaded": "EVADED"

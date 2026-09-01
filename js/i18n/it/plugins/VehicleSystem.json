@@ -5,7 +5,8 @@
     "Bike": "Moto",
     "Boat": "Gommone",
     "Starship": "Astronave",
-    "Broom": "Scopa volante"
+    "Broom": "Scopa volante",
+    "Mount": "Cavalcatura"
   },
   "genericVehicle": "veicolo",
   "noGasPump": "Non c'è nessuna pompa di benzina qui vicino",

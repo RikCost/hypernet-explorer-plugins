@@ -432,15 +432,17 @@
     this._images = [];
     this._bitmaps = [];
 
-    const formatName = (name) => {
-      let n = name.replace(/[\$!]/g, '')
-        .replace(/([a-z0-9])([A-Z])/g, '$1 $2');
-      const words = n.split(' ');
-      if (words.length >= 2) {
-        words.shift();
-      }
-      return words.join(' ');
-    };
+    // The file name, normalized: the "$"/"!" markers dropped and CamelCase
+    // split into words. It used to drop the first word as well, so half the
+    // folder was listed under the tail of its own name ("Acid Ooze" as
+    // "Ooze"), and sheets that share a tail were indistinguishable.
+    const formatName = (name) =>
+      name.replace(/[\$!]/g, '')
+        .replace(/_/g, ' ')
+        .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+        .replace(/\s+/g, ' ')
+        .trim();
 
     const entries = [];
 

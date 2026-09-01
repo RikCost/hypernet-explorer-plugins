@@ -86,9 +86,9 @@ function armyIconHTML(iconIndex, size = 18) {
     `background-position:-${x}px -${y}px"></span>`;
 }
 
-function armyRoleIconHTML(role) {
+function armyRoleIconHTML(role, size = 18) {
   const tail = armyKeyTail(role);
-  return armyIconHTML(ARMY_ROLE_ICONS[tail] || ARMY_ROLE_ICONS.closequarters);
+  return armyIconHTML(ARMY_ROLE_ICONS[tail] || ARMY_ROLE_ICONS.closequarters, size);
 }
 
 function armyRoleLabel(role) {
@@ -879,60 +879,49 @@ Scene_Army.prototype.refreshUIDOM = function () {
   if (coherence >= 80) coherenceColor = "var(--text-cost-ok)"; // high green
   else if (coherence >= 50) coherenceColor = "var(--accent-gold-2)"; // gold
 
-  // Command buttons list (Left Page)
+  // The two camp commands read as the backpack's category strip rather than as
+  // a stack of full width cards: the roster below them is what the page is for,
+  // and it now gets the height those cards were spending.
   const cmds = this.commandList();
-  let commandsHTML = "";
-  cmds.forEach((cmd, idx) => {
-    const isSelected = this._activeTab === 'commands' && idx === this._commandIndex;
-    commandsHTML += `
-      <div class="choice-card ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.clickCommand(${idx})">
-        ${cmd.label}
-      </div>
-    `;
-  });
+  const commandsHTML = `
+    <div class="backpack-tabs-row">${cmds.map((cmd, idx) => {
+      const isFocused = this._activeTab === 'commands' && idx === this._commandIndex ? 'selected' : '';
+      return `<div class="backpack-tab ${isFocused}" onclick="SceneManager._scene.clickCommand(${idx})">${cmd.label}</div>`;
+    }).join('')}</div>`;
 
-  // Faction breakdown list
-  let factionRows = "";
+  // Regimental breakdown, written as chips under the roster instead of as a
+  // table: two columns of headings were a band of chrome for one count each.
   const sortedBreakdown = Object.values(breakdown).sort((a, b) => b.count - a.count);
-  if (sortedBreakdown.length > 0) {
-    sortedBreakdown.forEach(f => {
-      factionRows += `
-            <tr>
-                <td>${f.name}</td>
-                <td class="army-02">${f.count}</td>
-            </tr>
-        `;
-    });
-  } else {
-    factionRows = `<tr><td class="army-03" colspan="2">${T('ArmyManager.noRegiments')}</td></tr>`;
-  }
+  const regimentChips = sortedBreakdown.length > 0
+    ? sortedBreakdown.map(f => `<span class="army-regiment-chip">${f.name}<b>${f.count}</b></span>`).join('')
+    : `<span class="army-regiment-empty">${T('ArmyManager.noRegiments')}</span>`;
 
-  // Troops Roster (Right Page)
+  // The roster, drawn the way the backpack draws its pockets: one compact slot
+  // per troop, a stripe down the left of it and the weekly upkeep on the right.
   let rosterHTML = "";
   if (troops.length > 0) {
     troops.forEach((troop, idx) => {
       const isSelected = this._activeTab === 'troops' && idx === this._troopIndex;
       const name = armyT(troop.name);
       const euros = (troop.weeklyCost / 100).toFixed(2);
-
-      const roleIcon = armyRoleIconHTML(troop.role);
-
+      const faction = $gameFactions ? $gameFactions.getFaction(troop.factionId) : null;
+      const factionName = faction ? armyT(faction.name) : T('ArmyManager.independent');
       rosterHTML += `
-            <div class="choice-card ${isSelected ? 'selected' : ''} army-04" onclick="SceneManager._scene.clickTroop(${idx})">
-                <span class="role-badge">${roleIcon} ${name}</span>
-                <span class="army-05">€${euros}/w</span>
-            </div>
-        `;
+        <div class="item-slot item-slot--compact ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.clickTroop(${idx})">
+          <div class="item-rarity-bar army-role-bar"></div>
+          <div class="item-slot-icon">${armyRoleIconHTML(troop.role)}</div>
+          <div class="item-slot-info">
+            <div class="item-slot-name">${name}</div>
+            <div class="army-slot-sub">${factionName} &middot; ${armyRoleLabel(troop.role)}</div>
+          </div>
+          <span class="item-slot-count">&euro;${euros}${T('ArmyManager.perWeekShort')}</span>
+        </div>`;
     });
   } else {
-    rosterHTML = `
-        <div class="army-06">
-            ${T('ArmyManager.emptyArmy')}
-        </div>
-    `;
+    rosterHTML = `<div class="item-grid-empty">${T('ArmyManager.emptyArmy')}</div>`;
   }
 
-  // Selected troop dossier
+  // ---- Right page: the dossier, built as the backpack's inspect card ----
   let dossierHTML = "";
   if (this._activeTab === 'troops' && troops[this._troopIndex]) {
     const baseTroop = troops[this._troopIndex];
@@ -959,48 +948,45 @@ Scene_Army.prototype.refreshUIDOM = function () {
       { label: getStatLabel("LUK"), base: baseTroop.luk, val: troop.luk }
     ];
 
-    let statsGrid = "";
-    stats.forEach(st => {
+    const statsGrid = stats.map(st => {
       const bonus = st.val - st.base;
       const bonusSpan = bonus > 0 ? `<span class="stat-bonus">(+${bonus})</span>` : "";
-      statsGrid += `
-            <div class="army-08">
-                <span class="army-09">${st.label}:</span>
-                <span class="army-10">${st.val} ${bonusSpan}</span>
-            </div>
-        `;
-    });
+      return `
+        <div class="inspect-spec-row">
+          <span class="inspect-spec-label">${st.label}:</span>
+          <span class="inspect-spec-value">${st.val} ${bonusSpan}</span>
+        </div>`;
+    }).join('');
 
     dossierHTML = `
-        <div class="army-card army-11">
-            <h3 class="army-12">
-                ${name}
-            </h3>
-            <div class="army-13">
-                ${T('ArmyManager.regimentLabel')} ${factionName} &middot; ${roleLabel}
-            </div>
-
-            ${leaderText}
-
-            <div class="army-14">
-                ${statsGrid}
-            </div>
-            
-            <div class="army-15">
-                <span>${T('ArmyManager.hiringBounty')} <strong>€${(troop.hiringCost / 100).toFixed(2)}</strong></span>
-                <span>${T('ArmyManager.upkeep')} <strong>€${(troop.weeklyCost / 100).toFixed(2)}${T('ArmyManager.perWeekShort')}</strong></span>
-            </div>
-            <div class="army-16">
-                ${T('ArmyManager.pressOkToRelease')}
-            </div>
+      <div class="item-inspect">
+        <div class="inspect-header">
+          <div class="inspect-frame">${armyRoleIconHTML(troop.role, 32)}</div>
+          <div class="inspect-title-box">
+            <h3 class="inspect-name">${name}</h3>
+            <div class="inspect-rarity">${T('ArmyManager.regimentLabel')} ${factionName} &middot; ${roleLabel}</div>
+          </div>
         </div>
-    `;
+        <div class="inspect-meta-grid">
+          <div class="inspect-meta-item"><span>${T('ArmyManager.hiringBounty')}</span><span class="inspect-meta-val">&euro;${(troop.hiringCost / 100).toFixed(2)}</span></div>
+          <div class="inspect-meta-item"><span>${T('ArmyManager.upkeep')}</span><span class="inspect-meta-val">&euro;${(troop.weeklyCost / 100).toFixed(2)}${T('ArmyManager.perWeekShort')}</span></div>
+        </div>
+        ${leaderText}
+        <div class="inspect-lore">
+          <div class="inspect-section-title">${T('ArmyManager.combatStatistics')}</div>
+          <div class="army-14">${statsGrid}</div>
+        </div>
+        <div class="inspect-actions">
+          <div class="inspect-btn inspect-btn--danger" onclick="SceneManager._scene.promptReleaseTroop(${this._troopIndex})">${T('ArmyManager.release')}</div>
+        </div>
+      </div>`;
   } else {
     dossierHTML = `
-        <div class="prophecy-pane army-17">
-            ${T('ArmyManager.dossierHint')}
-        </div>
-    `;
+      <div class="item-inspect item-inspect--empty army-inspect-empty">
+        <div class="inspect-placeholder-icon"></div>
+        <h3 class="title">${T('ArmyManager.companyDossier')}</h3>
+        <p class="inspect-placeholder-text">${T('ArmyManager.dossierHint')}</p>
+      </div>`;
   }
 
   // Cursive parchment confirmation box overlay
@@ -1023,52 +1009,38 @@ Scene_Army.prototype.refreshUIDOM = function () {
 
   this._dndContainer.innerHTML = `
     <div class="book-spread">
-        <!-- Left Page: Overview & Commands -->
-        <div class="left-page army-18">
-            <div>
-                <div class="page-header-bar">
-                    <div class="back-button focusable" onclick="SceneManager._scene.leaveCamp()">${T('ArmyManager.back')}</div>
-                    <h2 class="title">${T('ArmyManager.armyOverview')}</h2>
-                </div>
+        <!-- Left page: the company and its roster -->
+        <div class="left-page army-left">
+            <div class="page-header-bar">
+                <div class="back-button focusable" onclick="SceneManager._scene.leaveCamp()">${T('ArmyManager.back')}</div>
+                <h2 class="title">${T('ArmyManager.armyOverview')}</h2>
+            </div>
 
-                <div class="vitals-box army-19">
-                    <div class="army-20">
-                        <span>${T('ArmyManager.companyStrength')}</span>
-                        <span class="army-21">${T('ArmyManager.troopsOf', { count: troopCount, max: maxTroops })}</span>
-                    </div>
-                    <div class="army-20">
-                        <span>${T('ArmyManager.weeklyBaseUpkeep')}</span>
-                        <span class="army-22">€${weeklyEuros}</span>
-                    </div>
-                    <div class="army-23">
-                        <span>${T('ArmyManager.militaryCoherence')}</span>
-                        <span style="color:${coherenceColor}">${coherence}%</span>
-                    </div>
-                    <div class="coherence-bar-outer">
-                        <div class="coherence-bar-fill" style="width:${coherence}%; background:${coherenceColor}"></div>
-                    </div>
+            <div class="vitals-box army-19">
+                <div class="army-20">
+                    <span>${T('ArmyManager.companyStrength')}</span>
+                    <span class="army-21">${T('ArmyManager.troopsOf', { count: troopCount, max: maxTroops })}</span>
                 </div>
+                <div class="army-20">
+                    <span>${T('ArmyManager.weeklyBaseUpkeep')}</span>
+                    <span class="army-22">&euro;${weeklyEuros}</span>
+                </div>
+                <div class="army-23">
+                    <span>${T('ArmyManager.militaryCoherence')}</span>
+                    <span style="color:${coherenceColor}">${coherence}%</span>
+                </div>
+                <div class="coherence-bar-outer">
+                    <div class="coherence-bar-fill" style="width:${coherence}%; background:${coherenceColor}"></div>
+                </div>
+            </div>
 
-                <div class="choices-scroll army-24">
-                    ${commandsHTML}
-                </div>
+            <div class="backpack-tabs">${commandsHTML}</div>
 
-                <div class="army-card army-25">
-                    <h4 class="army-26">
-                        ${T('ArmyManager.regimentalBreakdown')}
-                    </h4>
-                    <table class="army-table">
-                        <thead>
-                            <tr>
-                                <th>${T('ArmyManager.factionRegiment')}</th>
-                                <th class="army-27">${T('ArmyManager.troops')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${factionRows}
-                        </tbody>
-                    </table>
-                </div>
+            <div class="army-roster">${rosterHTML}</div>
+
+            <div class="army-regiments">
+                <div class="army-regiments-title">${T('ArmyManager.regimentalBreakdown')}</div>
+                <div class="army-regiments-chips">${regimentChips}</div>
             </div>
 
             <div class="army-28">
@@ -1076,16 +1048,9 @@ Scene_Army.prototype.refreshUIDOM = function () {
             </div>
         </div>
 
-        <!-- Right Page: Roster & Dossier -->
-        <div class="right-page army-29">
-            <div>
-                
-                <div class="choices-scroll army-30">
-                    ${rosterHTML}
-                </div>
-
-                ${dossierHTML}
-            </div>
+        <!-- Right page: the dossier of the troop under the cursor -->
+        <div class="right-page army-right">
+            ${dossierHTML}
         </div>
     </div>
     ${confirmDialogHTML}

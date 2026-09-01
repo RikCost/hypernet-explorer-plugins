@@ -9,6 +9,11 @@
  * their event commands. It will replace their graphic with 
  * img/characters/Objects/info.png and play the 16-frame animation.
  *
+ * The animation is not limited to those events: ANY character wearing that
+ * sheet is drawn with it, whoever dressed it. The moored Starship uses this
+ * (Vehicle/VehicleSystem.js): off the world map it is a mark on the ground
+ * rather than a picture of the hull.
+ *
  * The sprite sheet is expected to be 864x54 (16 frames of 54x54).
  */
 
@@ -18,6 +23,12 @@
     const TOTAL_FRAMES = 16;
     const FRAME_WIDTH = 54;
     const FRAME_HEIGHT = 54;
+    const FRAME_HOLD = 4; // game frames each frame of the animation is held for
+
+    /** The frame the game is on, or 0 before Graphics is up (tests, boot). */
+    function FRAME_COUNT() {
+        return (typeof Graphics !== "undefined" && Graphics.frameCount) || 0;
+    }
 
     // --- Data Management ---
 
@@ -62,15 +73,21 @@
         this._isInfoIcon = true;
     };
 
-    Game_Event.prototype.isInfoIcon = function() {
-        return !!this._isInfoIcon;
+    // Anything wearing the info sheet is animated as the info icon, not only the
+    // events this plugin dresses itself: the moored Starship is put into it by
+    // Vehicle/VehicleSystem.js and never passes through checkInfoComment.
+    Game_CharacterBase.prototype.isInfoIcon = function() {
+        if (this._isInfoIcon) return true;
+        return typeof this.characterName === "function" &&
+            this.characterName() === INFO_SPRITE_PATH;
     };
 
     // --- Sprite Handling ---
 
     const _Sprite_Character_updateCharacterFrame = Sprite_Character.prototype.updateCharacterFrame;
     Sprite_Character.prototype.updateCharacterFrame = function() {
-        if (this._character instanceof Game_Event && this._character.isInfoIcon()) {
+        if (this._character && typeof this._character.isInfoIcon === "function" &&
+                this._character.isInfoIcon()) {
             this.updateInfoFrame();
         } else {
             _Sprite_Character_updateCharacterFrame.call(this);
@@ -86,22 +103,12 @@
     };
 
     Sprite_Character.prototype.infoCharacterPatternX = function() {
-        // We use a fixed speed for the info icon animation (e.g., 4 frames per animation frame)
-        // This makes it independent of move speed and standard pattern resets
-        if (!this._character._infoAnimationCount) this._character._infoAnimationCount = 0;
-        const count = this._character._infoAnimationCount;
-        const pattern = Math.floor(count / 4) % TOTAL_FRAMES;
-        return pattern;
-    };
-
-    // Ensure animation count ticks even if not moving or stepping
-    const _Game_Event_update = Game_Event.prototype.update;
-    Game_Event.prototype.update = function() {
-        _Game_Event_update.call(this);
-        if (this.isInfoIcon()) {
-            if (!this._infoAnimationCount) this._infoAnimationCount = 0;
-            this._infoAnimationCount++;
-        }
+        // A fixed speed, four game frames to a frame of the animation, read off
+        // the clock the whole game runs on rather than off a counter kept per
+        // character: it turns whether or not the thing wearing it moves, steps
+        // or is even a character the plugin dressed, and two icons on the same
+        // map turn together.
+        return Math.floor(FRAME_COUNT() / FRAME_HOLD) % TOTAL_FRAMES;
     };
 
 

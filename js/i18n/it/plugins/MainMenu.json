@@ -201,7 +201,10 @@
     "trainStop": "Interrompi",
     "traitSentient": "Senziente",
     "traitMagical": "Magico",
-    "traitGeneticFreak": "Mutante Genetico"
+    "traitGeneticFreak": "Mutante Genetico",
+    "ride": "Cavalca",
+    "dismount": "Scendi",
+    "mounted": "Cavalcato"
   },
   "vehicles": {
     "spawn": "Evoca",

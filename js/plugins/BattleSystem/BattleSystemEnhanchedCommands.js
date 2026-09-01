@@ -163,32 +163,6 @@
   //=============================================================================
 
   Window_ActorCommand.prototype.makeCommandList = function () {
-    // Target selection mode (Enemy / Ally) takes over the whole menu
-    if (this._targetSession) {
-      if (this._targetSession.mode === 'enemy') {
-        const enemies = this._targetSession.enemies || ($gameTroop ? $gameTroop.aliveMembers() : []);
-        enemies.forEach((enemy, i) => {
-          const rawName = enemy.name();
-          const name = (typeof translateText === 'function') ? translateText(rawName) : rawName;
-          const hpText = `${Math.floor(enemy.hp)}/${Math.floor(enemy.mhp)} ${TextManager.hpA}`;
-          this.addCommandWithIcon(name, "enemyRow", enemy.isAlive(), { kind: 'enemy', index: i, enemy }, 97, false, COMMAND_COLORS.enemyRow, hpText);
-        });
-        return;
-      }
-      if (this._targetSession.mode === 'ally') {
-        const members = this._targetSession.members || ($gameParty ? $gameParty.battleMembers() : []);
-        members.forEach((member, i) => {
-          const rawName = member.name();
-          const name = (typeof translateText === 'function') ? translateText(rawName) : rawName;
-          const hpText = `${Math.floor(member.hp)}/${Math.floor(member.mhp)} ${TextManager.hpA}`;
-          this.addCommandWithIcon(name, "allyRow", true, { kind: 'ally', index: i, member }, 73, !member.isAlive(), COMMAND_COLORS.allyRow, hpText);
-        });
-        return;
-      }
-    }
-
-    if (!this._actor) return;
-
     // Wrestling (Health_Monsters.js) takes this menu over whole while a grapple
     // is being planned: its limbs and holds REPLACE the actor's commands rather
     // than crowd in beside them, because while a hold is being chosen there is
@@ -222,6 +196,32 @@
       return;
     }
 
+    // Target selection mode (Enemy / Ally) takes over the whole menu
+    if (this._targetSession) {
+      if (this._targetSession.mode === 'enemy') {
+        const enemies = this._targetSession.enemies || ($gameTroop ? $gameTroop.aliveMembers() : []);
+        enemies.forEach((enemy, i) => {
+          const rawName = enemy.name();
+          const name = (typeof translateText === 'function') ? translateText(rawName) : rawName;
+          const hpText = `${Math.floor(enemy.hp)}/${Math.floor(enemy.mhp)} ${TextManager.hpA}`;
+          this.addCommandWithIcon(name, "enemyRow", enemy.isAlive(), { kind: 'enemy', index: i, enemy }, 97, false, COMMAND_COLORS.enemyRow, hpText);
+        });
+        return;
+      }
+      if (this._targetSession.mode === 'ally') {
+        const members = this._targetSession.members || ($gameParty ? $gameParty.battleMembers() : []);
+        members.forEach((member, i) => {
+          const rawName = member.name();
+          const name = (typeof translateText === 'function') ? translateText(rawName) : rawName;
+          const hpText = `${Math.floor(member.hp)}/${Math.floor(member.mhp)} ${TextManager.hpA}`;
+          this.addCommandWithIcon(name, "allyRow", true, { kind: 'ally', index: i, member }, 73, !member.isAlive(), COMMAND_COLORS.allyRow, hpText);
+        });
+        return;
+      }
+    }
+
+    if (!this._actor) return;
+
     // Map Battle Mode (MapBattleMode.js): lets the acting battler reposition
     // on the map (range driven by DEX/agi) before choosing an action. Only
     // usable once per turn; MapBattleMode itself owns the enabled/used state.
@@ -245,26 +245,33 @@
       // The live projectile count rides on the Attack command itself.
       attackExt = { current: this._actor.getCurrentBullets(), max: bulletConfig.max };
     }
-    // Attack is ALWAYS enabled. It is the one action a battler can never be
-    // left without, and every gate that used to grey it out read as a bug at
-    // the counter: the attack skill's own cost (it is paid out of TP, so an
-    // actor opening a fight below it could not swing), an empty magazine, or
-    // Map Battle Mode's range check. None of those are legible from the button,
-    // so the swing is offered and whatever refuses it does so where the reason
-    // can be shown (the ammo counter on the command, the miss in the log).
-    this.addCommandWithIcon("", "attack", true, attackExt, attackIcon);
-
-    if (hasRanged) {
-      // Reload doubles as Defense for ranged actors: commandReload both recharges
-      // projectiles and guards. The bullet count now shows on Attack instead.
+    if (hasRanged && attackExt && attackExt.current === 0) {
+      // Out of ammo: Attack becomes Bash. Reload is placed first as the primary
+      // action, followed by Bash (the fallback melee strike).
       this.addCommandWithIcon("", "reload", true, null, 115);
+      this.addCommandWithIcon("", "attack", true, attackExt, attackIcon);
     } else {
-      const defenseSkill = $dataSkills[2];
-      const canDefend = defenseSkill && this._actor.canUse(defenseSkill);
-      // Use the equipped off-hand item's icon (etypeId 2) when present.
-      const offHand = this._actor.equips().find(e => e && e.etypeId === 2);
-      const defenseIcon = (offHand && offHand.iconIndex > 0) ? offHand.iconIndex : 81;
-      this.addCommandWithIcon("", "defense", canDefend, null, defenseIcon);
+      // Attack is ALWAYS enabled. It is the one action a battler can never be
+      // left without, and every gate that used to grey it out read as a bug at
+      // the counter: the attack skill's own cost (it is paid out of TP, so an
+      // actor opening a fight below it could not swing), an empty magazine, or
+      // Map Battle Mode's range check. None of those are legible from the button,
+      // so the swing is offered and whatever refuses it does so where the reason
+      // can be shown (the ammo counter on the command, the miss in the log).
+      this.addCommandWithIcon("", "attack", true, attackExt, attackIcon);
+
+      if (hasRanged) {
+        // Reload doubles as Defense for ranged actors: commandReload both recharges
+        // projectiles and guards. The bullet count now shows on Attack instead.
+        this.addCommandWithIcon("", "reload", true, null, 115);
+      } else {
+        const defenseSkill = $dataSkills[2];
+        const canDefend = defenseSkill && this._actor.canUse(defenseSkill);
+        // Use the equipped off-hand item's icon (etypeId 2) when present.
+        const offHand = this._actor.equips().find(e => e && e.etypeId === 2);
+        const defenseIcon = (offHand && offHand.iconIndex > 0) ? offHand.iconIndex : 81;
+        this.addCommandWithIcon("", "defense", canDefend, null, defenseIcon);
+      }
     }
 
     // A single Skills command holding every skill type at once (Magic, Skills,
@@ -505,9 +512,23 @@
     root.style.cssText =
       'position:fixed;display:none;z-index:350;pointer-events:none;' +
       'transform-origin:top left;';
+
+    // Right click anywhere on overlay cancels / backs out
+    root.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      TouchInput.clear();
+      if (this._targetSession && this._targetSession.activeWindow && this._targetSession.activeWindow.active) {
+        if (typeof this._targetSession.activeWindow.processCancel === 'function') {
+          this._targetSession.activeWindow.processCancel();
+        }
+      } else if (this.active && this.isCancelEnabled()) {
+        this.processCancel();
+      }
+    });
+
     document.body.appendChild(root);
     this._cmdHtmlRoot = root;
-
   };
 
   //=============================================================================
@@ -555,10 +576,21 @@
         e.stopPropagation();
       });
 
-      // Mouse click: select and confirm (processOk) on active targeting window or command window
+      // Mouse click: select and confirm (processOk) on active targeting window or command window, or right click to cancel
       item.addEventListener('pointerup', (e) => {
         e.stopPropagation();
         e.preventDefault();
+        if (e.button === 2) {
+          TouchInput.clear();
+          if (this._targetSession && this._targetSession.activeWindow && this._targetSession.activeWindow.active) {
+            if (typeof this._targetSession.activeWindow.processCancel === 'function') {
+              this._targetSession.activeWindow.processCancel();
+            }
+          } else if (this.active && this.isCancelEnabled()) {
+            this.processCancel();
+          }
+          return;
+        }
         if (e.button !== undefined && e.button !== 0) return;
         TouchInput.clear();
         if (this._targetSession && this._targetSession.activeWindow && this._targetSession.activeWindow.active) {
@@ -1004,8 +1036,33 @@
     TouchInput.clear();
   };
 
+  const _Window_ActorCommand_processCancel = Window_ActorCommand.prototype.processCancel;
+  Window_ActorCommand.prototype.processCancel = function () {
+    _Window_ActorCommand_processCancel.call(this);
+    TouchInput.clear();
+  };
+
+  Window_ActorCommand.prototype.isCancelTriggered = function () {
+    return (
+      Input.isRepeated("cancel") ||
+      Input.isTriggered("cancel") ||
+      Input.isTriggered("escape") ||
+      TouchInput.isCancelled()
+    );
+  };
+
   Window_ActorCommand.prototype.processTouch = function () {
-    // Disable standard canvas touch inputs to prevent conflict with custom HTML overlay events
+    if (this.isOpenAndActive()) {
+      if (TouchInput.isCancelled()) {
+        if (this.isCancelEnabled()) {
+          this.processCancel();
+        }
+      }
+    }
+  };
+
+  Scene_Battle.prototype.commandCancel = function () {
+    this.selectPreviousCommand();
   };
 
   //=============================================================================
@@ -1059,6 +1116,171 @@
     }
   };
 
+  Window_BattleEnemy.prototype.hitTestEnemyAt = function (mx, my) {
+    if (mx == null || my == null) return -1;
+    const enemies = this._enemies || ($gameTroop ? $gameTroop.aliveMembers() : []);
+    if (!enemies || enemies.length === 0) return -1;
+
+    const scene = SceneManager._scene;
+    const spriteset = scene && scene._spriteset;
+    const scene3d = spriteset ? spriteset._battle3DScene : null;
+
+    // 1. Raycast against 3D Models if 3D scene is present
+    if (
+      scene3d &&
+      scene3d.camera &&
+      typeof THREE !== "undefined" &&
+      typeof spriteset.get3DModel === "function" &&
+      (typeof scene3d.hasModels !== "function" || scene3d.hasModels())
+    ) {
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2(
+        (mx / Graphics.width) * 2 - 1,
+        -(my / Graphics.height) * 2 + 1
+      );
+      raycaster.setFromCamera(mouse, scene3d.camera);
+
+      let closestDist = Infinity;
+      let closestIndex = -1;
+
+      for (let i = 0; i < enemies.length; i++) {
+        const enemy = enemies[i];
+        if (!enemy || (enemy.isAlive && !enemy.isAlive())) continue;
+        const model = spriteset.get3DModel(enemy);
+        const root = model && model.model;
+        if (root && root.visible) {
+          const hits = raycaster.intersectObject(root, true);
+          if (hits.length > 0 && hits[0].distance < closestDist) {
+            closestDist = hits[0].distance;
+            closestIndex = i;
+          }
+        }
+      }
+
+      if (closestIndex >= 0) return closestIndex;
+    }
+
+    // 2. Projected 3D & 2D Screen Bounding Boxes
+    let bestDist = Infinity;
+    let bestIndex = -1;
+
+    for (let i = 0; i < enemies.length; i++) {
+      const enemy = enemies[i];
+      if (!enemy || (enemy.isAlive && !enemy.isAlive())) continue;
+
+      let rect = null;
+
+      // 3D model box projection
+      if (
+        scene3d &&
+        scene3d.camera &&
+        typeof THREE !== "undefined" &&
+        typeof spriteset.get3DModel === "function" &&
+        (typeof scene3d.hasModels !== "function" || scene3d.hasModels())
+      ) {
+        const model = spriteset.get3DModel(enemy);
+        const root = model && model.model;
+        if (root && root.visible) {
+          const box = new THREE.Box3().setFromObject(root);
+          if (!box.isEmpty()) {
+            const cam = scene3d.camera;
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            const corners = [
+              new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+              new THREE.Vector3(box.min.x, box.min.y, box.max.z),
+              new THREE.Vector3(box.min.x, box.max.y, box.min.z),
+              new THREE.Vector3(box.min.x, box.max.y, box.max.z),
+              new THREE.Vector3(box.max.x, box.min.y, box.min.z),
+              new THREE.Vector3(box.max.x, box.min.y, box.max.z),
+              new THREE.Vector3(box.max.x, box.max.y, box.min.z),
+              new THREE.Vector3(box.max.x, box.max.y, box.max.z),
+            ];
+            for (const c of corners) {
+              c.project(cam);
+              const px = (c.x * 0.5 + 0.5) * Graphics.width;
+              const py = (-c.y * 0.5 + 0.5) * Graphics.height;
+              if (px < minX) minX = px;
+              if (px > maxX) maxX = px;
+              if (py < minY) minY = py;
+              if (py > maxY) maxY = py;
+            }
+            rect = { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+          }
+        }
+      }
+
+      // 2D sprite box fallback
+      if (!rect && spriteset) {
+        const sprites = spriteset._enemySprites || [];
+        const sprite = sprites.find(s => s && s._battler === enemy);
+        if (sprite && sprite.visible !== false) {
+          const field = spriteset._battleField;
+          const fx = field ? field.x : 0;
+          const fy = field ? field.y : 0;
+          const w = sprite.width || (sprite.bitmap ? sprite.bitmap.width : 120);
+          const h = sprite.height || (sprite.bitmap ? sprite.bitmap.height : 120);
+          const x = sprite.x + fx - (sprite.anchor ? sprite.anchor.x * w : w / 2);
+          const y = sprite.y + fy - (sprite.anchor ? sprite.anchor.y * h : h);
+          rect = { x, y, width: w, height: h };
+        }
+      }
+
+      if (rect) {
+        const pad = 20;
+        if (
+          mx >= rect.x - pad &&
+          mx <= rect.x + rect.width + pad &&
+          my >= rect.y - pad &&
+          my <= rect.y + rect.height + pad
+        ) {
+          const centerX = rect.x + rect.width / 2;
+          const centerY = rect.y + rect.height / 2;
+          const dist = Math.hypot(mx - centerX, my - centerY);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestIndex = i;
+          }
+        }
+      }
+
+      // 3. Enemy HUD MiniBar in the top-right
+      if (scene && scene._minimalEnemyBars) {
+        const bar = scene._minimalEnemyBars.find(b => b && b._battler === enemy);
+        if (bar && bar.visible) {
+          const bw = bar.bitmap ? bar.bitmap.width : 220;
+          const bh = bar.bitmap ? bar.bitmap.height : 78;
+          if (mx >= bar.x && mx <= bar.x + bw && my >= bar.y && my <= bar.y + bh) {
+            return i;
+          }
+        }
+      }
+    }
+
+    return bestIndex;
+  };
+
+  Window_BattleEnemy.prototype.processTouch = function () {
+    if (this.isOpenAndActive()) {
+      if (TouchInput.isCancelled()) {
+        if (this.isCancelEnabled()) {
+          this.processCancel();
+        }
+        return;
+      }
+      const hitIndex = this.hitTestEnemyAt(TouchInput.x, TouchInput.y);
+      if (hitIndex >= 0) {
+        if (this.index() !== hitIndex) {
+          this.select(hitIndex);
+        }
+        if (TouchInput.isTriggered()) {
+          TouchInput.clear();
+          this.processOk();
+          return;
+        }
+      }
+    }
+  };
+
   const _Window_BattleEnemy_select = Window_BattleEnemy.prototype.select;
   Window_BattleEnemy.prototype.select = function (index) {
     _Window_BattleEnemy_select.call(this, index);
@@ -1084,6 +1306,74 @@
         }
         if (this.index() !== lastIndex) {
           this.playCursorSound();
+        }
+      }
+    }
+  };
+
+  Window_BattleActor.prototype.hitTestActorAt = function (mx, my) {
+    if (mx == null || my == null) return -1;
+    const members = $gameParty ? $gameParty.battleMembers() : [];
+    if (!members || members.length === 0) return -1;
+
+    const scene = SceneManager._scene;
+    const spriteset = scene && scene._spriteset;
+    const scene3d = spriteset ? spriteset._battle3DScene : null;
+
+    if (
+      scene3d &&
+      scene3d.camera &&
+      typeof THREE !== "undefined" &&
+      typeof spriteset.get3DModel === "function" &&
+      (typeof scene3d.hasModels !== "function" || scene3d.hasModels())
+    ) {
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2(
+        (mx / Graphics.width) * 2 - 1,
+        -(my / Graphics.height) * 2 + 1
+      );
+      raycaster.setFromCamera(mouse, scene3d.camera);
+
+      let closestDist = Infinity;
+      let closestIndex = -1;
+
+      for (let i = 0; i < members.length; i++) {
+        const member = members[i];
+        if (!member) continue;
+        const model = spriteset.get3DModel(member);
+        const root = model && model.model;
+        if (root && root.visible) {
+          const hits = raycaster.intersectObject(root, true);
+          if (hits.length > 0 && hits[0].distance < closestDist) {
+            closestDist = hits[0].distance;
+            closestIndex = i;
+          }
+        }
+      }
+
+      if (closestIndex >= 0) return closestIndex;
+    }
+
+    return -1;
+  };
+
+  Window_BattleActor.prototype.processTouch = function () {
+    if (this.isOpenAndActive()) {
+      if (TouchInput.isCancelled()) {
+        if (this.isCancelEnabled()) {
+          this.processCancel();
+        }
+        return;
+      }
+      const hitIndex = this.hitTestActorAt(TouchInput.x, TouchInput.y);
+      if (hitIndex >= 0) {
+        if (this.index() !== hitIndex) {
+          this.select(hitIndex);
+        }
+        if (TouchInput.isTriggered()) {
+          TouchInput.clear();
+          this.processOk();
+          return;
         }
       }
     }

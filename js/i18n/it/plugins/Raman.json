@@ -1,6 +1,11 @@
 {
   "unknownObject": "Oggetto sconosciuto",
   "unknown": "Sconosciuto",
+  "title": "◈ ANALIZZATORE DI SPETTROSCOPIA RAMAN  v2.4 ◈",
+  "identLine": "{name}  [{formula}]  CORRISPONDENZA: {confidence}%",
+  "readout": "ν {shift} cm⁻¹   I {intensity}%",
+  "rangeLine": "VISTA: {min} - {max} cm⁻¹",
+  "hintZoom": "Rotella / L2 R2 / A D per lo zoom   ·   passa su un punto per leggerlo",
   "targetLine": "BERSAGLIO: {target}   TIPO: {type}   LASER: 532nm CW",
   "axisX": "Spostamento Raman  (cm⁻¹)",
   "axisY": "Intensità",

@@ -357,6 +357,15 @@
     // =========================================================================
     const _perm = new Uint8Array(512);
 
+    // The one seed the 3D world is shaped by, and it never changes. Every
+    // height, every river, every cave and every island in VoxelWorld comes off
+    // this number, so a world square is the same piece of ground in every
+    // savegame and in every world folder: what a world's own seed decides is
+    // the BIOME MAP laid over that ground, not the ground itself. It also
+    // means a dig log (save/worlds/<name>/voxelworld.json) still describes the
+    // rock it was cut out of however it is loaded.
+    const VOXEL_WORLD_SEED = 19002001;
+
     function initPerlinWithSeed(seed) {
         const p = new Uint8Array(256);
         for (let i = 0; i < 256; i++) p[i] = i;
@@ -368,7 +377,7 @@
         }
         for (let i = 0; i < 512; i++) _perm[i] = p[i & 255];
     }
-    initPerlinWithSeed(19002001); // default; overridden at scene start
+    initPerlinWithSeed(VOXEL_WORLD_SEED);
 
     function _pFade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
     function _pLerp(t, a, b) { return a + t * (b - a); }
@@ -651,7 +660,9 @@
     // canopy thirty units across has a trunk you could put your arms round. A
     // rock is nearly all of its sprite. Ground cover stops nothing, because
     // walking through long grass is walking through long grass.
-    const PROP_RADIUS = { tree: 0.10, rock: 0.34, plant: 0, prop: 0.28 };
+    // A chest is solid, and a small one: it is a thing you stand at rather than
+    // walk over, and it is what tells the action prompt there is one there.
+    const PROP_RADIUS = { tree: 0.10, rock: 0.34, plant: 0, prop: 0.28, chest: 0.35 };
     // Under a metre and a half of it there is nothing to bump into either: a
     // pebble is scenery.
     const PROP_MIN_R  = 6;
@@ -726,7 +737,9 @@
     // of the screen. That bar is built at WORLD_UI_Z to begin with and needs no
     // lifting - see VoxelWorldHUD and ItemSystemHotbar's mapBarAllowed.)
     const WORLD_UI_IDS = [
-        'html-toast-stack'             // Core/ParchmentToast.js
+        'html-toast-stack',            // Core/ParchmentToast.js
+        'party-hud',                   // UI/PartyHud.js
+        'map-legend'                   // Map/MapLegend.js
     ];
     // Water. A walker wades until the bottom drops away from under them, and
     // swims from there: on the surface with their head out, or under it, where
@@ -1978,7 +1991,7 @@
         camperFuelConsume, camperFuelGet, camperFuelSet, camperMaxFuel,
         characterFacingRow, characterSheetLayout, characterSheetTexture, faceBillboards,
         dayFactorForHour, getBiomeOverride, getRenderType, getRoadDirectionAt,
-        initPerlinWithSeed, setBiomeOverride, setAlienTerrain, getAlienTerrain,
+        initPerlinWithSeed, VOXEL_WORLD_SEED, setBiomeOverride, setAlienTerrain, getAlienTerrain,
         isFarlandsTile, farlandsBiomeAt,
         isRoadTile, loadTex, noiseHeight, parseRoadDirection, pickRandomRoadTile,
         placeNameAt, roadDataReady, roadExitsFrom, roadLabelAt, roadLinksAt,

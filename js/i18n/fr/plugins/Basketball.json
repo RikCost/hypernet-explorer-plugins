@@ -2,10 +2,10 @@
   "noThree": "three.js n'est pas chargé, le basket est indisponible.",
   "player": "Joueur",
   "cpu": "Ordi",
-  "cpuLiningUp": "L'ordi se met en position...",
+  "cpuLiningUp": "{opponent} se met en position...",
   "itsGood": "C'EST DEDANS !",
   "swish": "SWISH !",
   "score": "PANIER !",
   "miss": "RATÉ",
-  "finalScore": "Joueur : {player}  Ordi : {cpu}"
+  "finalScore": "Joueur : {player}  {opponent} : {opponentScore}"
 }

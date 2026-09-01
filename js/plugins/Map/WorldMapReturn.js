@@ -2662,6 +2662,27 @@
 
         $gameVariables.setValue(VAR_DEST_MAP, destinationMapId);
 
+        // Leaving any map back to the WORLD MAP: remember exact return origin
+        if (currentMapId !== worldMapId && destinationMapId === worldMapId) {
+            let originX = this.x;
+            let originY = this.y;
+            if (currentMapId === procMapId && window.ProcStitch && typeof window.ProcStitch.local === 'function') {
+                const local = window.ProcStitch.local(this.x, this.y);
+                originX = local.x;
+                originY = local.y;
+            }
+            if ($gameTemp) {
+                $gameTemp._lastWorldMapReturnOrigin = {
+                    mapId: currentMapId,
+                    x: originX,
+                    y: originY,
+                    dir: this.direction(),
+                    worldX: this._newX,
+                    worldY: this._newY
+                };
+            }
+        }
+
         // Leaving world map: save position.
         // Skip when the vehicle has already been relocated to a different map
         // (camper fast travel: completeTravelCamper moves the ship before this fires,
@@ -3205,11 +3226,17 @@
         // hand-authored map. Its border keeps the old crossing, so it is never
         // part of a window, neither as a neighbour nor as a centre.
         //
+        // Only ABOVE ground, though: what the file names is a place standing on
+        // the surface, and nothing was ever authored under it. The layer below a
+        // town is generated for it exactly as it is for open country, so down
+        // there the square is an ordinary one and stitches like any other (see
+        // surfaceDestinationFor for the way back up out of it).
+        //
         // A planet's landing grid is planet-local and small, so its (gx, gy) can
         // coincidentally match a real Earth coordinate: none of Earth's markers
         // may be consulted for it (the same rule ProcGenSquare.resolve follows).
         const alien = procGen() && procGen().alienGrid;
-        if (!alien && getNonProceduralDestination(wx, wy, 0).exists) return false;
+        if (!alien && !depth && getNonProceduralDestination(wx, wy, 0).exists) return false;
         const api = ProcGenSquareApi();
         if (!api) return false;
         const resolved = api.resolve(wx, wy, { depth });
@@ -3267,8 +3294,9 @@
             if (!standing || standing.biomeName !== pg.currentBiome) return null;
         }
 
-        // A centre the old system owns takes no neighbours at all.
-        const centreIsAuthored = getNonProceduralDestination(cx, cy, 0).exists;
+        // A centre the old system owns takes no neighbours at all - and it only
+        // owns the SURFACE of it (see canStitch).
+        const centreIsAuthored = !depth && getNonProceduralDestination(cx, cy, 0).exists;
 
         const ok = {};
         for (let dy = -1; dy <= 1; dy++) {
@@ -4024,7 +4052,19 @@
         if (!cell) return null;
 
         const depth = stitchWindow.depth;
-        const guard = { x: cell.worldX, y: cell.worldY };
+        // The guard is about the square the PARTY is standing on, never about the
+        // one being asked about. Every edge tile in sight asks this question, and
+        // the ones on a neighbouring cell of the window are asking on behalf of a
+        // square with its own biome name: guarding those against _procGenData's
+        // currentBiome (which names the party's square) made the plan refuse a
+        // perfectly joinable neighbour the moment two cells of one window
+        // disagreed about their name - Fields beside Meadows, both on tileset
+        // 300. The whole side of the map was then drawn with crossing markers on
+        // it and walking off it cost a fade, for ground that was already there.
+        const party = stitchWindow.partyCell;
+        const guard = party
+            ? { x: party.worldX, y: party.worldY }
+            : { x: cell.worldX, y: cell.worldY };
         const win = planWindow(cell.worldX, cell.worldY, depth, guard, delta);
         if (!win) return null;
         // The neighbour is already on the map and the party still reached an
@@ -4463,6 +4503,9 @@
     const _orig_Player_moveStraight = Game_Player.prototype.moveStraight;
     Game_Player.prototype.moveStraight = function(d) {
         if ($gameMap.mapId() !== procMapId) {
+            if ($gameMap.mapId() === worldMapId && $gameTemp && $gameTemp._lastWorldMapReturnOrigin) {
+                $gameTemp._lastWorldMapReturnOrigin = null;
+            }
             // Hand-made maps declare their exits with <Worldmap>: walking off a
             // walkable edge is handled by checkBorderTeleport, pushing against a
             // fenced one here.
@@ -4522,6 +4565,14 @@
 
         console.log(`[WorldMapReturn-Edge] Border touched, starting fade out`);
         scheduleProcEdgeTransition(exitDirection, x, y, d);
+    };
+
+    const _orig_Player_moveDiagonally = Game_Player.prototype.moveDiagonally;
+    Game_Player.prototype.moveDiagonally = function(horz, vert) {
+        if ($gameMap.mapId() === worldMapId && $gameTemp && $gameTemp._lastWorldMapReturnOrigin) {
+            $gameTemp._lastWorldMapReturnOrigin = null;
+        }
+        _orig_Player_moveDiagonally.call(this, horz, vert);
     };
 
     // Leave a door/sandbox-generated dungeon when the player steps onto the border.
@@ -4627,8 +4678,17 @@
             const currentWorldY = $gameVariables.value(VAR_WORLD_Y);
             console.log(`[WorldMapReturn-Edge] World coords: (${currentWorldX},${currentWorldY}), exit dir: ${storedExitDir}`);
 
+            // A square WorkSystem/Destinations.json names hands the party to its
+            // hand-authored map - but only from the surface. Underground the
+            // named squares are generated like every other one, so their borders
+            // are ordinary borders and lead to the layer next door, never up
+            // into a town (see surfaceDestinationFor for the way back out).
+            const underground = !!(system._procGenData.biomeLayerStack || []).length;
+
             // Check non-procedural destination at current world coords
-            const nonProcCheck = getNonProceduralDestination(currentWorldX, currentWorldY, storedExitDir);
+            const nonProcCheck = underground
+                ? { exists: false, destination: null }
+                : getNonProceduralDestination(currentWorldX, currentWorldY, storedExitDir);
             if (nonProcCheck.exists && nonProcCheck.destination) {
                 const dest = nonProcCheck.destination;
                 console.log(`[WorldMapReturn-Edge] Non-proc dest at current coords: map ${dest.mapId} (${dest.x},${dest.y})`);
@@ -4642,7 +4702,9 @@
             console.log(`[WorldMapReturn-Edge] Adjacent world coords: (${adjacentCoords.x},${adjacentCoords.y})`);
 
             // Check non-procedural destination at adjacent world coords
-            const nonProcCheckAdj = getNonProceduralDestination(adjacentCoords.x, adjacentCoords.y, storedExitDir);
+            const nonProcCheckAdj = underground
+                ? { exists: false, destination: null }
+                : getNonProceduralDestination(adjacentCoords.x, adjacentCoords.y, storedExitDir);
             if (nonProcCheckAdj.exists && nonProcCheckAdj.destination) {
                 const dest = nonProcCheckAdj.destination;
                 console.log(`[WorldMapReturn-Edge] Non-proc dest at adjacent coords: map ${dest.mapId} (${dest.x},${dest.y})`);
@@ -5298,6 +5360,49 @@
         };
     });
 
+    /**
+     * The hand-authored map standing on a world square, for a party climbing back
+     * out from under it. Underground, a square WorkSystem/Destinations.json names
+     * is generated like any other (see canStitch): a town's cellars are cellars,
+     * its borders lead to the cellars next door, and nothing about the descent
+     * knows or cares that a town is up there. Only the last step up does - and it
+     * is the town's own door the party comes out of, not a procedural field with
+     * the town somewhere else entirely.
+     *
+     * @returns {?{mapId:number,x:number,y:number}} where to surface, or null when
+     *          the square carries nothing but generated ground.
+     */
+    function surfaceDestinationFor(worldX, worldY) {
+        if (typeof worldX !== 'number' || typeof worldY !== 'number') return null;
+        const above = getNonProceduralDestination(worldX, worldY, 0);
+        if (!above.exists || !above.destination) return null;
+        const dest = above.destination;
+        return (dest.mapId > 0) ? dest : null;
+    }
+
+    /**
+     * Fade out and hand the party to the authored map above them. Shares the
+     * "wait for the screen to be properly black" machinery every other crossing
+     * on this map uses, so surfacing under a town looks like surfacing anywhere.
+     */
+    function surfaceToDestination(procGenData, dest) {
+        const dir = $gamePlayer.direction();
+        $gameScreen.clearWeather();
+        $gameScreen.startFadeOut(10);
+        procGenData._edgeTransitionScheduled = true;
+        procGenData._edgeTransitionCallback = () => {
+            if (!procGenData._edgeTransitionScheduled) return;
+            procGenData._edgeTransitionScheduled = false;
+            if (window.SplitScreenManager && window.SplitScreenManager.active) {
+                window.SplitScreenManager.forceP2Teleport = true;
+            }
+            $gamePlayer.clearProcGenBorderArrows();
+            $gameSystem.clearProcGenData();
+            $gamePlayer.reserveTransfer(dest.mapId, dest.x, dest.y, dir, 0);
+            setTimeout(() => { $gameScreen.startFadeIn(10); }, 150);
+        };
+    }
+
     PluginManager.registerCommand(PLUGIN_PMT, 'goUp', () => {
         const system      = $gameSystem;
         const procGenData = system._procGenData;
@@ -5319,6 +5424,14 @@
         // Surfacing ends any door-dungeon session so the surface border resumes
         // normal biome-edge travel.
         if (procGenData.biomeLayerStack.length === 0) procGenData._dungeonSession = null;
+
+        // ...and when the ground above the last layer is a place the destination
+        // file names, the party comes out of ITS door rather than onto a
+        // generated square that the town is not standing on.
+        if (procGenData.biomeLayerStack.length === 0) {
+            const above = surfaceDestinationFor(procGenData.originX, procGenData.originY);
+            if (above) { surfaceToDestination(procGenData, above); return; }
+        }
 
         procGenData.currentBiome          = previousBiomeName;
         procGenData.currentBiomeTileset   = previousBiome.tilesetId;
@@ -5365,6 +5478,13 @@
             const previousBiomeName = procGenData.biomeLayerStack.pop();
             const previousBiome     = getBiomeByName(previousBiomeName);
             if (!previousBiome) { logWarn(`switchLayer: Previous biome "${previousBiomeName}" not found`); return; }
+
+            // The same rule goUp follows: the last step up out of a square a
+            // destination names comes out of that place's own door.
+            if (procGenData.biomeLayerStack.length === 0) {
+                const above = surfaceDestinationFor(procGenData.originX, procGenData.originY);
+                if (above) { surfaceToDestination(procGenData, above); return; }
+            }
 
             procGenData.currentBiome          = previousBiomeName;
             procGenData.currentBiomeTileset   = previousBiome.tilesetId;
@@ -5562,6 +5682,23 @@
         $gameVariables.setValue(110, 1);
         $gameVariables.setValue(111, 1);
         $gamePlayer.reserveTransfer(procMapId, start.x, start.y, direction, 0);
+        return true;
+    }
+
+    // Re-enter a procedural square at exact local coordinates and facing direction
+    // (used when pressing T on the world map without moving to return to the exact spot).
+    function enterProceduralSquareAt(worldX, worldY, localX, localY, direction, beforeTransfer) {
+        if (!$gameSystem.generateProceduralMap) return false;
+        const wx = Number(worldX), wy = Number(worldY);
+        if (isFinite(wx) && isFinite(wy) && wx >= 0 && wy >= 0) setPlayerWorldCoords(wx, wy);
+        if (!$gameSystem.generateProceduralMap()) return false;
+        if (beforeTransfer) beforeTransfer();
+        $gameVariables.setValue(110, 1);
+        $gameVariables.setValue(111, 1);
+        const targetX = (typeof localX === 'number' && isFinite(localX)) ? localX : Math.floor(PROC_MAP_WIDTH / 2);
+        const targetY = (typeof localY === 'number' && isFinite(localY)) ? localY : Math.floor(PROC_MAP_HEIGHT / 2);
+        const targetDir = direction || 2;
+        $gamePlayer.reserveTransfer(procMapId, targetX, targetY, targetDir, 0);
         return true;
     }
 
@@ -6321,12 +6458,32 @@
         // keyboard while it is up; it hands the party back itself.
         if (window.VoxelWorldSystem && VoxelWorldSystem.isActive()) return;
         if ($gameMap.mapId() === worldMapId) {
+            const origin = $gameTemp && $gameTemp._lastWorldMapReturnOrigin;
+            const camperDriving = window.VoxelWorldSystem && window.VoxelWorldSystem.isActive();
+            const currentX = !camperDriving ? $gamePlayer.x : $gameVariables.value(VAR_WORLD_X);
+            const currentY = !camperDriving ? $gamePlayer.y : $gameVariables.value(VAR_WORLD_Y);
+
+            if (origin && origin.mapId && currentX === origin.worldX && currentY === origin.worldY) {
+                if (origin.mapId === procMapId) {
+                    enterProceduralSquareAt(origin.worldX, origin.worldY, origin.x, origin.y, origin.dir, () => {
+                        if (camperDriving) window.VoxelWorldSystem.stop();
+                    });
+                    return;
+                } else {
+                    if (camperDriving) window.VoxelWorldSystem.stop();
+                    $gamePlayer.reserveTransfer(origin.mapId, origin.x, origin.y, origin.dir || 2, 0);
+                    return;
+                }
+            }
+
             performStopTravel();
             return;
         }
         // Everywhere else the key leads out: the procedural map, but equally a
         // house, a shop, a cellar, a hand-made town map -- anywhere the party
         // walked into off the world map is somewhere they can walk back out of.
+        // Inside procedural interiors (dungeons, crypts, sewers, etc.), T returns
+        // to surface instead.
         // procMapId (636) is also what an alien planet's surface stands on
         // (GalaxySim_Core's isAlienSurface). performReturnToWorldMap() asks
         // divertedToLandingPicker() first, which opens the landing-grid picker
@@ -6554,12 +6711,50 @@
         return !!(tower && tower.returnToElevator && tower.returnToElevator());
     }
 
+    // Is the party currently inside a procedural interior (dungeon, crypt, sewer,
+    // loot cellar, cave den, temple, patron vault, underground layer)?
+    function isProceduralInterior() {
+        if ($gameMap.mapId() !== procMapId) return false;
+        const pg = $gameSystem && $gameSystem._procGenData;
+        if (!pg) return false;
+        if (pg._dungeonSession) {
+            // Lower tower floors have their own elevator handling via divertedToElevator
+            if (pg._dungeonSession.type === 'tower') return false;
+            return true;
+        }
+        if (pg.biomeLayerStack && pg.biomeLayerStack.length > 0) return true;
+        const D = window.ProcGenDungeon;
+        const isStructure = (D && typeof D.isStructure === 'function')
+            ? D.isStructure(pg.currentBiome)
+            : /dungeon|crypt|sewer|lootcellar|templeinside|caveden|patronvault/i.test(pg.currentBiome || '');
+        if (isStructure) return true;
+        return false;
+    }
+
+    // Ascend / exit back to the surface when inside a procedural interior or underground layer
+    function performReturnToSurface() {
+        const pg = $gameSystem && $gameSystem._procGenData;
+        if (pg && pg._dungeonSession && pg._dungeonSession.type !== 'tower') {
+            exitDungeonSession($gamePlayer.direction());
+            return true;
+        }
+        if (pg && pg.biomeLayerStack && pg.biomeLayerStack.length > 0) {
+            PluginManager.callCommand($gameMap._interpreter || {}, PLUGIN_PMT, 'goUp', {});
+            return true;
+        }
+        PluginManager.callCommand($gameMap._interpreter || {}, PLUGIN_PMT, 'goUp', {});
+        return true;
+    }
+
     // True when the press was used up: a transfer reserved, or the tower or the
     // landing picker answering in the world map's place. False means nothing
     // happened and the caller should leave its own scene alone.
     function performReturnToWorldMap() {
         if (divertedToLandingPicker()) return false;
         if (divertedToElevator()) return true;
+        if (isProceduralInterior()) {
+            return performReturnToSurface();
+        }
         const saved = playerWorldCoords();
         if (saved.x === 0 && saved.y === 0) return false;
         $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
@@ -6625,6 +6820,9 @@
     window.WorldMapReturn = {
         performVisitMap: performStopTravel,
         returnToWorldMap: performReturnToWorldMap,
+        returnToSurface: performReturnToSurface,
+        isProceduralInterior,
+        enterProceduralSquareAt,
         // The named places and their footprints (see the section above).
         placeAtWorldSquare,
         placeEntranceFor,

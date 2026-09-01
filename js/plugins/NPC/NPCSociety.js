@@ -689,11 +689,22 @@
           npcGender = entry.Gender || 0;
           npcArchetype = entry.Archetype || "Humanoid"; // i18n-ignore: Archetypes.json id
 
-          // Assign class from the entry's classes[] pool
-          const classPool = Array.isArray(entry.classes) ? entry.classes : [];
-          if (classPool.length > 0) {
-            // Pick a deterministic random class from the pool
-            assignedClassId = classPool[rngV.nextInt(0, classPool.length)];
+          // Assign class from the entry's classes[] pool. A creature sheet is
+          // dealt by NPCCreature, which owns the animal and Humanoid-hybrid
+          // rules; anything else is a PERSON and is never dealt a creature
+          // class, however its own entry happens to be written. The catalogue
+          // already keeps the Creatures/ and Animals/ halves out of this pool,
+          // so this is the belt to that pair of braces.
+          if (NC && NC.isCreatureSheet(spriteKey)) {
+            const rolled = NC.rollClassId(spriteKey, [npcArchetype], rngV);
+            if (rolled) assignedClassId = rolled;
+          } else {
+            const classPool = (Array.isArray(entry.classes) ? entry.classes : [])
+              .filter(id => !NC || !NC.isNonSentientClassId(id));
+            if (classPool.length > 0) {
+              // Pick a deterministic random class from the pool
+              assignedClassId = classPool[rngV.nextInt(0, classPool.length)];
+            }
           }
           // If classPool is empty, assignedClassId stays as the event-note classId
         }
@@ -745,7 +756,11 @@
       // their own entries, so a dog dealt at step 3 is as much a dog as one
       // minted at step 3b. This is also the answer every other reader of the
       // profile already gives (NPCCreature.isNonSentientProfile).
-      const nonSentient = !!NC && NC.isNonSentientClassId(assignedClassId);
+      // The player's own creature characters are exempt from all of it: a beast
+      // the player built and plays keeps its money, its pack and its trade.
+      // The rule is about the WORLD's beasts.
+      const playerOwn = !!NC && NC.isPlayerCharacterName(eventName);
+      const nonSentient = !!NC && !playerOwn && NC.isNonSentientClassId(assignedClassId);
 
       // 4. Ideology (picked early to bias trait selection). An alien is only
       //    ever dealt an alien creed and a citizen is never dealt one, which is
@@ -928,7 +943,7 @@
       const worldY = $gameVariables ? $gameVariables.value(44) : 1;
       const npcHash = nameToSeed(eventName) ^ worldSeed;
       const homeSeed = ((worldX * 73856093) ^ (worldY * 19349663) ^ npcHash) >>> 0;
-      const homePoolByWealth = ["huts", "huts", "houses", "villas", "skyscrapers"];
+      const homePoolByWealth = ["houses", "houses", "houses", "skyscrapers", "skyscrapers"];
       const homePoolType = homePoolByWealth[Math.min(wealthTierBase, 4)];
       let homeMapId = null;
       if (window.ProceduralHouseSystem && window.ProceduralHouseSystem._selectHouse) {
@@ -959,7 +974,11 @@
       // about it. NPCPolitics skips a non-sentient profile outright, and the
       // life simulator neither has it save nor move (see NPCLifeSimulator).
       return {
-        personalityIndex, wealthTierBase, traitIds, skillIds, itemIds,
+        // A beast carries nothing in its pockets because it has none: the item
+        // roll above still happened (the stream must not move) but what it
+        // produced belongs to somebody who can own things.
+        personalityIndex, wealthTierBase, traitIds, skillIds,
+        itemIds: nonSentient ? [] : itemIds,
         factionIndex:  nonSentient ? -1 : factionIndex,
         ideologyIndex: nonSentient ? -1 : ideologyIndex,
         // The creed by name as well as by slot, so a roster that grows can
@@ -978,8 +997,9 @@
         homeMapId, homePoolType, homeSeed,
         // Needs
         hunger: 100, sleep: 100, money: nonSentient ? 0 : money,
-        // Work
-        currentJobId: null, workStart, workEnd, lastWorkMinute: 0,
+        // Work. A beast holds no trade: 0 is "jobless" (as against null, "not
+        // decided yet"), so the group shift roster never deals it a shift.
+        currentJobId: nonSentient ? 0 : null, workStart, workEnd, lastWorkMinute: 0,
         // Behaviour
         moralityScore, currentNeed: null,
         // Story
@@ -1103,10 +1123,43 @@
           changed = true;
         }
       }
-      const nonSentient = NC.isNonSentientClassId(profile.assignedClassId);
+      // An `animal: true` sheet is a beast and nothing else. There are no
+      // talking dogs: whatever class a profile arrived carrying, an animal
+      // face answers Feral (or the one beast class its own NPCs.json entry
+      // names, so a risen dog stays a Zombie).
+      if (NC.isAnimalSheet(profile.spriteKey)) {
+        // A fixed stream: an animal sheet has nothing to roll for.
+        const beastClass = NC.rollClassId(profile.spriteKey, [profile.archetype],
+          { next: () => 0, nextInt: (a) => a });
+        if (profile.assignedClassId !== beastClass) {
+          profile.assignedClassId = beastClass;
+          changed = true;
+        }
+      }
+      const playerOwn = NC.isPlayerCharacterName(eventName);
+      const nonSentient = !playerOwn && NC.isNonSentientClassId(profile.assignedClassId);
       if (!!profile.nonSentient !== nonSentient) {
         profile.nonSentient = nonSentient;
         changed = true;
+      }
+      // Everything a person owns and a beast does not. Stripped here as well as
+      // at minting, so a world folder written before the rule existed is
+      // repaired the first time each of its beasts is looked at.
+      if (nonSentient) {
+        if (profile.money) { profile.money = 0; changed = true; }
+        if (profile.itemIds && profile.itemIds.length) { profile.itemIds = []; changed = true; }
+        if (profile.currentJobId) {
+          profile.currentJobId = 0;
+          profile.workMapId = null;
+          profile.workShift = null;
+          changed = true;
+        }
+        if (profile.factionIndex !== -1) { profile.factionIndex = -1; changed = true; }
+        if (profile.ideologyIndex !== -1 || profile.ideologyId != null) {
+          profile.ideologyIndex = -1;
+          profile.ideologyId = null;
+          changed = true;
+        }
       }
       if (!nonSentient && _restorePersonhood(eventName, profile)) changed = true;
       return changed;

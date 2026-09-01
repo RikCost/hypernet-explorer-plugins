@@ -168,7 +168,7 @@
  * @text Cast Shadows
  * @desc Battlers cast a shadow on the ground, angled and coloured by the time of day. Costs one extra small pass.
  * @type boolean
- * @default true
+ * @default false
  *
  * @param shadowMapSize
  * @text Shadow Resolution
@@ -266,7 +266,7 @@
         // Day/night rig. Every one of these is a perf knob as much as a look
         // knob, so they default to the cheap end of what still reads as lit.
         dayNightLighting: parameters.dayNightLighting !== 'false',
-        dayNightShadows: parameters.dayNightShadows !== 'false',
+        dayNightShadows: parameters.dayNightShadows === 'true',
         shadowMapSize: Number(parameters.shadowMapSize || 0),
         shadowUpdateEvery: Math.max(1, Number(parameters.shadowUpdateEvery || 3)),
         envReflections: parameters.envReflections !== 'false',
@@ -1662,8 +1662,9 @@
                 const cloned = src.map(m => {
                     const c = m.clone();
                     c.transparent = true;
-                    if (c.userData) c.userData._psx = false;
-                    if (window.PSXShader) window.PSXShader.applyToMaterial(c);
+                    if (c.userData) { c.userData._psx = false; c.userData._pxa = false; }
+                    const _rs = window.RetroShader ? window.RetroShader.active() : window.PSXShader;
+                    if (_rs) _rs.applyToMaterial(c);
                     return c;
                 });
                 o.material = Array.isArray(o.material) ? cloned : cloned[0];
@@ -2208,8 +2209,11 @@
                 : rs;
         }
         let scale = renderer._b3dBaseScale;
-        const psx = window.PSXShader;
-        if (psx && psx.enabled && psx.downscale > 0 && psx.downscale < 0.999) scale *= psx.downscale;
+        const retro = window.RetroShader ? window.RetroShader.active() : window.PSXShader;
+        if (retro && retro.enabled) {
+            const down = retro.downscaleFor ? retro.downscaleFor('scene') : retro.downscale;
+            if (down > 0 && down < 0.999) scale *= down;
+        }
         return Math.max(0.1, Math.min(1, scale));
     }
 
@@ -2625,7 +2629,7 @@
             // would wash the tint straight back out.
             if (config.dayNightLighting) {
                 this.lighting = new DayNightRig(this.scene, this.renderer, {
-                    shadows: true,
+                    shadows: false,
                     env: true,
                     // Wide enough to hold the spread row of battlers.
                     radius: ENEMY_SPREAD_HALF_SPAN + 2,
@@ -2702,7 +2706,8 @@
                 }
 
                 battlerModel.model.position.set(x, actualY, z);
-                if (window.PSXShader) window.PSXShader.applyToObject(battlerModel.model);
+                const _retro = window.RetroShader ? window.RetroShader.active() : window.PSXShader;
+                if (_retro) _retro.applyToObject(battlerModel.model);
                 if (battlerModel._overrideTint != null) {
                     applyModelTint(battlerModel.model, battlerModel._overrideTint);
                 }
@@ -4007,18 +4012,19 @@
         const model = spriteset.get3DModel(this._battler);
         if (!model) return;
 
-        if (this._battler.isActing() && !this._3dAttackStarted) {
-            this._3dAttackStarted = true;
-            const action = this._battler.currentAction();
+        if (this._battler.isActing()) {
+            if (!this._3dAttackStarted) {
+                this._3dAttackStarted = true;
+                const action = this._battler.currentAction();
 
-            // Bosses cycle a palette of magic/skill casts; others keep the
-            // simple magic->specialattack / else->attack mapping.
-            const anim = pick3DActionAnim(this._battler, action, model);
-            model.playAnimation(anim, false, () => {
-                model.playIdleAnimation();
-                this._3dAttackStarted = false;
-            });
-        } else if (!this._battler.isActing()) {
+                // Bosses cycle a palette of magic/skill casts; others keep the
+                // simple magic->specialattack / else->attack mapping.
+                const anim = pick3DActionAnim(this._battler, action, model);
+                model.playAnimation(anim, false, () => {
+                    model.playIdleAnimation();
+                });
+            }
+        } else {
             this._3dAttackStarted = false;
         }
 

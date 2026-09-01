@@ -60,7 +60,11 @@
       const WM = window.WorldManager;
       return !!(WM && typeof WM.isZombieWorld === "function" && WM.isZombieWorld());
     },
-    ZOMBIE_SHEET_CHANCE: 0.9,
+    // Nearly everybody. A survivor is meant to be an event, not a face in the
+    // crowd: with the creature roll taking most of what is left (NPCCreature
+    // CREATURE_CHANCE_ZOMBIE), this puts living people well under one slot in
+    // a hundred, which is what a zombie apocalypse is supposed to feel like.
+    ZOMBIE_SHEET_CHANCE: 0.99,
 
     // Ground the Goblin Horde holds. Not a population mode: a PROCEDURAL
     // square standing in one of the Horde's nations is goblin country whatever
@@ -728,8 +732,21 @@
     // tagged / shop-command events) alongside the per-group template pools.
     // v3 added "hasGraphic" to each shop entry, the flag that tells a rota
     // counter apart from a Shop event with its own permanent shopkeeper.
+    // v4 stopped writing one entry per visited "Proc:x,y" tile (see PROC_KEY).
     // Older manifests are discarded so the shop index gets built exactly once.
-    VERSION: 3,
+    VERSION: 4,
+
+    // The one pool every "Proc:x,y" settlement shares. A procedural settlement
+    // is always the same single map (636, see ensureProcSettlement's
+    // `maps: [636]`), so the harvested templates are identical whatever the
+    // coordinates are. Writing one entry per visited tile therefore stored the
+    // same 14 templates over and over (41 byte-identical copies, ~46% of the
+    // shipped file) and leaked the world coordinates whoever built the game
+    // happened to walk to. The pool is written once instead, under a "__" key
+    // every manifest consumer already skips (ProceduralQuestSystem.npcPool,
+    // ErisTrial's jury pool), and every procedural group is resolved to it at
+    // read time. No "Proc:" key is ever persisted.
+    PROC_KEY: "__proc",
 
     _resolve: () => {
       if (NPCPoolStore._filePath !== null) return NPCPoolStore._filePath;
@@ -1122,12 +1139,18 @@
         return SpawnManager.keepVarlenianHome($gameSystem._npcPoolCache[groupName]);
       }
 
+      // Every procedural settlement reads and writes the one shared entry, so
+      // the manifest never carries a coordinate of its own (see PROC_KEY).
+      const manifestKey = Config.isProceduralGroup(groupName)
+        ? NPCPoolStore.PROC_KEY
+        : groupName;
+
       const fromManifest = NPCPoolStore.load();
-      if (fromManifest && fromManifest[groupName]) {
+      if (fromManifest && fromManifest[manifestKey]) {
         // A manifest written before <Story> was understood still holds those
         // templates, and the file is only rebuilt when it is deleted, so the
         // written characters are dropped on the way out instead.
-        const pool = fromManifest[groupName].filter(t => !Utils.hasStoryTag(t?.eventData?.note));
+        const pool = fromManifest[manifestKey].filter(t => !Utils.hasStoryTag(t?.eventData?.note));
         $gameSystem._npcPoolCache[groupName] = pool;
         Utils.debug(`NPC pool for "${groupName}" loaded from js/db/WorldGen/NPCPools.json: ${pool.length} templates.`);
         return SpawnManager.keepVarlenianHome(pool);
@@ -1167,7 +1190,7 @@
 
       $gameSystem._npcPoolCache[groupName] = npcPool;
       const manifest = fromManifest || {};
-      manifest[groupName] = npcPool;
+      manifest[manifestKey] = npcPool;
       manifest.__shops = Object.assign(manifest.__shops || {}, shopIndex);
       NPCPoolStore.save(manifest);
       Utils.debug(`NPC pool for "${groupName}" built: ${npcPool.length} templates from ${seenMapIds.size} maps.`);
@@ -1466,7 +1489,7 @@
       controller.decideNextGoal();
     },
 
-    // Populates a generated interior (house, hut, villa, inn, shop, walk-up
+    // Populates a generated interior (house, inn, shop, walk-up
     // floor, skyscraper floor) with NPCs drawn from the surrounding town.
     //
     // opts.building — the ProceduralHouseSystem descriptor of the building the
@@ -1511,12 +1534,10 @@
           densityFactor = 60;
           baseLimit = 15;
         } else if (isInterior) {
-          densityFactor = 240;
-          baseLimit = 2;
+          densityFactor = 120;
+          baseLimit = 4;
         }
-        // A skyscraper is a public space shared by the whole town: lobbies and
-        // office/retail floors stay busy, so they get the exterior-style crowd
-        // rather than the sparse household density of a home interior.
+        // Skyscraper public/lobby floors
         if (isPublic) {
           densityFactor = 80;
           baseLimit = 6;
@@ -1524,15 +1545,12 @@
 
         const maxNPCs = Math.min(Math.floor(($gameMap.width() * $gameMap.height()) / densityFactor), baseLimit);
 
-        if ((isExterior || isPublic) && maxNPCs > 0) {
+        if (maxNPCs > 0) {
           const minNPCs = Math.max(1, Math.floor(maxNPCs * 0.5));
           actualCount = Math.min(Math.floor(Utils.randBetween(minNPCs, maxNPCs + 1)), allPlaceholders.length, npcPool.length);
         } else {
-          actualCount = Math.min(Math.floor(Math.random() * (maxNPCs + 1)), allPlaceholders.length, npcPool.length);
+          actualCount = Math.min(1, allPlaceholders.length, npcPool.length);
         }
-
-        // Homes are often empty; a public building never is.
-        if (isInterior && !isPublic && actualCount > 0 && Math.random() < 0.5) actualCount = 0;
 
         const drawRandom = (count, exclude = []) => {
           const poolCopy = npcPool.filter(t => !exclude.includes(t));
@@ -1541,20 +1559,23 @@
           }
         };
 
-        // At night, the NPCs assigned to this exact building (and, in a
-        // multi-floor block, to this exact floor) are found at home here. A
-        // public building has no residents, so it always draws a random crowd.
-        const residents = (!isPublic && building && MapManager.isNightTime())
+        const curHour = $gameVariables?.value(23) ?? 12;
+        // Residents assigned to this exact building and floor
+        const residents = building
           ? (window.NPCSim?.getBuildingResidents?.(building, building.floorIndex ?? 0, groupName) || [])
           : [];
 
-        const residentTemplates = residents
+        const atHomeResidents = residents.filter(name => {
+          return window.NPCSim?.isNPCAtHome ? window.NPCSim.isNPCAtHome(name, null, curHour) : MapManager.isNightTime();
+        });
+
+        const residentTemplates = atHomeResidents
           .map(name => npcPool.find(t => (t.eventData?.name || '') === name))
           .filter(Boolean);
 
         if (residentTemplates.length) {
           selectedNPCs = [...residentTemplates];
-          // Fill remaining slots with random visitors if space allows
+          // Fill remaining slots with random visitors/guests/pets if space allows
           drawRandom(Math.max(0, actualCount - residentTemplates.length), residentTemplates);
           actualCount = Math.min(selectedNPCs.length, allPlaceholders.length);
         } else {
@@ -1776,9 +1797,14 @@ initializeGroupNPCs: (groupName, activeMapId = null) => {
     // on who should be on the map, otherwise hubs would visibly depopulate at
     // each hour boundary.
     resolveDisplayRoster: (mapId, group, groupName, slotCount) => {
+      const curHour = $gameVariables?.value(23) ?? 12;
       const reservedForShop = new Set($gameSystem._npcShopReservedNames?.[mapId] || []);
+      const isAtHome = (name) => {
+        return window.NPCSim?.isNPCAtHome ? window.NPCSim.isNPCAtHome(name, null, curHour) : false;
+      };
+
       let assigned = ($gameSystem._npcGroupAssignments?.[mapId] || [])
-        .filter(o => !reservedForShop.has(o.name));
+        .filter(o => !reservedForShop.has(o.name) && !isAtHome(o.name));
 
       const mainMapIds = group.mainMaps || [];
       if (mainMapIds.includes(mapId) && assigned.length < slotCount) {
@@ -1788,7 +1814,7 @@ initializeGroupNPCs: (groupName, activeMapId = null) => {
         for (const mId of group.maps) {
           if (mId === mapId || mainMapIds.includes(mId)) continue;
           for (const obj of $gameSystem._npcGroupAssignments[mId] || []) {
-            if (usedNames.has(obj.name) || reservedForShop.has(obj.name)) continue;
+            if (usedNames.has(obj.name) || reservedForShop.has(obj.name) || isAtHome(obj.name)) continue;
             usedNames.add(obj.name);
             visitors.push(obj);
           }
@@ -2362,7 +2388,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   const DOOR_CLEARANCE = 1;        // Chebyshev ring kept free around every door
   const DOOR_CLUSTER_RADIUS = 5;   // still counts as "outside this building"
 
-  // A lone farmstead, hut or tent standing on an open-country tile is one
+  // A lone farmstead or tent standing on an open-country tile is one
   // household, not a hamlet: at most ONE citizen is ever found outside it, and
   // only for some of them, so a tile carrying a handful of doors reads as
   // scattered country people rather than a crowd. The cap holds however many
@@ -2593,8 +2619,227 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         ProceduralManager.dressProcCitizen(ev, baseSeed, settlementGroup, worldX, worldY, procWorldSeed);
       });
 
+      // And the ones that are not standing in an authored slot at all: the
+      // creatures out in the country, scattered over the square the way a
+      // farm's livestock is (see scatterWildCreatures).
+      ProceduralManager.scatterWildCreatures(baseSeed, settlementGroup, worldX, worldY, biomeName);
+
       console.log(`[NPC System] ${activeEvents.length} NPCs set up on procedural map ${$gameMap.mapId()} (${MapManager.getMapName($gameMap.mapId())}), settlement "${settlementGroup}"`);
     },
+
+    // -- Creatures loose on the square -------------------------------------
+    // The population pass above can only ever dress the NPC slots the map
+    // template carries, and those stand where a person would stand. A creature
+    // does not: it is out in the field, at the treeline, on the shore. So a
+    // procedural square also gets a handful of creatures placed the way
+    // AnimalGrowthSystem places a farm's livestock, straight onto walkable
+    // tiles, as events minted for them rather than slots borrowed from
+    // somebody else.
+    //
+    // Both kinds are scattered, exactly as they are dealt anywhere else: a
+    // creature crossed with a Humanoid holds a trade and a conversation, and
+    // one that is not is the thing it looks like (NPCCreature.rollIdentity).
+    //
+    // Seeded on the world tile, so the same square carries the same creatures
+    // on every visit and in every savegame of the world. Nothing is persisted:
+    // map 636 is rebuilt from the template each time it is entered, and these
+    // are re-dealt with it, the same volatility every procedural citizen has.
+    WILD_CREATURE_MAX: 4,            // head of creature a square can carry
+    WILD_CREATURE_SETTLEMENT_MAX: 1, // a town is for people; one stray, at most
+    WILD_CREATURE_ZOMBIE_MAX: 8,     // and a dead world belongs to the wildlife
+
+    scatterWildCreatures: (baseSeed, settlementGroup, worldX, worldY, biomeName) => {
+      const NC = window.NPCCreature;
+      if (!NC || !$gameMap || !$dataMap) return 0;
+      if ($gameMap.mapId() !== 636) return 0;
+      if (window.ProceduralInteriors?.isCurrent?.()) return 0;
+
+      const seed = (baseSeed ^ 0x3f1c9a5b) >>> 0;
+      const rng = ProceduralManager._creatureRng(seed);
+      // A town carries at most one stray; open country carries up to four. The
+      // count is rolled off the same stream the identities are, so a square is
+      // as populous on every visit as it was on the first.
+      // A dead world belongs to the animals, and its emptied towns as much as
+      // its fields: the town rule is for a town with people still in it.
+      const inTown = NC.isSettlementHere ? NC.isSettlementHere() : false;
+      const cap = Config.isZombieWorld()
+        ? ProceduralManager.WILD_CREATURE_ZOMBIE_MAX
+        : inTown
+          ? ProceduralManager.WILD_CREATURE_SETTLEMENT_MAX
+          : ProceduralManager.WILD_CREATURE_MAX;
+      const count = Math.floor(rng.next() * (cap + 1));
+      if (count === 0) return 0;
+
+      const tiles = ProceduralManager._creatureTiles();
+      if (!tiles.length) return 0;
+
+      let placed = 0;
+      for (let i = 0; i < count && tiles.length; i++) {
+        const spot = tiles.splice(Math.floor(rng.next() * tiles.length), 1)[0];
+        // An earlier creature in this same pass, or an animal placed before it,
+        // may have taken the tile.
+        if (!ProceduralManager._creatureTileFree(spot.x, spot.y)) continue;
+        // Exterior: these stand on the open square, so the Animals/ half of the
+        // wardrobe is on the table along with the Creatures/ one.
+        const identity = NC.rollIdentity(rng, true);
+        if (!identity) break;
+        if (ProceduralManager._spawnWildCreature(identity, spot, (seed ^ (i * 2654435761)) >>> 0,
+              settlementGroup, worldX, worldY)) placed++;
+      }
+      if (placed) {
+        console.log(`[NPC System] ${placed} creature(s) loose on ${biomeName} (${worldX},${worldY})`);
+      }
+      return placed;
+    },
+
+    // The xorshift stream NPCCreature.rollIdentity expects (next/nextInt).
+    _creatureRng: (seed) => {
+      let s = (seed >>> 0) || 1;
+      const next = () => {
+        s ^= s << 13; s >>>= 0;
+        s ^= s >>> 17;
+        s ^= s << 5;  s >>>= 0;
+        return s / 4294967296;
+      };
+      return { next, nextInt: (min, max) => min + Math.floor(next() * (max - min)) };
+    },
+
+    // Somewhere a creature can stand: on the map, walkable, off the blocked
+    // terrain, and not on top of anybody. Sampled rather than swept, since a
+    // procedural square is large and only a handful of tiles are ever needed.
+    _creatureTiles: () => {
+      const out = [];
+      const w = $gameMap.width();
+      const h = $gameMap.height();
+      const wanted = 60;
+      for (let tries = 0; tries < 400 && out.length < wanted; tries++) {
+        const x = 1 + Math.floor(Math.random() * Math.max(1, w - 2));
+        const y = 1 + Math.floor(Math.random() * Math.max(1, h - 2));
+        if (!ProceduralManager._creatureTileFree(x, y)) continue;
+        out.push({ x, y });
+      }
+      return out;
+    },
+
+    _creatureTileFree: (x, y) => {
+      if (!$gameMap.isValid(x, y)) return false;
+      if (!$gameMap.isPassable(x, y, 2)) return false;
+      if ($gameMap.eventIdXy(x, y) > 0) return false;
+      if (Utils.isBlockedTerrain && Utils.isBlockedTerrain(x, y)) return false;
+      if ($gamePlayer && $gamePlayer.pos(x, y)) return false;
+      if ($gamePlayer?.followers?.().isSomeoneCollided?.(x, y)) return false;
+      return true;
+    },
+
+    // One creature, as a fresh map event with the same Talk / Empathize page a
+    // procedural NPC slot carries. A non-sentient one still gets it: the panel
+    // is what answers for a beast (noises, feeding, petting), and the talk
+    // command growls for it (NPCEmpathize.growlFor).
+    _spawnWildCreature: (identity, spot, seed, settlementGroup, worldX, worldY) => {
+      if (!$dataMap.events) $dataMap.events = [null];
+      const eventId = $dataMap.events.length;
+
+      let name = "";
+      if (window.generateSeededMarkovName) {
+        const dbId = Config.NAME_DATABASES[seed % Config.NAME_DATABASES.length];
+        try {
+          name = window.generateSeededMarkovName(
+            worldX ^ (seed & 0xffff), worldY ^ ((seed >>> 16) & 0xffff),
+            eventId, dbId, 2, 4, 12);
+        } catch (e) { /* refused below */ }
+      }
+      if (!name || name === "Unknown") return false; // i18n-ignore: Markov generator sentinel
+      // Two creatures on one square must not share a name: the society keys
+      // every profile by it, and the second would inherit the first's identity.
+      if ($gameSystem?._npcSociety?.[name]) return false;
+
+      $dataMap.events[eventId] = {
+        id: eventId, name, note: "",
+        x: spot.x, y: spot.y,
+        pages: [{
+          conditions: {
+            actorId: 1, actorValid: false, itemId: 1, itemValid: false,
+            selfSwitchCh: "A", selfSwitchValid: false,
+            switch1Id: 1, switch1Valid: false, switch2Id: 1, switch2Valid: false,
+            variableId: 1, variableValid: false
+          },
+          directionFix: false,
+          image: {
+            tileId: 0, characterName: identity.spriteKey,
+            characterIndex: 0, direction: 2, pattern: 1
+          },
+          list: ProceduralManager._creaturePageList(),
+          moveFrequency: 3,
+          moveRoute: { list: [{ code: 0 }], repeat: true, skippable: false, wait: false },
+          moveSpeed: 3, moveType: 1, priorityType: 1, stepAnime: true,
+          through: false, trigger: 0, walkAnime: true
+        }, {
+          // Recruited, or otherwise gone: the same self-switch A page every
+          // other NPC vanishes behind, which is also what Join needs to exist.
+          conditions: {
+            actorId: 1, actorValid: false, itemId: 1, itemValid: false,
+            selfSwitchCh: "A", selfSwitchValid: true,
+            switch1Id: 1, switch1Valid: false, switch2Id: 1, switch2Valid: false,
+            variableId: 1, variableValid: false
+          },
+          directionFix: false,
+          image: { tileId: 0, characterName: "", characterIndex: 0, direction: 2, pattern: 1 },
+          list: [{ code: 0, indent: 0, parameters: [] }],
+          moveFrequency: 3,
+          moveRoute: { list: [{ code: 0 }], repeat: true, skippable: false, wait: false },
+          moveSpeed: 3, moveType: 0, priorityType: 0, stepAnime: false,
+          through: true, trigger: 0, walkAnime: false
+        }]
+      };
+
+      if (!$gameMap._events) $gameMap._events = [];
+      const ev = new Game_Event($gameMap.mapId(), eventId);
+      ev.setImage(identity.spriteKey, 0);
+      $gameMap._events[eventId] = ev;
+
+      // A citizen like any other, with the sheet PINNED so the society
+      // generator reads what it IS off the body it is wearing rather than
+      // rolling a second identity on top of the one just dealt.
+      const profile = ProceduralManager.registerProcCitizen(
+        name, ev, settlementGroup, identity.classId,
+        { spriteKey: identity.spriteKey, bustIndex: identity.bustIndex || 0 });
+      if (profile) {
+        profile.spriteKey = identity.spriteKey;
+        profile.bustIndex = identity.bustIndex || 0;
+        profile.archetype = identity.archetype;
+        profile.isCreature = true;
+        profile.assignedClassId = identity.classId;
+        window.NPCSocietyRegistry?.reconcileToSprite?.(name, profile);
+      }
+
+      // It wanders like anybody else; the controller is what walks it about.
+      const controller = new NPCController(name);
+      $gameSystem.npcControllers.push(controller);
+      controller.decideNextGoal();
+
+      // The spriteset only builds its character sprites once per map, so an
+      // event minted after that has to be handed one explicitly.
+      const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+      if (spriteset && typeof spriteset.addAnimalCharacterSprite === "function") {
+        spriteset.addAnimalCharacterSprite(ev);
+      }
+      return true;
+    },
+
+    // Talk / Empathize, the same menu every procedural NPC slot carries.
+    _creaturePageList: () => ([
+      { code: 102, indent: 0, parameters: [["Talk", "Empathize", "Cancel"], 3, 0, 2, 0] },  // i18n-ignore: choice labels are localized by the engine's own pass
+      { code: 402, indent: 0, parameters: [0, "Talk"] },
+      { code: 357, indent: 1, parameters: ["UI/MarkovTextGenerator", "generateNPCDialogue", "Generate NPC Dialogue", { background: "0", position: "2" }] },
+      { code: 0, indent: 1, parameters: [] },
+      { code: 402, indent: 0, parameters: [1, "Empathize"] },
+      { code: 357, indent: 1, parameters: ["NPC/NPCEmpathize", "Open", "Open", { eventName: "" }] },
+      { code: 0, indent: 1, parameters: [] },
+      { code: 402, indent: 0, parameters: [2, "Cancel"] },
+      { code: 0, indent: 1, parameters: [] },
+      { code: 404, indent: 0, parameters: [] },
+      { code: 0, indent: 0, parameters: [] },
+    ]),
 
     // Turns one bare procedural NPC slot into a citizen: sprite, name, society
     // profile and a wandering controller, all seeded off the world tile and the
@@ -2821,13 +3066,33 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       const groups = $gameSystem._npcMapGroups || ($gameSystem._npcMapGroups = {});
 
       if (!groups[groupName]) {
+        let buildings = _scanMapForResidentialBuildings(636, $dataMap) || [];
+        const doorTiles = getSettlementDoorTiles();
+        const procWorldSeed = window.ProcGenUtils?.getWorldSeed?.() ?? 19002001;
+        doorTiles.forEach(d => {
+          const seed = ((636 * 1000000 + d.x * 1000 + d.y) ^ procWorldSeed) >>> 0;
+          const isSky = d.name === "DoorSkyscraper";
+          const totalFloors = isSky ? (4 + (seed % 7)) : (1 + (seed % 2));
+          const type = (totalFloors > 1 || isSky) ? 'enterMultiBuilding' : 'visitHouse';
+          const b = {
+            mapId: 636, x: d.x, y: d.y, seed: seed,
+            type: type,
+            baseFloorPool: isSky ? 'skyscrapers' : 'houses',
+            upperFloorsPool: isSky ? 'skyfloors' : 'floors',
+            numFloors: totalFloors - 1,
+            totalFloors: totalFloors,
+            capacity: totalFloors,
+            groupName: groupName,
+          };
+          if (!buildings.some(existing => existing.x === d.x && existing.y === d.y)) {
+            buildings.push(b);
+          }
+        });
+
         const group = {
           maps: [636],
           mainMaps: [636],
-          // Best-effort scan of the live map for door events; procedural prefab
-          // houses carry no door events, so registerProcCitizen also seeds one
-          // residence per citizen below.
-          residentialBuildings: _scanMapForResidentialBuildings(636, $dataMap),
+          residentialBuildings: buildings,
           _procedural: true,
           worldX, worldY,
           biome: biomeName || null,
@@ -2884,25 +3149,29 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         profile._homeGroupName = groupName;
         window.NPCSocietyRegistry?.applyHometownOpinionIfMatch?.(profile, groupName);
 
-        // Each citizen notionally lives where they stand: derive a residence
-        // from the spawn tile so the settlement has buildings tied to its
-        // population even though procedural prefabs carry no door events.
-        // This is a PLACEHOLDER address: the first time the player actually
-        // walks through one of the settlement's doors, NPCSim.ensureBuildingResidents
-        // moves citizens still holding one of these into the real building.
-        if (!profile.homeBuilding && ev) {
-          const building = {
-            mapId: 636, eventId: ev.eventId(), x: ev.x, y: ev.y,
-            seed: (groupName.length * 1000000) + ev.x * 1000 + ev.y,
-            type: 'visitHouse', poolName: '', capacity: 2,
-            groupName, _placeholder: true,
-          };
-          profile.homeBuilding = building;
-          profile.homeSeed = building.seed;
+        // Assign a real door building if available, or seed a placeholder
+        if (!profile.homeBuilding) {
           const group = $gameSystem._npcMapGroups?.[groupName];
-          if (group && Array.isArray(group.residentialBuildings) &&
-            !group.residentialBuildings.some(b => b.x === building.x && b.y === building.y)) {
-            group.residentialBuildings.push(building);
+          const buildings = group?.residentialBuildings || [];
+          const vacant = buildings.filter(b => {
+            const occ = $gameSystem._npcBuildingOccupants?.[b.key || `${groupName}|${b.mapId}_${b.x}_${b.y}`] || [];
+            return occ.length < (b.capacity || 1);
+          });
+          if (vacant.length > 0 && window.NPCSim?._moveInResident) {
+            window.NPCSim._moveInResident(profile, name, vacant[0], groupName);
+          } else if (ev) {
+            const building = {
+              mapId: 636, eventId: ev.eventId(), x: ev.x, y: ev.y,
+              seed: (groupName.length * 1000000) + ev.x * 1000 + ev.y,
+              type: 'visitHouse', poolName: '', capacity: 2,
+              groupName, _placeholder: true,
+            };
+            profile.homeBuilding = building;
+            profile.homeSeed = building.seed;
+            if (group && Array.isArray(group.residentialBuildings) &&
+              !group.residentialBuildings.some(b => b.x === building.x && b.y === building.y)) {
+              group.residentialBuildings.push(building);
+            }
           }
         }
       }
@@ -4088,6 +4357,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         const dir = this.getWanderDir();
         if (dir) this.event.moveStraight(dir);
         this.nextMoveTime = time + Utils.randBetween(1000, 3000);
+        if (Math.random() < 0.03) this._formNearbyRelationships();
       }
     }
 
@@ -4176,8 +4446,8 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
     updateSocializing(time) {
       if (time >= this.stateEndTime) return this.decideNextGoal();
-      // ~0.2% chance per frame to check for nearby NPCs and form relationships
-      if (Math.random() < 0.002) this._formNearbyRelationships();
+      // ~0.5% chance per frame to check for nearby NPCs and form relationships / romance
+      if (Math.random() < 0.005) this._formNearbyRelationships();
     }
 
     _formNearbyRelationships() {
@@ -4186,9 +4456,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (!profile.relationships) profile.relationships = {};
       const traitsById = _getTraitsById();
 
+      // 1. Nearby NPCs
       for (const other of ($gameSystem.npcControllers ?? [])) {
         if (other === this || !other.eventName || !other.event) continue;
-        if (!['socializing', 'inZone'].includes(other.state)) continue;
+        if (!['socializing', 'inZone', 'wandering', 'idle'].includes(other.state)) continue;
         if (Utils.distance(this.event, other.event) > 3) continue;
 
         const rel = profile.relationships[other.eventName] ?? { meetCount: 0, opinion: 0 };
@@ -4207,6 +4478,68 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         }
 
         profile.relationships[other.eventName] = rel;
+
+        // Autonomous NPC -> NPC Romance attempt
+        const RS = window.NPCRomanceSystem;
+        if (RS && Math.random() < 0.25) {
+          if (!RS.isOnCooldown(this.eventName, other.eventName, 50000)) {
+            if (RS.isSomewhatCompatible(
+              { eventName: this.eventName, profile },
+              { eventName: other.eventName, profile: otherProfile }
+            )) {
+              const res = RS.executeRomance(
+                { eventName: this.eventName, profile },
+                { eventName: other.eventName, profile: otherProfile }
+              );
+              if (res && res.suitorLine) {
+                window.NPCSim?.emit?.('npc:thought', { name: this.eventName, thought: res.suitorLine });
+                setTimeout(() => {
+                  window.NPCSim?.emit?.('npc:thought', { name: other.eventName, thought: res.replyLine });
+                }, 1400);
+              }
+            }
+          }
+        }
+      }
+
+      // 2. Nearby Party Members (Leader & Followers)
+      const RS = window.NPCRomanceSystem;
+      if ($gamePlayer && RS && Math.random() < 0.30) {
+        const partyTargets = [];
+        if ($gameParty?.leader()) partyTargets.push({ char: $gamePlayer, actor: $gameParty.leader() });
+        if ($gamePlayer.followers) {
+          for (const f of $gamePlayer.followers().data()) {
+            if (f.isVisible() && f.actor && f.actor()) {
+              partyTargets.push({ char: f, actor: f.actor() });
+            }
+          }
+        }
+
+        for (const pt of partyTargets) {
+          if (Utils.distance(this.event, pt.char) > 3) continue;
+          const actor = pt.actor;
+          if (!actor) continue;
+          if (RS.isOnCooldown(this.eventName, actor.name(), 50000)) continue;
+
+          if (RS.isSomewhatCompatible(
+            { eventName: this.eventName, profile },
+            actor
+          )) {
+            const res = RS.executeRomance(
+              { eventName: this.eventName, profile },
+              actor
+            );
+            if (res && res.suitorLine) {
+              window.NPCSim?.emit?.('npc:thought', { name: this.eventName, thought: res.suitorLine });
+              if (window.AutoIdle && window.AutoIdle.loose && typeof window.AutoIdle.loose.sayText === "function") {
+                setTimeout(() => {
+                  window.AutoIdle.loose.sayText(pt.char, res.replyLine);
+                }, 1400);
+              }
+            }
+            break;
+          }
+        }
       }
     }
 

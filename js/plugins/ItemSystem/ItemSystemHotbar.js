@@ -414,9 +414,42 @@
     }
   });
 
+  // Which number key is holding the bar (null for none), and the keys still
+  // down that a later press has already spent.
+  let _mapKeyArmed = null;
+  let _mapKeySpent = [];
+
+  function clearMapKeys() {
+    _mapKeyArmed = null;
+    _mapKeySpent = [];
+  }
+
   function disarmMapBar() {
     _mapArmed = false;
     _mapIdle = 0;
+    clearMapKeys();
+  }
+
+  // Number keys name a slot while they are held and use it when they are let
+  // go, the way the battle spell bar does (BattleSystemEnhancedHUD.js).
+  // Pressing a second number over the first re-arms onto it, and the keys
+  // underneath are spent, so releasing them later does nothing. Returns true
+  // while a key is holding the bar, so nothing else reads that frame.
+  function updateMapKeyHold() {
+    for (let i = 0; i < SLOTS; i++) {
+      if (!Input.isTriggered(String(i + 1))) continue;
+      if (_mapKeyArmed !== null && _mapKeyArmed !== i) _mapKeySpent.push(_mapKeyArmed);
+      _mapKeyArmed = i;
+      _mapArmed = false;
+      _mapIdle = 0;
+    }
+    _mapKeySpent = _mapKeySpent.filter(i => Input.isPressed(String(i + 1)));
+    if (_mapKeyArmed === null) return false;
+    if (Input.isPressed(String(_mapKeyArmed + 1))) return true;
+    const slot = _mapKeyArmed;
+    clearMapKeys();
+    ItemHotbar.use(slot);
+    return true;
   }
 
   // Whether the bar is on screen at all. A message, a choice window or a
@@ -478,13 +511,7 @@
       return;
     }
 
-    for (let i = 0; i < SLOTS; i++) {
-      if (Input.isTriggered(String(i + 1))) {
-        disarmMapBar();
-        ItemHotbar.use(i);
-        return;
-      }
-    }
+    if (updateMapKeyHold()) return;
 
     // Tab is the party cycle on the map (Core/AutoIdleExplorer.js), so the bar
     // is stepped with the page keys and fired with the number keys.
@@ -533,9 +560,11 @@
       return;
     }
     if (_mapArmed && !ItemHotbar.itemAt(_mapIndex)) disarmMapBar();
+    // A held number key names its slot without the bar taking the bumpers.
+    const keyArmed = _mapKeyArmed !== null;
     _mapBar.render(ItemHotbar.entries(), {
-      selected: _mapIndex,
-      active: _mapArmed,
+      selected: keyArmed ? _mapKeyArmed : _mapIndex,
+      active: _mapArmed || keyArmed,
       inert: !_mapAllowed
     });
   };

@@ -386,7 +386,7 @@
       hazards: true,
     },
 
-    // --- entrance-exclusive: never rolled ----------------------------------
+    // --- entrance-exclusive: only reached through one feature ---------------
     {
       key: "Sewer", layout: "canals", weight: 0, name: "sewer",
       entrances: [], affinity: [], danger: DANGER.ORDINARY,
@@ -399,9 +399,13 @@
       chests: [4, 7],
       hazards: true,
     },
+    // The vault is no longer anybody's private room behind a hatch: it is the
+    // rarest thing a stairway can open onto. Weight 1 against a catalogue of
+    // sixteens, favoured nowhere, so a party finds one about once in two
+    // hundred descents.
     {
-      key: "PatronVault", layout: "vault", weight: 0, name: "vault",
-      entrances: [], affinity: [], danger: DANGER.HOSTILE,
+      key: "PatronVault", layout: "vault", weight: 1, name: "vault",
+      entrances: ["stairsDown"], affinity: [], danger: DANGER.HOSTILE,
       palette: { main: ["DungeonFloor"], accents: ["Carpet", "Parquet"],
                  rim: ["DungeonWall"], wall: "dungeon" },
       patterns: ["border", "medallion", "checker"],
@@ -1959,6 +1963,81 @@
       carveV(orphan.y, near.y, near.x);
     }
 
+    // --- 2c. Uniform rock depth above every floor tile ----------------------
+    // Two faults come out of the same measurement. A wall face is drawn on the
+    // rock standing north of a floor tile and is capped by one ceiling row, so
+    // a band of rock thinner than WALL_HEIGHT + 1 either draws a SHORTER wall
+    // than the band next to it (walls of two different heights in one room) or,
+    // when the band is a single row, draws no wall at all and leaves a ceiling
+    // tile sitting straight on the floor with nothing under its south edge.
+    // Normalise the geometry first so the renderer never has to choose: every
+    // rock column standing north of floor is made at least ROCK_DEPTH deep.
+    // A thin divider between two carved spaces is opened (connectivity only
+    // ever grows, so this cannot orphan anything); a band the map edge itself
+    // caps has nowhere to grow, so the floor is pushed one row down instead.
+    // Opening a column can expose a new floor edge above it, hence the passes.
+    const WALL_HEIGHT = 3;
+    const ROCK_DEPTH = WALL_HEIGHT + 1;
+    for (let pass = 0; pass < 24; pass++) {
+      let changed = false;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (!carved[y][x] || (y > 0 && carved[y - 1][x])) continue;
+          let depth = 0;
+          while (y - 1 - depth >= 0 && !carved[y - 1 - depth][x]) depth++;
+          if (depth >= ROCK_DEPTH) continue;
+          if (y - 1 - depth < 0) {
+            carved[y][x] = false;
+          } else {
+            for (let k = 1; k <= depth; k++) carved[y - k][x] = true;
+          }
+          changed = true;
+        }
+      }
+      // A corner has to be worth the name. Where the north edge of the carved
+      // space jogs by one or two rows between neighbouring columns, the taller
+      // column's face stands beside the shorter one's CEILING CAP, so the cap
+      // cuts into the face half way up and the corner tiles cover only part of
+      // the wall's height. A step shorter than the face is not a corner, it is
+      // a nick: level it by pulling the lower edge up to its neighbour, so
+      // every corner is at least a full wall tall and the face runs its whole
+      // height into it. Steps of WALL_HEIGHT or more are left as they are -
+      // those are real terraces, and each one carries its own full face.
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (!carved[y][x] || (y > 0 && carved[y - 1][x])) continue;
+          for (const dx of [-1, 1]) {
+            const nx = x + dx;
+            if (nx < 0 || nx >= width) continue;
+            // The neighbouring column's own north edge, searched only as far
+            // up as a nick could reach.
+            for (let k = 1; k < WALL_HEIGHT; k++) {
+              const ny = y - k;
+              if (ny < 1 || !carved[ny][nx] || carved[ny - 1][nx]) continue;
+              for (let j = 1; j <= k; j++) carved[y - j][x] = true;
+              changed = true;
+              break;
+            }
+          }
+        }
+      }
+      // Opening one column at a time is what leaves a one-tile fin of rock
+      // standing between two carved spaces: the columns beside it were deep
+      // enough to keep, so the mass comes out as a staircase and the autotile
+      // has to corner around a strip a single tile wide, which is the ugliest
+      // shape the blend can draw. A fin that thin is never read as structure,
+      // so it goes: rock with carved floor on BOTH flanks is opened too, and
+      // the depth check above runs again over whatever that exposes.
+      for (let y = 0; y < height; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          if (carved[y][x] || !carved[y][x - 1] || !carved[y][x + 1]) continue;
+          carved[y][x] = true;
+          changed = true;
+        }
+      }
+      if (!changed) break;
+    }
+
     // --- 3. Render layer 0: floor / rock rim / empty space ------------------
     // The dead mass between the rooms is NOT paved wall to wall with the
     // Ceiling tile: repeating one rubble tile over five sixths of the map is
@@ -2007,7 +2086,6 @@
       // ceiling kind is flagged impassable on every shape in the Dungeon
       // tileset (data/Tilesets.json) precisely so it is safe to leave open -
       // it reads as ambient rock but is never a second, walkable path.
-      const WALL_HEIGHT = 3;
       const wallCells = Array.from({ length: height }, () => new Array(width).fill(false));
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -2020,6 +2098,8 @@
           // above it - a wall with no ceiling capping it reads as a floating
           // slab. A 1-tile-thin divider between two rooms therefore carries no
           // wall at all and is drawn purely as ceiling.
+          // Step 2c guarantees depth >= WALL_HEIGHT + 1, so the face is always
+          // the full height and always keeps its ceiling cap.
           const wallH = Math.min(WALL_HEIGHT, depth - 1);
           for (let k = 1; k <= wallH; k++) wallCells[y - k][x] = true;
         }

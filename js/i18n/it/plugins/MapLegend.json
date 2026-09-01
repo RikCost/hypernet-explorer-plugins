@@ -23,7 +23,19 @@
     "quests": "Missioni",
     "zoom": "Ingrandisci e rimpicciolisci",
     "interact": "Interagisci con un oggetto o smontalo",
-    "returnToWorld": "Torna alla mappa del mondo"
+    "returnToWorld": "Torna alla mappa del mondo",
+    "moveMouse": "Muovi il mouse",
+    "holdLeftClick": "Tieni premuto il tasto sinistro",
+    "voxWalk": "Cammina nel mondo 3D",
+    "voxLook": "Guardati intorno",
+    "voxJump": "Salta (di nuovo contro un muro per rimbalzarci)",
+    "voxRun": "Corri",
+    "voxDig": "Rompi il blocco che stai guardando",
+    "voxPlace": "Rimetti giu un blocco",
+    "voxBar": "Cambia barra rapida: blocchi, oggetti, incantesimi",
+    "voxSlot": "Prendi in mano una casella della barra rapida",
+    "voxInteract": "Interagisci: parla, saccheggia, casse, sali su un veicolo",
+    "voxMap": "Cambia la vista della mappa"
   },
   "areas": {
     "tutorialVillage": {

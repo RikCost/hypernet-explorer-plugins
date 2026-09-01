@@ -68,5 +68,33 @@
   "refused": {
     "title": "Respinti allo sportello",
     "wanted": "L'impiegato cerca il vostro nome, guarda la fila dietro di voi e non stampa il biglietto. Arrivateci con i vostri mezzi."
+  },
+  "custom": {
+    "add": "Segna un luogo tuo",
+    "title": "Un luogo tuo",
+    "x": "X",
+    "y": "Y",
+    "name": "Nome",
+    "defaultName": "{nation} - {biome} ({x}, {y})",
+    "unclaimed": "Terra di nessuno",
+    "unknownBiome": "Terreno ignoto",
+    "allowed": "{biome} aperta, e nulla che ci stia sopra",
+    "save": "Segnalo",
+    "saved": "{name} ora è sulla mappa",
+    "savedTitle": "Segnato sulla mappa",
+    "hint": "Sinistra e destra cambiano un numero, su e giù spostano tra i campi",
+    "refused": {
+      "range": "Quel quadrato è fuori dalla mappa",
+      "reserved": "Lì c'è già un luogo",
+      "duplicate": "Quel quadrato lo hai già segnato",
+      "river": "Lì ci passa un fiume",
+      "water": "Quel quadrato è acqua aperta",
+      "mountain": "Lì sopra non si guida nulla"
+    }
+  },
+  "arrival": {
+    "title": "Fine del viaggio",
+    "visit": "Visita {biome}",
+    "worldMap": "Resta sulla mappa del mondo"
   }
 }

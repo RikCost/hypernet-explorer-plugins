@@ -17,5 +17,50 @@
   },
   "pleased": "The \\c[14]{animal}\\c[0] is pleased to see you.",
   "nothingReady": "The \\c[14]{animal}\\c[0] has nothing ready yet.",
-  "company": "You spend a while with the \\c[14]{animal}\\c[0]. The company does everyone good."
+  "company": "You spend a while with the \\c[14]{animal}\\c[0]. The company does everyone good.",
+  "age": {
+    "years": {
+      "one": "{count} year old",
+      "other": "{count} years old"
+    },
+    "days": {
+      "one": "{count} day old",
+      "other": "{count} days old"
+    }
+  },
+  "panel": {
+    "title": "Animal",
+    "breed": "Breed",
+    "age": "Age",
+    "growth": "Grown",
+    "grownAlready": "Fully grown",
+    "daysToAdult": {
+      "one": "{count} day to go",
+      "other": "{count} days to go"
+    },
+    "nutrition": "Fed",
+    "hungry": "Hungry",
+    "company": "Company",
+    "produce": "Produce",
+    "producesNothing": "Produces nothing",
+    "yield": "{min}-{max} every {days}d",
+    "ready": "Ready",
+    "readyIn": {
+      "one": "in {count} day",
+      "other": "in {count} days"
+    },
+    "notYetAdult": "Not yet grown"
+  },
+  "actionCollect": "Collect",
+  "actionPet": "Pet",
+  "actionEmpathize": "Empathize",
+  "actionCancel": "Cancel",
+  "fed": "The \\c[14]{animal}\\c[0] eats out of your hand.",
+  "notHungry": "The \\c[14]{animal}\\c[0] has had enough.",
+  "tooHungryToProduce": "The \\c[14]{animal}\\c[0] is too hungry to give anything.",
+  "farmerOf": "The farmer of ({x},{y})",
+  "owner": "Owner",
+  "wildAnimal": "Wild",
+  "actionConvince": "Convince to join",
+  "actionJoinPet": "Join as pet"
 }

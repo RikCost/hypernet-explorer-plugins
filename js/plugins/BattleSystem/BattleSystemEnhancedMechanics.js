@@ -1,11 +1,11 @@
 // ============================================================================
-// Battle System Enhanced - Combat Safety & Level Warnings
+// Battle System Enhanced - Combat Safety
 // For RPG Maker MZ
 // ============================================================================
 
 /*:
  * @target MZ
- * @plugindesc v2.1 Mechanics module: health protection, danger warnings, stat requirement fumbles, commands.
+ * @plugindesc v2.1 Mechanics module: health protection, stat requirement fumbles, commands.
  * @author Combined by Claude, modified by OmniLex
  * @pluginName BattleSystemEnhancedMechanics
  *
@@ -16,8 +16,7 @@
  *
  * Requires BattleSystemEnhanced.js (Core) and sub-modules to be loaded first.
  *
- * Provides health protection (death prevention), danger assessment (median level
- * vs enemy level warnings), the top-screen warning toast, the stat requirement
+ * Provides the one-shot 1-HP save, the stat requirement
  * fumble roll (<StatReq: STAT N>, window.SkillStatReq), and debug commands.
  *
  * Loading order:
@@ -39,18 +38,34 @@
     const BSE = window.BattleSystemEnhanced;
 
     // ========================================================================
-    // 1. HEALTH PROTECTION SYSTEM
+    // 1. THE ONE-SHOT SAVE
+    //
+    //   A party member caught in full health by a blow that would kill them
+    //   outright is left standing on 1 HP instead. It is a save against being
+    //   deleted without a turn to answer, not a save against dying: it asks
+    //   only where the character stood BEFORE the hit landed.
+    //
+    //     - at or above HEALTH_PROTECTION_MIN_HP_RATE of max HP: the blow
+    //       leaves them on 1 HP, and the charge is spent.
+    //     - below it: the blow kills. A character already worn down dies to
+    //       the hit that finishes them, whether or not the charge is unspent.
+    //
+    //   One charge per party member per battle, cleared at BattleManager.setup
+    //   and never carried into a save, and only inside a battle: bleeding out
+    //   on the map is its own business. Blood and Oil mode keeps it too - that
+    //   mode makes death stick, it does not make a full-health character
+    //   deletable in one blow.
     // ========================================================================
+
+    const HEALTH_PROTECTION_MIN_HP_RATE = 0.80;
 
     BSE.State._healthProtectionUsed = {};
 
     BSE.Functions.resetHealthProtection = function() {
         BSE.State._healthProtectionUsed = {};
-        $gameParty.members().forEach((actor, index) => {
-            BSE.State._healthProtectionUsed[actor.actorId()] = false;
-        });
     };
 
+    /** Whether this member still holds their charge for this battle. */
     BSE.Helpers.hasHealthProtection = function(actorId) {
         return !BSE.State._healthProtectionUsed[actorId];
     };
@@ -59,79 +74,17 @@
         BSE.State._healthProtectionUsed[actorId] = true;
     };
 
-
-    // ========================================================================
-    // 2. BATTLE START DANGER WARNING
-    // ========================================================================
-
-    // The party speaks up the moment a fight leaves the band they can win,
-    // which is the same threshold the damage layer is built around
-    // (BSE.Helpers.levelGapTier, section 4b-ter of the core): a monster more
-    // than levelGapFair levels above the party median earns a word of caution,
-    // and one more than levelGapHard above it earns the old retreat warning.
-    // Waiting until +13, as this used to, meant the party walked into the
-    // whole hard band and the whole bottom of the hopeless one with nothing
-    // said at all - and by then the numbers had already decided the fight.
-    function checkAndShowDangerousEnemyWarning() {
-        if (!$gameTroop || !$gameTroop.members().length) return;
-        const party = $gameParty.members();
-        if (!party.length) return;
-        // Sandbox mode or the "Test" playtest character: skip the turn-0
-        // "this enemy is too strong" retreat warning entirely.
-        const leader = $gameParty.leader();
-        if (($gameSystem && $gameSystem._isSandboxMode) || (leader && leader.name() === "Test")) return; // i18n-ignore: playtest character name
-        const partyMedian = BSE.Helpers.getMedianLevel(party);
-        const highestEnemyLevel = Math.max(...$gameTroop.members().map(enemy => {
-            const enemyData = $dataEnemies[enemy.enemyId()];
-            return enemyData ? BSE.Helpers.getEnemyLevel(enemyData.note) : 0;
-        }));
-        if (highestEnemyLevel <= 0) return;
-        const tier = BSE.Helpers.levelGapTier(highestEnemyLevel, partyMedian).tier;
-        if (tier === BSE.Data.LEVEL_GAP_HOPELESS) showDangerWarning(party, 'dangerWarning');
-        else if (tier === BSE.Data.LEVEL_GAP_HARD) showDangerWarning(party, 'cautionWarning');
+    /**
+     * Whether the blow that just landed is the one the save exists for: a
+     * battle hit, on a member who stood at HEALTH_PROTECTION_MIN_HP_RATE or
+     * better a moment ago, who still holds their charge.
+     */
+    function oneShotSaveApplies(actor, hpBeforeHit) {
+        if (!$gameParty || !$gameParty.inBattle()) return false;
+        if (!(actor.mhp > 0)) return false;
+        if (hpBeforeHit / actor.mhp < HEALTH_PROTECTION_MIN_HP_RATE) return false;
+        return BSE.Helpers.hasHealthProtection(actor.actorId());
     }
-
-    function showDangerWarning(party, poolKey) {
-        const single = party.length === 1;
-        const speaker = single ? party[0] : party[Math.floor(Math.random() * party.length)];
-        const pool = BSE.Helpers.bi18nList(poolKey + (single ? '.single' : '.party')) || [];
-        const message = speaker.name() + ": " + (pool[Math.floor(Math.random() * pool.length)] || '');
-        const cardMode = window.isCardCombatMode ? window.isCardCombatMode() : $gameSwitches.value(45);
-        if (cardMode && (!window.AsciiMode || !window.AsciiMode.active)) {
-            showTopScreenMessage(message, poolKey === 'dangerWarning' ? 'danger' : 'warning');
-        } else {
-            window.skipLocalization = true;
-            $gameMessage.add(message);
-            window.skipLocalization = false;
-        }
-    }
-
-    // ========================================================================
-    // 3. Top-screen warning (shared ParchmentToast HTML popup)
-    // ========================================================================
-
-    function showTopScreenMessage(message, severity) {
-        if (SceneManager._scene && SceneManager._scene.constructor === Scene_Battle) {
-            if (window.ParchmentToast) {
-                window.ParchmentToast.show(message, { severity: severity || "danger", duration: 180 });
-            } else {
-                $gameMessage.add(message);
-            }
-        }
-    }
-
-    // ========================================================================
-    // 4. BattleManager - Integrate Danger Warning on Start
-    // ========================================================================
-
-    // This overrides the displayStartMessages from State module to add danger check
-    BattleManager.displayStartMessages = function() {
-        checkAndShowDangerousEnemyWarning();
-    };
-
-    // ========================================================================
-    // 5. Game_Actor setHp - Health Protection Override
-    // ========================================================================
 
     // Eris Trial battle (troop 1342, the Eris = enemy 1343 troop): during the
     // first 10 turns the 1-HP protection is ALWAYS on for every party member and
@@ -151,20 +104,13 @@
         const wasAlive = !this.isDead();
         _Game_Actor_setHp.call(this, hp);
 
-        // Blood and Oil mode: death is lethal - the regular once-per-battle 1-HP
-        // protection charge is disabled entirely (the Eris Trial special case,
-        // handled above, still applies).
-        const bloodAndOil = !!($gameSystem && $gameSystem._bloodAndOilMode);
-
         if (wasAlive && this.isDead() && oldHp > 1 && erisTrialInvulnerable()) {
-            // Always survive on 1 HP, do NOT spend the regular protection charge.
+            // Always survive on 1 HP while Eris toys with the party, and do
+            // NOT spend the one-shot charge on it.
             _Game_Actor_setHp.call(this, 1);
-        } else if (!bloodAndOil && wasAlive && this.isDead() && BSE.Helpers.hasHealthProtection(this.actorId()) && oldHp > 1) {
+        } else if (wasAlive && this.isDead() && oldHp > 1 && oneShotSaveApplies(this, oldHp)) {
             BSE.Helpers.useHealthProtection(this.actorId());
             _Game_Actor_setHp.call(this, 1);
-            if ($gameParty.inBattle()) {
-                // Protection sound could be added here
-            }
         }
 
         // Handle map deaths
@@ -179,7 +125,7 @@
     };
 
     // ========================================================================
-    // 6. BattleManager - Reset Health Protection on Setup
+    // 2. BattleManager - a fresh charge for every fight
     // ========================================================================
 
     const _BattleManager_setup_HP = BattleManager.setup;
@@ -194,7 +140,7 @@
     //   On its turn, a <Talk> enemy that is not a <Boss> weighs the fight it is
     //   in and can walk away unharmed, without a corpse, when any of these
     //   hold: it so outclasses the party that finishing them is beneath it
-    //   (the same level gap the battle-start danger warning above uses), the
+    //   (its own level gap, MERCY_LEVEL_GAP), the
     //   party has already won it over through the talk menu (EnemyTalkSystem's
     //   disposition), or the party is already down a member or fighting on
     //   critical HP and it takes pity rather than finish them off.
@@ -205,10 +151,8 @@
 
     const MERCY_CHANCE = 0.05;
     const MERCY_DISPOSITION_THRESHOLD = 70;
-    // Its own threshold, deliberately far wider than the battle-start warning:
-    // that one fires as soon as a fight leaves the winnable band, while this
-    // one asks whether the monster is so far past the party that killing them
-    // is beneath it. Sparing the party every time they are six levels down
+    // Its own threshold: it asks whether the monster is so far past the party
+    // that killing them is beneath it. Sparing the party every time they are six levels down
     // would hand them most of the hard band for free.
     const MERCY_LEVEL_GAP = 13;
 
@@ -364,24 +308,6 @@
                 $gameScreen.startFlash([255, 0, 0, 128], 30);
             }
         }
-    };
-
-    BSE.Functions.executeResetHealthProtection = function() {
-        BSE.Functions.resetHealthProtection();
-        window.skipLocalization = true;
-        $gameMessage.add(T('Battle.healthProtection.reset'));
-        window.skipLocalization = false;
-    };
-
-    BSE.Functions.executeCheckHealthProtection = function() {
-        const party = $gameParty.members();
-        party.forEach((actor, index) => {
-            const hasProtection = BSE.Helpers.hasHealthProtection(actor.actorId());
-            const status = hasProtection ? T('Battle.healthProtection.available') : T('Battle.healthProtection.used');
-            window.skipLocalization = true;
-            $gameMessage.add(T('Battle.healthProtection.status', { actor: actor.name(), status: status }));
-            window.skipLocalization = false;
-        });
     };
 
 })();

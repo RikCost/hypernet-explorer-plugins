@@ -1,120 +1,144 @@
 {
-  "preferences": "PREFERENCES",
-  "back": "Back",
-  "noSettingsHere": "No settings here.",
-  "normal": "Normal",
-  "active": "✦ ACTIVE",
-  "inactive": "✧ INACTIVE",
-  "pressOrOkToEdit": "Press ▼ or OK to edit settings.",
-  "l1R1SwitchTabs": "L1 / R1 switch tabs.",
-  "adjustTheFocusedValue": "◀ / ▶ adjust the focused value.",
-  "slider": "Slider",
-  "selection": "Selection",
-  "toggle": "Toggle",
-  "active2": "Active",
-  "inactive2": "Inactive",
-  "toAdjust": "◀ / ▶ to adjust",
-  "okOrToToggle": "OK or ◀ / ▶ to toggle",
-  "requiresRestartToApply": "⟳ Requires restart to apply",
-  "currentValue": "Current Value",
-  "controls": "Controls",
-  "howItWorks": "How It Works",
-  "toBrowse": "▲ / ▼ to browse",
-  "l1R1SwitchTabs2": "L1 / R1 switch tabs",
-  "label": {
-    "gameplay": "Gameplay",
-    "video": "Video",
-    "audio": "Audio",
-    "shader": "Shader",
-    "experimental": "Experimental",
-    "uiVolume": "UI Volume",
-    "voiceVolume": "Voice Volume",
-    "masterVolume": "Master Volume",
-    "language": "Language",
-    "muteBgm": "Mute BGM",
-    "footstepsVolume": "Footsteps Volume",
-    "weatherVolume": "Weather Volume",
-    "enemyBattlers": "Enemy Battlers",
-    "showFps": "Show FPS Counter",
-    "activeTheme": "Active Theme",
-    "cardCombat": "Card Combat",
-    "mapBattle": "Map Battle",
-    "retroShader": "Retro Shader",
-    "renderResolution": "Render Resolution",
-    "dithering": "Dithering",
-    "colorLevels": "Color Levels",
-    "vertexSnap": "Vertex Snap",
-    "uiScaling": "UI Scaling",
-    "fontScaling": "Font Scaling",
-    "titleBackground": "Title Background",
-    "enemySpawn": "Enemy Spawn",
-    "enemyDifficulty": "Enemy Difficulty",
-    "cpuPartyMembers": "CPU Party Members",
-    "sprite": "Sprite",
-    "sprites": "Sprites",
-    "markovLlmModel": "AI Dialogue Model",
-    "dialogueMode": "NPC Dialogue Mode"
-  },
-  "warn": {
-    "language": "⚠ Work in progress: only English is fully translated. Any other language leaves large parts of the game untranslated.",
-    "cardCombat": "⚠ Replaces the standard battle scene. Turning this on turns Map Battle off.",
-    "mapBattleMode": "⚠ Replaces the standard battle scene. Turning this on turns Card Combat off.",
-    "markovLlmModel": "⚠ The model runs on the processor and wants a few gigabytes of memory. It writes English, and the first line of a session waits for the model to load."
-  },
-  "titleBackground": [
-    "Random",
-    "Cards",
-    "Space",
-    "Artifacts",
-    "Bestiary",
-    "Weapons",
-    "Bestiary",
-    "Hyperverse",
-    "Camper Drive"
-  ],
-  "enemySpawn": [
-    "Biome",
-    "Party Level",
-    "Realistic",
-    "Chaos"
-  ],
-  "dialogueMode": [
-    "Empathize",
-    "Markovian"
-  ],
-  "enemyBattler": [
-    "3D",
-    "Sprites",
-    "2D"
-  ],
-  "enemyBattlerToast": {
-    "model3d": "3D enabled (enemies)",
-    "sprites": "Sprites enabled (enemies)",
-    "battlers2d": "2D battlers enabled (enemies)"
-  },
-  "languageProgress": "{name} 1% done",
-  "settingsInSection": "{count} settings in this section.",
-  "desc": {
-    "enemySpawnMode": "How strong wandering enemies are. The year raises levels regardless: +10 a year to 2010, up to 110 in 2010-2011, nothing under 80 from 2012.",
-    "weatherVolume": "Volume of outdoor ambience: rain, storms, wind and biome sounds. Interiors are unaffected.",
-    "partyHud": "A card per party member in the top-left: HP, MP, states and urgent needs.",
-    "musicArtistDisplay": "Whether the game tells you what music is playing and who made it.",
-    "battleMusicName": "Which track plays when a fight starts. Biome, the default, uses the battle theme of the place you are fighting in. Random draws a different one of the tracks below at the start of every battle.",
-    "markovLlmModel": "Which GGUF language model writes generated dialogue. Off leaves every generated line to the Markov chains. Drop a .gguf file into the game's models folder and it is listed here.",
-    "dialogueMode": "How an NPC with nothing scripted to say responds when you talk to them. Empathize plays out a Socialize action from their personality, falling back to a flavour rumour. Markovian generates a fresh line from the NPC's own word bank instead."
-  },
-  "descState": {
-    "enemySpawnMode": [
-      "Biome: anything living here can appear. Seven spawns in ten are any level up to 110, all equally likely, so the place decides what you meet; the other three are pitched within five levels of your party, climbing with the year.",
-      "Party Level: enemies keep pace with your party. Roamers run from your own level up to ten above it; each tile hides one boss above that. The safest option.",
-      "Realistic: difficulty comes from the place, not from you. Levels rise the further a tile lies from where you started. Each nation and biome has its own roster, and every tile hides a boss.",
-      "Chaos: levels 1-110 roam anywhere, any biome. Procedural maps redeal their monsters on every entry."
+    "preferences": "PREFERENCES",
+    "back": "Back",
+    "noSettingsHere": "No settings here.",
+    "normal": "Normal",
+    "active": "✦ ACTIVE",
+    "inactive": "✧ INACTIVE",
+    "pressOrOkToEdit": "Press ▼ or OK to edit settings.",
+    "l1R1SwitchTabs": "L1 / R1 switch tabs.",
+    "adjustTheFocusedValue": "◀ / ▶ adjust the focused value.",
+    "slider": "Slider",
+    "selection": "Selection",
+    "toggle": "Toggle",
+    "active2": "Active",
+    "inactive2": "Inactive",
+    "toAdjust": "◀ / ▶ to adjust",
+    "okOrToToggle": "OK or ◀ / ▶ to toggle",
+    "requiresRestartToApply": "⟳ Requires restart to apply",
+    "currentValue": "Current Value",
+    "controls": "Controls",
+    "howItWorks": "How It Works",
+    "toBrowse": "▲ / ▼ to browse",
+    "l1R1SwitchTabs2": "L1 / R1 switch tabs",
+    "label": {
+        "gameplay": "Gameplay",
+        "video": "Video",
+        "audio": "Audio",
+        "shader": "Shader",
+        "experimental": "Experimental",
+        "uiVolume": "UI Volume",
+        "voiceVolume": "Voice Volume",
+        "masterVolume": "Master Volume",
+        "language": "Language",
+        "muteBgm": "Mute BGM",
+        "footstepsVolume": "Footsteps Volume",
+        "weatherVolume": "Weather Volume",
+        "enemyBattlers": "Enemy Battlers",
+        "proceduralHitFX": "Procedural Weapon Hits",
+        "showFps": "Show FPS Counter",
+        "activeTheme": "Active Theme",
+        "cardCombat": "Card Combat",
+        "mapBattle": "Map Battle",
+        "shaderStyle": "Shader Style",
+        "renderResolution": "Render Resolution",
+        "dithering": "Dithering",
+        "colorLevels": "Color Levels",
+        "vertexSnap": "Vertex Snap",
+        "pixelSize": "Pixel Size",
+        "weaponDetail": "Weapon Detail",
+        "pixelPalette": "Color Palette",
+        "lightBands": "Light Bands",
+        "saturation": "Saturation",
+        "inkedShadows": "Inked Shadows",
+        "uiScaling": "UI Scaling",
+        "fontScaling": "Font Scaling",
+        "titleBackground": "Title Background",
+        "enemySpawn": "Enemy Spawn",
+        "enemyDifficulty": "Enemy Difficulty",
+        "cpuPartyMembers": "CPU Party Members",
+        "sprite": "Sprite",
+        "sprites": "Sprites",
+        "markovLlmModel": "AI Dialogue Model",
+        "dialogueMode": "NPC Dialogue Mode"
+    },
+    "warn": {
+        "language": "⚠ Work in progress: only English is fully translated. Any other language leaves large parts of the game untranslated.",
+        "cardCombat": "⚠ Replaces the standard battle scene. Turning this on turns Map Battle off.",
+        "mapBattleMode": "⚠ Replaces the standard battle scene. Turning this on turns Card Combat off.",
+        "markovLlmModel": "⚠ The model runs on the processor and wants a few gigabytes of memory. It writes English, and the first line of a session waits for the model to load."
+    },
+    "titleBackground": [
+        "Random",
+        "Cards",
+        "Space",
+        "Artifacts",
+        "Bestiary",
+        "Weapons",
+        "Bestiary",
+        "Hyperverse",
+        "Camper Drive"
     ],
-    "musicArtistDisplay": [
-      "First time: announced only the first time you hear a track. Changing this setting resets what it remembers.",
-      "Every time: a labelled tape slides in whenever the track returns. Never in battle, never twice within five minutes.",
-      "Minimal: track and artist in the usual corner notification.",
-      "Off: no announcement."
-    ]
-  }
+    "enemySpawn": [
+        "Biome",
+        "Party Level",
+        "Realistic",
+        "Chaos"
+    ],
+    "dialogueMode": [
+        "Empathize",
+        "Markovian"
+    ],
+    "enemyBattler": [
+        "3D",
+        "Sprites",
+        "2D"
+    ],
+    "enemyBattlerToast": {
+        "model3d": "3D enabled (enemies)",
+        "sprites": "Sprites enabled (enemies)",
+        "battlers2d": "2D battlers enabled (enemies)"
+    },
+    "languageProgress": "{name} 1% done",
+    "settingsInSection": "{count} settings in this section.",
+    "desc": {
+        "proceduralHitFX": "3D impact effects drawn for each weapon type where a blow lands. Off plays the animation the weapon names instead.",
+        "enemySpawnMode": "How strong wandering enemies are. The year raises levels regardless: +10 a year to 2010, up to 110 in 2010-2011, nothing under 80 from 2012.",
+        "weatherVolume": "Volume of outdoor ambience: rain, storms, wind and biome sounds. Interiors are unaffected.",
+        "partyHud": "A card per party member in the top-left: HP, MP, states and urgent needs.",
+        "musicArtistDisplay": "Whether the game tells you what music is playing and who made it.",
+        "battleMusicName": "Which track plays when a fight starts. Biome, the default, uses the battle theme of the place you are fighting in. Random draws a different one of the tracks below at the start of every battle.",
+        "markovLlmModel": "Which GGUF language model writes generated dialogue. Off leaves every generated line to the Markov chains. Drop a .gguf file into the game's models folder and it is listed here.",
+        "dialogueMode": "How an NPC with nothing scripted to say responds when you talk to them. Empathize plays out a Socialize action from their personality, falling back to a flavour rumour. Markovian generates a fresh line from the NPC's own word bank instead."
+    },
+    "descState": {
+        "enemySpawnMode": [
+            "Biome: anything living here can appear. Seven spawns in ten are any level up to 110, all equally likely, so the place decides what you meet; the other three are pitched within five levels of your party, climbing with the year.",
+            "Party Level: enemies keep pace with your party. Roamers run from your own level up to ten above it; each tile hides one boss above that. The safest option.",
+            "Realistic: difficulty comes from the place, not from you. Levels rise the further a tile lies from where you started. Each nation and biome has its own roster, and every tile hides a boss.",
+            "Chaos: levels 1-110 roam anywhere, any biome. Procedural maps redeal their monsters on every entry."
+        ],
+        "musicArtistDisplay": [
+            "First time: announced only the first time you hear a track. Changing this setting resets what it remembers.",
+            "Every time: a labelled tape slides in whenever the track returns. Never in battle, never twice within five minutes.",
+            "Minimal: track and artist in the usual corner notification.",
+            "Off: no announcement."
+        ],
+        "shaderStyle": [
+            "Off: plain three.js. Models are drawn clean, with no wobble, banding or downsampling.",
+            "SnapVertex: the PlayStation-1 look. Vertices snap to a coarse grid, colours band and the picture is rendered below full resolution.",
+            "Pixel Art: the sprite look. Flat cel bands, chunky pixels and an optional limited palette."
+        ]
+    },
+    "shaderMode": {
+        "off": "Off",
+        "snapvertex": "SnapVertex",
+        "pixelart": "Pixel Art"
+    },
+    "palette": {
+        "aurora256": "256 Colors",
+        "splendor128": "128 Colors",
+        "lcd": "LCD",
+        "none": "No Palette (Unlimited)"
+    }
 }

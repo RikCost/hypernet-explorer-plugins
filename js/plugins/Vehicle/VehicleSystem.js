@@ -486,6 +486,45 @@
       // BOOST
       speedBoostMultiplier: Number(params.speedBoostMultiplier || 1.3)  // Shift key multiplier (#114: reduced from 1.5)
     };
+
+    // The Mount is a living animal, not a machine, and it is the one vehicle
+    // that can never be summoned: there is no item to own and no entry in the
+    // Vehicles menu. The party rides whatever ridable companion it is already
+    // travelling with, and it climbs on from the Pets page (see mountPet below).
+    // A party MEMBER is never a mount: only records in the pet registry are
+    // offered, and a person is an actor, not one of those.
+    //
+    // Mechanically it is the Bike with a pulse: it shares the engine's 'boat'
+    // slot (discriminated by $gameSystem._boatType === 'mount'), needs no fuel,
+    // has no interior, no storage and no workshop, and gains on a road the way
+    // any other overland traveller does. Its sprite is not written here at all:
+    // it is whatever sheet the companion being ridden wears (see mountSprite).
+    static MOUNT = {
+      type: 'boat',
+      name: 'Mount',  // i18n-ignore  vehicle id
+      maxFuel: 0,
+      fuelRate: 0,
+      interior: { mapId: 0, x: 0, y: 0 },
+      // Filled in per ride from the companion's own sheet; the fallback keeps
+      // selectVehicleSprite honest when nothing is being ridden.
+      sprites: {
+        normal: { name: '', index: 0 }
+      },
+      refuelEvent: 0,
+      storageEvent: 0,
+      repairEvent: 0,
+      maxSpeed: 5.5,
+      // A horse eats, it does not refuel.
+      usesFuel: false,
+      canRefuelAtPump: false,
+      roadBoost: true,
+      boatSubType: 'mount',
+      // No summoning item: ownership is "a ridable companion is registered".
+      summonItemId: 0,
+      // The one flag every other branch keys off, so no literal 'Mount' string
+      // has to be repeated to ask "is this the living one".
+      mount: true
+    };
   }
 
   // ============================================================================
@@ -499,7 +538,11 @@
    * the Starship cares about (see starshipSprite below).
    */
   function selectVehicleSprite(config, driving) {
-    if (!config || !config.sprites) return null;
+    if (!config) return null;
+    // A mount wears the companion's own sheet, at every size: an animal is not
+    // drawn twice over for the world map the way a vehicle is.
+    if (config.mount) return mountSprite();
+    if (!config.sprites) return null;
     const isMap315 = $gameMap.mapId() === 315;
     if (config.type === 'airship') return starshipSprite(isMap315, !!driving);
     return isMap315 ? config.sprites.normal : (config.sprites.large || config.sprites.normal);
@@ -550,11 +593,12 @@
   //   it: what is on the ground is its SHADOW, and the shadow is the ship. It
   //   lies across the map wherever the hull is overhead, moored or under way,
   //   turning with it as it flies (see Sprite_StarshipShadow). Moored, one more
-  //   thing is added: the drawn airship sheet, standing where the party goes up
-  //   and where the vehicle menu is opened from. Take off and it goes - it marks
-  //   a place on the ground, and the ship is no longer standing on it - leaving
-  //   nothing under way but the dark sliding over the fields. Land, and it is
-  //   put back.
+  //   thing is added, and it is not a picture of the ship: the turning info icon,
+  //   a mark on the ground standing where the party goes up and where the vehicle
+  //   menu is opened from. Drawing a second, tiny hull under a shadow thirty
+  //   tiles wide only made the ship look like a toy; a marker says "the way in is
+  //   here" and lets the shadow be the ship. Take off and it goes, leaving nothing
+  //   under way but the dark sliding over the fields. Land, and it is put back.
   //
   //   AND NOT INDOORS AT ALL. A starship is not brought into a house, a cave or
   //   a dungeon: it cannot be summoned onto an interior map and it cannot be
@@ -565,6 +609,13 @@
   // keeps the last name it was given until something overwrites it, so a ship
   // taking off would otherwise fly away still wearing its own mooring mark.
   const STARSHIP_NO_SPRITE = { name: '', index: 0 };
+
+  // The mark a moored ship leaves on the ground off the world map: the 16-frame
+  // info icon, turned into a character sheet by UI/InfoIconRenderer.js, which
+  // animates any character wearing this sheet. It is one tile wide, so it is
+  // kept out of the oversized-sprite collision (see footprintRect) and the
+  // party walks up to it rather than around a hull-sized box.
+  const STARSHIP_MOORED_MARK = { name: 'Objects/info', index: 0 };  // i18n-ignore  sprite asset path
 
   // The name the world-map sheet is registered under. NOTHING of that name
   // exists in img/characters: the sheet is rendered out of the procedural hull
@@ -668,7 +719,7 @@
     if (isMap315) {
       return starshipSheetBitmap() ? { name: STARSHIP_SHEET, index: 0 } : sprites.normal;
     }
-    return driving ? STARSHIP_NO_SPRITE : sprites.normal;
+    return driving ? STARSHIP_NO_SPRITE : STARSHIP_MOORED_MARK;
   }
 
   /**
@@ -770,6 +821,7 @@
       case 'Boat': return 'boat';  // i18n-ignore  vehicle id
       case 'Broom': return 'broom';  // i18n-ignore  vehicle id
       case 'Starship': return 'airship';  // i18n-ignore  vehicle id
+      case 'Mount': return 'mount';  // i18n-ignore  vehicle id
       default: return null;
     }
   }
@@ -807,6 +859,7 @@
       case 'boat':    return VehicleConfig.BOAT;
       case 'broom':   return VehicleConfig.BROOM;
       case 'airship': return VehicleConfig.AIRSHIP;
+      case 'mount':   return VehicleConfig.MOUNT;
       default:        return null;
     }
   }
@@ -905,11 +958,11 @@
   //   order          park sequence, so when several vehicles share one tile the
   //                  last one parked there is the one drawn
 
-  const VEHICLE_KEYS = ['camper', 'car', 'bike', 'boat', 'broom', 'airship'];
+  const VEHICLE_KEYS = ['camper', 'car', 'bike', 'boat', 'broom', 'airship', 'mount'];
 
   // Every vehicle key that shares the engine's single 'boat' slot, so only one
   // of them can be physically on a map at a time.
-  const BOAT_SLOT_KEYS = ['car', 'bike', 'boat', 'broom'];
+  const BOAT_SLOT_KEYS = ['car', 'bike', 'boat', 'broom', 'mount'];
 
   // Where a thing is, in world terms, is not this plugin's question to answer:
   // window.WorldMapTransfer (WorldMapReturn.js) owns the one rule for the world
@@ -1601,6 +1654,7 @@
       this._initializeVehicle(VehicleConfig.BIKE);
       this._initializeVehicle(VehicleConfig.BOAT);
       this._initializeVehicle(VehicleConfig.BROOM);
+      this._initializeVehicle(VehicleConfig.MOUNT);
       this._initializeVehicle(VehicleConfig.AIRSHIP);
 
       this._initialized = true;
@@ -1640,6 +1694,7 @@
       if ($gameSystem._boatType === 'bike') return 'bike';
       if ($gameSystem._boatType === 'boat') return 'boat';
       if ($gameSystem._boatType === 'broom') return 'broom';
+      if ($gameSystem._boatType === 'mount') return 'mount';
       return 'car';
     }
 
@@ -1763,6 +1818,7 @@
         if ($gameSystem._boatType === 'bike') return VehicleConfig.BIKE;
         if ($gameSystem._boatType === 'boat') return VehicleConfig.BOAT;
         if ($gameSystem._boatType === 'broom') return VehicleConfig.BROOM;
+        if ($gameSystem._boatType === 'mount') return VehicleConfig.MOUNT;
         return VehicleConfig.CAR;
       }
       if (vehicle.isAirship()) return VehicleConfig.AIRSHIP;
@@ -1825,6 +1881,9 @@
         showLocalizedMessage(T('VehicleSystem.noStarshipIndoors'));
         return;
       }
+      // A mount is not called out of thin air: it is a companion already
+      // walking with the party, and it is climbed onto from the Pets page.
+      if (subType === 'mount') return;
       if (vehicleType === 'boat') {
         $gameSystem._boatType = subType || 'car';
       }
@@ -2323,6 +2382,7 @@
     bike: ["Cycling"],
     boat: ["Boat Piloting", "Sailing", "Celestial Navigation"],
     airship: ["Aircraft Piloting", "Celestial Navigation"],
+    mount: ["Horse Riding", "Animal Training"],
   };
   // i18n-ignore-end
   const RIDE_STEPS_PER_POINT = 50;
@@ -2579,6 +2639,10 @@
   function footprintRect(character) {
     const name = character.characterName ? character.characterName() : '';
     if (!name) return null;
+    // The moored-ship mark is not a character sheet at all (16 frames in one
+    // row), so measuring it as one would read a nonsense box off it. One tile,
+    // like the engine's own collision.
+    if (name === STARSHIP_MOORED_MARK.name) return null;
     const index = character.characterIndex ? character.characterIndex() : 0;
     const direction = character.direction();
     const tw = $gameMap.tileWidth();
@@ -3050,6 +3114,12 @@
    * Returns the vehicle config whose interior map matches the given map id, or
    * null if the map is not a known vehicle interior. (The bike has no interior.)
    */
+  // The config behind a maintenance key ('camper', 'car', ...). The inverse of
+  // upgradeTypeForConfig, for callers that only know what the party is driving.
+  function configByUpgradeType(key) {
+    return configForVehicleKey(key);
+  }
+
   function getConfigByInteriorMapId(mapId) {
     const configs = [VehicleConfig.CAMPER, VehicleConfig.CAR, VehicleConfig.AIRSHIP];
     return configs.find(c => c.interior && c.interior.mapId > 0 && c.interior.mapId === mapId) || null;
@@ -4143,6 +4213,120 @@
   PluginCommands.register();
 
   // ============================================================================
+  // The Mount: riding a living companion
+  // ============================================================================
+  //
+  // Every other vehicle is a thing the party owns and calls for. A mount is a
+  // creature that is already walking with them, so it has no summoning item, no
+  // entry in the Vehicles menu and no way to be conjured onto a tile. The party
+  // climbs onto it from the Pets page and gets off wherever they stop.
+  //
+  // Who may be ridden is not decided here: window.PetSystem.isRidable() reads
+  // the <Ridable> note tag of the monster a companion was recruited from and the
+  // `ridable` flag of its sprite's wardrobe entry (js/db/WorldGen/NPCs.json).
+  // Party members are never candidates: only pet-registry records are offered,
+  // and a person is an actor rather than one of those.
+
+  function petSystem() { return window.PetSystem || null; }
+
+  // Every registered companion the party could sit on, in registry order.
+  function ridableCompanions() {
+    const ps = petSystem();
+    if (!ps || !ps.getRidablePets) return [];
+    try { return ps.getRidablePets() || []; } catch (e) { return []; }
+  }
+
+  // The companion currently being ridden, or null on foot. Kept by id on
+  // $gameSystem so it travels in the save, and re-checked against the registry
+  // every read so a companion abandoned mid-ride does not leave a ghost.
+  function mountedPet() {
+    if (typeof $gameSystem === 'undefined' || !$gameSystem) return null;
+    const id = $gameSystem._mountPetId;
+    if (id == null) return null;
+    const ps = petSystem();
+    const pet = ps && ps.getPet ? ps.getPet(id) : null;
+    if (!pet || (ps.isRidable && !ps.isRidable(id))) {
+      $gameSystem._mountPetId = null;
+      return null;
+    }
+    return pet;
+  }
+
+  // The sheet the mount slot wears: the companion's own, or nothing at all when
+  // there is no mount, which draws an empty tile rather than a stray sprite.
+  function mountSprite() {
+    const pet = mountedPet();
+    if (!pet) return { name: '', index: 0 };
+    return { name: pet.characterName || '', index: pet.characterIndex || 0 };
+  }
+
+  // Put the party on a registered companion. Answers true when they are aboard.
+  function mountPet(petId) {
+    const ps = petSystem();
+    if (!ps || !ps.isRidable || !ps.isRidable(petId)) return false;
+    if (typeof $gamePlayer === 'undefined' || !$gamePlayer) return false;
+    // Already at the wheel of something else: they get off that first, which is
+    // the same rule as walking up to another vehicle while driving.
+    if ($gamePlayer.isInVehicle()) {
+      const current = $gamePlayer.vehicle();
+      const config = vehicleManager.getConfig(current);
+      if (config && config.mount && mountedPet() && mountedPet().id === petId) return true;
+      disembarkLeavingParked(current);
+    }
+    $gameSystem._mountPetId = petId;
+    vehicleManager.setBoatKey('mount');
+    const vehicle = vehicleManager.getVehicle('boat');
+    if (!vehicle) { $gameSystem._mountPetId = null; return false; }
+    const sprite = mountSprite();
+    vehicle._characterName = sprite.name;
+    vehicle._characterIndex = sprite.index;
+    // The animal is standing with the party, so it is placed under them rather
+    // than beside them, and boarded through the same path every other vehicle
+    // is boarded by (speed, followers and the remembered ride all come with it).
+    moveVehicleInternally(vehicle, $gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
+    vehicleManager.savePosition(vehicle);
+    vehicle.refresh();
+    startDrivingVehicle(vehicle);
+    if (!$gamePlayer.isInVehicle() && !$gamePlayer._vehicleGettingOn) {
+      $gameSystem._mountPetId = null;
+      return false;
+    }
+    // The companion is being sat on, not trailing the party, so it leaves the
+    // follower chain for as long as the ride lasts (the pet follower draws the
+    // ACTIVE pet, and the mount is no longer it).
+    if (ps.getActivePet && ps.getActivePet() && ps.getActivePet().id === petId) {
+      $gameSystem._mountWasActivePet = petId;
+      ps.setActivePet(null);
+    }
+    return true;
+  }
+
+  // Get off, leaving the animal standing where the party stopped and putting it
+  // back on the leash if that is where it came from.
+  function dismountMount() {
+    const pet = mountedPet();
+    const vehicle = vehicleManager.getVehicle('boat');
+    const riding = !!vehicle && $gamePlayer && $gamePlayer.isInVehicle() &&
+      $gamePlayer.vehicle() === vehicle && vehicleManager.getConfig(vehicle) === VehicleConfig.MOUNT;
+    if (riding) disembarkLeavingParked(vehicle);
+    $gameSystem._mountPetId = null;
+    const ps = petSystem();
+    const back = $gameSystem._mountWasActivePet;
+    $gameSystem._mountWasActivePet = null;
+    if (ps && ps.setActivePet && back != null && pet && back === pet.id) ps.setActivePet(back);
+    // Unplace the slot the same way an un-owned vehicle starts out, so nothing
+    // is left standing invisibly on the tile the party got off at.
+    VehiclePosition.set('mount', 315, 0, 0);
+    if (vehicle) {
+      vehicle._characterName = '';
+      vehicle._characterIndex = 0;
+      moveVehicleInternally(vehicle, 0, 0, 0);
+      vehicle.refresh();
+    }
+    return !!pet;
+  }
+
+  // ============================================================================
   // Vehicle ownership (party carries the summoning item) + menu API
   // ============================================================================
   //
@@ -4195,6 +4379,11 @@
   }
 
   function ownsVehicleConfig(config) {
+    // Nobody buys a mount, and there is no such thing as one standing parked:
+    // the slot exists exactly while the party is on an animal's back. Every
+    // ownership gate in the plugin (placing, drawing, offering to board) reads
+    // this, so a dismounted mount is simply not there to walk into.
+    if (config && config.mount) return !!mountedPet();
     if (!config || !config.summonItemId) return false;
     if (typeof $gameParty === 'undefined' || !$gameParty) return false;
     if (typeof $dataItems === 'undefined') return false;
@@ -4202,14 +4391,20 @@
     return !!(item && $gameParty.hasItem(item));
   }
 
+  // The Mount is deliberately absent from VEHICLE_MENU_CONFIGS (it is never
+  // summoned or listed), so key lookups fall through to the full table.
   function configByVehicleKey(key) {
-    return VEHICLE_MENU_CONFIGS.find(c => upgradeTypeForConfig(c) === key) || null;
+    return VEHICLE_MENU_CONFIGS.find(c => upgradeTypeForConfig(c) === key) ||
+      configForVehicleKey(key);
   }
 
   // The vehicle the party last took the wheel of, remembered on $gameSystem so it
   // travels in the save. Roadside parking signs call that one back rather than
   // always the camper.
   function rememberVehicleUsed(config) {
+    // A mount is never called back: it is a companion, and it is fetched from
+    // the Pets page rather than from a parking sign.
+    if (config && config.mount) return;
     const key = upgradeTypeForConfig(config);
     if (!key || typeof $gameSystem === 'undefined' || !$gameSystem) return;
     $gameSystem._lastVehicleUsed = key;
@@ -4341,10 +4536,16 @@
     // the Hyperflux or the Schrodingerite the star map runs on.
     getHudVehicleStatus() {
       if (typeof $gameMap === 'undefined' || !$gameMap) return null;
+      // The 3D world is asked first: out there the party is driving something
+      // the 2D map knows nothing about (they can swap vehicles without ever
+      // coming back to it), and the row over the cards has to be the thing
+      // actually under them.
+      const outside = window.VoxelWorldSystem?.ridingKey?.() || null;
       const ridden = isPlayerRidingCustomVehicle() ? $gamePlayer.vehicle() : null;
-      const config = ridden
-        ? vehicleManager.getConfig(ridden)
-        : getConfigByInteriorMapId($gameMap.mapId());
+      const config = outside
+        ? configByUpgradeType(outside)
+        : (ridden ? vehicleManager.getConfig(ridden)
+                  : getConfigByInteriorMapId($gameMap.mapId()));
       if (!config) return null;
       const key = upgradeTypeForConfig(config);
       if (!key) return null;
@@ -4354,7 +4555,7 @@
       return {
         key,
         name: vehicleDisplayName(config),
-        driving: !!ridden,
+        driving: !!(ridden || outside),
         // A vehicle with no maintenance record of its own (the Broom) has no
         // bar to draw; the HUD reads null as "no health line".
         hp: health ? health.current : null,
@@ -4416,6 +4617,36 @@
       const i = c && c.interior;
       if (!i || !i.mapId) return null;
       return { mapId: i.mapId, x: i.x, y: i.y, direction: i.direction || 0 };
+    },
+
+    // ---- The Mount ------------------------------------------------------
+    // Deliberately NOT part of getOwnedVehicles / canSpawnHere / ownsVehicle:
+    // a mount is never summoned and never listed with the machines.
+
+    // Every companion the party could ride right now, for the Pets page.
+    getRidableCompanions() {
+      return ridableCompanions();
+    },
+
+    // The companion being ridden, or null on foot.
+    getMountedPet() {
+      return mountedPet();
+    },
+
+    // Is this particular companion the one under the party right now?
+    isMounted(petId) {
+      const pet = mountedPet();
+      return !!pet && pet.id === petId;
+    },
+
+    // Climb onto a registered ridable companion. False when it cannot be ridden.
+    mountPet(petId) {
+      return mountPet(petId);
+    },
+
+    // Get off whatever living thing the party is on. False when they were afoot.
+    dismount() {
+      return dismountMount();
     },
 
     getOwnedVehicles() {

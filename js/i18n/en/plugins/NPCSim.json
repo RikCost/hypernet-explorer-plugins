@@ -2,9 +2,7 @@
   "anItem": "an item",
   "mapFallback": "Map {id}",
   "homePool": {
-    "huts": "hut",
     "houses": "house",
-    "villas": "villa",
     "skyscrapers": "high-rise"
   },
   "log": {

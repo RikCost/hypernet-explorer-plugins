@@ -1716,6 +1716,14 @@
       Math.floor(Math.random() * 3) + 1
     );
 
+    var primaryPartKey = (partsToHit && partsToHit.length > 0) ? partsToHit[0] : (hitLocation && hitLocation.parts ? hitLocation.parts[0] : null);
+    actor._lastHitPart = primaryPartKey;
+    if (primaryPartKey && actor._bodyParts && actor._bodyParts[primaryPartKey]) {
+      actor._lastHitPartName = actor._bodyParts[primaryPartKey].name;
+    } else {
+      actor._lastHitPartName = '';
+    }
+
     // Distribute damage among the selected parts
     var totalDamageApplied = 0;
     var damagePerPart = Math.floor(damage / partsToHit.length);
@@ -2476,8 +2484,8 @@
   Game_Action.prototype.executeHpDamage = function (target, value) {
     _Game_Action_executeHpDamage.call(this, target, value);
 
-    // Apply limb damage system to Actors 1, 2, and 3
-    if (target.isActor() && (target.actorId() === 1 || target.actorId() === 2 || target.actorId() === 3) && value > 0) {
+    // Apply limb damage system to all actors
+    if (target.isActor() && value > 0) {
       applyLimbDamage(target, value);
 
       // Check if HP is zero or less and restore body parts if so
@@ -2493,8 +2501,7 @@
     _Window_BattleLog_displayHpDamage.call(this, target);
 
     // Check for limb damage logs - only when body parts are fully damaged
-    if ($gameTemp.limbDamageLog && target.isActor() &&
-      (target.actorId() === 1 || target.actorId() === 2 || target.actorId() === 3)) {
+    if ($gameTemp.limbDamageLog && target.isActor()) {
       var log = $gameTemp.limbDamageLog;
 
       // Show specific damage message and stat effect if applied

@@ -2059,33 +2059,3 @@ body #fbuild-panel {
 #fbuild-panel .fbuild-dd-list::-webkit-scrollbar-thumb:hover {
     background: var(--border-focus-hover);
 }
-
-/* ==========================================================================
-   HANDHELD / STEAM DECK PRIORITY OVERRIDE (theme preset half)
-   --------------------------------------------------------------------------
-   The full-bleed frame and the raised type live in css/theme.css and therefore
-   already apply under this preset -- these files carry colour tokens, not
-   layout. What does NOT carry over is anything this preset sizes or spaces
-   itself: those rules are *earlier* in the cascade than theme.css (the preset
-   is pulled in by the @import at the top of theme.css, or copied over
-   css/vars.css by GameOptions.persistTheme), so theme.css's handheld block
-   cannot reach them at equal specificity. They are re-stated here.
-
-   Breakpoint and design box are shared with theme.css and with
-   HANDHELD_MAX_W / HANDHELD_MAX_H in Core/GameOptions.js; change one, change
-   all three.
-   ========================================================================== */
-@media (max-width: 1366px) and (max-height: 860px) {
-
-    /* Preset-scoped panels that paint their own plate: give the dense ones the
-       same reclaimed padding the shared spread pages get, which is the whole of
-       what this breakpoint does. Type is NOT capped here -- this preset's own
-       .item-inspect .inspect-spec-row was raised at its declaration above, to
-       1.032rem, and a handheld rule pinning it to a smaller absolute size would
-       undo that; see the matching note in css/theme.css. */
-    .item-inspect .inspect-lore,
-    #pt-container .pt-props,
-    #pt-container .pt-desc {
-        padding: 8px 10px;
-    }
-}

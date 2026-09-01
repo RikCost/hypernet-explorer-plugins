@@ -35,20 +35,6 @@
     ]
   },
   "unknownMap": "알 수 없는 맵",
-  "healthProtection": {
-    "messages": [
-      "{actor}이(가) 아슬아슬하게 죽음을 피했다!",
-      "{actor}이(가) 신의 개입으로 구원받았다!",
-      "{actor}이(가) 의지로 목숨을 붙들었다!",
-      "{actor}이(가) 포기하기를 거부했다!",
-      "{actor}이(가) 순전한 의지력으로 살아남았다!",
-      "{actor}이(가) 운명의 보호를 받았다!"
-    ],
-    "reset": "모든 캐릭터의 생명 보호가 초기화되었다!",
-    "available": "사용 가능",
-    "used": "사용됨",
-    "status": "{actor}: 보호 {status}"
-  },
   "popup": {
     "miss": "빗나감",
     "evaded": "회피"

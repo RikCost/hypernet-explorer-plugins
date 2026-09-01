@@ -25,7 +25,7 @@
  * * ============================================================================
  * Plugin Commands
  * ============================================================================
- * * Play Game - Plays a specific arcade game by ID
+ * * Play Game - Plays a random arcade game seeded from cabinet coordinates
  * - Has a "Free Play" option to bypass the coin requirement.
  * * Show Game List - Shows a list of all registered games
  * * ============================================================================
@@ -124,12 +124,7 @@
  * @default Cancel1
  * * @command playGame
  * @text Play Game
- * @desc Play a specific arcade game by ID
- * * @arg gameId
- * @text Game ID
- * @type string
- * @desc ID of the game to play (plugin name). Leave empty to let the
- * cabinet pick one, seeded from the calling event's map coordinates.
+ * @desc Play a random arcade game seeded from registered ones and event coordinates on map
  *
  * @arg freePlay
  * @text Free Play
@@ -1221,16 +1216,13 @@
     }
 
     PluginManager.registerCommand(pluginName, 'playGame', function(args) {
-        const freePlay = args.freePlay === 'true';
-        let gameId = (args.gameId || '').trim();
+        const freePlay = args && (args.freePlay === 'true' || args.freePlay === true);
+        const origin = commandOrigin(this);
+        const gameId = ArcadeManager.pickGameForEvent(origin.mapId, origin.x, origin.y);
 
         if (!gameId) {
-            const origin = commandOrigin(this);
-            gameId = ArcadeManager.pickGameForEvent(origin.mapId, origin.x, origin.y);
-            if (!gameId) {
-                console.warn('No arcade games are registered.');
-                return;
-            }
+            console.warn('No arcade games are registered.');
+            return;
         }
 
         if (ArcadeManager._games[gameId]) {

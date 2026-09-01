@@ -352,6 +352,9 @@
                     stat: TextManager.param(id),
                     rate: Number(rate.toFixed(1))
                 }),
+                // The stat's own name reads white on the chip; only the
+                // multiplier carries the green or red of the change.
+                nameText: TextManager.param(id),
                 down: rate < 1
             });
         }
@@ -737,6 +740,16 @@
                 el.style.borderColor = chip.color;
             }
             el.textContent = chip.text;
+            // The name half of a stat chip is lifted out into its own span so
+            // it can stay white while the multiplier keeps the change's colour.
+            if (chip.nameText && chip.text.startsWith(chip.nameText)) {
+                el.textContent = '';
+                const name = document.createElement('span');
+                name.className = 'phud-chip-name';
+                name.textContent = chip.nameText;
+                el.appendChild(name);
+                el.appendChild(document.createTextNode(chip.text.slice(chip.nameText.length)));
+            }
             row.appendChild(el);
         }
         row.classList.toggle('phud-alerts-empty', chips.length === 0);

@@ -17,5 +17,50 @@
   },
   "pleased": "Il \\c[14]{animal}\\c[0] è contento di vederti.",
   "nothingReady": "Il \\c[14]{animal}\\c[0] non ha ancora niente di pronto.",
-  "company": "Passi un po' di tempo con \\c[14]{animal}\\c[0]. La compagnia fa bene a tutti."
+  "company": "Passi un po' di tempo con \\c[14]{animal}\\c[0]. La compagnia fa bene a tutti.",
+  "age": {
+    "years": {
+      "one": "{count} anno",
+      "other": "{count} anni"
+    },
+    "days": {
+      "one": "{count} giorno",
+      "other": "{count} giorni"
+    }
+  },
+  "panel": {
+    "title": "Animale",
+    "breed": "Razza",
+    "age": "Eta",
+    "growth": "Crescita",
+    "grownAlready": "Adulto",
+    "daysToAdult": {
+      "one": "manca {count} giorno",
+      "other": "mancano {count} giorni"
+    },
+    "nutrition": "Nutrizione",
+    "hungry": "Affamato",
+    "company": "Compagnia",
+    "produce": "Produzione",
+    "producesNothing": "Non produce nulla",
+    "yield": "{min}-{max} ogni {days}g",
+    "ready": "Pronto",
+    "readyIn": {
+      "one": "tra {count} giorno",
+      "other": "tra {count} giorni"
+    },
+    "notYetAdult": "Non ancora adulto"
+  },
+  "actionCollect": "Raccogli",
+  "actionPet": "Accarezza",
+  "actionEmpathize": "Empatizza",
+  "actionCancel": "Annulla",
+  "fed": "Il \\c[14]{animal}\\c[0] mangia dalla tua mano.",
+  "notHungry": "Il \\c[14]{animal}\\c[0] ne ha avuto abbastanza.",
+  "tooHungryToProduce": "Il \\c[14]{animal}\\c[0] e troppo affamato per dare qualcosa.",
+  "farmerOf": "Il contadino di ({x},{y})",
+  "owner": "Proprietario",
+  "wildAnimal": "Selvatico",
+  "actionConvince": "Convinci a unirsi",
+  "actionJoinPet": "Unisciti come animale"
 }

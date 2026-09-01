@@ -63,6 +63,13 @@
   "hud": {
     "cmdDig": "Scava / estrai",
     "cmdPlace": "Posa un blocco",
-    "cmdBlock": "Cambia blocco"
+    "cmdBlock": "Cambia blocco",
+    "cmdBar": "Cambia barra rapida",
+    "cmdCast": "Lancia l'incantesimo in mano"
+  },
+  "bar": {
+    "blocks": "Blocchi",
+    "items": "Oggetti",
+    "spells": "Incantesimi"
   }
 }

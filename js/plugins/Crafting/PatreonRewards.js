@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Patron rewards: a private hatch on the world map into their own generated vault, and a habitable world named after each patron out in another galaxy.
+ * @plugindesc Patron rewards: a private hatch on the world map into their own villa, and a habitable world named after each patron out in another galaxy.
  * @author Nocoldiz + Omni-Lex
  *
  * @command report
@@ -22,15 +22,20 @@
  *      nothing ever grows over it or walls it in. It cannot be dismantled.
  *      The exception is an alien surface (a GalaxySim landing reuses this map
  *      and world variables 43/44 for its own landing grid), where no hatch is
- *      ever stamped. Going down it opens their VAULT: the PatronVault biome,
- *      the ordinary loot cellar's generator on a far bigger plan (a great hall
- *      with strongrooms and a deep back chamber), dressed almost entirely in
- *      gold and weapons and carrying every chest the proc-map template has.
- *      The map is named "<patron>'s Vault", the border is the way back out to
- *      the hatch, and while the party is down there the loot tables
+ *      ever stamped. Going down it opens their HOME: one of the eight villa
+ *      interiors (ProceduralHouseSystem's "villas" pool), pinned to their
+ *      world square alone, so a patron owns the same villa in every world and
+ *      every savegame. The door is never locked against them and the hatch
+ *      tile is the way back out, exactly as for any other door on the
+ *      procedural map.
+ *      The old PatronVault - the loot cellar's generator on a far bigger plan,
+ *      buried in gold and rare weapons - is no longer behind the hatch at all:
+ *      it is now the rarest structure an ordinary StairsDown can open onto
+ *      (ProceduralMapStructureGenerator), found by anybody, anywhere. This
+ *      plugin still owns what happens inside one: the loot tables
  *      (RandomLootSystem, ContainerSystem), the gold hoards and the weapon
- *      finds are all weighted hard toward the expensive tiers.
- *
+ *      finds are all weighted hard toward the expensive tiers, and a vault dug
+ *      under a patron's own square is named after them.
  *   2. A PLANET: a habitable, life-bearing world orbiting an exotic object in
  *      another galaxy, in a nine-planet system where no two planets share a
  *      type. They are listed in the star map Catalog under "Patrons".
@@ -83,7 +88,8 @@
  *                                                   DataManager.loadMapData,
  *                                                   after the prefab pass)
  *   window.PatreonRewards.openHatch(tile)           hatch interaction handler
- *   window.PatreonRewards.isInPatronVault()         inside a patron's vault?
+ *   window.PatreonRewards.vaultHouseId(x, y)        the villa a hatch opens onto
+ *   window.PatreonRewards.isInPatronVault()         inside a vault structure?
  *   window.PatreonRewards.vaultPatron()             whose vault it is
  *   window.PatreonRewards.lootRarityBonus()         rarity push for that vault
  *   window.PatreonRewards.ensureSystems(dataManager)
@@ -110,6 +116,10 @@
   // plan, defined in js/db/WorldGen/Biomes.json and laid out by
   // ProceduralMapStructureGenerator (isVault).
   const VAULT_BIOME = "PatronVault";
+  // What a patron's hatch actually opens onto now: one of the villa interiors
+  // (ProceduralHouseSystem's "villas" pool, the eight maps under parent 1135),
+  // pinned per world square by vaultHouseId.
+  const VAULT_POOL = "villas";
 
   // A slot with a blank id is RESERVED: its world square and hatch tile are
   // already rolled and encrypted, waiting for the next patron, but it has no
@@ -502,30 +512,42 @@
   }
 
   /**
-   * Hatch interaction: drop into the patron's own vault, generated as the
-   * PatronVault biome at their world square (so it is the same vault on every
-   * visit, and remembers what has already been carried out of it). Called by
-   * ProceduralTerrainInteractions' Hatch handler. Never dismantles anything.
-   *
-   * The forced-biome command gives the map a 'sandbox' dungeon session, so the
-   * border of the vault walks the party straight back to the hatch tile they
-   * came down from.
+   * Which villa a patron's hatch opens onto. The pick is seeded on the world
+   * SQUARE alone - not on the world seed, not on the map or the tile - so a
+   * patron owns the same one of the eight villa interiors in every world, in
+   * every savegame, forever.
+   */
+  function vaultHouseId(worldX, worldY) {
+    const PHS = window.ProceduralHouseSystem;
+    if (!PHS || typeof PHS._getHouseList !== "function") return null;
+    const list = (PHS._getHouseList(VAULT_POOL) || []).slice().sort((a, b) => a - b);
+    if (!list.length) return null;
+    let h = 0x50415452;                                   // i18n-ignore  seed salt
+    h = (Math.imul(h ^ (worldX | 0), 73856093) ^ Math.imul(worldY | 0, 19349663)) >>> 0;
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+    return list[(h >>> 3) % list.length];
+  }
+
+  /**
+   * Hatch interaction: the patron's own home, one of the villa interiors, the
+   * same one every time (vaultHouseId). ProceduralHouseSystem owns the entry,
+   * so the door tile is the return point exactly as it is for every other door
+   * on the procedural map; the hatch is never locked against its owner.
+   * Called by ProceduralTerrainInteractions' Hatch handler. Never dismantles
+   * anything. The vault the hatch used to open onto is now a rare structure
+   * found behind ordinary stairways (ProceduralMapStructureGenerator).
    */
   function openHatch(tile) {
     const patron = patronOfHatchTile(tile);
     if (!patron) return false;
-    if (!biomeByName(VAULT_BIOME)) {
-      warn(`the ${VAULT_BIOME} biome is missing from WorldGen.Biomes: the hatch cannot open`);
+    const PHS = window.ProceduralHouseSystem;
+    if (!PHS || typeof PHS.enterTileDoorAt !== "function") {
+      warn("ProceduralHouseSystem is missing: the hatch cannot open");
       return false;
     }
-    // Whose vault the party is standing in: read back by the map name and by
-    // the loot weighting below, and only ever trusted while the current biome
-    // still is the vault.
-    $gameSystem._patronVault = patron.id;
-    PluginManager.callCommand(
-      ($gameMap && $gameMap._interpreter) || {}, "WorldMapReturn", "startForcedBiome",
-      { Biome: VAULT_BIOME }
-    );
+    const here = currentWorldCoords();
+    const houseId = here ? vaultHouseId(here.x, here.y) : null;
+    if (!PHS.enterTileDoorAt(VAULT_POOL, tile.x, tile.y, houseId, true)) return false;
     AudioManager.playSe({ name: "Door1", volume: 90, pitch: 100, pan: 0 });
     return true;
   }
@@ -545,16 +567,17 @@
     return !!(pg && pg.currentBiome === VAULT_BIOME);
   }
 
-  /** The patron whose vault the party is in, or null anywhere else. */
+  /**
+   * The patron whose vault the party is in. A vault is no longer entered
+   * through a hatch: it is a rare structure dealt to ordinary stairways, so it
+   * belongs to a patron only when it happens to have been dug under that
+   * patron's own world square. Anywhere else it is nobody's and keeps the
+   * biome's own name.
+   */
   function vaultPatron() {
     if (!isInPatronVault()) return null;
-    return patronById($gameSystem._patronVault) ||
-      // A vault entered before the id was recorded (or from Sandbox Mode):
-      // fall back to whoever owns the square it was generated on.
-      (() => {
-        const here = currentWorldCoords();
-        return here ? patronAtWorld(here.x, here.y) : null;
-      })();
+    const here = currentWorldCoords();
+    return here ? patronAtWorld(here.x, here.y) : null;
   }
 
   function lootRarityBonus() {
@@ -842,6 +865,8 @@
     // The public half only: the encrypted blob stays inside the plugin.
     patrons: () => PATRONS.map(({ secret, ...rest }) => rest),
     VAULT_BIOME,
+    VAULT_POOL,
+    vaultHouseId,
     patronAtWorld,
     patronById,
     applyMapFeatures,

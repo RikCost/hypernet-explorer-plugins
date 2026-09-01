@@ -110,8 +110,8 @@
       this._closeDOM();
       const item   = entry.data;
       const chance  = SS().calcChance(item, this._agi);
-      const dexMod  = Math.floor(((this._agi || 10) - 10) / 2);
-      const success = await SS().performSteal(chance, { actionName: 'Shop Shoplift', modifier: dexMod });
+      const modifier = SS().rollModifier(this._agi);
+      const success = await SS().performSteal(chance, { actionName: 'Shop Shoplift', modifier });
 
       $gameVariables.setValue(79, item.price || 0);
 

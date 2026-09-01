@@ -320,12 +320,6 @@
                             ctx.drawImage(source, sx, sy, sw, sh, dx, dy, dw, dh);
                             const dataUrl = canvas.toDataURL();
                             this._cache.set(cacheKey, dataUrl);
-
-                            if (typeof BattleManager !== 'undefined' && BattleManager._logWindow) {
-                                if (typeof BattleManager._logWindow.refreshHtmlLines === 'function') {
-                                    BattleManager._logWindow.refreshHtmlLines();
-                                }
-                            }
                         }
                     }
                 } catch (e) {
@@ -367,31 +361,43 @@
         }
     }();
 
-    // The enemy's own front-facing walk sprite, printed immediately before its
-    // name so a line says at a glance which creature it is about. Every enemy
-    // carries a <Char:> note, and a missing one simply prints no sprite.
+    // Enemy icon / walk sprite is disabled in battle log
     function enemySpriteTag(enemy) {
-        const info = EnemySpriteCache.getCharInfo(enemy);
-        if (!info || !info.charName) return '';
-        return `\\enemysprite[${info.charName}${info.charIndex ? ',' + info.charIndex : ''}]`;
+        return '';
     }
 
     // One indent step, shared by every line an action produces after its header.
     const REACTION_INDENT_PX = 26;
 
     //--- entry retention: begin ---
-    // The board shows the action that just happened and the two before it, and
-    // nothing else. Older entries are not cut off at the top edge, they slide
-    // off to the left and collapse, so the reader is never left with half a line.
+    // The board scales visible entries based on the number of battle party members
+    // so it never overlaps the Party HUD cards above.
     const MAX_VISIBLE_ENTRIES = 3;
     const ENTRY_EXIT_MS = 320;
 
+    function getMaxVisibleEntries() {
+        if (typeof ConfigManager !== 'undefined' && ConfigManager.partyHud === false) {
+            return 3;
+        }
+        if (typeof $gameParty !== 'undefined' && $gameParty && $gameParty.battleMembers) {
+            const memberCount = $gameParty.battleMembers().length;
+            if (memberCount >= 4) return 1;
+            if (memberCount >= 3) return 2;
+            return 3;
+        }
+        return 3;
+    }
+
     function isExitingEntry(el) {
-        return !!(el && el.dataset && el.dataset.battlelogExiting === '1');
+        return !rootOrNull(el) && !!(el && el.dataset && el.dataset.battlelogExiting === '1');
+    }
+
+    function rootOrNull(el) {
+        return !el;
     }
 
     // The entries that still count as shown. One on its way out keeps its box in
-    // the DOM until its animation ends, but it is no longer one of the three.
+    // the DOM until its animation ends, but it is no longer one of the active entries.
     function liveEntries(root) {
         if (!root || !root.children) return [];
         return Array.prototype.filter.call(root.children, el => !isExitingEntry(el));
@@ -415,7 +421,8 @@
         const root = log && log._htmlBattleLogRoot;
         if (!root) return 0;
         const live = liveEntries(root);
-        const excess = live.length - MAX_VISIBLE_ENTRIES;
+        const maxEntries = getMaxVisibleEntries();
+        const excess = live.length - maxEntries;
         if (excess > 0) {
             for (let i = 0; i < excess; i++) slideEntryOff(live[i]);
             if (log._lines) log._lines.splice(0, excess);
@@ -471,14 +478,15 @@
             if (!seg || !seg.trim()) continue;
 
             // The mx value is legacy: every line of an action shares one indent step.
+            const hasMx = /\\mx\[\d+\]/i.test(seg);
             seg = seg.replace(/\\mx\[\d+\]/gi, '');
-            const indentPx = i > 0 ? REACTION_INDENT_PX : 0;
+            const indentPx = (i > 0 || hasMx) ? REACTION_INDENT_PX : 0;
 
             // Determine accent style for the background bar
             const isCrit = /\\crit\[/i.test(seg);
             let accentClass = '';
             if (isCrit) {
-                accentClass = 'accent-crit';
+                accentClass = 'accent-crit' + (indentPx > 0 ? ' accent-reaction' : '');
             } else if (indentPx > 0) {
                 accentClass = 'accent-reaction';
             } else if (/\\i\[/i.test(seg)) {
@@ -491,13 +499,8 @@
 
             seg = replaceCritTags(seg);
 
-            // Replace enemy sprite codes: \enemysprite[charName]
-            seg = seg.replace(/\\enemysprite\[([^\]]+)\]/gi, (match, charName) => {
-                const key = String(charName).trim().toLowerCase();
-                if (seenSprites.has(key)) return '';
-                seenSprites.add(key);
-                return EnemySpriteCache.getSpriteHtml(charName);
-            });
+            // Remove any enemy sprite codes: \enemysprite[charName]
+            seg = seg.replace(/\\enemysprite\[[^\]]*\]/gi, '');
 
             // Replace icon codes: \i[123] - rendered inline before skill/item name
             seg = seg.replace(/\\i\[(\d+)\]/gi, (match, iconId) => {
@@ -668,32 +671,9 @@
                '(?:\'s|’s)?';
     }
 
-    // Two enemies in one entry both answer to "it", so neither is shortened: a
-    // pronoun is only used while it can point at exactly one battler.
+    // Names are always repeated in full for all actors and enemies; pronoun replacement is disabled.
     function pronounizeLine(text, mentions) {
-        if (!text || !mentions || mentions.seen.size === 0) return text;
-        let out = text;
-        for (const entry of pronounRoster()) {
-            const key = mentions.seen.get(entry.name);
-            if (!key) continue;
-            if ((mentions.byKey.get(key) || 0) > 1) continue;
-            const subject = pronounWord(key, 'subject');
-            if (!subject) continue;
-            const object = pronounWord(key, 'object') || subject;
-            const possessive = pronounWord(key, 'possessive');
-            const source = out;
-            out = out.replace(new RegExp(mentionPattern(entry.name), 'g'), function (match, offset) {
-                // Nothing printed before it on this line: it opens the sentence,
-                // so it is the one acting and it takes a capital.
-                const opens = !/\S/.test(source.slice(0, offset));
-                if (/(?:'s|’s)$/.test(match)) {
-                    if (!possessive) return match;
-                    return opens ? capitalizeFirst(possessive) : possessive;
-                }
-                return opens ? capitalizeFirst(subject) : object;
-            });
-        }
-        return out;
+        return text;
     }
     //--- pronouns: end ---
 
@@ -1030,7 +1010,7 @@
             if (!enemy) return '';
             const name = enemy.name ? enemy.name() : (enemy.name || '');
             const translatedName = typeof window.translateText === 'function' ? window.translateText(name) : name;
-            return enemySpriteTag(enemy) + `\\c[${CONFIG.colors.enemy}]${translatedName}\\c[0]`;
+            return `\\c[${CONFIG.colors.enemy}]${translatedName}\\c[0]`;
         }
         
         getItemName(item) {
@@ -1445,19 +1425,21 @@
         }
         if (typeof translateText === 'function') text = translateText(text);
         if (this._currentSubject) text = _replaceStars(text, this._currentSubject);
-        // A tabbed line never repeats a name the entry has already used.
-        if (!this._entryMentions) this._entryMentions = newEntryMentions();
-        text = pronounizeLine(text, this._entryMentions);
-        recordMentions(this._entryMentions, text);
         text = colorizeLimbAndEntityNames(text);
         const indentTag = /\\mx\[/i.test(text) ? '' : '\\mx[28]';
         const lastIndex = this._lines.length - 1;
-        this._lines[lastIndex] += '\n' + indentTag + text;
+        const lineToAppend = indentTag + text;
+        this._lines[lastIndex] += '\n' + lineToAppend;
 
         // Entries on their way out sit at the front, so the last child is still
-        // the entry being written.
+        // the entry being written. Append only the new reaction element so the
+        // existing action lines are not redrawn or re-animated.
         if (this._htmlBattleLogRoot && this._htmlBattleLogRoot.lastElementChild) {
-            this._htmlBattleLogRoot.lastElementChild.innerHTML = parseBattleLogTextToHtml(this._lines[lastIndex]);
+            const temp = document.createElement('div');
+            temp.innerHTML = parseBattleLogTextToHtml(lineToAppend);
+            while (temp.firstChild) {
+                this._htmlBattleLogRoot.lastElementChild.appendChild(temp.firstChild);
+            }
         }
 
         this.scrollToBottom();
@@ -1551,18 +1533,14 @@
             const hotbarReserve = (window.BattleHotbar && window.BattleHotbar.reservedHeight) || 75;
             const topPx = sc.oy + (this.y + yOffset) * sc.sy;
 
-            // Nothing is ever clipped: the board is not scrolled and not cut, it
-            // is lifted. When three actions come to more than the room between the
-            // party HUD and the hotbar, the whole block slides up by the overflow
-            // so its last line still lands above the hotbar.
+            // The battle log is positioned cleanly beneath the Party HUD cards and never lifts
+            // up over them. Available room is bounded by the hotbar below.
             const room = Math.max(60, (Graphics.height - hotbarReserve) * sc.sy - topPx - 6);
-            const needed = root.scrollHeight;
-            const lift = needed > room ? Math.min(needed - room, Math.max(0, topPx - sc.oy - 4)) : 0;
 
-            _setStyleIfChanged(root, 'top', (topPx - lift) + 'px');
+            _setStyleIfChanged(root, 'top', topPx + 'px');
             _setStyleIfChanged(root, 'width', (this.width * sc.sx) + 'px');
             _setStyleIfChanged(root, 'maxWidth', Math.round(Graphics.width * 0.52 * sc.sx) + 'px');
-            _setStyleIfChanged(root, 'maxHeight', 'none');
+            _setStyleIfChanged(root, 'maxHeight', room + 'px');
             _setStyleIfChanged(root, 'height', 'auto');
             _setStyleIfChanged(root, 'padding', Math.round(pad * sc.sy) + 'px ' + Math.round(pad * sc.sx) + 'px');
             _setStyleIfChanged(root, 'display',
@@ -1570,7 +1548,7 @@
             _setStyleIfChanged(root, 'flexDirection', 'column');
             _setStyleIfChanged(root, 'justifyContent', 'flex-start');
             _setStyleIfChanged(root, 'alignItems', 'flex-start');
-            _setStyleIfChanged(root, 'overflowY', 'visible');
+            _setStyleIfChanged(root, 'overflowY', 'hidden');
             _setStyleIfChanged(root, 'overflowX', 'visible');
 
             const bgOpacity = (ConfigManager.battleLogBgOpacity !== undefined ? ConfigManager.battleLogBgOpacity : CONFIG.battleLogBgOpacity) / 100;
@@ -1749,7 +1727,22 @@
     function colorizeLimbAndEntityNames(text) {
         if (!text) return '';
         
-        // 1. Colorize Enemy Names in text if not already color-coded
+        // 1. Colorize Actor Names in text if not already color-coded
+        if (typeof $gameParty !== 'undefined' && $gameParty && $gameParty.battleMembers) {
+            const actors = $gameParty.battleMembers();
+            for (const actor of actors) {
+                if (!actor || !actor.name || actor.name().length <= 1) continue;
+                const name = actor.name();
+                let color = CONFIG.colors.actor;
+                if (actor.actorId() === 2) color = CONFIG.colors.actor2;
+                else if (actor.actorId() === 3) color = CONFIG.colors.actor3;
+                const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(?<!\\\\c\\[\\d+\\])${escaped}(?!\\\\c\\[0\\])`, 'g');
+                text = text.replace(regex, `\\c[${color}]${name}\\c[0]`);
+            }
+        }
+
+        // 2. Colorize Enemy Names in text if not already color-coded
         if (typeof $gameTroop !== 'undefined' && $gameTroop && $gameTroop.members) {
             const enemies = $gameTroop.members();
             const sortedNames = [];
@@ -1765,15 +1758,11 @@
                 if (!name) continue;
                 const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const regex = new RegExp(`(?<!\\\\c\\[\\d+\\])${escaped}(?!\\\\c\\[0\\])`, 'g');
-                const owner = enemies.find(e => e && (
-                    (e.name && e.name() === name) ||
-                    (e.originalName && e.originalName() === name)));
-                const sprite = enemySpriteTag(owner);
-                text = text.replace(regex, `${sprite}\\c[${CONFIG.colors.enemy}]${name}\\c[0]`);
+                text = text.replace(regex, `\\c[${CONFIG.colors.enemy}]${name}\\c[0]`);
             }
         }
 
-        // 2. Colorize severance / destruction verbs in purple (\c[25])
+        // 3. Colorize severance / destruction verbs in purple (\c[25])
         const SEVER_VERB_REGEX = /\b(ripped off|crumbled|has been severed|severed|has been destroyed|destroyed|shattered|sliced off|blown off|torn off|broken off|strappat[oaie]|sbriciolat[oaie]|recis[oaie]|distrutt[oaie]|spezzat[oaie])(!?)/gi;
         text = text.replace(SEVER_VERB_REGEX, (match) => {
             return `\\c[25]${match}\\c[0]`;
@@ -1791,10 +1780,6 @@
         text = translateText(text);
       }
       text = _replaceStars(text, this._currentSubject);
-      // A header opens a new entry, so it starts the name bookkeeping over: it is
-      // allowed to name everyone, and the tabbed lines under it are not.
-      this._entryMentions = newEntryMentions();
-      recordMentions(this._entryMentions, text);
       text = colorizeLimbAndEntityNames(text);
       return _Window_BattleLog_addText.call(this, text, isToast);
     };
@@ -1846,23 +1831,43 @@
                 this.push("performRecovery", target);
             }
             let targetName = target.isActor() ? NameColorCache.getActorName(target) : NameColorCache.getEnemyName(target);
+
+            // Get hit body part name if available
+            let partName = '';
+            if (target._lastHitPartName) {
+                partName = target._lastHitPartName;
+            } else if (target._lastHitPart && target._bodyParts && target._bodyParts[target._lastHitPart]) {
+                partName = target._bodyParts[target._lastHitPart].name || target._lastHitPart;
+            } else if (target._fxLastHitPart && target._bodyParts && target._bodyParts[target._fxLastHitPart]) {
+                partName = target._bodyParts[target._fxLastHitPart].name || target._fxLastHitPart;
+            }
+
+            let displayName = targetName;
+            if (partName && target.result().hpDamage > 0) {
+                if (ConfigManager.language === 'it') {
+                    displayName = targetName + ' (' + partName + ')';
+                } else {
+                    displayName = targetName + "'s " + partName;
+                }
+            }
+
             const result = target.result();
             const damage = result.hpDamage;
             const isActor = target.isActor();
 
             let text;
             if (damage > 0 && result.drain) {
-                text = TextManager.actorDrain.format(targetName, TextManager.hp, damage);
+                text = TextManager.actorDrain.format(displayName, TextManager.hp, damage);
             } else if (damage > 0) {
                 if (result.critical) {
                     const dmgStr = isActor
-                        ? TextManager.actorDamage.format(targetName, damage)
-                        : TextManager.enemyDamage.format(targetName, damage);
+                        ? TextManager.actorDamage.format(displayName, damage)
+                        : TextManager.enemyDamage.format(displayName, damage);
                     text = `\\crit[${dmgStr} (CRITICAL!)]`;
                 } else {
                     text = isActor
-                        ? TextManager.actorDamage.format(targetName, damage)
-                        : TextManager.enemyDamage.format(targetName, damage);
+                        ? TextManager.actorDamage.format(displayName, damage)
+                        : TextManager.enemyDamage.format(displayName, damage);
                 }
             } else if (damage < 0) {
                 text = isActor
@@ -1870,8 +1875,8 @@
                     : TextManager.enemyRecovery.format(targetName, TextManager.hp, -damage);
             } else {
                 text = isActor
-                    ? TextManager.actorNoDamage.format(targetName)
-                    : TextManager.enemyNoDamage.format(targetName);
+                    ? TextManager.actorNoDamage.format(displayName)
+                    : TextManager.enemyNoDamage.format(displayName);
             }
             this.push("appendToActionLine", text);
         }

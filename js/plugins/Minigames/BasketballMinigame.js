@@ -803,6 +803,10 @@
             this._shotsPerGame = SHOTS_PER_GAME;
             this._playerShots = [];
             this._cpuShots = [];
+            // Who is shooting the other half of the rack: a companion, a local
+            // off the map, or the player's own head. Read once, so the same
+            // person stays on the line for the whole game.
+            this._standIn = window.MinigameOpponent?.pick() ?? null;
             this._currentShotIndex = 0;
             this._isPlayerTurn = true;
             this._state = STATE.AIM;
@@ -886,7 +890,7 @@
         }
 
         createUI() {
-            this._scoreboard = new Sprite_BasketballScoreboard(this._shotsPerGame);
+            this._scoreboard = new Sprite_BasketballScoreboard(this._shotsPerGame, this.opponentName());
             this.addChild(this._scoreboard);
 
             this._powerMeter = new Sprite_PowerMeter(6, 60, "POWER");
@@ -921,7 +925,13 @@
         }
 
         shooterLabel() {
-            return this._isPlayerTurn ? T('Basketball.player') : T('Basketball.cpu');
+            return this._isPlayerTurn ? T('Basketball.player') : this.opponentName();
+        }
+
+        opponentName() {
+            return window.MinigameOpponent
+                ? window.MinigameOpponent.nameOf(this._standIn, T('Basketball.cpu'))
+                : T('Basketball.cpu');
         }
 
         refreshAimGuide() {
@@ -953,7 +963,7 @@
             } else {
                 this._state = STATE.CPU;
                 this._cpuWait = 50;
-                this._statusWindow.setText(T('Basketball.cpuLiningUp'));
+                this._statusWindow.setText(T('Basketball.cpuLiningUp', { opponent: this.opponentName() }));
             }
             this.refreshAimGuide();
         }
@@ -1151,7 +1161,7 @@
         recordShot(made) {
             const arr = this._isPlayerTurn ? this._playerShots : this._cpuShots;
             arr.push(!!made);
-            this._scoreboard.refresh(this._playerShots, this._cpuShots);
+            this._scoreboard.refresh(this._playerShots, this._cpuShots, this.opponentName());
         }
 
         nextTurn() {
@@ -1205,8 +1215,12 @@
                 else window.MinigameFun.draw('Basketball');
             }
 
+            // MinigameFun pays the party; a local who was talked into a
+            // shootout is paid their own leisure here.
+            window.MinigameOpponent?.payFun(this._standIn);
+
             this._resultWindow.show();
-            this._resultWindow.setText(result, T('Basketball.finalScore', { player: playerTotal, cpu: cpuTotal }));
+            this._resultWindow.setText(result, T('Basketball.finalScore', { player: playerTotal, opponent: this.opponentName(), opponentScore: cpuTotal }));
             this._statusWindow.setText('');
         }
 
@@ -1368,22 +1382,23 @@
     // Sprite_BasketballScoreboard
     //=============================================================================
     class Sprite_BasketballScoreboard extends Sprite_PSXWidget {
-        constructor(shotsPerGame) {
+        constructor(shotsPerGame, opponentName) {
             super(hudW(), 34, 0, 0);
             this._shotsPerGame = shotsPerGame;
-            this.refresh([], []);
+            this.refresh([], [], opponentName);
         }
 
-        refresh(playerShots, cpuShots) {
+        refresh(playerShots, cpuShots, opponentName) {
             const H = HUD();
             if (!H) return;
+            if (opponentName) this._opponentName = opponentName;
             this._last = [playerShots, cpuShots];
             const bmp = this.bitmap;
             bmp.clear();
             this.beginText();
             H.decoPanel(bmp, 0, 0, this._vw, this._vh, { hairline: false, step: 1 });
-            this.drawRow("PLAYER", playerShots, 4);
-            this.drawRow("CPU", cpuShots, 19);
+            this.drawRow(T('Basketball.player'), playerShots, 4);
+            this.drawRow(this._opponentName || T('Basketball.cpu'), cpuShots, 19);
             this.endText();
         }
 

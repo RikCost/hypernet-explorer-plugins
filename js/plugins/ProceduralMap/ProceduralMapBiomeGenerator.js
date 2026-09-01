@@ -4140,6 +4140,20 @@
   function worldRegionLayer() {
     if (_worldRegionLayer) return _worldRegionLayer;
 
+    // The snapshot carries the region plane run-length encoded (BiomesMap.json
+    // "regions"), so the country under any coordinate is known without parsing
+    // the 1.3MB world map. Only a world map that is already loaded beats it.
+    if (!($gameMap && $gameMap.mapId() === WORLD_MAP_ID && $dataMap && $dataMap.data)) {
+      const snapshot = Utils2.loadBiomesMapFromFile ? Utils2.loadBiomesMapFromFile() : null;
+      const expanded = snapshot && Utils2.expandWorldRegionRLE
+        ? Utils2.expandWorldRegionRLE(snapshot.regions) : null;
+      if (expanded) {
+        _worldRegionLayer = expanded.layer;
+        _worldRegionSize = { width: expanded.width, height: expanded.height };
+        return _worldRegionLayer;
+      }
+    }
+
     let data = null;
     let w = 0;
     let h = 0;
@@ -6342,6 +6356,23 @@
     isBiome: isInteriorBiome,
     // True while the loaded procedural map IS one of them.
     isCurrent: isProceduralInteriorMap,
+    // True for a biome NAME built by the enclosed floor/rim/wall generator
+    // (Dungeon, Crypt, Sewer, LootCellar, TempleInside, CaveDen, PatronVault
+    // and the rest of the structure catalogue). Narrower than isBiome: the
+    // caves are roofed too but are not built from the catalogue. FogOfWar asks
+    // this one, because a structure is a room-by-room place worth exploring.
+    isStructureBiome: isDungeonBiome,
+    // The structure biome the party is standing in on the SURFACE layer, or ""
+    // anywhere else (off the procedural map, out in the open, or on one of the
+    // layers below the surface, which fog deliberately leaves alone).
+    currentStructureBiome() {
+      if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return "";
+      const data = $gameSystem && $gameSystem._procGenData;
+      if (!data) return "";
+      if (data.biomeLayerStack && data.biomeLayerStack.length > 0) return "";
+      const name = data.currentBiome || "";
+      return isDungeonBiome(name) ? name : "";
+    },
     // The biome the player is standing in, or "" off the procedural map.
     currentBiome() {
       if (!isProceduralInteriorMap()) return "";

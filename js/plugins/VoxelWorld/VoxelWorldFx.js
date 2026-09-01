@@ -27,7 +27,7 @@
     if (!VW) { console.error('[VoxelWorld] core not loaded before VoxelWorldFx.js'); return; }
 
     const {
-        WORLD_SCALE, loadTex, loadVoxelTex
+        WORLD_SCALE, WORLD_TILE_SIZE, loadTex, loadVoxelTex
     } = VW;
 
     // =========================================================================
@@ -777,8 +777,756 @@
         }
     }
 
+    // =========================================================================
+    // SolomonRitualFx: The Solomon Ritual
+    // Triggered by F7 in developer mode while in voxel mode.
+    // - The sky turns apocalyptic crimson red with heavy blood-red fog.
+    // - A huge black occult summoning circle opens high in the sky and rotates.
+    // - Lances of red pulsating energy rain down endlessly around the player.
+    // - Scenery (trees/rocks/props) and voxel terrain are destroyed on impact.
+    // - Evangelion-style cross-shaped Dirac explosions (✝) erupt from each crater.
+    // - The player and camper take no damage.
+    // =========================================================================
+    class SolomonRitualFx {
+        constructor(scene, terrain, overlay) {
+            this._scene   = scene;
+            this._terrain = terrain;
+            this._overlay = overlay;
+            this._active  = false;
+            this._fade    = 0; // 0..1 transition
+            this._time    = 0;
+            this._spawnTimer = 0;
+            this._lastSeTime = 0;
+            this._sceneRef = null;
+
+            this._group = new THREE.Group();
+            this._group.visible = false;
+            scene.add(this._group);
+
+            this._initSummoningCircle();
+            this._initLanceResources();
+            this._initCrossResources();
+            this._initOverlay();
+
+            this._lances = [];
+            this._crosses = [];
+        }
+
+        isActive() { return this._active; }
+        setActive(on) {
+            this._active = !!on;
+            if (this._active) {
+                this._group.visible = true;
+                if (this._domOverlay) this._domOverlay.style.display = '';
+            }
+        }
+
+        toggle() {
+            this.setActive(!this.isActive());
+            return this._active;
+        }
+
+        // --- 1. Arcane Black Summoning Circle in the Sky ---
+        _initSummoningCircle() {
+            const S = 1024;
+            const cv = document.createElement('canvas');
+            cv.width = cv.height = S;
+            const ctx = cv.getContext('2d');
+            const c = S / 2;
+
+            ctx.clearRect(0, 0, S, S);
+
+            // Deep obsidian / black lines with subtle red energy shadow
+            ctx.shadowColor = 'rgba(255, 20, 40, 0.85)';
+            ctx.shadowBlur = 12;
+            ctx.strokeStyle = '#020001';
+            ctx.fillStyle = '#020001';
+
+            const drawRing = (r, w) => {
+                ctx.lineWidth = w;
+                ctx.beginPath();
+                ctx.arc(c, c, r, 0, Math.PI * 2);
+                ctx.stroke();
+            };
+
+            // Concentric boundary rings
+            drawRing(485, 14);
+            drawRing(460, 4);
+            drawRing(442, 3);
+            drawRing(360, 5);
+            drawRing(340, 3);
+            drawRing(240, 4);
+            drawRing(150, 3);
+            drawRing(80,  4);
+
+            // Radial tick marks and runes between outer concentric rings
+            const TICKS = 72;
+            for (let i = 0; i < TICKS; i++) {
+                const ang = (i / TICKS) * Math.PI * 2;
+                const r1 = (i % 6 === 0) ? 442 : (i % 2 === 0) ? 452 : 456;
+                const r2 = 460;
+                ctx.lineWidth = (i % 6 === 0) ? 3.5 : 1.5;
+                ctx.beginPath();
+                ctx.moveTo(c + Math.cos(ang) * r1, c + Math.sin(ang) * r1);
+                ctx.lineTo(c + Math.cos(ang) * r2, c + Math.sin(ang) * r2);
+                ctx.stroke();
+            }
+
+            // 12 Occult Demonic Runes in the outer band
+            for (let i = 0; i < 12; i++) {
+                const ang = (i / 12) * Math.PI * 2;
+                const rx = c + Math.cos(ang) * 400;
+                const ry = c + Math.sin(ang) * 400;
+                ctx.save();
+                ctx.translate(rx, ry);
+                ctx.rotate(ang + Math.PI / 2);
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(-12, -8); ctx.lineTo(12, -8);
+                ctx.moveTo(0, -14);  ctx.lineTo(0, 14);
+                ctx.moveTo(-8, 6);   ctx.lineTo(8, 6);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(0, -8, 5, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Interlaced Stars (Seal of Solomon / Pentagram / Heptagram)
+            const drawStar = (points, radius, skip, width) => {
+                ctx.lineWidth = width;
+                ctx.beginPath();
+                for (let i = 0; i <= points * skip; i++) {
+                    const idx = (i * skip) % points;
+                    const a = (idx / points) * Math.PI * 2 - Math.PI / 2;
+                    const px = c + Math.cos(a) * radius;
+                    const py = c + Math.sin(a) * radius;
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+            };
+
+            drawStar(6, 340, 2, 5); // Hexagram Seal
+            drawStar(7, 335, 3, 3); // Heptagram
+            drawStar(5, 238, 2, 4); // Inverted Pentagram
+
+            // Inner radiating occult rays
+            for (let i = 0; i < 24; i++) {
+                const ang = (i / 24) * Math.PI * 2;
+                ctx.lineWidth = (i % 2 === 0) ? 2 : 1;
+                ctx.beginPath();
+                ctx.moveTo(c + Math.cos(ang) * 80, c + Math.sin(ang) * 80);
+                ctx.lineTo(c + Math.cos(ang) * 150, c + Math.sin(ang) * 150);
+                ctx.stroke();
+            }
+
+            // Center Dark Eye / Void
+            ctx.beginPath();
+            ctx.arc(c, c, 38, 0, Math.PI * 2);
+            ctx.fill();
+            // Demonic pupil slit
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#ff1122';
+            ctx.beginPath();
+            ctx.ellipse(c, c, 6, 24, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            this._circleTex = new THREE.CanvasTexture(cv);
+            this._circleMat = new THREE.MeshBasicMaterial({
+                map: this._circleTex,
+                transparent: true,
+                opacity: 0,
+                depthWrite: false,
+                side: THREE.DoubleSide
+            });
+            this._circleMat.fog = false;
+
+            const circleGeo = new THREE.PlaneGeometry(1700 * WORLD_SCALE, 1700 * WORLD_SCALE, 1, 1);
+            circleGeo.rotateX(Math.PI / 2);
+            this._circleMesh = new THREE.Mesh(circleGeo, this._circleMat);
+            this._circleMesh.position.y = 520 * WORLD_SCALE;
+            this._circleMesh.renderOrder = 2;
+            this._group.add(this._circleMesh);
+
+            // Counter-rotating inner ring for depth
+            const innerGeo = new THREE.PlaneGeometry(950 * WORLD_SCALE, 950 * WORLD_SCALE, 1, 1);
+            innerGeo.rotateX(Math.PI / 2);
+            this._innerCircleMesh = new THREE.Mesh(innerGeo, this._circleMat);
+            this._innerCircleMesh.position.y = 515 * WORLD_SCALE;
+            this._innerCircleMesh.renderOrder = 3;
+            this._group.add(this._innerCircleMesh);
+        }
+
+        // --- 2. Lances of Pulsating Red Energy ---
+        _initLanceResources() {
+            const S_W = 64, S_H = 256;
+            const cv = document.createElement('canvas');
+            cv.width = S_W; cv.height = S_H;
+            const ctx = cv.getContext('2d');
+            ctx.clearRect(0, 0, S_W, S_H);
+
+            // Outer crimson energy aura
+            const gOuter = ctx.createLinearGradient(S_W / 2, 0, S_W / 2, S_H);
+            gOuter.addColorStop(0,   'rgba(255, 0, 40, 0.95)');
+            gOuter.addColorStop(0.7, 'rgba(230, 0, 30, 0.75)');
+            gOuter.addColorStop(1,   'rgba(180, 0, 20, 0)');
+            ctx.fillStyle = gOuter;
+            ctx.beginPath();
+            ctx.moveTo(S_W / 2, 0);
+            ctx.lineTo(S_W - 6, S_H * 0.75);
+            ctx.lineTo(S_W / 2, S_H);
+            ctx.lineTo(6, S_H * 0.75);
+            ctx.closePath();
+            ctx.fill();
+
+            // Inner intense white-hot core
+            const gInner = ctx.createLinearGradient(S_W / 2, 0, S_W / 2, S_H);
+            gInner.addColorStop(0,   'rgba(255, 255, 255, 1.0)');
+            gInner.addColorStop(0.5, 'rgba(255, 220, 230, 0.95)');
+            gInner.addColorStop(0.9, 'rgba(255, 100, 120, 0.4)');
+            gInner.addColorStop(1,   'rgba(255, 0, 50, 0)');
+            ctx.fillStyle = gInner;
+            ctx.beginPath();
+            ctx.moveTo(S_W / 2, 0);
+            ctx.lineTo(S_W / 2 + 5, S_H * 0.7);
+            ctx.lineTo(S_W / 2, S_H * 0.95);
+            ctx.lineTo(S_W / 2 - 5, S_H * 0.7);
+            ctx.closePath();
+            ctx.fill();
+
+            this._lanceTex = new THREE.CanvasTexture(cv);
+            this._lanceMat = new THREE.MeshBasicMaterial({
+                map: this._lanceTex,
+                transparent: true,
+                opacity: 0.95,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                side: THREE.DoubleSide
+            });
+            this._lanceMat.fog = false;
+
+            // Crossed double-plane for 3D visibility from any camera angle
+            const W = 11, H = 58;
+            const p1 = new THREE.PlaneGeometry(W, H);
+            const p2 = new THREE.PlaneGeometry(W, H);
+            p2.rotateY(Math.PI / 2);
+            p1.translate(0, H / 2, 0);
+            p2.translate(0, H / 2, 0);
+
+            const pos = new Float32Array(p1.attributes.position.array.length + p2.attributes.position.array.length);
+            pos.set(p1.attributes.position.array, 0);
+            pos.set(p2.attributes.position.array, p1.attributes.position.array.length);
+            const uvs = new Float32Array(p1.attributes.uv.array.length + p2.attributes.uv.array.length);
+            uvs.set(p1.attributes.uv.array, 0);
+            uvs.set(p2.attributes.uv.array, p1.attributes.uv.array.length);
+
+            const idx1 = p1.index.array;
+            const idx2 = p2.index.array;
+            const offset = p1.attributes.position.count;
+            const indices = new Uint16Array(idx1.length + idx2.length);
+            indices.set(idx1, 0);
+            for (let i = 0; i < idx2.length; i++) indices[idx1.length + i] = idx2[i] + offset;
+
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+            geo.setIndex(new THREE.BufferAttribute(indices, 1));
+            this._lanceGeo = geo;
+        }
+
+        // --- 3. Evangelion Dirac Cross of Light (✝) Resources ---
+        _initCrossResources() {
+            const S = 256;
+            const cv = document.createElement('canvas');
+            cv.width = S; cv.height = S;
+            const ctx = cv.getContext('2d');
+            ctx.clearRect(0, 0, S, S);
+
+            // Radiant energy gradient with white-hot core and scarlet-crimson corona
+            const rad = ctx.createRadialGradient(S / 2, S / 2, 4, S / 2, S / 2, S / 2);
+            rad.addColorStop(0,   'rgba(255, 255, 255, 1.0)');
+            rad.addColorStop(0.18,'rgba(255, 180, 200, 0.95)');
+            rad.addColorStop(0.55,'rgba(245, 10, 45, 0.70)');
+            rad.addColorStop(1,   'rgba(180, 0, 20, 0)');
+            ctx.fillStyle = rad;
+            ctx.fillRect(0, 0, S, S);
+
+            this._crossTex = new THREE.CanvasTexture(cv);
+            this._crossMat = new THREE.MeshBasicMaterial({
+                map: this._crossTex,
+                transparent: true,
+                opacity: 0.95,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                side: THREE.DoubleSide
+            });
+            this._crossMat.fog = false;
+
+            const ringGeo = new THREE.RingGeometry(0.5, 1.0, 32);
+            ringGeo.rotateX(-Math.PI / 2);
+            this._ringGeo = ringGeo;
+            this._ringMat = new THREE.MeshBasicMaterial({
+                color: 0xff1533,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                side: THREE.DoubleSide
+            });
+            this._ringMat.fog = false;
+        }
+
+        _initOverlay() {
+            if (!this._overlay) return;
+            const d = document.createElement('div');
+            d.id = 'camper-solomon-overlay';
+            d.style.cssText = [
+                'position:absolute', 'top:0', 'right:0', 'bottom:0', 'left:0',
+                'pointer-events:none', 'z-index:3', 'opacity:0',
+                'background:radial-gradient(ellipse at center, rgba(140, 0, 15, 0) 35%, rgba(200, 0, 25, 0.38) 75%, rgba(120, 0, 10, 0.72) 100%)',
+                'mix-blend-mode:screen', 'transition:opacity 0.4s ease'
+            ].join(';');
+            this._overlay.appendChild(d);
+            this._domOverlay = d;
+        }
+
+        _createCrossGroup() {
+            const grp = new THREE.Group();
+
+            // Vertical beam (crossed planes for 3D visibility from all 360 degrees)
+            const V_H = 230, V_W = 14;
+            const pV1 = new THREE.Mesh(new THREE.PlaneGeometry(V_W, V_H), this._crossMat);
+            pV1.position.y = V_H / 2;
+            const pV2 = new THREE.Mesh(new THREE.PlaneGeometry(V_W, V_H), this._crossMat);
+            pV2.position.y = V_H / 2;
+            pV2.rotation.y = Math.PI / 2;
+            grp.add(pV1);
+            grp.add(pV2);
+
+            // Horizontal crossbar at 65% height (The iconic Evangelion Cross shape ✝)
+            const H_W = 92, H_H = 14;
+            const H_Y = V_H * 0.65;
+            const pH1 = new THREE.Mesh(new THREE.PlaneGeometry(H_W, H_H), this._crossMat);
+            pH1.position.y = H_Y;
+            const pH2 = new THREE.Mesh(new THREE.PlaneGeometry(H_W, H_H), this._crossMat);
+            pH2.position.y = H_Y;
+            pH2.rotation.y = Math.PI / 2;
+            grp.add(pH1);
+            grp.add(pH2);
+
+            // Center radiant flare at intersection
+            const flare = new THREE.Mesh(new THREE.PlaneGeometry(44, 44), this._crossMat);
+            flare.position.y = H_Y;
+            grp.add(flare);
+
+            // Ground shockwave ring
+            const ring = new THREE.Mesh(this._ringGeo, this._ringMat.clone());
+            ring.position.y = 0.5;
+            grp.add(ring);
+
+            return {
+                grp, pV1, pV2, pH1, pH2, flare, ring,
+                age: 0,
+                duration: 2.3,
+                baseY: 0,
+                x: 0, y: 0, z: 0
+            };
+        }
+
+        _spawnLance(camX, camZ) {
+            const ang = Math.random() * Math.PI * 2;
+            const rad = 14 + Math.random() * 155;
+            const sx = camX + Math.cos(ang) * rad;
+            const sz = camZ + Math.sin(ang) * rad;
+            const sy = (380 + Math.random() * 90) * WORLD_SCALE;
+
+            const mesh = new THREE.Mesh(this._lanceGeo, this._lanceMat);
+            mesh.position.set(sx, sy, sz);
+            mesh.rotation.x = Math.PI; // pointing down
+            mesh.rotation.z = (Math.random() - 0.5) * 0.14;
+            mesh.rotation.y = Math.random() * Math.PI * 2;
+            this._group.add(mesh);
+
+            this._lances.push({
+                mesh,
+                x: sx, y: sy, z: sz,
+                vx: (Math.random() - 0.5) * 28,
+                vy: -(520 + Math.random() * 180),
+                vz: (Math.random() - 0.5) * 28,
+                life: 0,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+
+        _triggerImpact(hitX, groundY, hitZ, camX, camZ) {
+            // 1. Terrain Carving (Voxel Craters)
+            if (this._terrain && this._terrain.carve) {
+                this._terrain.carve(hitX, groundY, hitZ, 11);
+            }
+
+            // 2. Scenery & Prop Destruction (Felling trees, rocks, barrels)
+            if (this._terrain && this._terrain.propsAt && this._terrain.fellProp) {
+                const ts = WORLD_TILE_SIZE;
+                const tx = Math.floor(hitX / ts), tz = Math.floor(hitZ / ts);
+                const blastR2 = 28 * 28;
+                for (let dj = -1; dj <= 1; dj++) {
+                    for (let di = -1; di <= 1; di++) {
+                        const ch = this._terrain.propsAt(tx + di, tz + dj);
+                        if (!ch || !ch.grp || !ch.grp.userData || !ch.grp.userData.props) continue;
+                        const props = ch.grp.userData.props;
+                        for (let k = props.length - 1; k >= 0; k--) {
+                            const p = props[k];
+                            const px = ch.px + p.x, pz = ch.pz + p.z;
+                            const d2 = (px - hitX) * (px - hitX) + (pz - hitZ) * (pz - hitZ);
+                            if (d2 <= blastR2) {
+                                this._terrain.fellProp({ rec: p, chunk: ch, x: px, y: p.y, z: pz });
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 3. Spawn Evangelion Dirac Cross of Light (✝)
+            const cross = this._createCrossGroup();
+            cross.grp.position.set(hitX, groundY, hitZ);
+            cross.baseY = groundY;
+            cross.x = hitX; cross.y = groundY; cross.z = hitZ;
+            this._group.add(cross.grp);
+            this._crosses.push(cross);
+
+            // 4. Explosion SE & Camera Shake
+            const dist = Math.hypot(hitX - camX, hitZ - camZ);
+            const now = performance.now();
+            if (now - this._lastSeTime > 110) {
+                this._lastSeTime = now;
+                if (typeof AudioManager !== 'undefined' && AudioManager.playSe) {
+                    const vol = Math.max(30, Math.min(100, Math.round(95 - dist * 0.35)));
+                    const pitch = 85 + Math.floor(Math.random() * 30);
+                    const pan = Math.max(-100, Math.min(100, Math.round((hitX - camX) * 0.6)));
+                    AudioManager.playSe({ name: 'Explosion1', volume: vol, pitch: pitch, pan: pan });
+                }
+            }
+
+            // Camera shake trauma based on proximity
+            if (dist < 230 && this._sceneRef) {
+                const trauma = (1 - dist / 230) * 0.38;
+                this._sceneRef._solomonShake = Math.min(0.7, (this._sceneRef._solomonShake || 0) + trauma);
+            }
+        }
+
+        _updateSummoningCircle(camX, camZ, delta, time) {
+            this._circleMesh.position.set(camX, 520 * WORLD_SCALE, camZ);
+            this._innerCircleMesh.position.set(camX, 515 * WORLD_SCALE, camZ);
+
+            this._circleMesh.rotation.z += delta * 0.05;
+            this._innerCircleMesh.rotation.z -= delta * 0.09;
+
+            const baseScale = this._fade;
+            const pulse = 1.0 + 0.03 * Math.sin(time * 3);
+            this._circleMesh.scale.set(baseScale * pulse, baseScale * pulse, 1);
+            this._innerCircleMesh.scale.set(baseScale * (1.0 - 0.02 * Math.sin(time * 4)), baseScale * (1.0 - 0.02 * Math.sin(time * 4)), 1);
+
+            this._circleMat.opacity = this._fade * 0.96;
+        }
+
+        overrideSky(targetSky, targetFog, delta) {
+            if (this._fade <= 0.001) return;
+            if (!this._solomonSky) this._solomonSky = new THREE.Color(0x6a020a); // Blood crimson
+            if (!this._solomonFog) this._solomonFog = new THREE.Color(0x380004); // Dark blood fog
+
+            targetSky.lerp(this._solomonSky, this._fade * 0.96);
+            targetFog.lerp(this._solomonFog, this._fade * 0.96);
+        }
+
+        update(camX, camY, camZ, delta, time, sceneRef) {
+            this._sceneRef = sceneRef;
+            this._time = time;
+
+            // Fade intensity
+            const targetFade = this._active ? 1.0 : 0.0;
+            this._fade += (targetFade - this._fade) * Math.min(1, delta * (this._active ? 1.6 : 2.5));
+            if (this._fade < 0.001) {
+                this._fade = 0;
+                if (!this._active && this._lances.length === 0 && this._crosses.length === 0) {
+                    this._group.visible = false;
+                    if (this._domOverlay) this._domOverlay.style.opacity = '0';
+                    return;
+                }
+            }
+
+            this._group.visible = true;
+
+            // Screen crimson vignette
+            if (this._domOverlay) {
+                const pulse = 0.5 + 0.25 * Math.sin(time * 4);
+                this._domOverlay.style.opacity = String((this._fade * pulse).toFixed(3));
+            }
+
+            // 1. Update Summoning Circle
+            this._updateSummoningCircle(camX, camZ, delta, time);
+
+            // 2. Spawn Lances while active
+            if (this._active && this._fade > 0.35) {
+                this._spawnTimer += delta;
+                const SPAWN_INTERVAL = 0.09; // Continuous apocalyptic rain (~11 lances/sec)
+                while (this._spawnTimer >= SPAWN_INTERVAL) {
+                    this._spawnTimer -= SPAWN_INTERVAL;
+                    this._spawnLance(camX, camZ);
+                }
+            }
+
+            // 3. Update Lances
+            for (let i = this._lances.length - 1; i >= 0; i--) {
+                const l = this._lances[i];
+                l.x += l.vx * delta;
+                l.y += l.vy * delta;
+                l.z += l.vz * delta;
+                l.life += delta;
+
+                l.mesh.position.set(l.x, l.y, l.z);
+                const pulse = 1.0 + 0.35 * Math.sin(l.life * 28 + l.phase);
+                l.mesh.scale.set(pulse, 1.0, pulse);
+
+                const groundY = (this._terrain && this._terrain.field)
+                    ? this._terrain.field.blockTopAt(l.x, l.z)
+                    : 0;
+
+                if (l.y <= groundY + 2 || l.y <= -30) {
+                    this._triggerImpact(l.x, groundY, l.z, camX, camZ);
+                    this._group.remove(l.mesh);
+                    this._lances.splice(i, 1);
+                }
+            }
+
+            // 4. Update Evangelion Cross Explosions
+            for (let i = this._crosses.length - 1; i >= 0; i--) {
+                const c = this._crosses[i];
+                c.age += delta;
+
+                if (c.age >= c.duration) {
+                    this._group.remove(c.grp);
+                    c.ring.material.dispose();
+                    this._crosses.splice(i, 1);
+                    continue;
+                }
+
+                // Eruption: vertical beam growth (0 - 0.12s)
+                const vScale = Math.min(1.0, c.age / 0.12);
+                c.pV1.scale.y = c.pV2.scale.y = vScale;
+
+                // Horizontal crossbar expansion (0.06 - 0.20s)
+                const hScale = Math.max(0, Math.min(1.0, (c.age - 0.06) / 0.14));
+                c.pH1.scale.x = c.pH2.scale.x = hScale;
+
+                // Center flare pulse
+                const flareScale = (0.6 + 0.4 * Math.sin(c.age * 20)) * vScale;
+                c.flare.scale.set(flareScale, flareScale, 1);
+
+                // Expanding ground shockwave ring
+                const ringScale = Math.min(60, c.age * 200);
+                c.ring.scale.set(ringScale, ringScale, ringScale);
+                c.ring.material.opacity = Math.max(0, 0.8 - (c.age / 0.8));
+
+                // Pulsation & Ascension
+                if (c.age > 1.2) {
+                    const ascend = (c.age - 1.2) * 24;
+                    c.grp.position.y = c.baseY + ascend;
+                    const fadeOut = Math.max(0, (c.duration - c.age) / (c.duration - 1.2));
+                    c.pV1.material.opacity = fadeOut * 0.95;
+                    c.pH1.material.opacity = fadeOut * 0.95;
+                } else {
+                    const pulse = 1.0 + 0.06 * Math.sin(c.age * 25);
+                    c.pV1.scale.x = c.pV2.scale.x = pulse;
+                    c.pH1.scale.y = c.pH2.scale.y = pulse;
+                }
+            }
+        }
+
+        dispose() {
+            this.setActive(false);
+            for (const l of this._lances) this._group.remove(l.mesh);
+            for (const c of this._crosses) {
+                this._group.remove(c.grp);
+                c.ring.material.dispose();
+            }
+            this._lances = [];
+            this._crosses = [];
+
+            this._scene.remove(this._group);
+            this._circleTex.dispose();
+            this._circleMat.dispose();
+            this._lanceTex.dispose();
+            this._lanceMat.dispose();
+            this._crossTex.dispose();
+            this._crossMat.dispose();
+            this._lanceGeo.dispose();
+            this._ringGeo.dispose();
+            this._ringMat.dispose();
+
+            if (this._domOverlay && this._domOverlay.parentNode) {
+                this._domOverlay.parentNode.removeChild(this._domOverlay);
+                this._domOverlay = null;
+            }
+        }
+    }
+
+    // =========================================================================
+    // SpellFx, the game's own battle animations played out in this world
+    // =========================================================================
+    // An .efkefc is drawn by Effekseer, and Effekseer draws into whatever GL
+    // context it was initialised on. The game's own context belongs to PIXI and
+    // paints the canvas UNDER this world's overlay, so an animation played
+    // through Sprite_Animation out here would go off behind a wall of voxels
+    // and never be seen by anybody.
+    //
+    // So a SECOND Effekseer context is opened, on this world's own renderer.
+    // The wasm runtime is already up (the game booted it), and a context is a
+    // handful of buffers, so the whole cost of this is one init and one draw
+    // call per burst. Placement is the engine's own trick, lifted straight out
+    // of Sprite_Animation: the effect plays at the origin and the VIEWPORT is
+    // moved to where the burst falls on screen, which is why an animation
+    // authored for a battle line reads correctly over a first-person world.
+    const SPELL_FX_VIEWPORT = 4096;   // the engine's own animation viewport size
+    const SPELL_FX_REF_DIST = 160;    // the distance a burst is drawn at full size
+
+    class SpellFx {
+        constructor(renderer) {
+            this._ctx = null;
+            this._effects = new Map();   // url -> loaded effect
+            this._live = [];             // { handle, anim, pos, frame, acc, end }
+            this._proj = new THREE.Vector3();
+            try {
+                if (!window.effekseer || !window.effekseer.createContext) return;
+                this._ctx = window.effekseer.createContext();
+                this._ctx.init(renderer.getContext(),
+                    { instanceMaxCount: 2000, squareMaxCount: 8000 });
+                this._ctx.setRestorationOfStatesFlag(false);
+            } catch (e) {
+                this._ctx = null;   // no Effekseer out here; the world simply has no bursts
+            }
+        }
+
+        ready() { return !!this._ctx; }
+
+        // Play an Animations.json entry at a point in the world. An MV animation
+        // (frames rather than an effect file) is not drawn out here: there is no
+        // sprite-sheet pipeline in a 3D scene. True when something started.
+        play(animationId, x, y, z) {
+            if (!this._ctx || !(animationId > 0)) return false;
+            const anim = (typeof $dataAnimations !== 'undefined') && $dataAnimations[animationId];
+            if (!anim || !anim.effectName) return false;
+            const url = 'effects/' + String(anim.effectName)
+                .split('/').map(encodeURIComponent).join('/') + '.efkefc';
+            const at = { x, y, z };
+            const begin = (effect) => {
+                if (!effect) return;
+                let handle = null;
+                try { handle = this._ctx.play(effect, 0, 0, 0); } catch (e) { return; }
+                if (!handle) return;
+                let end = 30;
+                for (const t of (anim.soundTimings || []).concat(anim.flashTimings || [])) {
+                    if (t.frame > end) end = t.frame;
+                }
+                this._live.push({ handle, anim, pos: at, frame: 0, acc: 0, end: end + 30 });
+            };
+            const cached = this._effects.get(url);
+            if (cached) { begin(cached); return true; }
+            try {
+                const effect = this._ctx.loadEffect(url, 1,
+                    () => begin(effect), () => { this._effects.delete(url); });
+                this._effects.set(url, effect);
+            } catch (e) { return false; }
+            return true;
+        }
+
+        // Advance every burst and draw it, straight after the world has been
+        // rendered and through the same camera it was rendered with.
+        draw(renderer, camera, dt) {
+            if (!this._ctx || this._live.length === 0) return;
+            const gl = renderer.getContext();
+            const glW = renderer.domElement.width, glH = renderer.domElement.height;
+            const step = Math.min(0.05, dt);
+            for (const fx of this._live) {
+                fx.acc += step;
+                while (fx.acc >= 1 / 60) {
+                    fx.acc -= 1 / 60;
+                    fx.frame++;
+                    for (const t of (fx.anim.soundTimings || [])) {
+                        if (t.frame === fx.frame && t.se && typeof AudioManager !== 'undefined') {
+                            try { AudioManager.playSe(t.se); } catch (e) { /* silence, then */ }
+                        }
+                    }
+                }
+            }
+            try { this._ctx.update(step * 60); } catch (e) { /* keep drawing regardless */ }
+
+            const vw = SPELL_FX_VIEWPORT;
+            const p = -(vw / glH);
+            const half = Math.tan((camera.fov || 60) * Math.PI / 360);
+            try {
+                this._ctx.setProjectionMatrix([1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, p, 0, 0, 0, 1]);
+                this._ctx.setCameraMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -10, 1]);
+                for (const fx of this._live) {
+                    this._proj.set(fx.pos.x, fx.pos.y, fx.pos.z);
+                    const dist = this._proj.distanceTo(camera.position);
+                    this._proj.project(camera);
+                    // Behind the eye, or well off the sides: nothing to draw.
+                    if (this._proj.z > 1 || Math.abs(this._proj.x) > 2.5 ||
+                        Math.abs(this._proj.y) > 2.5) continue;
+                    const sx = (this._proj.x * 0.5 + 0.5) * glW;
+                    const sy = (this._proj.y * 0.5 + 0.5) * glH;
+                    // Screen space carries no depth, so the distance is put back
+                    // by hand: a burst across the valley is small, one at the
+                    // party's own feet fills the view.
+                    const k = (SPELL_FX_REF_DIST / Math.max(20, dist)) / Math.max(0.2, half);
+                    const s = ((fx.anim.scale || 100) / 100) *
+                        Math.max(0.12, Math.min(3, k * 0.55));
+                    const r = Math.PI / 180, rot = fx.anim.rotation || { x: 0, y: 0, z: 0 };
+                    try {
+                        fx.handle.setLocation(0, 0, 0);
+                        fx.handle.setRotation(rot.x * r, rot.y * r, rot.z * r);
+                        fx.handle.setScale(s, s, s);
+                        fx.handle.setSpeed((fx.anim.speed || 100) / 100);
+                    } catch (e) { /* the handle is gone; the sweep below drops it */ }
+                    const ox = fx.anim.offsetX || 0, oy = fx.anim.offsetY || 0;
+                    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                    gl.viewport(ox - vw / 2 + sx, -oy - vw / 2 + sy, vw, vw);
+                    this._ctx.beginDraw();
+                    this._ctx.drawHandle(fx.handle);
+                    this._ctx.endDraw();
+                }
+            } catch (e) {
+                /* a malformed effect must never take the frame down with it */
+            } finally {
+                try { gl.viewport(0, 0, glW, glH); } catch (e) { /* nothing to put back */ }
+                if (renderer.resetState) { try { renderer.resetState(); } catch (e) { /* ditto */ } }
+            }
+
+            // Retire whatever has burnt out.
+            for (let i = this._live.length - 1; i >= 0; i--) {
+                const fx = this._live[i];
+                const alive = !!(fx.handle && fx.handle.exists);
+                if ((!alive && fx.frame > fx.end) || fx.frame > fx.end + 300) {
+                    this._live.splice(i, 1);
+                }
+            }
+        }
+
+        dispose() {
+            if (!this._ctx) return;
+            for (const fx of this._live) { try { fx.handle.stop(); } catch (e) { /* gone */ } }
+            this._live = [];
+            for (const effect of this._effects.values()) {
+                try { this._ctx.releaseEffect(effect); } catch (e) { /* gone */ }
+            }
+            this._effects.clear();
+            this._ctx = null;
+        }
+    }
+
     // Handed to the rest of the suite.
     Object.assign(VW, {
-        EngineAudio, SkyFx, UnderwaterFx, WaterPlane, WheelFx
+        EngineAudio, SkyFx, SolomonRitualFx, SpellFx, UnderwaterFx, WaterPlane, WheelFx
     });
 })();

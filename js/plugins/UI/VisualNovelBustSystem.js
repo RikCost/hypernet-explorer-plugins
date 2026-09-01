@@ -118,7 +118,8 @@
     const bustOpacity = 255;
     const bustWidth_16_9 = 440;  // maintains 889/1200 aspect ratio
     const bustHeight_16_9 = 615; // maintains 889/1200 aspect ratio
-    const bustYOffset_16_9 = 185;
+    const bustYOffset_16_9 = 176;
+    const bustOverlap = 2;
     const bustXOffset_16_9 = 245; // Right margin (50px from right edge)
     const fadeInDuration = 12;
     const fadeOutDuration = 12;
@@ -380,8 +381,11 @@
         }
 
         getBustY() {
-            const yOffset = bustYOffset_16_9;
-            return Graphics.height - yOffset;
+            const win = SceneManager._scene && SceneManager._scene._messageWindow;
+            if (win && win.width > 0 && win.height > 0 && win.y >= Graphics.height * 0.45) {
+                return win.y + bustOverlap;
+            }
+            return Graphics.height - bustYOffset_16_9 + bustOverlap;
         }
 
         setupBustPosition(sprite) {

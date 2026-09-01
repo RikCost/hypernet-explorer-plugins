@@ -2,7 +2,7 @@
   "noThree": "THREE.JS IZ NOT LOADED, BASKETBALL IZ UNAVAILABLE!",
   "player": "PLAYER",
   "cpu": "CPU",
-  "cpuLiningUp": "CPU IZ LININ' UP...",
+  "cpuLiningUp": "{opponent} IZ LININ' UP...",
   "aimPrompt": "PLAYER IZ LININ' UP DA SHOT",
   "powerPrompt": "SETTIN' DA POWER",
   "setTouch": "SETTIN' DA TOUCH",
@@ -10,5 +10,5 @@
   "swish": "SWISH!",
   "score": "SCORE!",
   "miss": "MISS",
-  "finalScore": "PLAYER: {player} CPU: {cpu}"
+  "finalScore": "PLAYER: {player} {opponent}: {opponentScore}"
 }

@@ -1734,6 +1734,11 @@
             if (BSE.Helpers.isOverlayShown("travel-screen")) return true;
         }
 
+        // Waiting fast-forward on map: combat is suppressed while time is speeding by
+        if (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._isWaitingFastForward) {
+            return true;
+        }
+
         // 4. Talking to other NPCs
         if (typeof $gameMessage !== "undefined" && $gameMessage && typeof $gameMessage.isBusy === "function" && $gameMessage.isBusy()) {
             return true;
@@ -2050,12 +2055,6 @@
         }
     });
 
-    PluginManager.registerCommand(pluginName, "resetHealthProtection", function(args) {
-        if (BSE.Functions.executeResetHealthProtection) {
-            BSE.Functions.executeResetHealthProtection();
-        }
-    });
-
     // A petrodemon is generated per fight rather than picked out of the
     // database (see section 17 of the encounters module).
     PluginManager.registerCommand(pluginName, "startPetrodemonBattle", function(args) {
@@ -2067,12 +2066,6 @@
         if (!BSE.Functions.startPetrodemonBattle) return;
         const tiers = BSE.Data.PETRO_DIFFICULTIES || ['normal'];
         BSE.Functions.startPetrodemonBattle(tiers[Math.floor(Math.random() * tiers.length)]);
-    });
-
-    PluginManager.registerCommand(pluginName, "checkHealthProtection", function(args) {
-        if (BSE.Functions.executeCheckHealthProtection) {
-            BSE.Functions.executeCheckHealthProtection();
-        }
     });
 
     // ------------------------------------------------------------------
@@ -2088,9 +2081,6 @@
         if (contents.enemyCharSprites) {
             Object.assign(BSE.Data._enemyCharSprites, contents.enemyCharSprites);
         }
-        if (contents.healthProtectionUsed) {
-            Object.assign(BSE.State._healthProtectionUsed || {}, contents.healthProtectionUsed);
-        }
     };
 
     const _DataManager_makeSaveContents = DataManager.makeSaveContents;
@@ -2098,7 +2088,6 @@
         const contents = _DataManager_makeSaveContents.call(this);
         contents.persistentEnemyData = BSE.State.persistentEnemyData;
         contents.enemyCharSprites = BSE.Data._enemyCharSprites;
-        contents.healthProtectionUsed = BSE.State._healthProtectionUsed || {};
         return contents;
     };
 

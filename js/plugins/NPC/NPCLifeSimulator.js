@@ -343,9 +343,12 @@
   // Whether this NPC is one of the non-sentient creatures (NPCCreature). Such
   // a life has no savings, no move up the housing ladder and no address, only
   // a range it has drifted around.
-  function isNonSentient(profile) {
+  // `name` lets the player's own creature characters out of the rule: a beast
+  // the player built and plays keeps a life like anybody else's.
+  function isNonSentient(profile, name) {
     const NC = window.NPCCreature;
-    return !!(NC && NC.isNonSentientProfile(profile));
+    if (!NC || !NC.isNonSentientProfile(profile)) return false;
+    return !NC.isPlayerCharacterName(name);
   }
 
   // A life event as a sentence. Records written before the log was keyed hold
@@ -466,6 +469,14 @@
   }
 
   function rollCareerHistory(record, profile, rng) {
+    // A beast has never held a job, so it has no career to have had. It is not
+    // retired and it is not unemployed either: it simply never worked.
+    if (record.nonSentient) {
+      record.careerHistory = [];
+      record.retirementAge = null;
+      record.employment = "none"; // i18n-ignore: employment state id
+      return;
+    }
     const nowYear = yearOf(record._nowMinute);
     const startAge = rng.int(16, 23);
     const startYear = record.birthYear + startAge;
@@ -554,6 +565,8 @@
     record.criminalRecord = [];
     record.wantedBounty = 0;
     record.inPrisonUntilMinute = null;
+    // A beast is not answerable to anybody's law, so it has no record to have.
+    if (record.nonSentient) return;
     // Honest NPCs maintain clean records.
     if (record.honesty >= 60) return;
 
@@ -597,6 +610,9 @@
     record.exPartners = [];
     record.timesMarried = 0;
 
+    // Nothing marries a beast and a beast marries nothing: the whole of that
+    // side of a life is closed to the non-sentient classes.
+    if (record.nonSentient) return;
     if (age < 22) return;
     const roll = rng.next();
     const widowChance = age > 55 ? 0.08 : 0.02;
@@ -671,14 +687,15 @@
     // A beast has no address and no career. Its stops are the country around
     // each town (see stopLabel), and it is marked on the record so the readers
     // that quote a life do not have to reach for the society profile.
-    record.nonSentient = isNonSentient(profile);
+    record.nonSentient = isNonSentient(profile, name);
     Object.assign(record, rollBirth(name, profile, rng, nowMinute));
     rollLocationHistory(record, record.homeGroup, rng, opts && opts.nativeChance, record.nonSentient);
     rollCareerHistory(record, profile, rng);
     rollCriminalHistory(record, rng);
     // Some low-morality NPCs start the game already wanted, a seeded bounty
     // scaled by their level, on top of whatever rollCriminalHistory produced.
-    if ((profile?.moralityScore ?? 0) < -30 && rng.next() < 0.5) {
+    // A beast is never charged with anything: it is not answerable.
+    if (!record.nonSentient && (profile?.moralityScore ?? 0) < -30 && rng.next() < 0.5) {
       record.wantedBounty += rng.int(10, 60) * Math.max(1, profile?.level ?? 1);
     }
     rollMaritalStatus(record, rng);
@@ -791,6 +808,9 @@
   }
 
   function resolveCareer(record, rng, lastMinute, nowMinute, deltaDays) {
+    // A beast has no career to resolve, and no retirement age to be measured
+    // against either (rollCareerHistory leaves it null).
+    if (record.nonSentient) return;
     if (record.inPrisonUntilMinute != null) return;
     const age = ageAt(record, nowMinute);
     const nowYear = yearOf(nowMinute);
@@ -837,6 +857,8 @@
   }
 
   function resolveRelationships(record, rng, lastMinute, nowMinute, deltaDays, singlesByGroup) {
+    // Nothing courts a beast and a beast courts nothing.
+    if (record.nonSentient) return;
     if (record.inPrisonUntilMinute != null) return;
     const nowYear = yearOf(nowMinute);
     const records = getRecords();
@@ -933,6 +955,8 @@
   }
 
   function resolveCrime(record, rng, lastMinute, nowMinute, deltaDays) {
+    // A beast is not answerable to anybody's law.
+    if (record.nonSentient) return;
     // Bounties drift offscreen in both directions: uncaught crimes sampled
     // below add to them, and old cases slowly go cold (applies to everyone,
     // even NPCs too honest to commit *new* crimes this interval).
@@ -1138,6 +1162,9 @@
       // 3. Build the per-group singles pool once for this pass.
       const singlesByGroup = {};
       for (const record of Object.values(records)) {
+        // Nobody is paired off with a beast: a non-sentient life is never in
+        // the pool the courtships above are drawn from.
+        if (record.nonSentient) continue;
         if (record.partner || record.inPrisonUntilMinute != null) continue;
         if (record.maritalStatus === "single" || record.maritalStatus === "divorced" || record.maritalStatus === "widowed") {
           (singlesByGroup[record.homeGroup || "__none__"] = singlesByGroup[record.homeGroup || "__none__"] || []).push(record.name);
@@ -1212,7 +1239,9 @@
     }
 
     const openJob = (record.careerHistory || []).find(seg => seg.toYear === null);
-    if (record.inPrisonUntilMinute != null) {
+    if (record.nonSentient) {
+      // No trade to report on something that has never held one.
+    } else if (record.inPrisonUntilMinute != null) {
       lines.push(T('NPCLife.bio.inPrison', { date: dateStrOf(record.inPrisonUntilMinute) }));
     } else if (record.employment === "retired") {
       lines.push(T.n('NPCLife.bio.retired', record.careerHistory.length, { n: record.careerHistory.length }));

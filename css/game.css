@@ -743,21 +743,26 @@ body {
 #party-hud .phud-chips {
     position: absolute;
     left: calc(var(--phud-card-w, 224px) + 6px);
-    top: 4px;
+    /* The strip starts where the bars start (the name line, its margin and the
+       bars' own top margin), so its first line sits on the HP bar and its
+       second on the MP bar. */
+    top: 27px;
     display: flex;
-    flex-flow: row wrap;
+    flex-direction: column;
     align-items: flex-start;
-    align-content: flex-start;
-    gap: 3px;
+    gap: 2px;
     width: 360px;
     pointer-events: none;
 }
+/* One line per bar: the stat multipliers ride the HP bar, the states ride the
+   MP bar, each kept to a single row so the two never drift off their bar. */
 #party-hud .phud-alerts,
 #party-hud .phud-stats,
 #party-hud .phud-states {
     display: flex;
-    flex-flow: row wrap;
-    align-items: flex-start;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: 13px;
     gap: 3px;
 }
 #party-hud .phud-alerts.phud-alerts-empty,
@@ -766,23 +771,28 @@ body {
     display: none;
 }
 #party-hud .phud-alert {
-    font-size: 14px;
+    box-sizing: border-box;
+    height: 13px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
     font-weight: 700;
+    line-height: 1;
     letter-spacing: 0.2px;
-    padding: 1px 6px;
-    border-radius: 8px;
+    padding: 0 5px;
+    border-radius: 3px;
     white-space: nowrap;
     color: #1a1206;
     background: var(--text-primary-hover);
-    box-shadow: 0 2px 6px var(--shadow-black-translucent-55);
+    box-shadow: 0 1px 3px var(--shadow-black-translucent-55);
+    border: 1px solid transparent;
 }
 /* A state is a standing fact, not an emergency, so it is quieter than a need
    chip: parchment lettering on the card's own ground. A debuff leans red. */
 #party-hud .phud-state {
     color: var(--text-primary-hover);
     background: var(--bg-secondary-hover);
-    border: 1px solid var(--text-primary-hover);
-    padding: 0 5px;
+    border-color: var(--text-primary-hover);
 }
 #party-hud .phud-state-down {
     color: var(--text-blood-red);
@@ -795,8 +805,14 @@ body {
 #party-hud .phud-stat {
     color: #7dff9a;
     background: var(--bg-secondary-hover);
-    border: 1px solid #7dff9a;
-    padding: 0 5px;
+    border-color: #7dff9a;
+}
+/* The stat's name, white against whatever colour the multiplier carries. The
+   chip lays its parts out as flex items, which eats the space in the text, so
+   the gap is set here instead. */
+#party-hud .phud-chip-name {
+    color: #ffffff;
+    margin-right: 4px;
 }
 #party-hud .phud-stat.phud-state-down {
     color: var(--text-blood-red);

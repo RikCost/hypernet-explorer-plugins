@@ -2028,6 +2028,54 @@
         return (api && typeof api.currentFloorLevel === 'function') ? (api.currentFloorLevel() || 0) : 0;
     };
 
+    // ---- The upper tower --------------------------------------------------
+    // An authored floor of the Omega Tower is answered with the map's OWN
+    // encounter list, culled to the levels that floor holds (the table lives in
+    // DungeonFloorSystem). The enemy spawn option in the menu has no say in
+    // there: setting Distance from home does not change what stands on floor
+    // 45, it is the floor that decides.
+    BSE.Helpers.getTowerAuthoredBand = function() {
+        const api = window.DungeonFloors;
+        return (api && typeof api.currentEnemyBand === 'function')
+            ? (api.currentEnemyBand() || null)
+            : null;
+    };
+
+    // What the floor holds, and a thin tail of what lives under it. Nothing
+    // ABOVE the bracket ever stands on a floor - a rung is a ceiling, and the
+    // party is never handed something out of its depth - but the small fry the
+    // map declares below the bracket stay possible, rarer the further under it
+    // they are, so a floor is not a wall of identically levelled monsters.
+    // When the map declares nothing in the bracket at all, what it holds below
+    // it fills the floor on its own at full weight.
+    const TOWER_STRAY_SHARE = 0.2; // how much of a floor is under-levelled
+
+    BSE.Helpers.filterTroopsToTowerBand = function(encList, band) {
+        if (!encList || !encList.length || !band) return encList;
+        const levels = encList.map(enc => BSE.Helpers.getTroopMaxLevel(enc.troopId));
+        const inBand = [];
+        const below = [];
+        encList.forEach((enc, i) => {
+            const level = levels[i];
+            if (level > band.max) return; // never above the floor's own bracket
+            if (level >= band.min) inBand.push(Object.assign({}, enc));
+            else below.push({ enc, level });
+        });
+        if (inBand.length === 0) {
+            return below.length > 0
+                ? below.map(b => Object.assign({}, b.enc))
+                : encList;
+        }
+        // The tail: the nearer a creature is to the bracket, the likelier it is
+        // to be the one met, and none of them is ever as likely as a resident.
+        below.forEach(b => {
+            const nearness = band.min > 0 ? Math.max(0, b.level) / band.min : 0;
+            const weight = (b.enc.weight || 1) * TOWER_STRAY_SHARE * nearness;
+            if (weight > 0) inBand.push(Object.assign({}, b.enc, { weight }));
+        });
+        return inBand;
+    };
+
     BSE.Helpers.getTowerFloorBand = function(level) {
         const lvl = Math.max(1, Math.round(level));
         return {
@@ -2329,7 +2377,11 @@
         const isProcGenMap = $gameMap.mapId() === 636;
         const onAlienSurface = !!alienSurfaceState();
         const authored = $gameMap.encounterList() || [];
+        // An authored floor of the upper tower: the map's own list, culled to
+        // the floor's level bracket, and nothing else has a say.
+        const towerAuthoredBand = BSE.Helpers.getTowerAuthoredBand();
         const useAuthoredList = onAlienSurface ||
+            (towerAuthoredBand && authored.length > 0) ||
             (!isProcGenMap && BSE.Helpers.isAuthoredEncounterList(authored));
 
         // The algorithm fills this in below; ensureTroops is the last resort if
@@ -2449,7 +2501,7 @@
         // never reaches its band.
         const poolRefLevel = towerFloorLevel ||
             BSE.Helpers.getModeRefLevel(spawnModeForPool, BSE.Helpers.getPartyReferenceLevel());
-        if (!useAuthoredList && $gameParty.members().length > 0) {
+        if (!useAuthoredList && !towerAuthoredBand && $gameParty.members().length > 0) {
             // Structure biomes match troops against the borrowed rosters their
             // catalogue entry names (a mine draws on Mines and Underdark, a
             // grotto on CaveFlooded, SeaBed, Beach and Ocean), then narrow that
@@ -2558,6 +2610,11 @@
 
         // Apply time-based filtering
         encounterList = BSE.Helpers.filterEncountersByTime(encounterList);
+
+        // The floor's own bracket, laid over the map's list as the last word.
+        if (towerAuthoredBand) {
+            encounterList = BSE.Helpers.filterTroopsToTowerBand(encounterList, towerAuthoredBand);
+        }
 
         // Critical event locations (transfer/door events to exclude spawns near)
         const criticalEventLocations = $gameMap.events()
@@ -2679,7 +2736,7 @@
         // Enemy spawn mode (see section 4b). An alien surface answers to none of
         // it: its species roster is the encounter list and no band, boss, elite
         // or special-biome rule is laid over it.
-        const spawnMode = onAlienSurface ? null : spawnModeForPool;
+        const spawnMode = (onAlienSurface || towerAuthoredBand) ? null : spawnModeForPool;
         // The level everything on this map is measured against - the party's in
         // Balanced and Chaos, the ground's in Distance. The boss and the
         // `deadly` filter below read it too, so a place far from home hides a
@@ -4859,7 +4916,14 @@
         const st = alienSurfaceState();
         if (st) return st.hasLife ? alienSpeciesEncounterList() : [];
         if (!$dataMap) return [];
-        return _BSE_Game_Map_encounterList ? _BSE_Game_Map_encounterList.call(this) : ($dataMap ? $dataMap.encounterList : []);
+        const list = _BSE_Game_Map_encounterList
+            ? _BSE_Game_Map_encounterList.call(this)
+            : ($dataMap ? $dataMap.encounterList : []);
+        // Inside the upper tower the map's list is culled to the floor's own
+        // level bracket, so the step-battles the party walks into hold the same
+        // creatures as the ones standing on the floor.
+        const band = BSE.Helpers.getTowerAuthoredBand();
+        return band ? BSE.Helpers.filterTroopsToTowerBand(list, band) : list;
     };
 
     // On battle setup, tag every enemy of a species troop with its procedural

@@ -128,6 +128,12 @@
   const SPRITE_TABS = [
     { id: "all", label: spriteTabLabel("all", "All"), match: (e) => true },
 
+    // The Monsters folder itself, read off the disk rather than out of
+    // NPCs.json: those sheets are enemy art and are not catalogued as NPCs, so
+    // nothing else on this rail would ever offer them. It is the board a
+    // creature opens on (see create()), and only a creature is shown it.
+    { id: "monsters", label: spriteTabLabel("monsters", "Monsters"), folder: "Monsters" },
+
     // Special Entity Types (from NPCs.json flags)
     { id: "aliens", label: spriteTabLabel("aliens", "Aliens"), match: (e) => !!(e.aliens || e.alien) },
     { id: "animals", label: spriteTabLabel("animals", "Animals"), match: (e) => !!(e.animals || e.animal || ["Beast", "Bird", "Rabbit", "Horse"].includes(e.Archetype)) },
@@ -154,7 +160,46 @@
     { id: "bards", label: spriteTabLabel("bards", "Bards"), match: (e) => e.theme === "Bards" }
   ];
 
+
+  // ---------------------------------------------------------------------------
+  // The Monsters folder, scanned once per session. Every sheet in it is a
+  // single-character "$" sheet, so index 0 is the whole entry; the caption is
+  // the file name with its "$"/"!" markers stripped and its CamelCase split,
+  // which is the name the creature board shows for the same art.
+  // ---------------------------------------------------------------------------
+  const MONSTER_FOLDER = "Monsters";
+  let monsterFolderCache = null;
+
+  const monsterFolderOptions = () => {
+    if (monsterFolderCache) return monsterFolderCache;
+    const out = [];
+    const fs = nodeRequire("fs");
+    const path = nodeRequire("path");
+    const root = gameRoot();
+    if (fs && path && root) {
+      try {
+        const dir = path.join(root, SPRITE_DIR, MONSTER_FOLDER);
+        for (const file of fs.readdirSync(dir)) {
+          if (!/\.(png|jpg|jpeg|webp)$/i.test(file)) continue;
+          const base = file.replace(/\.[^.]+$/, "");
+          out.push({
+            name: MONSTER_FOLDER + "/" + base,
+            index: 0,
+            tabId: "monsters",
+            label: decamelCase(base.replace(/[!$]/g, "")),
+          });
+        }
+      } catch (e) {
+        out.length = 0;
+      }
+    }
+    out.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));
+    monsterFolderCache = out;
+    return out;
+  };
+
   function getTabIdForSheet(sheetName) {
+    if (String(sheetName || "").startsWith(MONSTER_FOLDER + "/")) return "monsters";
     const db = (window.WorldGen && window.WorldGen.NPCs) || npcDatabase || {};
     const entry = db[sheetName] || {};
     for (const tab of SPRITE_TABS) {
@@ -530,9 +575,14 @@
       const currentSheet = actor ? actor.characterName() : "";
       const currentTab = currentSheet ? getTabIdForSheet(currentSheet) : null;
       const validTabs = this.validTabs();
+      // A creature opens on the Monsters folder: that is the art a monster
+      // walks around in, and hunting for it in the rail was the first thing
+      // the board asked of a player who had just sculpted one.
+      const creatureDefault = audienceIsCreature(this._actorId) &&
+        this.tabOptions("monsters").length > 0 ? "monsters" : null;
       this._activeTabId = (currentTab && this.tabOptions(currentTab).length > 0)
         ? currentTab
-        : (validTabs[0] ? validTabs[0].id : "all");
+        : (creatureDefault || (validTabs[0] ? validTabs[0].id : "all"));
 
       const activeOpts = this.activeOptions();
       let foundIdx = 0;
@@ -572,12 +622,20 @@
         }
       }
       const allowAnimals = audienceIsCreature(this._actorId);
-      this._allOptions = optionsForAudience(spriteOptions, allowAnimals);
+      // The Monsters folder is a creature's own art and no one else's, so a
+      // humanoid never sees the tab at all (an empty tab is dropped from the
+      // rail by validTabs).
+      const monsters = allowAnimals ? monsterFolderOptions() : [];
+      this._allOptions = optionsForAudience(spriteOptions, allowAnimals).concat(monsters);
       this._tabOptions = {};
       for (const tab of SPRITE_TABS) {
-        this._tabOptions[tab.id] = tab.id === "all"
-          ? this._allOptions
-          : optionsForAudience(tabSpriteOptionsMap[tab.id] || [], allowAnimals);
+        if (tab.id === "monsters") {
+          this._tabOptions[tab.id] = monsters;
+        } else if (tab.id === "all") {
+          this._tabOptions[tab.id] = this._allOptions;
+        } else {
+          this._tabOptions[tab.id] = optionsForAudience(tabSpriteOptionsMap[tab.id] || [], allowAnimals);
+        }
       }
     }
 
@@ -758,6 +816,12 @@
       art.className = "cc-wanted-sprite";
       card.appendChild(art);
       card._art = art;
+      // Only the sheets that carry a caption of their own (the Monsters
+      // folder) show one; the NPC sheets stay art and nothing else.
+      const name = document.createElement("div");
+      name.className = "cc-sprite-card-name";
+      card.appendChild(name);
+      card._name = name;
       return card;
     }
 
@@ -837,6 +901,11 @@
       const entry = this.activeOptions()[index];
       if (!entry) return;
       cell.dataset.index = String(index);
+      cell.title = entry.label || decamelCase(entry.name.replace(/^.*\//, "").replace(/[!$]/g, ""));
+      if (cell._name) {
+        cell._name.textContent = entry.label || "";
+        cell._name.style.display = entry.label ? "block" : "none";
+      }
       const walking = index === this._index;
       paintSpriteFrame(
         cell._art,
@@ -1057,9 +1126,19 @@
       this._standaloneSpriteMode = false;
       Scene_SpriteGridSelector._standaloneSpriteMode = false;
 
+      // A creature portrayed by its own 3D model is portrayed by nothing else:
+      // handing it the sheet's bust (and with it portrait mode "bust") threw
+      // the sculpted model away the moment its walking sprite was picked. The
+      // sprite is the map body, the model is the portrait, and choosing one
+      // never touches the other.
+      const CC3D = window.CC3DModel;
+      const keepsModel =
+        (actor.portraitMode && actor.portraitMode() === "model") ||
+        !!(CC3D && CC3D.getConfig && CC3D.getConfig(this._actorId));
+
       // Standalone means the sprite alone was asked for (the dossier avatar),
       // so the bust already on the character is left exactly as it is.
-      if (!standalone) {
+      if (!standalone && !keepsModel) {
         const bust = bustForSprite(entry.name, entry.index);
         if (bust) {
           actor.setVnBust(bust);

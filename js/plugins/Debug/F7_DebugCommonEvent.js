@@ -97,6 +97,9 @@
     };
     
     Scene_Map.prototype.executeDebugCommonEvent = function(eventId, keyName) {
+        if (window.VoxelWorldSystem && window.VoxelWorldSystem.isActive && window.VoxelWorldSystem.isActive()) {
+            return;
+        }
         // Check if we should only allow this in test mode
         if (enableInTest && !$gameSystem.isJapanese() && !Utils.isOptionValid('test')) {
             return;

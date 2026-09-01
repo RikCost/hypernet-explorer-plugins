@@ -60,6 +60,8 @@
  *   releasePet(id)       → remove a pet from the registry
  *   abandonPet(id)       → file the crime, then remove it (see below)
  *   refreshFollower()    → re-sync the on-map trailing sprite
+ *   isRidable(id)        → can this companion be ridden as a mount
+ *   getRidablePets()     → every registered companion that can be ridden
  *   canTrain(id)         → is this companion eligible for combat training
  *   trainingOptions(id)  → [classId, ...] the trainings on offer for it
  *   trainingDays(id)     → how many days its training would take right now
@@ -358,6 +360,45 @@ window.Game_PetFollower = Game_PetFollower;
     // spread the way a party member does.
     const PET_BASE_ATTR = 10;
     const PET_TRAIT_BONUS = 4;
+    // ---- Ridable ---------------------------------------------------------
+    // Whether a companion is big and willing enough to be sat on. Three sources,
+    // any one of which is enough, and all three are DATA rather than a literal
+    // roster kept here:
+    //
+    //   <Ridable>  on the note of the monster it was recruited from
+    //              (data/Enemies.json), which rides along in the pet record
+    //   ridable    on its sprite's wardrobe entry in js/db/WorldGen/NPCs.json,
+    //              either at the top level or inside animalGrowth (the horses,
+    //              the donkeys and the cattle), read through AnimalGrowthSystem
+    //
+    // A PARTY MEMBER is never any of these: they are actors, not pet records,
+    // and nothing here is ever asked about one. Riding a companion goes through
+    // the pet registry alone, so a person can never be made into a mount.
+    function _isRidableRecord(record) {
+        if (!record) return false;
+        if (record.ridable === true) return true;
+        if (/<Ridable>/i.test(String(record.note || ""))) return true;
+        // The enemy it was recruited from may carry the tag even when the record
+        // was built without copying the note over.
+        const enemy = record.enemyId && typeof $dataEnemies !== "undefined" && $dataEnemies
+            ? $dataEnemies[record.enemyId] : null;
+        if (enemy && /<Ridable>/i.test(String(enemy.note || ""))) return true;
+        return _isRidableSprite(record.characterName);
+    }
+
+    // The wardrobe answer for a sprite sheet: the animal breeds go through
+    // AnimalGrowthSystem (which folds animalGrowth.ridable up to the breed), and
+    // anything else is read off the entry itself.
+    function _isRidableSprite(spriteKey) {
+        if (!spriteKey) return false;
+        if (window.AnimalGrowthSystem && window.AnimalGrowthSystem.isRidableSprite &&
+            window.AnimalGrowthSystem.isRidableSprite(spriteKey)) return true;
+        const entry = (window.WorldGen && window.WorldGen.NPCs) ? window.WorldGen.NPCs[spriteKey] : null;
+        if (!entry) return false;
+        if (entry.ridable === true) return true;
+        return !!(entry.animalGrowth && entry.animalGrowth.ridable);
+    }
+
     function _petAttrs(sentient, magical, geneticFreak) {
         return {
             STR: PET_BASE_ATTR + (geneticFreak ? PET_TRAIT_BONUS : 0),
@@ -563,8 +604,15 @@ window.Game_PetFollower = Game_PetFollower;
                 sentient: sentient,
                 magical: magical,
                 geneticFreak: geneticFreak,
+                // Re-derived on every read (see isRidable) so a companion whose
+                // wardrobe entry gains the flag later is not stuck on a stale
+                // answer; kept on the record so a menu row can sort on it.
+                ridable: false,
                 attrs: _petAttrs(sentient, magical, geneticFreak),
             };
+            pet.ridable = _isRidableRecord(Object.assign({}, record, {
+                characterName: pet.characterName, note: pet.note, enemyId: pet.enemyId
+            }));
             list.push(pet);
             return pet;
         },
@@ -606,6 +654,20 @@ window.Game_PetFollower = Game_PetFollower;
             if (!this.getActivePet()) this.setActivePet(child.id);
             else _refreshFollower();
             return child;
+        },
+
+        // Can this companion be ridden? A child never is (it is family, and it
+        // is small), and neither is anything the data does not say so about.
+        isRidable(id) {
+            const pet = this.getPet(id);
+            if (!pet || pet.isChild) return false;
+            const ok = _isRidableRecord(pet);
+            pet.ridable = ok;
+            return ok;
+        },
+
+        getRidablePets() {
+            return this.getPets().filter(p => p && this.isRidable(p.id));
         },
 
         setActivePet(id) {

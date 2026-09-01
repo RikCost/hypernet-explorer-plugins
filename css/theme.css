@@ -1954,6 +1954,27 @@
     transform: none;
 }
 
+/* The caption a Monsters-folder sheet carries (the NPC sheets have none and
+   hide it). Pinned to the bottom of the cell so the art never shifts. */
+.cc-sprite-vgrid .cc-sprite-card .cc-sprite-card-name {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 1px;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    color: var(--text-info);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+.cc-sprite-vgrid .cc-sprite-card.selected .cc-sprite-card-name {
+    color: var(--text-secondary-active);
+}
+
 /* The band that divides the board's two blocks ("Beta sprites"). It is placed
    by the scene like a cell, spans every column and scrolls with the rows. */
 .cc-sprite-vgrid .cc-sprite-section {
@@ -3690,7 +3711,6 @@
 .cc-pockets-spread::before,
 #thinker-container .book-spread::before,
 #blacksmith-container .book-spread::before,
-.save-book-spread::before,
 .shop-spread::before,
 .mp-spread::before,
 .travel-book-spread::before,
@@ -7686,6 +7706,21 @@
     padding: 6px;
 }
 #blacksmith-container .weapon-preview-card canvas { cursor: grab; }
+
+/* The shop counter shows a weapon or a shield as its model rather than its
+   icon (ItemSystem/ItemSystemShop.js), through the same viewer the forge and
+   the equip menu mount. Its card sits INSIDE the scrolling description page
+   rather than being the page, so unlike the forge's it is a fixed block the
+   text flows under: `flex: 1` here would let one blade eat the price, the
+   weight and the buy button under it. */
+#shop-container .weapon-previews-container {
+    min-height: 0;
+    height: 240px;
+    flex: 0 0 auto;
+    margin-bottom: 12px;
+    padding: 6px;
+}
+#shop-container .weapon-preview-card canvas { cursor: grab; }
 #blacksmith-container .forge-skill { margin: 6px 0; font-size: 0.892em; }
 /* Three columns instead of the equip screen's two: bonuses AND every
    declared property fit in far less scroll on a page that already stacks a
@@ -14303,10 +14338,33 @@
     /* was 24px: the backdrop inset that letterboxed the panel */
 }
 
-.save-left-page,
+.save-book-spread::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 38%;
+    width: 30px;
+    height: 100%;
+    background: var(--gradient-28);
+    pointer-events: none;
+    z-index: 10;
+    transform: translateX(-50%);
+}
+
+.save-left-page {
+    position: relative;
+    width: 38%;
+    height: 100%;
+    padding: 25px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
 .save-right-page {
     position: relative;
-    width: 50%;
+    width: 62%;
     height: 100%;
     padding: 30px 40px;
     box-sizing: border-box;
@@ -14356,22 +14414,30 @@
 
 .save-item {
     display: flex;
+    flex-direction: column;
+    gap: 4px;
     flex-shrink: 0;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-accent-hover-translucent-5);
-    border-radius: 4px;
+    padding: 6px 4px 8px 4px;
+    background: none;
+    border: none;
+    border-bottom: 1px dashed var(--border-accent-hover-translucent-5);
+    border-radius: 0;
     cursor: pointer;
     transition: all 0.2s ease;
     user-select: none;
 }
 
+.save-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .save-item:hover,
 .save-item.selected {
-    background: var(--border-primary-hover-translucent-15);
-    border-color: var(--text-primary-hover);
+    background: none;
+    border-bottom-color: var(--text-primary-hover);
     transform: translateX(3px);
 }
 
@@ -14382,7 +14448,6 @@
 
 /* Other parties of the world while saving: browsable, but not writable. */
 .save-item.locked {
-    border-style: dashed;
     opacity: 0.62;
 }
 
@@ -14392,23 +14457,23 @@
 
 .save-id {
     font-family: 'Lora', serif;
-    font-size: 1.14rem;
+    font-size: 1.1rem;
     color: var(--border-focus-hover);
     transition: color 0.2s ease;
 }
 
 .save-summary {
-    font-size: 0.984rem;
+    font-size: 0.92rem;
     color: var(--text-success-active);
     font-style: normal;
 }
 
 .save-details-card {
     flex-grow: 1;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 2px double var(--border-primary-hover-translucent-15);
-    border-radius: 6px;
-    padding: 20px;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 10px 0 0 0;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -14440,71 +14505,83 @@
 
 .party-characters {
     display: flex;
-    gap: 10px;
-    justify-content: center;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px dashed var(--border-success);
-    border-radius: 4px;
-    padding: 10px;
-    margin-top: 10px;
+    gap: 6px;
+    justify-content: flex-start;
+    background: none;
+    border: none;
+    padding: 2px 0 0 0;
+    margin-top: 0;
 }
 
 .char-sprite-canvas {
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1.5px solid var(--border-focus-hover);
-    border-radius: 4px;
+    background: none;
+    border: none;
+    border-radius: 0;
     image-rendering: pixelated;
     /* The canvas resolution is the sprite's native frame, which is rarely
        square: contain keeps its proportions inside the box instead of
        squashing it flat and stretching it sideways. */
     object-fit: contain;
-    width: 48px;
-    height: 56px;
-    margin: 0 4px;
+    width: 36px;
+    height: 42px;
+    margin: 0;
 }
 
-/* Detailed party roster on the save/load screen right page */
+/* Detailed party roster inside each save slot */
+/* The party of a slot reads as ONE row of members, however many there are:
+   each is a narrow column of sprite, name, class and gauges. */
 .party-members-list {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 2px;
+    width: 100%;
 }
 
 .save-member {
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px dashed var(--border-success);
-    border-radius: 4px;
-    padding: 8px 10px;
+    text-align: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    padding: 0;
 }
 
 .save-member .char-sprite-canvas {
     flex-shrink: 0;
+    width: 32px;
+    height: 38px;
     margin: 0;
 }
 
 .save-member-body {
-    flex: 1 1 auto;
+    width: 100%;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    gap: 1px;
 }
 
 .save-member-head {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    min-width: 0;
 }
 
 .save-member-name {
     font-family: 'Lora', serif;
-    font-size: 1.14rem;
+    font-size: 0.94rem;
+    max-width: 100%;
     font-weight: bold;
     color: var(--text-primary-hover);
     overflow: hidden;
@@ -14513,24 +14590,34 @@
 }
 
 .save-member-meta {
-    font-size: 0.915rem;
+    font-size: 0.76rem;
     font-style: normal;
     color: var(--text-success-active);
     white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.save-member-stat {
+.save-member-stats-row {
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 6px;
-    font-size: 0.878rem;
+    font-size: 0.8rem;
     color: var(--text-success-active);
 }
 
+.save-member-stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .save-member-stat-label {
-    flex: 0 0 auto;
-    width: 22px;
     font-weight: bold;
+    font-size: 0.78rem;
     color: var(--border-focus-hover);
 }
 
@@ -14543,34 +14630,118 @@
 }
 
 .save-member-stat-value {
-    flex: 0 0 auto;
-    min-width: 62px;
-    text-align: right;
     font-variant-numeric: tabular-nums;
 }
 
-.save-member-gauge {
-    flex: 1 1 auto;
-    min-width: 0;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--border-primary-hover-translucent-15);
+/* World Map Segment & Party Pin in Save/Load Menu */
+.save-map-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.save-map-meta-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: var(--text-success-active);
+}
+
+.save-map-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.save-coords-badge,
+.save-sector-badge {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+}
+
+.save-map-segment-frame {
+    position: relative;
+    width: 100%;
+    max-height: 420px;
+    aspect-ratio: 4 / 3;
     border: 1px solid var(--border-accent-hover-translucent-5);
+    border-radius: 2px;
     overflow: hidden;
+    background: none;
 }
 
-.save-member-gauge-fill {
+.save-map-segment-img {
+    width: 100%;
     height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.12) contrast(1.02);
+}
+
+.save-map-pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.save-pin-pulse {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(229, 57, 53, 0.4);
+    transform: translate(-50%, -50%);
+    animation: dndPulse 1.8s infinite ease-in-out;
+    pointer-events: none;
+}
+
+.save-pin-dot {
+    width: 12px;
+    height: 12px;
+    background: #e53935;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+    flex-shrink: 0;
+}
+
+.save-pin-dot.adjacent {
+    background: #1e88e5;
+    border-color: #ffd54f;
+    width: 10px;
+    height: 10px;
+}
+
+.save-pin-label {
+    margin-top: 3px;
+    font-family: 'Lora', serif;
+    font-size: 0.76rem;
+    font-weight: bold;
+    color: #ffffff;
+    background: rgba(18, 12, 10, 0.82);
+    border: 1px solid var(--border-focus-hover);
+    padding: 1px 6px;
     border-radius: 3px;
-    transition: width 0.2s ease;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px #000;
+    pointer-events: none;
 }
 
-.save-member-gauge-fill.hp {
-    background: var(--accent-red-2);
-}
-
-.save-member-gauge-fill.mp {
-    background: var(--accent-blue-3);
+.save-pin-label.adjacent {
+    color: #ffd54f;
+    font-size: 0.72rem;
+    border-color: #ffd54f;
+    background: rgba(10, 16, 24, 0.82);
 }
 
 .save-detail-rows {
@@ -14599,8 +14770,8 @@
     font-size: 0.964em;
     color: var(--text-primary-hover);
     font-style: normal;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px dashed var(--text-primary-hover);
+    background: none;
+    border: none;
     padding: 25px;
     border-radius: 4px;
     line-height: 1.6;
@@ -14672,7 +14843,7 @@
    rule can override, so the ring is drawn with outline + box-shadow instead of
    a background swap. Without this the buttons were reachable by pad but gave no
    visible feedback, so they read as unreachable. */
-#save-menu-container .action-btn.focused,
+#save-menu-container .inspect-btn.focused,
 #save-menu-container .back-button.focused {
     outline: 2px solid var(--text-primary-hover);
     outline-offset: 2px;
@@ -16629,6 +16800,37 @@
     .npc-vital-fill { height: 100%; border-radius: 3px; }
     .npc-vital-pct { width: 36px; text-align: right; flex-shrink: 0; font-size: 1.276rem; color: var(--text-text-alt-4); }
     .npc-need-badge { display: flex; align-items: center; gap: 4px; font-size: 1.299rem; color: var(--text-text-alt-4); margin-top: 2px; }
+    /* ── Livestock block (an `animal: true` NPC, see AnimalGrowthSystem) ── */
+    .npc-animal-panel {
+      margin-top: 8px; padding-top: 7px;
+      border-top: 1px solid var(--border-primary-hover-translucent-15);
+    }
+    .npc-animal-head {
+      font-size: 1.322rem; color: var(--text-primary-hover);
+      margin-bottom: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    }
+    .npc-animal-line { font-size: 1.276rem; color: var(--text-text-alt-4); margin-bottom: 3px; }
+    .npc-animal-sub {
+      font-size: 1.196rem; color: var(--text-text-alt-4);
+      opacity: 0.8; margin: -2px 0 4px 92px;
+    }
+    .npc-animal-row { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; font-size: 1.322rem; }
+    .npc-animal-label {
+      width: 88px; flex-shrink: 0; overflow: hidden; white-space: nowrap;
+      text-overflow: ellipsis; color: var(--text-text-alt-4);
+    }
+    .npc-animal-track {
+      flex: 1; height: 6px; border-radius: 3px; overflow: hidden;
+      background: var(--border-primary-hover-translucent-15);
+    }
+    .npc-animal-fill { height: 100%; border-radius: 3px; background: var(--text-primary-hover); }
+    .npc-animal-fill.is-ready { background: var(--success, #6fbf73); }
+    .npc-animal-fill.is-low   { background: var(--danger, #c05b5b); }
+    .npc-animal-note {
+      width: 74px; text-align: right; flex-shrink: 0;
+      font-size: 1.196rem; color: var(--text-text-alt-4);
+      overflow: hidden; white-space: nowrap;
+    }
     /* ── Action rows (used in the More tab list) ───────── */
     .npc-action-row {
       display: flex; align-items: center; gap: 7px;
@@ -19628,6 +19830,7 @@ body, canvas {
    action produces sits at the same step whatever its nesting used to be. */
 .battlelog-bar.accent-sub,
 .battlelog-bar.accent-reaction {
+    margin-left: 26px;
     padding: 2px 10px 2px 8px;
     background: linear-gradient(90deg, rgba(8, 12, 22, calc(var(--battlelog-bar-alpha, 0) * 0.82)) 0%, rgba(15, 23, 42, calc(var(--battlelog-bar-alpha, 0) * 0.6)) 75%, rgba(15, 23, 42, calc(var(--battlelog-bar-alpha, 0) * 0.15)) 100%);
 }
@@ -21746,6 +21949,9 @@ body.ascii-ui-active .mp-type-spread {
 #gx-tooltip .gx-tt-type { color:var(--text-text-alt-12,#aaa);
   text-transform:capitalize; }
 #gx-ui .gx-actions { margin-top:10px; }
+/* Selection-panel actions sit under the title instead of under the stat
+   rows, so Fly Here / Bookmark are visible without scrolling. */
+#gx-ui .gx-actions.gx-actions-top { margin-top:2px; margin-bottom:2px; }
 #gx-ui .gx-btn {
   pointer-events:auto; display:inline-block; cursor:pointer;
   background:var(--bg-panel,#0a0a0a);
@@ -24489,1266 +24695,6 @@ cursor:pointer; font-size:16px; line-height:1.4;
 @keyframes cc3dPulse { 0%{opacity:0.35} 50%{opacity:0.7} 100%{opacity:0.35} }
 .cc3d-loading { animation: cc3dPulse 1.1s ease-in-out infinite; }
 
-
-/* ==========================================================================
-   HANDHELD / STEAM DECK PRIORITY OVERRIDE
-   --------------------------------------------------------------------------
-   Last block in the file on purpose: it is a priority override, so it wins the
-   cascade on source order against everything above it, and against both theme
-   presets (css/themes/*.css arrive via the @import at the top of this file, so
-   they are earlier still). Where a rule above is itself `!important`, the
-   override repeats `!important` and wins on order again.
-
-   The breakpoint is the Steam Deck's native 1280x800 panel, with headroom for
-   the 1366x768 laptops and the smaller handhelds in the same class. It must be
-   kept in step with HANDHELD_MAX_W / HANDHELD_MAX_H in Core/GameOptions.js:
-   that plugin switches to a 1400x880 design box at exactly this size, and this
-   block is what makes a menu fit that smaller box.
-
-   Why compaction here rather than only bigger type: on a Deck the whole panel
-   is scaled down to fit the screen, so type authored bigger is then shrunk by
-   the same amount and nothing is gained. Reclaiming space from the chrome --
-   page margins, card padding, gaps, header rules -- lets the panel be scaled
-   down less (0.91 rather than 0.82), and it is that reduced downscale, on top
-   of the raised per-rule sizes, that puts real pixels behind the text.
-
-   Order inside the block: space first, then the type floors that the reclaimed
-   space pays for.
-   ========================================================================== */
-@media (max-width: 1366px) and (max-height: 860px) {
-
-    /* --- Page margins. The single biggest reserve: 35/50 a side around both
-           pages of every spread, ~100px of width and 70px of height per menu. */
-    .left-page {
-        padding: 20px 28px 20px 26px;
-    }
-
-    .right-page {
-        padding: 20px 26px 20px 28px;
-    }
-
-    /* The spread's frame is decoration, and 6px of double border plus the inset
-       outline is 12px off each axis at a size where that matters. */
-    .book-spread,
-    .cc-pockets-spread,
-    #thinker-container .book-spread,
-    #blacksmith-container .book-spread,
-    .save-book-spread,
-    .shop-spread,
-    .mp-spread,
-    .travel-book-spread,
-    .stock-spread,
-    .mp-type-spread {
-        border-width: 3px;
-        outline-offset: -5px;
-    }
-
-    /* --- Pockets list: the main menu's own rows (the screenshot's Backpack /
-           Status / Equip grid) and the section rules between groups. */
-    .command-item {
-        padding: 3px 6px;
-    }
-
-    .command-item .icon {
-        --icon-size: 21px;
-        margin-right: 5px;
-    }
-
-    .pockets-section,
-    .pockets-group {
-        margin-bottom: 6px;
-        padding-bottom: 6px;
-    }
-
-    /* --- Right page: the actor card, the need meters and the status footer. */
-    .status-card,
-    .actor-summary-card,
-    .info-footer,
-    .need-bar-box,
-    .save-details-card,
-    .inspect-lore {
-        padding: 8px 10px;
-    }
-
-    /* --- Character creation: Complete Steam Deck (1280x800) Revision ---
-           Full responsive calibration for all steps of character creation so the
-           spread, sidebar, tab bar, grids, modals, and detail cards fit the
-           Steam Deck 1280x800 resolution with optimal spacing and crisp readability. */
-
-    /* 1. Top Folder Tabs Bar */
-    .cc-dossier-top-bar {
-        height: 40px;
-        padding: 0 12px;
-    }
-
-    .cc-folder-tabs-left,
-    .cc-folder-tabs-right {
-        gap: 4px;
-    }
-
-    .cc-folder-tab {
-        padding: 5px 10px;
-        font-size: 0.82rem;
-        gap: 5px;
-        border-radius: 6px 6px 0 0;
-    }
-
-    .cc-folder-tab .cc-tab-portrait {
-        width: 20px;
-        height: 20px;
-        border-radius: 3px;
-    }
-
-    .cc-folder-tab .cc-tab-dot {
-        width: 6px;
-        height: 6px;
-    }
-
-    .cc-tab-done-mark {
-        font-size: 0.7rem;
-    }
-
-    .cc-tab-remove-x {
-        width: 12px;
-        height: 12px;
-        font-size: 0.58rem;
-        margin-left: 3px;
-    }
-
-    .cc-tab-add-plus {
-        padding: 4px 8px;
-        font-size: 0.95rem;
-    }
-
-    /* 2. Dossier Main Container & Center Spine */
-    .cc-pockets-spread::after {
-        width: 14px;
-    }
-
-    /* 3. Compact Dossier Sidebar (Scaled from 440px to 320px for 1280px screen width) */
-    .cc-compact-sidebar {
-        width: 320px;
-        min-width: 300px;
-        max-width: 330px;
-        padding: 8px;
-        gap: 6px;
-    }
-
-    .cc-compact-sidebar-body {
-        gap: 6px;
-    }
-
-    .cc-compact-identity-card {
-        padding: 6px 8px;
-        gap: 4px;
-    }
-
-    .cc-compact-avatar-wrap {
-        width: 42px;
-        height: 42px;
-    }
-
-    .cc-compact-avatar {
-        width: 38px;
-        height: 38px;
-    }
-
-    .cc-bio-identity {
-        padding: 2px 0 4px 0;
-        gap: 6px;
-    }
-
-    .cc-bio-identity-name {
-        font-size: 0.95rem;
-    }
-
-    .cc-bio-identity-class {
-        font-size: 0.78rem;
-    }
-
-    /* Portrait scaled from 320px to 185px height to fit within 800px vertical bounds */
-    .cc-compact-bust-full {
-        height: 185px;
-    }
-
-    .cc-dossier-large-bust {
-        width: 120px;
-        height: 150px;
-    }
-
-    .cc-compact-portrait-controls {
-        padding: 4px 6px;
-        gap: 4px;
-    }
-
-    .cc-compact-toggle-row {
-        gap: 4px;
-    }
-
-    .cc-compact-toggle-btn {
-        padding: 4px 6px;
-        font-size: 0.78rem;
-    }
-
-    .cc-compact-edit-btn {
-        padding: 4px 6px;
-        font-size: 0.78rem;
-        gap: 4px;
-    }
-
-    .cc-compact-type-pills {
-        gap: 4px;
-    }
-
-    .cc-compact-type-pill {
-        padding: 4px 5px;
-        font-size: 0.76rem;
-    }
-
-    .cc-compact-loadout-grid {
-        max-height: 105px;
-        gap: 2px;
-        padding: 1px 0;
-    }
-
-    .cc-compact-loadout-grid .cc-compact-loadout-item {
-        padding: 2px;
-        font-size: 0.82rem;
-    }
-
-    .cc-compact-loadout-grid .cc-compact-loadout-item .cc-loadout-name {
-        font-size: 0.82rem;
-    }
-
-    .cc-compact-loadout-grid.cc-loadout-grid-cols {
-        gap: 2px 10px;
-    }
-
-    .cc-compact-loadout-grid.cc-loadout-grid-cols-3 {
-        gap: 2px 6px;
-    }
-
-    .cc-compact-loadout-grid.cc-loadout-grid-cols-3 .cc-compact-loadout-item .cc-loadout-name {
-        font-size: 0.78rem;
-    }
-
-    .cc-compact-actions {
-        gap: 4px;
-        padding-top: 4px;
-    }
-
-    .cc-compact-btn,
-    .cc-sidebar-btn {
-        padding: 5px 8px;
-        font-size: 0.84rem;
-        height: 32px;
-    }
-
-    .cc-stat-grid {
-        gap: 4px;
-        margin-bottom: 4px;
-    }
-
-    .cc-stat-box {
-        padding: 3px 4px;
-    }
-
-    .cc-stat-label {
-        font-size: 0.65rem;
-    }
-
-    .cc-stat-val {
-        font-size: 0.82rem;
-    }
-
-    /* 4. Spread Pages & Layout Metrics */
-    .cc-page,
-    .cc-page-left,
-    .cc-page-right,
-    .cc-pockets-spread .cc-page {
-        padding: 10px 14px;
-    }
-
-    .cc-dossier-card,
-    .cc-card-option,
-    .cc-option-card,
-    .cc-party-card,
-    .cc-bust-card {
-        padding: 6px 8px;
-    }
-
-    .cc-categories-list,
-    .cc-presets-board,
-    .cc-options-list {
-        gap: 6px;
-    }
-
-    .cc-header-gothic {
-        font-size: 1.45rem;
-        margin: 0 0 8px 0;
-        padding-bottom: 4px;
-    }
-
-    .cc-subheader {
-        font-size: 1.12rem;
-        margin-bottom: 6px;
-        padding-bottom: 3px;
-    }
-
-    .cc-weapon-slots {
-        font-size: 0.92rem;
-        margin: -4px 0 6px 0;
-    }
-
-    .cc-text-desc {
-        font-size: 0.9rem;
-        line-height: 1.35;
-        margin-bottom: 10px;
-    }
-
-    .cc-dossier-card {
-        padding: 6px 4px;
-        margin-bottom: 6px;
-    }
-
-    .cc-dossier-grid {
-        gap: 4px 14px;
-    }
-
-    .cc-dossier-grid.cc-loadout-grid {
-        gap: 0 14px;
-        margin-top: 4px;
-    }
-
-    .cc-dossier-row {
-        font-size: 0.88rem;
-        margin-bottom: 4px;
-        padding-bottom: 2px;
-    }
-
-    .cc-card-tight {
-        padding: 6px 8px;
-        margin-bottom: 6px;
-    }
-
-    .cc-card-tight .cc-subheader {
-        font-size: 0.95rem;
-        margin-bottom: 4px;
-        padding-bottom: 2px;
-    }
-
-    .cc-card-tight .cc-dossier-row {
-        font-size: 0.82rem;
-        margin-bottom: 2px;
-        padding-bottom: 1px;
-    }
-
-    /* 5. Name Input, Dice, & Trait Budget Bar */
-    .cc-step-single-page {
-        padding: 14px 20px;
-    }
-
-    .cc-name-input-group {
-        max-width: 380px;
-        margin: 8px auto 14px auto;
-        gap: 8px;
-    }
-
-    .cc-name-text-input {
-        padding: 6px 12px;
-        font-size: 1.15rem;
-    }
-
-    .cc-dice-btn {
-        padding: 6px 12px;
-        font-size: 1.1rem;
-    }
-
-    .cc-trait-budget-container {
-        padding: 6px 12px;
-        margin-bottom: 8px;
-    }
-
-    .cc-trait-budget-label {
-        font-size: 0.78rem;
-    }
-
-    .cc-trait-budget-val {
-        font-size: 1.15rem;
-    }
-
-    /* 6. Settings Mode (Initial Settings Screen) */
-    #character-creation-container .option-row {
-        padding: 8px 12px;
-    }
-
-    #character-creation-container .option-name {
-        font-size: 1.05rem;
-    }
-
-    #character-creation-container .option-status-toggle {
-        font-size: 0.92rem;
-    }
-
-    #character-creation-container .option-select-val {
-        min-width: 90px;
-        font-size: 0.92rem;
-    }
-
-    #character-creation-container .option-select .arrow-btn {
-        padding: 2px 6px;
-    }
-
-    .cc-settings-list {
-        gap: 6px;
-    }
-
-    .cc-settings-detail {
-        padding: 8px;
-    }
-
-    .cc-settings-detail-title {
-        font-size: 1.25rem;
-    }
-
-    .cc-settings-glyph {
-        font-size: 2.5rem;
-        margin: 8px 0;
-    }
-
-    .cc-settings-value {
-        font-size: 1.15rem;
-        margin: 4px 0;
-    }
-
-    .cc-settings-desc {
-        font-size: 0.92rem;
-        line-height: 1.35;
-        max-width: 28em;
-        margin-bottom: 6px;
-    }
-
-    .cc-settings-preview-img {
-        max-width: 320px;
-    }
-
-    .cc-settings-img-caption {
-        font-size: 0.92rem;
-        margin-top: 4px;
-        max-width: 320px;
-    }
-
-    .cc-settings-hint {
-        font-size: 0.84rem;
-        margin-top: 4px;
-    }
-
-    /* 7. Presets, Wanted Cards & Skin Selector */
-    .cc-presets-board {
-        gap: 8px;
-        margin-top: 6px;
-    }
-
-    .cc-wanted-card {
-        padding: 8px 6px;
-        min-height: 115px;
-    }
-
-    .cc-wanted-sprite {
-        width: 36px;
-        height: 36px;
-        margin: 4px 0 6px;
-    }
-
-    .cc-wanted-name {
-        font-size: 1.05rem;
-        margin-bottom: 1px;
-    }
-
-    .cc-wanted-class {
-        font-size: 0.78rem;
-    }
-
-    .cc-presets-board .cc-wanted-card.cc-card-flat {
-        padding: 4px 8px;
-        gap: 6px;
-    }
-
-    .cc-card-flat .cc-wanted-name {
-        font-size: 0.95rem;
-    }
-
-    .cc-card-flat .cc-wanted-class {
-        font-size: 0.78rem;
-    }
-
-    .cc-roster-head {
-        font-size: 0.88rem;
-        margin: 6px 0 2px;
-        padding-bottom: 2px;
-    }
-
-    .cc-skins-row {
-        gap: 8px;
-        padding: 2px;
-    }
-
-    .cc-wanted-card.cc-skin-card {
-        width: 65px;
-        padding: 4px 3px 6px;
-    }
-
-    .cc-skin-name {
-        font-size: 0.76rem;
-    }
-
-    .cc-skins-hint {
-        font-size: 0.82rem;
-        margin-top: 6px;
-        gap: 5px;
-    }
-
-    /* 8. Class Selection Step */
-    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-class-board {
-        width: 54%;
-        flex: 1 1 54%;
-        padding: 10px 12px;
-        gap: 6px;
-    }
-
-    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-class-detail {
-        width: 46%;
-        flex: 1 1 46%;
-        padding: 10px 12px;
-        gap: 6px;
-    }
-
-    .cc-class-board-head .cc-subheader {
-        font-size: 1.1rem;
-    }
-
-    .cc-class-search {
-        height: 26px;
-        font-size: 0.85rem;
-        padding: 3px 6px;
-    }
-
-    .cc-select-grid.cc-class-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 4px;
-        padding: 2px 2px 10px 2px;
-    }
-
-    .cc-class-grid .cc-card-option.cc-class-card {
-        padding: 5px 7px;
-        gap: 1px;
-    }
-
-    .cc-class-grid .cc-class-card .cc-option-title {
-        font-size: 0.92rem;
-    }
-
-    .cc-class-detail-head .cc-header-gothic {
-        font-size: 1.25rem;
-    }
-
-    .cc-class-quote {
-        font-size: 0.8rem;
-        line-height: 1.25;
-    }
-
-    .cc-class-section {
-        padding: 4px 6px;
-        margin-bottom: 4px;
-    }
-
-    .cc-class-section .cc-subheader {
-        font-size: 0.84rem;
-        margin: 0 0 2px 0;
-    }
-
-    .cc-class-section .cc-dossier-row {
-        font-size: 0.8rem;
-        padding: 1px 0;
-    }
-
-    .cc-class-passive {
-        margin-top: 4px;
-        padding-top: 4px;
-    }
-
-    .cc-class-passive-name {
-        font-size: 0.85rem;
-        gap: 4px;
-    }
-
-    .cc-class-passive-desc {
-        font-size: 0.78rem;
-        line-height: 1.25;
-        margin-top: 2px;
-    }
-
-    .cc-class-stat-grid {
-        gap: 1px 8px;
-    }
-
-    .cc-class-growth {
-        font-size: 0.74rem;
-    }
-
-    .cc-class-confirm {
-        height: 30px;
-        margin-top: 4px;
-        font-size: 0.88rem;
-    }
-
-    /* 9. Traits Selection Step */
-    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-trait-board {
-        width: 62%;
-        flex: 1 1 62%;
-        padding: 10px 12px;
-    }
-
-    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-trait-detail {
-        width: 38%;
-        flex: 1 1 38%;
-        padding: 10px 12px;
-    }
-
-    .ts-purse {
-        gap: 6px;
-        margin-bottom: 6px;
-    }
-
-    .ts-purse-cell {
-        padding: 4px;
-        gap: 1px;
-    }
-
-    .ts-purse-value {
-        font-size: 1.15rem;
-    }
-
-    .ts-purse-label {
-        font-size: 0.74rem;
-    }
-
-    .ts-tab-row {
-        gap: 4px;
-        margin-bottom: 6px;
-        padding-bottom: 4px;
-    }
-
-    .ts-tab {
-        padding: 3px 7px;
-        font-size: 0.78rem;
-    }
-
-    .ts-search-slot {
-        margin-top: 4px;
-    }
-
-    .cc-select-grid.cc-trait-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 4px;
-        padding: 2px 2px 12px 2px;
-    }
-
-    .cc-trait-grid .cc-card-option {
-        padding: 4px 6px;
-        gap: 4px;
-    }
-
-    .cc-trait-grid .cc-option-title {
-        font-size: 0.82rem;
-    }
-
-    .trait-cost {
-        font-size: 0.74rem;
-        min-width: 16px;
-        padding: 0 3px;
-    }
-
-    .ts-sheet-head {
-        gap: 6px;
-        margin-bottom: 6px;
-        padding-bottom: 6px;
-    }
-
-    .ts-purse--sheet .ts-purse-value {
-        font-size: 1.05rem;
-    }
-
-    .ts-detail {
-        max-height: 38%;
-        margin-bottom: 6px;
-    }
-
-    .ts-detail-head {
-        gap: 6px;
-        padding-bottom: 4px;
-        margin-bottom: 4px;
-    }
-
-    .ts-detail-label {
-        font-size: 1.02rem;
-    }
-
-    .ts-detail-desc {
-        font-size: 0.82rem;
-        line-height: 1.3;
-        margin-bottom: 4px;
-    }
-
-    .ts-detail-note {
-        font-size: 0.78rem;
-        padding: 3px 6px;
-        margin-bottom: 4px;
-    }
-
-    .ts-picked-list {
-        min-height: 50px;
-        padding: 3px 6px;
-        margin-bottom: 6px;
-    }
-
-    .cc-trait-picked {
-        padding: 3px 0;
-        gap: 4px;
-    }
-
-    .cc-trait-picked-name {
-        font-size: 0.82rem;
-    }
-
-    .cc-slot-remove {
-        font-size: 0.85rem;
-        padding: 0 4px;
-    }
-
-    .ts-summary {
-        padding: 4px 6px;
-        margin-bottom: 6px;
-    }
-
-    .ts-summary-row {
-        padding: 2px 0;
-        font-size: 0.78rem;
-    }
-
-    .cc-picked-row {
-        gap: 3px;
-        padding: 2px;
-        max-height: 72px;
-    }
-
-    .cc-picked-chip {
-        padding: 2px 5px;
-        font-size: 0.74rem;
-        gap: 3px;
-    }
-
-    /* 10. Specializations Step */
-    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-spec-board {
-        width: 68%;
-        flex: 1 1 68%;
-        padding: 10px 12px;
-    }
-
-    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-spec-detail {
-        width: 32%;
-        flex: 1 1 32%;
-        padding: 10px 12px;
-    }
-
-    .cc-spec-tab-row {
-        gap: 4px;
-        margin-bottom: 6px;
-        padding-bottom: 4px;
-    }
-
-    .cc-spec-tab {
-        padding: 3px 7px;
-        font-size: 0.78rem;
-    }
-
-    .cc-spec-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 4px;
-        padding: 2px;
-    }
-
-    .cc-spec-card {
-        padding: 4px 6px;
-        gap: 4px;
-    }
-
-    .cc-spec-title {
-        font-size: 0.82rem;
-    }
-
-    .cc-spec-meta {
-        font-size: 0.72rem;
-        gap: 3px;
-    }
-
-    .cc-spec-cat-label {
-        font-size: 0.68rem;
-    }
-
-    .cc-spec-stat-badge {
-        font-size: 0.72rem;
-        padding: 1px 4px;
-    }
-
-    .cc-spec-controls {
-        gap: 2px;
-    }
-
-    .cc-spec-btn {
-        width: 20px;
-        height: 20px;
-        font-size: 0.8rem;
-    }
-
-    .cc-spec-pip {
-        width: 6px;
-        height: 10px;
-    }
-
-    .cc-spec-badge-row {
-        padding: 3px 5px;
-        font-size: 0.76rem;
-        gap: 4px;
-    }
-
-    .cc-spec-badge-delete {
-        width: 16px;
-        height: 16px;
-        font-size: 0.7rem;
-    }
-
-    /* 11. Bio Step (Demographics, Gender, Ideology, Morality) */
-    .cc-bio-container {
-        gap: 4px;
-        padding-right: 2px;
-    }
-
-    .cc-bio-section {
-        padding: 3px 0 5px 0;
-    }
-
-    .cc-bio-section-title {
-        font-size: 0.92rem;
-        margin-bottom: 3px;
-        gap: 4px;
-    }
-
-    .cc-bio-chips-row {
-        gap: 3px;
-    }
-
-    .cc-bio-chip {
-        padding: 3px 7px;
-        font-size: 0.8rem;
-    }
-
-    .cc-bio-select {
-        padding: 3px 6px;
-        font-size: 0.84rem;
-    }
-
-    .cc-bio-slider-row {
-        gap: 6px;
-    }
-
-    .cc-bio-slider-end {
-        font-size: 0.78rem;
-    }
-
-    .cc-bio-slider-readout {
-        font-size: 0.8rem;
-        margin-top: 2px;
-    }
-
-    /* 12. Companion / Pet Step */
-    .cc-pet-grid {
-        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-        gap: 5px;
-        padding: 3px;
-    }
-
-    .cc-pet-card {
-        padding: 5px 3px;
-    }
-
-    .cc-pet-avatar {
-        width: 50px;
-        height: 50px;
-        margin-bottom: 3px;
-    }
-
-    .cc-pet-name {
-        font-size: 0.78rem;
-        margin-bottom: 1px;
-    }
-
-    .cc-pet-kind {
-        font-size: 0.65rem;
-    }
-
-    .cc-pet-trait-toggle {
-        font-size: 0.72rem;
-        padding: 3px 5px;
-    }
-
-    .cc-pet-portrait {
-        min-height: 80px;
-        padding: 6px;
-        margin-bottom: 6px;
-    }
-
-    .cc-pet-sidebar .cc-pet-portrait {
-        min-height: 64px;
-        margin-bottom: 4px;
-    }
-
-    .cc-pet-sidebar-name {
-        font-size: 0.95rem;
-    }
-
-    /* 13. Generic Option Cards, Archetype & Dropdown Lists */
-    .cc-select-grid {
-        gap: 6px;
-        margin-top: 4px;
-    }
-
-    .cc-select-grid.cc-two-col {
-        gap: 6px;
-    }
-
-    .cc-select-grid.cc-three-col {
-        gap: 5px;
-    }
-
-    .cc-card-option {
-        padding: 6px 8px;
-    }
-
-    .cc-option-title {
-        font-size: 1.05rem;
-        margin-bottom: 3px;
-    }
-
-    .cc-option-desc {
-        font-size: 0.84rem;
-        line-height: 1.25;
-    }
-
-    .cc-select-grid.cc-compact .cc-option-title {
-        font-size: 0.92rem;
-    }
-
-    .cc-select-grid.cc-compact.cc-three-col.cc-align-left .cc-option-title {
-        font-size: 0.85rem;
-    }
-
-    .cc-select-grid.cc-archetype-grid .cc-card-option {
-        padding: 5px 4px;
-        min-height: 48px;
-        gap: 1px;
-    }
-
-    .cc-archetype-card-meta {
-        font-size: 0.72rem;
-    }
-
-    .cc-select-grid.cc-dropdown-list {
-        max-height: 50vh;
-        gap: 2px;
-        padding: 3px;
-    }
-
-    .cc-select-grid.cc-dropdown-list .cc-card-option {
-        padding: 4px 6px;
-    }
-
-    /* 14. Sprites & Busts Gallery */
-    .cc-sprite-tab-bar {
-        max-height: 72px;
-        margin-bottom: 4px;
-        gap: 4px;
-    }
-
-    .cc-sprite-portrait {
-        min-height: 200px;
-        margin: 4px 0 8px;
-        gap: 4px;
-    }
-
-    .cc-sprite-portrait-bust {
-        width: 150px;
-        height: 160px;
-    }
-
-    .cc-sprite-portrait.no-bust {
-        width: 110px;
-        height: 110px;
-        min-height: 110px;
-    }
-
-    .cc-bust-preview {
-        height: 25%;
-        margin-bottom: 6px;
-    }
-
-    .cc-categories-list .cc-card-option {
-        padding: 6px 10px !important;
-        gap: 8px !important;
-    }
-
-    .cc-categories-list .cc-option-title {
-        font-size: 0.9rem;
-    }
-
-    .cc-categories-list .cc-element-badge {
-        font-size: 0.74rem;
-        padding: 1px 5px;
-    }
-
-    .cc-species-search {
-        padding: 4px 8px;
-        font-size: 0.88rem;
-        margin-bottom: 4px;
-    }
-
-    .cc-presets-board.cc-sprite-board {
-        gap: 6px;
-    }
-
-    .cc-presets-board.cc-sprite-board .cc-sprite-card.cc-wanted-card {
-        height: 60px;
-        padding: 2px;
-    }
-
-    /* 15. Scenario Mode (Dedicated Scenario Dossier Spread) */
-    .cc-scenario-dossier .cc-scenario-list {
-        flex: 0 0 24%;
-        width: 24%;
-    }
-
-    .cc-scenario-dossier .cc-scenario-brief {
-        flex: 1 1 42%;
-    }
-
-    .cc-scenario-dossier .cc-scenario-roster-col {
-        flex: 0 0 34%;
-        width: 34%;
-    }
-
-    .cc-page.cc-scenario-list,
-    .cc-page.cc-scenario-brief,
-    .cc-page.cc-scenario-roster-col {
-        padding: 8px 10px;
-        gap: 5px;
-    }
-
-    .cc-scenario-brief-head .cc-header-gothic {
-        font-size: 1.2rem;
-    }
-
-    .cc-scenario-brief-head .cc-money-badge {
-        font-size: 0.88rem;
-        padding: 2px 6px;
-    }
-
-    .cc-scenario-brief .cc-class-quote {
-        font-size: 0.82rem;
-        padding-bottom: 4px;
-    }
-
-    .cc-scenario-grid .cc-scenario-card .cc-option-title {
-        font-size: 0.92rem;
-    }
-
-    .cc-scenario-grid .cc-card-option.cc-scenario-card {
-        padding: 5px 8px;
-    }
-
-    .cc-scenario-back {
-        height: 30px;
-        font-size: 0.84rem;
-    }
-
-    .cc-scenario-sheet {
-        padding: 4px 6px;
-    }
-
-    .cc-scenario-sheet-head {
-        gap: 6px;
-        padding-bottom: 4px;
-        margin-bottom: 4px;
-    }
-
-    .cc-scenario-sheet-bust {
-        width: 28px;
-        height: 38px;
-    }
-
-    .cc-scenario-sheet-name {
-        font-size: 0.92rem;
-    }
-
-    .cc-scenario-sheet-class,
-    .cc-scenario-sheet-money {
-        font-size: 0.8rem;
-    }
-
-    .cc-scenario-stat-grid {
-        gap: 2px 4px;
-        margin-bottom: 4px;
-    }
-
-    .cc-scenario-stat {
-        font-size: 0.72rem;
-    }
-
-    .cc-scenario-stat b {
-        font-size: 0.84rem;
-    }
-
-    .cc-scenario-dossier .cc-dossier-label,
-    .cc-scenario-dossier .cc-dossier-value {
-        font-size: 0.84rem !important;
-    }
-
-    .cc-scenario-dossier .cc-loadout-section-title {
-        font-size: 0.88rem !important;
-    }
-
-    .cc-scenario-dossier .cc-loadout-section-count {
-        font-size: 0.78rem !important;
-    }
-
-    .cc-scenario-dossier .cc-loadout-empty {
-        font-size: 0.8rem !important;
-    }
-
-    /* 16. Creature Lab & 3D Anatomy Editor */
-    .cc3d-top {
-        padding: 3px 6px;
-        gap: 4px;
-    }
-
-    .cc3d-title {
-        font-size: 0.88rem;
-    }
-
-    .cc3d-chip {
-        font-size: 0.74rem;
-        padding: 2px 6px;
-    }
-
-    .cc3d-anat {
-        width: 175px;
-        min-width: 150px;
-    }
-
-    .cc3d-parts {
-        width: 240px;
-        min-width: 190px;
-    }
-
-    .cc3d-part {
-        padding: 2px 5px;
-        font-size: 0.78rem;
-        gap: 3px;
-    }
-
-    .cc-alchemical-chamber {
-        width: 130px;
-        height: 170px;
-        padding-bottom: 14px;
-    }
-
-    .cc-chamber-label {
-        font-size: 1.15rem;
-    }
-
-    .cc-incubator-frame {
-        width: 150px;
-        height: 150px;
-        margin: 10px auto;
-    }
-
-    .cc-anatomy-checklist {
-        gap: 4px;
-        margin-top: 6px;
-    }
-
-    .cc-anatomy-row {
-        padding: 4px 8px;
-        font-size: 0.84rem;
-    }
-
-    .cc-balance-pockets {
-        margin-top: 8px;
-        padding: 8px;
-    }
-
-    .cc-balance-line {
-        font-size: 0.85rem;
-        margin-bottom: 3px;
-        padding-bottom: 2px;
-    }
-
-    /* 17. Signature Bottom Buttons Panel & Navigation */
-    .cc-button-panel {
-        padding-top: 6px;
-        padding-bottom: 4px;
-        gap: 8px;
-    }
-
-    .cc-button-panel.cc-nav {
-        min-height: 44px;
-        gap: 6px;
-    }
-
-    .cc-nav-slot {
-        gap: 6px;
-    }
-
-    .cc-btn-treaty {
-        font-size: 1.15rem;
-        padding: 6px 16px;
-        border-radius: 4px;
-    }
-
-    .cc-nav-slot > .cc-btn-treaty {
-        min-width: min(110px, 100%);
-    }
-
-    .cc-modal {
-        padding: 12px 16px;
-        width: min(380px, 85%);
-    }
-
-    .cc-modal-title {
-        font-size: 1.05rem;
-        margin-bottom: 6px;
-    }
-
-    .cc-modal-body {
-        font-size: 0.84rem;
-        margin-bottom: 12px;
-    }
-
-    .cc-modal-actions .cc-sidebar-btn {
-        min-width: 90px;
-        height: 30px;
-        font-size: 0.8rem;
-    }
-}
 
 /* ==========================================================================
    Earth adventures (Procedural/ProceduralAdventureSystem.js)
@@ -29982,9 +28928,10 @@ cursor:pointer; font-size:16px; line-height:1.4;
 }
 
 .save-07 {
-    border: 1px dashed rgba(255,204,102,0.35);
-    background: rgba(60,42,0,0.25);
-    padding: 10px 14px;
+    border: none;
+    border-bottom: 1px dashed var(--border-accent-hover-translucent-5);
+    background: none;
+    padding: 0 0 8px 0;
     margin-bottom: 15px;
     font-family: 'Lora', serif;
 }
@@ -30039,20 +28986,16 @@ cursor:pointer; font-size:16px; line-height:1.4;
     cursor: pointer;
 }
 
+/* Load and Delete are the shared inspect-btn stamp with its --secondary and
+   --danger variants; they used to be painted with plates of their own. */
 .save-15 {
     min-width: 90px;
     cursor: pointer;
-    background: var(--bg-npc-forest);
-    border-color: rgba(46, 125, 50, 0.4);
-    color: var(--text-warning-hover);
 }
 
 .save-16 {
     min-width: 90px;
     cursor: pointer;
-    background: rgba(130, 45, 45, 0.85);
-    color: var(--text-warning-hover);
-    border-color: var(--shadow-shadow-alt-5-translucent-40);
 }
 
 .save-17 {
@@ -30083,8 +29026,8 @@ cursor:pointer; font-size:16px; line-height:1.4;
     font-family: 'Lora', serif;
     font-size: 0.964em;
     color: var(--text-text-alt-13);
-    background: rgba(40,28,8,0.5);
-    border: 1px dashed rgba(255,204,102,0.35);
+    background: none;
+    border: none;
     padding: 25px;
     border-radius: 4px;
     line-height: 1.6;
@@ -31731,6 +30674,87 @@ cursor:pointer; font-size:16px; line-height:1.4;
     padding-right: 4px;
 }
 
+/* The overview spread, laid out the way the backpack lays its own out: the
+   roster is the one part of the page that grows, everything above and below it
+   keeps its natural height. The old pages leaned on justify-content:
+   space-between with a single child, which pushed a screen of black between the
+   roster and the footer. */
+.army-left,
+.army-right {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.army-roster {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Role stripe down the left of a roster slot, standing in for the rarity bar
+   the backpack paints there. */
+.army-role-bar {
+    background: var(--text-primary-hover);
+}
+
+.army-slot-sub {
+    font-family: 'Lora', serif;
+    font-size: 0.83em;
+    color: var(--text-card-medium);
+}
+
+.army-regiments {
+    border-top: 1px solid var(--border-primary-hover-translucent-15);
+    padding-top: 6px;
+}
+
+.army-regiments-title {
+    font-family: 'Lora', serif;
+    font-size: 0.892em;
+    font-weight: bold;
+    color: var(--text-primary-hover);
+    margin-bottom: 4px;
+}
+
+.army-regiments-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+}
+
+.army-regiment-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Lora', serif;
+    font-size: 0.83em;
+    color: var(--text-muted-hover);
+    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-radius: 3px;
+    padding: 2px 8px;
+}
+
+.army-regiment-chip b {
+    color: var(--text-primary-hover);
+}
+
+.army-regiment-empty {
+    font-family: 'Lora', serif;
+    font-size: 0.83em;
+    color: var(--text-card-medium);
+}
+
+.army-inspect-empty {
+    justify-content: center;
+    text-align: center;
+    padding: 40px 10px;
+}
+
 /* Needs gauges. window.NeedGauge (js/plugins/Core/TimeDateSystem.js) hands
    back one of the three band classes; put it on the number and on the bar
    fill, next to .gauge-ink and .gauge-fill, and the colour comes from here.
@@ -31969,4 +30993,174 @@ cursor:pointer; font-size:16px; line-height:1.4;
     opacity: 1;
     border-color: var(--border-gold-amber);
     box-shadow: inset 0 0 10px var(--shadow-primary-hover-translucent-5);
+}
+
+/* ── Places of the party's own ───────────────────────────────────────────────
+   A square written down by the party is not a stop on anybody's network, so it
+   never reads as one: pin and row both carry their own colour, which no hub
+   gold and no place-kind rule ever paints over. */
+.travel-dest-item.travel-custom-add {
+    justify-content: center;
+    border-style: dashed;
+    color: var(--text-primary-hover);
+}
+
+.travel-dest-item.is-custom {
+    box-shadow: inset 3px 0 0 var(--accent-purple-3);
+}
+
+.travel-marker.travel-kind-custom {
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    margin-top: -6px;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    background: var(--accent-purple-3);
+    border-color: var(--accent-purple-3);
+}
+
+.travel-marker.travel-kind-custom.selected,
+.travel-marker.travel-kind-custom:hover {
+    transform: rotate(45deg) scale(1.3);
+}
+
+/* The coordinate box, over the picker it was opened from. */
+.travel-custom-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--shadow-glow-active-translucent-40);
+    z-index: 1100;
+}
+
+.travel-custom-box {
+    min-width: 420px;
+    padding: 22px 26px;
+    border: 2px solid var(--border-primary-hover-translucent-15);
+    border-radius: 6px;
+    background: var(--bg-panel);
+    font-family: 'Lora', serif;
+    color: var(--text-muted-hover);
+}
+
+.travel-custom-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin: 10px 0;
+    padding: 8px 12px;
+    border: 1px solid var(--border-primary-hover-translucent-10);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.travel-custom-field.selected {
+    border-color: var(--text-primary-hover);
+    background: var(--border-primary-hover-translucent-5);
+}
+
+.travel-custom-label {
+    color: var(--text-primary-hover);
+    letter-spacing: 0.04em;
+}
+
+.travel-custom-stepper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.travel-custom-arrow {
+    padding: 0 6px;
+    color: var(--text-primary-hover);
+    cursor: pointer;
+}
+
+.travel-custom-value {
+    min-width: 46px;
+    text-align: center;
+    font-size: 1.15em;
+    color: var(--text-muted-hover);
+}
+
+.travel-custom-input {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid var(--border-primary-hover-translucent-10);
+    border-radius: 3px;
+    background: var(--bg-panel);
+    color: var(--text-muted-hover);
+    font-family: 'Lora', serif;
+    font-size: 1em;
+}
+
+.travel-custom-status {
+    margin: 8px 2px 0;
+    min-height: 1.3em;
+    color: var(--text-muted-hover);
+}
+
+.travel-custom-status.refused {
+    color: var(--text-danger-hover);
+}
+
+.travel-custom-hint {
+    margin: 4px 2px 10px;
+    font-size: 0.82em;
+    color: var(--text-muted-hover);
+    opacity: 0.75;
+}
+
+.travel-btn.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* The end of a drive or a flight: walk into the ground, or stay on the map. */
+#travel-arrival-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-1);
+    z-index: 1000;
+}
+
+.travel-arrival-box {
+    min-width: 420px;
+    padding: 24px 28px;
+    border: 2px solid var(--border-primary-hover-translucent-15);
+    border-radius: 6px;
+    background: var(--bg-panel);
+    font-family: 'Lora', serif;
+    color: var(--text-muted-hover);
+    text-align: center;
+}
+
+.travel-arrival-place {
+    margin: 6px 0 18px;
+    color: var(--text-primary-hover);
+    font-size: 1.1em;
+}
+
+.travel-arrival-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.travel-arrival-option.selected {
+    border-color: var(--text-primary-hover);
+    box-shadow: inset 3px 0 0 var(--text-primary-hover);
 }

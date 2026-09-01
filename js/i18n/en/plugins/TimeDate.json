@@ -136,5 +136,9 @@
     "October",
     "November",
     "December"
-  ]
+  ],
+  "opponent": {
+    "subconscious": "Subconscious",
+    "funShared": "{name} enjoyed the game"
+  }
 }

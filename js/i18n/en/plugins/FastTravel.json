@@ -68,5 +68,33 @@
   "refused": {
     "title": "Turned away at the counter",
     "wanted": "The clerk looks up your name, looks at the queue behind you, and does not print the ticket. Find your own way there."
+  },
+  "custom": {
+    "add": "Write down a place of your own",
+    "title": "A place of your own",
+    "x": "X",
+    "y": "Y",
+    "name": "Name",
+    "defaultName": "{nation} - {biome} ({x}, {y})",
+    "unclaimed": "No man's land",
+    "unknownBiome": "Unknown ground",
+    "allowed": "Open {biome}, and nothing standing on it",
+    "save": "Write it down",
+    "saved": "{name} is on the map now",
+    "savedTitle": "Marked on the map",
+    "hint": "Left and right change a number, up and down move between the fields",
+    "refused": {
+      "range": "That square is off the map",
+      "reserved": "A place already stands there",
+      "duplicate": "You have written that square down already",
+      "river": "A river runs through there",
+      "water": "That square is open water",
+      "mountain": "Nothing can be driven up there"
+    }
+  },
+  "arrival": {
+    "title": "Journey's end",
+    "visit": "Visit the {biome}",
+    "worldMap": "Stay on the world map"
   }
 }

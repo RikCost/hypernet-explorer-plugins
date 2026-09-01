@@ -1240,7 +1240,7 @@
         // heard the way an animal is heard, off the same growl bank every other
         // answer of its comes out of (NPCEmpathize.growlFor).
         const EM = window.NPCEmpathize;
-        if (EM?.isNonSentientNPC?.(npcName)) text = EM.growlFor(text) || text;
+        if (EM?.isNonSentientNPC?.(npcName)) text = EM.growlFor(text, npcName) || text;
         // Only worth showing if the NPC is actually on the current map
         const ev = $gameMap.events().find(e => (e.event()?.name || '') === npcName);
         if (!ev || ev.isTransparent()) return;
@@ -1362,6 +1362,11 @@
     },
     get personalityCoreThoughts() { return PERSONALITY_CORE_THOUGHTS(); },
     applyVoice,
+    // The script builder and its {a}/{b} resolver, shared so a conversation the
+    // PLAYER walks into (DialogueSystem's Rumors command) is drawn from exactly
+    // the same tone-weighted pools two NPCs meeting in the street draw from.
+    buildScript: _buildScript,
+    resolveLine: _resolveLine,
     _personalityNameOf,
     vary,
   };

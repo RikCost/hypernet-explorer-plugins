@@ -10,10 +10,11 @@
     "critFailure": "CRITICAL FAILURE!"
   },
   "card": {
-    "target": "DC {dc}",
-    "noTarget": "Standard Check",
-    "sum": "Roll {roll}{mod}{stat} = {total}",
-    "sumTarget": "DC {dc} · {sum}"
+    "rolledLabel": "ROLLED",
+    "neededLabel": "NEEDED",
+    "anyTarget": "--",
+    "breakdown": "d20 {roll} {mod} {stat}",
+    "breakdownFlat": "d20 {roll}"
   },
   "toast": {
     "line": "[{action}] Roll: {roll}{mod}{stat} = {total}{versus} -> {outcome}",

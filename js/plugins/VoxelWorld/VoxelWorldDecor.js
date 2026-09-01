@@ -30,7 +30,12 @@
         House, PLANT_CROPS, PLANT_POOL, ROCK_ASH, ROCK_POOL, SETTLE,
         SettlementBatch, TREE_POOLS, blockMaterial, getRenderType, loadTex, loadVoxelTex,
         planBaseY, planForTile, planSettlement, sampleBiomeAt,
-        PROP_RADIUS, PROP_MIN_R, VoxelWorldState, WORLD_TILE_SIZE
+        PROP_RADIUS, PROP_MIN_R, VoxelWorldState, WORLD_TILE_SIZE,
+        // The field's own answers about water and about the rare islands out in
+        // the open ocean. `profileFor` says whether a biome IS water as against
+        // merely having some on it: the open sea and a lake are, a river square
+        // is a field with a channel through it.
+        SEA_LEVEL, oceanIslandOf, profileFor
     } = VW;
 
     // =========================================================================
@@ -46,6 +51,96 @@
     // floating over the voxel it stands on, not so much that a short plant is
     // swallowed by it.
     const SPRITE_SINK = 0.035;
+
+    // =========================================================================
+    // The sea floor
+    // =========================================================================
+    // Water squares used to be left bare: nothing was scattered on them at all,
+    // so diving off a beach put the party over an empty sand plain. The bed of
+    // the sea is furnished from the same biomeFurniture list every other place
+    // is (Ocean and SeaBed both name Underwater, Plants, Rocks and Water), and
+    // the sprites go down exactly the way a wood does - one instanced mesh per
+    // texture, standing on the voxel surface.
+    //
+    // Only the near ring is dressed. A weed on the bed is a thing you swim up
+    // to and cannot see at all from the surface, so paying for it out at the
+    // edge of the streamed world would be paying for nothing.
+    const SEABED_FOLDERS = ['Underwater', 'Plants', 'Rocks', 'Water'];   // i18n-ignore  furniture folder ids
+    // How far under the water line a point has to be before anything is planted
+    // there: the surf itself is left clear, so nothing stands half out of the
+    // water at the top of a beach.
+    const SEABED_MIN_DEPTH = 10;
+
+    // =========================================================================
+    // What grows in the dark
+    // =========================================================================
+    // The passages were bare rock and a chest. Nothing else was ever scattered
+    // down there, because the whole surface pass is skipped underground - and
+    // it has to be, since a wood scattered over the roof of a cave is a wood
+    // nobody can see and most of what a cave used to cost.
+    //
+    // So the caves get a scatter of their own, off the folders that suit them,
+    // planted on the floor of an actual passage rather than on the ground a
+    // hundred metres overhead. Two folders a square, picked by the square, the
+    // same way the sea floor is dressed.
+    const CAVE_FOLDERS = [
+        // folder, how thick it lies, and whether it is something you walk into
+        { folder: 'Mushrooms', density: 1.0, kind: 'plant' },   // i18n-ignore  furniture folder id
+        { folder: 'Crystals',  density: 0.7, kind: 'rock'  },   // i18n-ignore  furniture folder id
+        { folder: 'Rocks',     density: 0.9, kind: 'rock'  },   // i18n-ignore  furniture folder id
+        { folder: 'Vines',     density: 0.5, kind: 'plant' },   // i18n-ignore  furniture folder id
+        { folder: 'Terrain',   density: 0.6, kind: 'rock'  },   // i18n-ignore  furniture folder id
+    ];
+    // How many pieces a passage square carries. Deliberately modest: a cave is
+    // the most expensive place in the world to draw, and a stand of mushrooms
+    // round the corner reads better than a carpet of them everywhere.
+    const CAVE_SCATTER_MIN = 6;
+    const CAVE_SCATTER_VAR = 10;
+    // How many tries it takes to find that many spots. Most of the rock down
+    // there is rock, and a point with no passage under it plants nothing.
+    const CAVE_SCATTER_TRIES = 4;
+
+    // =========================================================================
+    // The chests
+    // =========================================================================
+    // The same three chests the 2D procedural maps carry (RandomItemChest,
+    // RandomArmorChest, RandomWeaponChest - see ProceduralMapBiomeGenerator's
+    // placeChestEvents), standing in the 3D world as billboards and paying out
+    // of the same RandomLootSystem. One art file each, so a chest reads as what
+    // it holds before it is opened.
+    //
+    // `cmd` is the RandomLootSystem plugin command that fills it. The kind is
+    // read back off the sprite name when one is opened, so nothing about a
+    // chest has to be stored anywhere: which square it is on, which of the
+    // three it is and whether it has been emptied are all answered by the world
+    // (VoxelWorldState's felled set, which is what a chest being gone is).
+    const CHEST_FOLDER = 'Storage/Chests';   // i18n-ignore  furniture folder id
+    const CHESTS = [
+        { sprite: 'wooden_treasure_chest.png', cmd: 'getItem',   kind: 'item' },    // i18n-ignore  asset name
+        { sprite: 'blue_treasure_chest.png',   cmd: 'getArmor',  kind: 'armor' },   // i18n-ignore  asset name
+        { sprite: 'gold_treasure_chest.png',   cmd: 'getWeapon', kind: 'weapon' }   // i18n-ignore  asset name
+    ];
+    const CHEST_SIZE = 9;
+    // Odds a square carries one, mirroring the 2D generator's own numbers so a
+    // chest is exactly as rare out here as it is on the map: a find in open
+    // country, something you expect once you are under the ground.
+    const CHEST_SURFACE_CHANCE = 0.03;
+    const CHEST_RUIN_CHANCE    = 0.22;
+    const CHEST_CAVE_CHANCE    = 0.30;
+    // How many a cave square may hold at once, and how far apart they are put.
+    const CHEST_CAVE_MAX = 2;
+
+    // Which of the three a square's chest is, and its sprite.
+    function chestFor(roll) {
+        return CHESTS[Math.min(CHESTS.length - 1, Math.floor(roll * CHESTS.length))];
+    }
+
+    // The chest a scattered prop is, off the sprite it was drawn with. Null for
+    // anything that is not one, which is every other prop in the world.
+    function chestKindOf(rec) {
+        if (!rec || rec.kind !== 'chest') return null;
+        return CHESTS.find(c => c.sprite === rec.name) || CHESTS[0];
+    }
 
 
     // The furniture art now lives at img/furniture/<Category>/<Subcategory>/, so
@@ -123,8 +218,8 @@
             this.geos.cactus.translate(0, 7, 0);
             this.geos.rock.translate(0, 1.5, 0);
             this.geos.skyscraper.translate(0, 35, 0);
-            this.geos.houseBase.translate(0, 6, 0);
-            this.geos.houseRoof.translate(0, 16.5, 0);
+            this.geos.houseBase.translate(0, 7, 0);
+            this.geos.houseRoof.translate(0, 17.5, 0);
             this.geos.palmTrunk.translate(0, 10, 0);
             this.geos.palmCrown.translate(0, 20, 0);
             this.geos.bamboo.translate(0, 13, 0);
@@ -660,7 +755,7 @@
             // roof sits on it and what facade it wears (see VoxelWorldHouse).
             // It welds its own geometry rather than instancing a unit cube,
             // because a wall's windows have to be measured in bays.
-            for (const lot of plan.lots) House.build(M, this, lot, baseY + PAVE, null);
+            for (const lot of plan.lots) House.build(M, this, lot, baseY + PAVE + 1.0, null);
 
             // --- street furniture --------------------------------------------
             for (const p of plan.props) this._buildProp(B, p, baseY, PAVE, big);
@@ -951,8 +1046,230 @@
             return null;
         }
 
-        decorate(grp, wx, wy, biome, tileSize, heightFn) {
+        // ---------------------------------------------------------------------
+        // The sea floor, and the islands standing out of it
+        // ---------------------------------------------------------------------
+        // A water square gets two passes: the bed itself, dressed out of the
+        // biome's own Underwater / Plants / Rocks folders, and - on the rare
+        // squares that carry one (VoxelField.oceanIslandOf) - the dry land of
+        // the island, with palms and rocks and a cottage on the big ones.
+        _decorateWater(grp, wx, wy, biome, tileSize, heightFn, waterFn) {
+            const isle = oceanIslandOf ? oceanIslandOf(wx, wy) : null;
+
+            // The island first: it is what a diver surfaces next to.
+            if (isle) this._decorateIsland(grp, wx, wy, isle, tileSize, heightFn);
+
+            // Points across the square that are properly under water. The same
+            // deterministic spread every other scatter uses, so a weed bed is
+            // in the same place every time the square is streamed in.
+            //
+            // The water line is the one over THIS point, not sea level: a
+            // mountain lake stands well above the sea and reeds have to know
+            // where its own surface is, or nothing would ever be planted in one.
+            const genItems = (count, seed) => {
+                const out = [];
+                for (let i = 0; i < count; i++) {
+                    const lx = (this._seededRandom(wx, wy, i * 4 + seed)     - 0.5) * (tileSize * 0.94);
+                    const lz = (this._seededRandom(wx, wy, i * 4 + seed + 1) - 0.5) * (tileSize * 0.94);
+                    const gxu = (wx + 0.5) * tileSize + lx, gzu = (wy + 0.5) * tileSize + lz;
+                    const yPos = heightFn ? heightFn(gxu / tileSize, gzu / tileSize) : 0;
+                    const surf = waterFn ? waterFn(gxu, gzu) : SEA_LEVEL;
+                    if (surf == null || yPos > surf - SEABED_MIN_DEPTH) continue;
+                    const scale = 0.6 + this._seededRandom(wx, wy, i * 4 + seed + 2) * 0.9;
+                    out.push({ x: lx, y: yPos, z: lz, rotY: 0, scale, key: seed + ':' + i });
+                }
+                return out;
+            };
+
+            // A hand-picked list for this biome wins, exactly as it does on
+            // land; otherwise the biome's own furniture folders are used, and
+            // the underwater ones out of them are the ones that matter.
+            const picked = BiomeSprites.groups(biome.name, 'plant');
+            if (picked) {
+                this._scatterPicked(grp, picked, this.spriteQuads.plant,
+                    genItems(14, 4100), wx, wy, 4100, 'plant', 0);
+            } else {
+                const list = BiomeFurniture.exterior(biome.name)
+                    .filter(e => SEABED_FOLDERS.includes(e.folder));
+                if (!list.length) return;
+                // Two folders a square, weighted by density: a bed of one weed
+                // with the odd rock in it reads as a sea floor; all four folders
+                // on every square reads as an aquarium shop.
+                const total = list.reduce((s, e) => s + e.density, 0) || 1;
+                const chosen = new Map();
+                for (let k = 0; k < 2; k++) {
+                    let r = this._seededRandom(wx, wy, 4050 + k) * total;
+                    for (const e of list) {
+                        r -= e.density;
+                        if (r <= 0) { chosen.set(e.folder, e); break; }
+                    }
+                }
+                let seed = 4100;
+                for (const e of chosen.values()) {
+                    const count = 8 + Math.round(this._seededRandom(wx, wy, seed) * 14 * e.density);
+                    this._scatterBillboards(grp, e.folder, e.sprites, this.spriteQuads.plant,
+                        genItems(count, seed), e.size, wx, wy, seed, 'plant');
+                    seed += 40;
+                }
+            }
+        }
+
+        // The dry land of a rare open-ocean island: palms and scrub on anything
+        // big enough to hold them, rocks on the little ones, and on the biggest
+        // - where somebody actually lives - the cottage the settlement planner
+        // put there (planSteading handles the building itself; this is the
+        // greenery round it).
+        _decorateIsland(grp, wx, wy, isle, tileSize, heightFn) {
+            // Somebody lives on the big ones (see planSteading's islandHouseAt):
+            // a real cottage, with the same walls, door and furnished rooms a
+            // house on a village street gets.
+            this._decorateSteading(grp, wx, wy, heightFn);
+            if (isle.size < 1) return;           // a bare rock stays a bare rock
+            const cx = (wx + 0.5) * tileSize, cz = (wy + 0.5) * tileSize;
+            const genItems = (count, seed) => {
+                const out = [];
+                for (let i = 0; i < count; i++) {
+                    // Spread over the island's own disc rather than the square:
+                    // an islet is a fraction of a square across, and scattering
+                    // over the square would put every palm in the sea.
+                    const a = this._seededRandom(wx, wy, i * 4 + seed) * Math.PI * 2;
+                    const r = Math.sqrt(this._seededRandom(wx, wy, i * 4 + seed + 1)) * isle.r * 0.78;
+                    const gxu = isle.cx + Math.cos(a) * r, gzu = isle.cz + Math.sin(a) * r;
+                    const yPos = heightFn ? heightFn(gxu / tileSize, gzu / tileSize) : 0;
+                    if (yPos < SEA_LEVEL + 3) continue;      // in the water, or on the beach
+                    const scale = 0.7 + this._seededRandom(wx, wy, i * 4 + seed + 2) * 0.7;
+                    out.push({ x: gxu - cx, y: yPos, z: gzu - cz, rotY: 0, scale,
+                               key: seed + ':' + i });
+                }
+                return out;
+            };
+            const count = 3 + isle.size * 5;
+            this._scatterBillboards(grp, 'Trees', TREE_POOLS.jungle, this.spriteQuads.tree,   // i18n-ignore  scatter group id
+                genItems(count, 4400), 30, wx, wy, 4400, 'tree');
+            this._scatterBillboards(grp, 'Rocks', ROCK_POOL, this.spriteQuads.rock,           // i18n-ignore  scatter group id
+                genItems(Math.round(count * 0.6), 4500), 13, wx, wy, 4500, 'rock');
+            this._scatterBillboards(grp, 'Plants', PLANT_POOL, this.spriteQuads.plant,        // i18n-ignore  scatter group id
+                genItems(count, 4600), 11, wx, wy, 4600, 'plant');
+        }
+
+        // ---------------------------------------------------------------------
+        // The chests
+        // ---------------------------------------------------------------------
+        // A square's chest, if it has one. Drawn as a billboard like everything
+        // else out here, and therefore already a thing the party can walk into,
+        // stand at and be prompted by; opening one is VoxelWorldScene's job
+        // (_openChest), and a chest that has been emptied is remembered by the
+        // world the same way a felled tree is.
+        _scatterChests(grp, wx, wy, biome, tileSize, heightFn, ruined) {
+            const n = (biome.name || '').toLowerCase();
+            const water = getRenderType(biome.name) === 'water';
+            if (water) return;
+            const odds = ruined ? CHEST_RUIN_CHANCE
+                : /cave|crypt|catacomb|barrow|dungeon|mine|ruin|temple|underdark|lair|oubliette/.test(n)
+                    ? CHEST_CAVE_CHANCE : CHEST_SURFACE_CHANCE;
+            if (this._seededRandom(wx, wy, 5901) >= odds) return;
+            const C = chestFor(this._seededRandom(wx, wy, 5902));
+            // Somewhere on the square that is dry land and off the road lane.
+            const corridor = tileSize * 0.08;
+            for (let attempt = 0; attempt < 8; attempt++) {
+                const lx = (this._seededRandom(wx, wy, 5910 + attempt * 2)     - 0.5) * (tileSize * 0.8);
+                const lz = (this._seededRandom(wx, wy, 5911 + attempt * 2) - 0.5) * (tileSize * 0.8);
+                if (Math.abs(lx) < corridor && Math.abs(lz) < corridor) continue;
+                const yPos = heightFn ? heightFn(wx + 0.5 + lx / tileSize, wy + 0.5 + lz / tileSize) : 0;
+                if (yPos < SEA_LEVEL + 4) continue;
+                this._scatterBillboards(grp, CHEST_FOLDER, [C.sprite], this.spriteQuads.plant,
+                    [{ x: lx, y: yPos, z: lz, rotY: 0, scale: 1, key: 'chest' }],   // i18n-ignore  prop key
+                    CHEST_SIZE, wx, wy, 5920, 'chest');
+                return;
+            }
+        }
+
+        // What is growing in the passages of a square: mushrooms, crystal, loose
+        // rock, hanging vines. Put down on the floor of an actual passage rather
+        // than on the surface a hundred metres over it, and only where there IS
+        // a passage - most of the rock down there is rock.
+        //
+        //   floorFn(x, z)  the floor of the passage at a world point, or null
+        _scatterCaveScenery(grp, wx, wy, tileSize, floorFn, biome) {
+            if (!floorFn) return;
+            // Two folders a square, weighted by how thickly each lies, so one
+            // cave is a mushroom cave and the next one over is a crystal one.
+            const pool = CAVE_FOLDERS.filter(e => BiomeFurniture.spritesIn(e.folder).length);
+            if (!pool.length) return;
+            const total = pool.reduce((s, e) => s + e.density, 0) || 1;
+            const chosen = new Map();
+            for (let k = 0; k < 2; k++) {
+                let r = this._seededRandom(wx, wy, 7100 + k) * total;
+                for (const e of pool) {
+                    r -= e.density;
+                    if (r <= 0) { chosen.set(e.folder, e); break; }
+                }
+            }
+            const cats = (BiomeFurniture.map() || {}).categories || {};
+            let seed = 7200;
+            for (const e of chosen.values()) {
+                const want = CAVE_SCATTER_MIN +
+                    Math.round(this._seededRandom(wx, wy, seed) * CAVE_SCATTER_VAR * e.density);
+                const items = [];
+                for (let i = 0; i < want * CAVE_SCATTER_TRIES && items.length < want; i++) {
+                    const lx = (this._seededRandom(wx, wy, seed + i * 3 + 1) - 0.5) * (tileSize * 0.92);
+                    const lz = (this._seededRandom(wx, wy, seed + i * 3 + 2) - 0.5) * (tileSize * 0.92);
+                    const y = floorFn((wx + 0.5) * tileSize + lx, (wy + 0.5) * tileSize + lz);
+                    if (y == null) continue;
+                    const scale = 0.6 + this._seededRandom(wx, wy, seed + i * 3 + 3) * 0.9;
+                    items.push({ x: lx, y, z: lz, rotY: 0, scale, key: 'cave' + seed + ':' + i });  // i18n-ignore  prop key
+                }
+                if (!items.length) { seed += 90; continue; }
+                const sprites = BiomeFurniture.spritesIn(e.folder);
+                const size = (cats[e.folder] && cats[e.folder].size) || 11;
+                this._scatterBillboards(grp, e.folder, sprites,
+                    e.kind === 'rock' ? this.spriteQuads.rock : this.spriteQuads.plant,
+                    items, size, wx, wy, seed, e.kind);
+                seed += 90;
+            }
+        }
+
+        // The chests of a cave square, put down on the floor of an actual
+        // passage rather than on the surface a hundred metres over it. Called
+        // instead of the whole decoration pass while the party is underground
+        // (VoxelTerrain._buildChunk), because a cave costs enough to draw
+        // without a wood being scattered over its roof.
+        //
+        //   floorFn(x, z)  the floor of the passage at a world point, or null
+        _scatterCaveChests(grp, wx, wy, tileSize, floorFn) {
+            if (!floorFn) return;
+            let put = 0;
+            for (let i = 0; i < 10 && put < CHEST_CAVE_MAX; i++) {
+                if (this._seededRandom(wx, wy, 6900 + i) >= CHEST_CAVE_CHANCE) continue;
+                const lx = (this._seededRandom(wx, wy, 6920 + i * 3)     - 0.5) * (tileSize * 0.9);
+                const lz = (this._seededRandom(wx, wy, 6921 + i * 3) - 0.5) * (tileSize * 0.9);
+                const y = floorFn((wx + 0.5) * tileSize + lx, (wy + 0.5) * tileSize + lz);
+                if (y == null) continue;
+                const C = chestFor(this._seededRandom(wx, wy, 6922 + i * 3));
+                this._scatterBillboards(grp, CHEST_FOLDER, [C.sprite], this.spriteQuads.plant,
+                    [{ x: lx, y, z: lz, rotY: 0, scale: 1, key: 'cavechest' + i }],   // i18n-ignore  prop key
+                    CHEST_SIZE, wx, wy, 6940 + i, 'chest');
+                put++;
+            }
+        }
+
+        // `heightFn(gx, gz)` is the ground, in TILE coordinates; `waterFn(x, z)`
+        // is the surface of whatever water stands over a point, in WORLD units,
+        // or null where it is dry. Only the sea floor reads the second one.
+        decorate(grp, wx, wy, biome, tileSize, heightFn, waterFn) {
             const n = biome.name.toLowerCase();
+
+            // Anything with water on it: the bed of that water, and the rare
+            // island standing out of it.
+            //
+            // A square that is ALL water - the open sea, a lake - is finished
+            // there. A river square is not: it renders as water because a
+            // channel crosses it, but it is dry land either side of that
+            // channel and it still gets its wood, its grass and its rocks.
+            if (getRenderType(biome.name) === 'water') {
+                this._decorateWater(grp, wx, wy, biome, tileSize, heightFn, waterFn);
+                if (profileFor(biome.name).water) return;
+            }
 
             // Coastlines get sparse palms regardless of the land biome archetype.
             this._decorateBeach(grp, wx, wy, tileSize, heightFn);
@@ -986,11 +1303,11 @@
             // one of them is ever on a square, so at most one of these does
             // anything.
             const lived = this._decorateSteading(grp, wx, wy, heightFn);
-            if (!lived) {
-                // A ruin, before the wilderness scatter goes round it (a tree
-                // growing through a roofless barn is the point).
-                this._decorateAbandoned(grp, wx, wy, heightFn);
-            }
+            // A ruin, before the wilderness scatter goes round it (a tree
+            // growing through a roofless barn is the point). Whether one went
+            // up decides how likely a chest is on this square: somebody left
+            // something behind in a ruin, and hardly ever in a field.
+            const ruined = !lived && !!this._decorateAbandoned(grp, wx, wy, heightFn);
 
             // Base scatter count from the biome's feature density.
             const baseDensity = biome.features ? biome.features.reduce((sum, f) => sum + (f.density || 0), 0) : 2;
@@ -1084,6 +1401,9 @@
 
             // --- and everything else this biome is furnished with ---
             this._scatterFurniture(grp, wx, wy, biome, genItems, baseCount, SKIP_CURATED, 6300);
+
+            // --- the chest, on the rare square that holds one ---
+            this._scatterChests(grp, wx, wy, biome, tileSize, heightFn, ruined);
         }
 
         // Where a prop may stand in a town: off the buildings' own footprints is
@@ -1427,7 +1747,8 @@
             // The plate itself, and the gold rim round its edge: from below
             // that rim is the line that says where one deck ends and the next
             // city begins.
-            put(BOX_A, dk.x, dk.y - dk.plateH, dk.z, side, dk.plateH, side, dk.rot);
+            const extraBaseH = (i === 0) ? 60 : 0;
+            put(BOX_A, dk.x, dk.y - dk.plateH - extraBaseH, dk.z, side, dk.plateH + extraBaseH, side, dk.rot);
             const rimH = Math.max(3, dk.plateH * 0.34);
             put(BOX_G, dk.x, dk.y - rimH, dk.z, side * 1.035, rimH, side * 1.035, dk.rot);
             // Corner piers: four stepped gold pylons standing on the corners of
@@ -1441,6 +1762,19 @@
                 const pz = dk.z + lx * sd2 + lz * cd;
                 put(BOX_G, px, dk.y, pz, pw, ph, pw, dk.rot);
                 put(CONE_G, px, dk.y + ph, pz, pw * 1.4, ph * 0.7, pw * 1.4, dk.rot);
+            }
+            // Solid base podium for the foundation deck so the base of the megastructure is completely solid
+            if (i === 0) {
+                const baseRise = (plan.decks.length > 1 ? plan.decks[1].y : dk.plateH * 5) - dk.y;
+                put(BOX_A, dk.x, dk.y, dk.z, side * 0.96, baseRise, side * 0.96, dk.rot);
+                const bph = baseRise * 0.95;
+                const bpw = pw * 1.2;
+                for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+                    const lx = sx * dk.half * 0.92, lz = sz * dk.half * 0.92;
+                    const px = dk.x + lx * cd - lz * sd2;
+                    const pz = dk.z + lx * sd2 + lz * cd;
+                    put(BOX_G, px, dk.y, pz, bpw, bph, bpw, dk.rot);
+                }
             }
             for (let j = 0; j < dk.towers.length; j++) {
                 skyscraper(dk.towers[j], dk, dk.y, i * 131 + j * 17 + 5);
@@ -1715,6 +2049,7 @@
     // Handed to the rest of the suite.
     Object.assign(VW, {
         BiomeFurniture, BiomeSprites, ProceduralDecorator, ShopFurniture,
-        buildOmegaTower, omegaTowerPlan
+        buildOmegaTower, omegaTowerPlan,
+        CHESTS, CHEST_FOLDER, chestKindOf
     });
 })();

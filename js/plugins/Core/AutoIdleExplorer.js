@@ -356,6 +356,9 @@
     // leash is a hard tile count, and nobody may be further than this from the
     // leader whatever errand they are on.
     const WORLD_LEASH = 2;
+    // In procedural interiors (dungeons, crypts, sewers, caves), party members
+    // stay close to the leader so they remain within the shared lantern light pool.
+    const DUNGEON_LEASH = 3;
 
     // ------------------------------------------------------------------ needs
     // A loose member attends to themselves the way the town's NPCs do, off the
@@ -2075,6 +2078,376 @@
         },
     };
 
+    // ========================================================================
+    // Autonomous Romance Engine (Party Members & NPCs)
+    // ========================================================================
+    const NPCRomanceSystem = {
+        _pairCooldowns: {},
+
+        getCooldownKey(a, b) {
+            return a < b ? `${a}|${b}` : `${b}|${a}`;
+        },
+
+        isOnCooldown(nameA, nameB, cooldownMs = 45000) {
+            const key = this.getCooldownKey(nameA, nameB);
+            const last = this._pairCooldowns[key];
+            if (!last) return false;
+            return (Date.now() - last) < cooldownMs;
+        },
+
+        setCooldown(nameA, nameB) {
+            const key = this.getCooldownKey(nameA, nameB);
+            this._pairCooldowns[key] = Date.now();
+        },
+
+        getEntityInfo(entity) {
+            if (!entity) return null;
+            if (typeof entity.actorId === "function") {
+                const actor = entity;
+                const name = actor.name();
+                const gender = actor.gender ? actor.gender() : 0;
+                const cls = actor.currentClass ? (actor.currentClass()?.name || '') : '';
+                const traits = actor._selectedTraits || [];
+                const isSynthetic = /cyborg|android|robot|machine|automaton/i.test(cls) ||
+                    traits.some(t => /cyber|robot|synthetic|machine/i.test(t?.name || ''));
+                const isBotanic = ($gameVariables && $gameVariables.value(87) === 3) ||
+                    /plant|flora|dryad|treant|fungus/i.test(cls);
+                const isNonSentient = (actor.currentClass && actor.currentClass()?.id >= 63) ||
+                    (window.NPCEmpathize?._helpers?._isNonSentientActor?.(actor) ?? false);
+                const charm = Math.max(-10, Math.min(14, Math.round(((actor.luk ?? 20) - 20) / 5) + Math.floor((actor.level ?? 1) / 8)));
+                const needs = window.PartyNeeds ? window.PartyNeeds.getMemberNeeds(actor) : null;
+                const hygiene = needs ? Number(needs.hygiene) || 100 : 100;
+                const profile = window.NPCSocietyRegistry?.getProfile?.(name) || null;
+                return {
+                    isActor: true,
+                    actor,
+                    actorId: actor.actorId(),
+                    name,
+                    gender,
+                    isSynthetic,
+                    isBotanic,
+                    isNonSentient,
+                    charm,
+                    hygiene,
+                    profile,
+                };
+            }
+            const name = entity.eventName || entity.name || (typeof entity === "string" ? entity : null);
+            if (!name) return null;
+            const profile = entity.profile || window.NPCSocietyRegistry?.getProfile?.(name) || $gameSystem?._npcSociety?.[name] || null;
+            const gender = profile?.gender ?? 0;
+            const traitIds = profile?.traitIds || [];
+            const isSynthetic = traitIds.some(id => /cyber|robot|synthetic/i.test(String(id)));
+            const isBotanic = traitIds.some(id => /plant|flora|botanic/i.test(String(id)));
+            const isNonSentient = (profile?.classId >= 63) || (window.NPCEmpathize?._helpers?._isNonSentientNpc?.(profile) ?? false);
+            const charm = Math.max(-8, Math.min(10, Math.round(((profile?.psi ?? 20) - 20) / 6)));
+            const hygiene = profile?.hygiene ?? 100;
+            return {
+                isActor: false,
+                actor: null,
+                actorId: null,
+                name,
+                gender,
+                isSynthetic,
+                isBotanic,
+                isNonSentient,
+                charm,
+                hygiene,
+                profile,
+            };
+        },
+
+        getOrientation(name, profile) {
+            const Shared = window.NPCShared;
+            const defaultOrient = { sexual: { key: 'bisexual' }, romantic: { key: 'biromantic' } };
+            if (!name) return defaultOrient;
+            const ov = profile?._orientOverride;
+            if (ov?.sexualKey || ov?.romanticKey) {
+                return {
+                    sexual: { key: ov.sexualKey || 'bisexual' },
+                    romantic: { key: ov.romanticKey || 'biromantic' }
+                };
+            }
+            if (!Shared) return defaultOrient;
+            const hashRom = (Shared.nameHash(name + '_romorient') ^ Shared.worldSeed()) % 100;
+            const hashSex = (Shared.nameHash(name + '_sexorient') ^ Shared.worldSeed()) % 100;
+            let romKey = 'heteroromantic';
+            if (hashRom < 60) romKey = 'heteroromantic';
+            else if (hashRom < 72) romKey = 'biromantic';
+            else if (hashRom < 82) romKey = 'homoromantic';
+            else if (hashRom < 90) romKey = 'panromantic';
+            else if (hashRom < 94) romKey = 'demiromantic';
+            else if (hashRom < 97) romKey = 'aromantic';
+            else romKey = 'sapioromantic';
+
+            let sexKey = 'heterosexual';
+            if (hashSex < 60) sexKey = 'heterosexual';
+            else if (hashSex < 72) sexKey = 'bisexual';
+            else if (hashSex < 82) sexKey = 'homosexual';
+            else if (hashSex < 90) sexKey = 'pansexual';
+            else if (hashSex < 94) sexKey = 'demisexual';
+            else if (hashSex < 97) sexKey = 'asexual';
+            else sexKey = 'heterosexual';
+
+            return { sexual: { key: sexKey }, romantic: { key: romKey } };
+        },
+
+        getRelationshipStanding(name, profile) {
+            let partnered = false;
+            let styleKey = 'single';
+            if (window.NPCLifeSim) {
+                try {
+                    window.NPCLifeSim.ensureLifeRecord?.(name, profile?._homeGroupName);
+                    const rec = window.NPCLifeSim.getRecord?.(name);
+                    partnered = !!(rec && rec.partner);
+                    if (rec && rec.maritalStatus) styleKey = rec.maritalStatus;
+                } catch (_) {}
+            }
+            if (profile?._relStyleOverride) styleKey = profile._relStyleOverride;
+            const exclusiveStyles = new Set(['monogamous', 'civil-union', 'arranged-marriage', 'long-distance', 'companionate', 'married']);
+            const isTaken = partnered && exclusiveStyles.has(styleKey);
+            const isAromantic = styleKey === 'aromantic-solo';
+            return { partnered, styleKey, isTaken, isAromantic };
+        },
+
+        isSomewhatCompatible(suitor, target) {
+            const s = this.getEntityInfo(suitor);
+            const t = this.getEntityInfo(target);
+            if (!s || !t) return false;
+            if (s.name === t.name) return false;
+            if (s.isNonSentient || t.isNonSentient) return false;
+
+            // Party members toward other party members (except toward current party leader)
+            if (s.isActor && t.isActor) {
+                if ($gameParty && $gameParty.leader() && t.actor === $gameParty.leader()) {
+                    return false;
+                }
+            }
+
+            const sStanding = this.getRelationshipStanding(s.name, s.profile);
+            const tStanding = this.getRelationshipStanding(t.name, t.profile);
+            if (sStanding.isTaken || tStanding.isTaken) return false;
+            if (sStanding.isAromantic || tStanding.isAromantic) return false;
+
+            const sOrient = this.getOrientation(s.name, s.profile);
+            const tOrient = this.getOrientation(t.name, t.profile);
+            if (sOrient.romantic.key === 'aromantic' || tOrient.romantic.key === 'aromantic') return false;
+
+            const sGender = s.gender;
+            const tGender = t.gender;
+            const isFluid = (g) => g === 2 || g === 3;
+
+            if (!isFluid(sGender) && !isFluid(tGender)) {
+                const sameGenderOrient = new Set(['homosexual', 'homoromantic']);
+                const diffGenderOrient = new Set(['heterosexual', 'heteroromantic']);
+                if (sameGenderOrient.has(tOrient.romantic.key) && sGender !== tGender) return false;
+                if (diffGenderOrient.has(tOrient.romantic.key) && sGender === tGender) return false;
+                if (sameGenderOrient.has(sOrient.romantic.key) && sGender !== tGender) return false;
+                if (diffGenderOrient.has(sOrient.romantic.key) && sGender === tGender) return false;
+            }
+
+            if (tOrient.romantic.key === 'bubbaromantic' && !/bubba/i.test(s.name)) return false;
+            if (tOrient.romantic.key === 'botromantic' && !s.isSynthetic) return false;
+            if (tOrient.romantic.key === 'dendroromantic' && !s.isBotanic) return false;
+
+            let opinion = 0;
+            if (t.profile && s.actorId != null && t.profile.opinions) {
+                opinion = Number(t.profile.opinions[s.actorId]) || 0;
+            } else if (t.profile?.relationships?.[s.name]) {
+                opinion = Number(t.profile.relationships[s.name].opinion) || 0;
+            }
+            if (opinion <= -60) return false;
+
+            return true;
+        },
+
+        getActions() {
+            return [
+                {
+                    id: 'flirt', label: 'Flirt', tier: 1, successDelta: 12, failDelta: -6,
+                    lines: [
+                        `"I was hoping I'd run into you, {name}."`,
+                        `"Careful, {name}. I could get used to this."`,
+                        `"You've been on my mind all day, {name}."`,
+                    ],
+                    repliesGood: [`*smiles softly* "Is that so?"`, `*laughs* "You're trouble."`, `*blushes* "Keep talking like that."`],
+                    repliesBad: [`*looks away* "Let's keep this friendly."`, `*chuckles dryly* "Nice try."`, `*shakes head* "No."`]
+                },
+                {
+                    id: 'admire', label: 'Admire', tier: 1, successDelta: 14, failDelta: -7,
+                    lines: [
+                        `"You're hard to look away from, {name}."`,
+                        `"There's something striking about you, {name}."`,
+                        `"You always brighten up the room, {name}."`,
+                    ],
+                    repliesGood: [`*beams* "Thank you, that's really sweet."`, `*grins* "You have good taste."`, `*winks* "Right back at you."`],
+                    repliesBad: [`*shrugs* "Please, don't."`, `*frowns* "I'm busy."`, `*steps back* "That's enough."`]
+                },
+                {
+                    id: 'serenade', label: 'Serenade', tier: 2, successDelta: 20, failDelta: -10,
+                    lines: [
+                        `takes a breath and hums a romantic tune for {name}.`,
+                        `sings a poetic verse dedicated to {name}.`,
+                    ],
+                    repliesGood: [`*listens happily* "Nobody's ever done that for me."`, `*claps* "That was wonderful."`, `*blushes deeply* "You're too much."`],
+                    repliesBad: [`*groans playfully* "Please stop, everyone is looking!"`, `*wiggles out* "Not the time."`, `*sighs* "A bit dramatic."`]
+                },
+                {
+                    id: 'kiss', label: 'Playful Kiss', tier: 3, successDelta: 24, failDelta: -14,
+                    lines: [
+                        `leans in close and leaves a gentle kiss on {name}'s cheek.`,
+                        `steps in close with a soft embrace for {name}.`,
+                    ],
+                    repliesGood: [`*eyes widen with a radiant smile* "Oh..."`, `*kisses back gently*`, `*holds close warmly*`],
+                    repliesBad: [`*dodges and steps back* "Hey, hands off."`, `*scowls* "Too fast!"`, `*pushes away* "Not interested."`]
+                },
+                {
+                    id: 'wink', label: 'Playful Wink', tier: 1, successDelta: 10, failDelta: -4,
+                    lines: [
+                        `gives {name} a playful wink across the way.`,
+                        `flashes a teasing smile and a wink at {name}.`,
+                    ],
+                    repliesGood: [`*winks right back with a smirk*`, `*giggles and waves*`, `*smiles warmly*`],
+                    repliesBad: [`*rolls eyes*`, `*looks the other way*`, `*blinks blankly*`]
+                }
+            ];
+        },
+
+        calculateChance(s, t, act) {
+            let chance = 45;
+            let attraction = 0;
+            if (t.profile && s.actorId != null && t.profile.attractions) {
+                attraction = Number(t.profile.attractions[s.actorId]) || 0;
+            } else if (t.profile?.relationships?.[s.name]?.attraction != null) {
+                attraction = Number(t.profile.relationships[s.name].attraction) || 0;
+            }
+            chance += Math.round(attraction * 0.45);
+
+            let opinion = 0;
+            if (t.profile && s.actorId != null && t.profile.opinions) {
+                opinion = Number(t.profile.opinions[s.actorId]) || 0;
+            } else if (t.profile?.relationships?.[s.name]?.opinion != null) {
+                opinion = Number(t.profile.relationships[s.name].opinion) || 0;
+            }
+            chance += Math.round(opinion * 0.18);
+
+            chance += (s.charm || 0);
+
+            if (s.hygiene < 35) chance -= 10;
+            if (t.hygiene < 35) chance -= 8;
+
+            chance -= ((act.tier || 1) - 1) * 12;
+
+            return Math.max(5, Math.min(95, Math.round(chance)));
+        },
+
+        executeRomance(suitorEntity, targetEntity, explicitAction = null) {
+            const s = this.getEntityInfo(suitorEntity);
+            const t = this.getEntityInfo(targetEntity);
+            if (!s || !t) return null;
+            if (!this.isSomewhatCompatible(s, t)) return null;
+
+            this.setCooldown(s.name, t.name);
+
+            const actions = this.getActions();
+            const act = explicitAction || actions[Math.floor(Math.random() * actions.length)];
+            const chance = this.calculateChance(s, t, act);
+            const roll = 1 + Math.floor(Math.random() * 100);
+            const success = roll <= chance;
+
+            const delta = success ? act.successDelta : act.failDelta;
+            const opDelta = success ? Math.max(1, Math.round(delta * 0.4)) : Math.min(-1, Math.round(delta * 0.4));
+
+            if (t.profile) {
+                if (s.actorId != null) {
+                    if (window.NPCEmpathize?._helpers?._addNpcAttraction) {
+                        window.NPCEmpathize._helpers._addNpcAttraction(t.profile, s.actorId, delta);
+                        window.NPCEmpathize._helpers._addNpcOpinion(t.profile, s.actorId, opDelta);
+                    } else {
+                        t.profile.attractions = t.profile.attractions || {};
+                        t.profile.opinions = t.profile.opinions || {};
+                        t.profile.attractions[s.actorId] = (t.profile.attractions[s.actorId] || 0) + delta;
+                        t.profile.opinions[s.actorId] = (t.profile.opinions[s.actorId] || 0) + opDelta;
+                    }
+                    (t.profile.eventLog ??= []).push({
+                        tag: 'romance_' + act.id, desc: `${act.id} (${delta >= 0 ? '+' : ''}${delta})`,
+                        timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+                    });
+                } else {
+                    t.profile.relationships = t.profile.relationships || {};
+                    const rel = t.profile.relationships[s.name] || { meetCount: 1, opinion: 0, attraction: 0 };
+                    rel.attraction = (rel.attraction || 0) + delta;
+                    rel.opinion = Math.max(-100, Math.min(100, (rel.opinion || 0) + opDelta));
+                    t.profile.relationships[s.name] = rel;
+                }
+            }
+
+            if (s.isActor && t.isActor && s.profile) {
+                const sDelta = success ? Math.round(delta * 0.6) : 0;
+                if (window.NPCEmpathize?._helpers?._addNpcAttraction) {
+                    window.NPCEmpathize._helpers._addNpcAttraction(s.profile, t.actorId, sDelta);
+                } else {
+                    s.profile.attractions = s.profile.attractions || {};
+                    s.profile.attractions[t.actorId] = (s.profile.attractions[t.actorId] || 0) + sDelta;
+                }
+            }
+
+            if (!s.isActor && t.isActor && s.profile) {
+                s.profile.attractions = s.profile.attractions || {};
+                s.profile.attractions[t.actorId] = (s.profile.attractions[t.actorId] || 0) + (success ? 6 : -2);
+            }
+
+            if (s.actor && typeof s.actor.actorId === "function" && window.PartyNeeds?.fillNeed) {
+                window.PartyNeeds.fillNeed(s.actor, "social", 20);
+            }
+            if (t.actor && typeof t.actor.actorId === "function" && window.PartyNeeds?.fillNeed) {
+                window.PartyNeeds.fillNeed(t.actor, "social", 20);
+            }
+            if (s.profile && s.profile.social != null) {
+                s.profile.social = Math.min(100, (s.profile.social || 0) + 20);
+            }
+            if (t.profile && t.profile.social != null) {
+                t.profile.social = Math.min(100, (t.profile.social || 0) + 20);
+            }
+
+            const heartText = delta >= 0 ? `+${delta}♥` : `${delta}♥`;
+            const outcomeText = success ? `Success (${heartText})` : `Rejected (${heartText})`;
+            const toastMsg = `🎲 [Romance] ${s.name} → ${t.name} (${act.label}): Rolled ${roll} vs ${chance}% ➔ ${outcomeText}`;
+
+            if (window.ParchmentToast && typeof window.ParchmentToast.show === "function") {
+                try {
+                    window.ParchmentToast.show(toastMsg, {
+                        severity: success ? "good" : "warning",
+                        duration: 180,
+                    });
+                } catch (_) {}
+            }
+
+            const rawLine = act.lines[Math.floor(Math.random() * act.lines.length)];
+            const suitorLine = rawLine.replace(/\{name\}/g, t.name);
+            const replyPool = success ? act.repliesGood : act.repliesBad;
+            const replyLine = replyPool[Math.floor(Math.random() * replyPool.length)].replace(/\{name\}/g, s.name);
+
+            if (window.Diary && typeof window.Diary.onRomance === "function") {
+                try { window.Diary.onRomance(s.name, t.name, act.id, success); } catch (_) {}
+            }
+
+            return {
+                suitor: s,
+                target: t,
+                action: act,
+                chance,
+                roll,
+                success,
+                delta,
+                suitorLine,
+                replyLine,
+                toastMsg,
+            };
+        }
+    };
+    window.NPCRomanceSystem = NPCRomanceSystem;
+
     const Loose = {
         _recall: false,
         _still: 0,      // frames the leader has stood still during a recall
@@ -2148,6 +2521,8 @@
             s.need = null;
             s.rent = false;
             s.until = 0;
+            s.isRomance = undefined;
+            s.romanceData = null;
         },
 
         // A map battle (BattleSystem/MapBattleMode.js) turns every member into a
@@ -2226,7 +2601,12 @@
 
         // The activity AI only runs on a quiet map. An event, a message or a
         // transfer freezes every member where they stand.
+        // During waiting fast-forward, members can act freely.
         canAct(f) {
+            const isWaiting = !!(typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._isWaitingFastForward);
+            if (isWaiting) {
+                return (f ? this.activeFor(f) : this.active()) && !this.recalling() && !$gamePlayer.isTransferring();
+            }
             return (
                 (f ? this.activeFor(f) : this.active()) &&
                 !this.recalling() &&
@@ -2250,11 +2630,46 @@
             return $gameMap.mapId() === id;
         },
 
+        // Standing inside a dark map or procedural interior (dungeon, crypt, sewer, cave, underground layer, negative dungeon floor, <Dark>).
+        inProceduralInterior() {
+            if ($dataMap && $dataMap.note && /<Dark>/i.test($dataMap.note)) {
+                return true;
+            }
+            if (typeof window.isProceduralInteriorMap === "function" && window.isProceduralInteriorMap()) {
+                return true;
+            }
+            if (window.DungeonFloors && typeof window.DungeonFloors.currentFloor === "function" && window.DungeonFloors.currentFloor() < 0) {
+                return true;
+            }
+            if ($gameVariables && typeof $gameVariables.value(1) === "number" && $gameVariables.value(1) < 0) {
+                return true;
+            }
+            if ($gameMap && $gameMap.mapId() === 636) {
+                const data = $gameSystem && $gameSystem._procGenData;
+                if (data) {
+                    if (data._dungeonSession && data._dungeonSession.type === "tower") return true;
+                    if (data.biomeLayerStack && data.biomeLayerStack.length > 0) return true;
+                    if (typeof window.isInteriorBiome === "function" && window.isInteriorBiome(data.currentBiome)) return true;
+                    const b = (data.currentBiome || "").toLowerCase();
+                    if (b.includes("cave") || b.includes("dungeon") || b.includes("crypt") || b.includes("sewer") || b.includes("cellar") || b.includes("vault") || b.includes("templeinside") || b.includes("caveden")) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
+
         // The hard limit on how far a member may be from the leader. Off the
         // world map there is none: what tells them they have been left behind
         // is the screen, which already carries the scale of the place.
+        // In procedural interiors, they stay close to the leader (DUNGEON_LEASH)
+        // to wander and explore without straying into pitch dark hallways.
+        // During waiting fast-forward, members get a generous leash to satisfy needs.
         leash() {
-            return this.onWorldMap() ? WORLD_LEASH : Infinity;
+            if (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._isWaitingFastForward) return 25;
+            if (this.onWorldMap()) return WORLD_LEASH;
+            if (this.inProceduralInterior()) return DUNGEON_LEASH;
+            return Infinity;
         },
 
         // Is this tile, or this character, inside the leash? Everywhere the
@@ -2303,6 +2718,12 @@
         // Has this member been quiet long enough to say something, and has the
         // party as a whole? Discussion beats do not ask, they only stamp.
         _mayTalk(char) {
+            const isWaiting = !!(typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._isWaitingFastForward);
+            if (isWaiting) {
+                const now = Graphics.frameCount;
+                if (now - (this._saidAt.get(char) || -30) < 30) return false;
+                return now - this._lastLineAt >= 20;
+            }
             const now = Graphics.frameCount;
             if (now - this._quietUntil < 0) return false;
             if (now - (this._saidAt.get(char) || -CHATTER_COOL) < CHATTER_COOL) return false;
@@ -2467,6 +2888,8 @@
         // back to a walk. It is a cosmetic thing only: they still catch up, and
         // a fight that starts a moment later finds them in it either way.
         gaitFor(f) {
+            const isWaiting = !!(typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._isWaitingFastForward);
+            if (isWaiting) return 5.5;
             const s = this.stateOf(f);
             const base = $gamePlayer.realMoveSpeed();
             // "return" is somebody left behind hurrying back into view, "dash"
@@ -2776,7 +3199,44 @@
             // the money on, or simply what these two personalities do to each
             // other. A stranger still gets the old greeting and answer.
             const own = !!this.partyActorOf(p);
-            if (own) return this.stepPartyTalk(f, p, s);
+            if (own) {
+                const actorA = this.actorOf(f);
+                const actorB = this.partyActorOf(p);
+                if (s.isRomance) return this.stepPartyRomance(f, p, s, actorA, actorB);
+                if (s.isRomance === undefined) {
+                    const RS = window.NPCRomanceSystem;
+                    if (RS && actorA && actorB && actorB !== $gameParty.leader() &&
+                        !RS.isOnCooldown(actorA.name(), actorB.name()) &&
+                        RS.isSomewhatCompatible(actorA, actorB) &&
+                        Math.random() < 0.35) {
+                        s.isRomance = true;
+                        s.romanceData = RS.executeRomance(actorA, actorB);
+                        s.beat = 0;
+                        return this.stepPartyRomance(f, p, s, actorA, actorB);
+                    }
+                    s.isRomance = false;
+                }
+                return this.stepPartyTalk(f, p, s);
+            }
+
+            const actorA = this.actorOf(f);
+            const helpers = window.NPCEmpathize && window.NPCEmpathize._helpers;
+            const npcName = (p && typeof p.eventId === 'function' && helpers?._getNPCName) ? helpers._getNPCName(p.eventId()) : null;
+            const npcProfile = (npcName && helpers?._getProfile) ? helpers._getProfile(npcName) : null;
+            if (s.isRomance) return this.stepNpcRomance(f, p, s, actorA, npcName, npcProfile);
+            if (s.isRomance === undefined && npcName && npcProfile) {
+                const RS = window.NPCRomanceSystem;
+                if (RS && actorA && !RS.isOnCooldown(actorA.name(), npcName) &&
+                    RS.isSomewhatCompatible(actorA, { name: npcName, profile: npcProfile }) &&
+                    Math.random() < 0.30) {
+                    s.isRomance = true;
+                    s.romanceData = RS.executeRomance(actorA, { name: npcName, profile: npcProfile });
+                    s.beat = 0;
+                    return this.stepNpcRomance(f, p, s, actorA, npcName, npcProfile);
+                }
+                s.isRomance = false;
+            }
+
             if (s.beat === 0) {
                 // Nothing to say right now: they came over anyway, and the visit
                 // still counts as company, it simply happens without the words.
@@ -2799,6 +3259,50 @@
             // person thinks of THIS member (their own standing, not the
             // party's) and it is company for the member who had it.
             this.settleTalk(f, p);
+            this.clearGoal(s);
+            s.wait = 60;
+        },
+
+        stepPartyRomance(f, p, s, actorA, actorB) {
+            const rd = s.romanceData;
+            if (!rd) {
+                this.clearGoal(s);
+                return;
+            }
+            if (s.beat === 0) {
+                this.sayText(f, rd.suitorLine);
+                s.beat = 1;
+                s.wait = 90 + Math.min(80, Math.round(String(rd.suitorLine).length * 1.4));
+                return;
+            }
+            if (s.beat === 1) {
+                this.sayText(p, rd.replyLine);
+                s.beat = 2;
+                s.wait = 90 + Math.min(80, Math.round(String(rd.replyLine).length * 1.4));
+                return;
+            }
+            this.clearGoal(s);
+            s.wait = 60;
+        },
+
+        stepNpcRomance(f, p, s, actorA, npcName, npcProfile) {
+            const rd = s.romanceData;
+            if (!rd) {
+                this.clearGoal(s);
+                return;
+            }
+            if (s.beat === 0) {
+                this.sayText(f, rd.suitorLine);
+                s.beat = 1;
+                s.wait = 90 + Math.min(80, Math.round(String(rd.suitorLine).length * 1.4));
+                return;
+            }
+            if (s.beat === 1) {
+                this.sayText(p, rd.replyLine);
+                s.beat = 2;
+                s.wait = 90 + Math.min(80, Math.round(String(rd.replyLine).length * 1.4));
+                return;
+            }
             this.clearGoal(s);
             s.wait = 60;
         },
@@ -3021,6 +3525,22 @@
                     );
                 } else {
                     helpers._addNpcOpinion(profile, subject.actorId(), delta);
+                }
+                return true;
+            } catch (e) {
+                return false;
+            }
+        },
+
+        movePartyAttraction(profile, subject, delta) {
+            const helpers = window.NPCEmpathize && window.NPCEmpathize._helpers;
+            if (!profile || !subject || !delta) return false;
+            try {
+                if (helpers && helpers._addNpcAttraction) {
+                    helpers._addNpcAttraction(profile, subject.actorId(), delta);
+                } else {
+                    profile.attractions = profile.attractions || {};
+                    profile.attractions[subject.actorId()] = (profile.attractions[subject.actorId()] || 0) + delta;
                 }
                 return true;
             } catch (e) {

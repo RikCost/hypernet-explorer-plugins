@@ -739,7 +739,7 @@
       const hours = Number(key.slice(5));
       SoundManager.playOk();
       this.closeSleepMenu(true);
-      this.startSleepSequence(hours, true);
+      this.startWaitSequence(hours);
       return;
     }
     if (key === "cryo_confirm") {

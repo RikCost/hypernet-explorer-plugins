@@ -396,8 +396,8 @@
     // Apply random modifier for this part (set at battle start)
     baseChance += (part.randomHitModifier || 0) * 100;
 
-    // Clamp the final chance between 5% and 95%
-    return Math.max(5, Math.min(95, baseChance));
+    // Clamp the final chance between 5% and 95% and round to integer
+    return Math.round(Math.max(5, Math.min(95, baseChance)));
   }
   // Get the weapon type for an actor
   function getWeaponType(actor) {
@@ -835,6 +835,7 @@
       }
 
       var part = enemy._bodyParts[partKey];
+      enemy._lastHitPartName = part ? part.name : partKey;
       var isTargeted = hitLocation.targeted || false;
 
       // Show hit location in battle log if enabled
@@ -1652,9 +1653,16 @@
       // Only apply death if battle log is done processing
       if (!this._logWindow || this._logWindow._methods.length === 0) {
         const target = $gameTemp.vitalPartDestroyedEnemy;
+        // If the target was already killed through the normal battle log path
+        // (HP damage brought it to 0 in the same blow that destroyed the vital
+        // organ), the log has already pushed performCollapse and played the
+        // sound. Skip it here to avoid a double collapse sound.
+        const alreadyDead = target.isDead();
         target.setHp(0);
         target.addState(target.deathStateId());
-        target.performCollapse();
+        if (!alreadyDead) {
+          target.performCollapse();
+        }
         $gameTemp.vitalPartDestroyedEnemy = null;
         $gameTemp.scheduleEnemyDeath = false;
       }
@@ -1861,6 +1869,13 @@
   // _bodyParts and nothing else, so grafted parts, hybrid creature archetypes
   // and severed limbs are all already accounted for by whoever wrote that table.
   function wrestleOwnParts(battler) {
+    if (battler && !battler._bodyParts) {
+      if (typeof window.initializeBodyParts === "function" && battler.isActor && battler.isActor()) {
+        window.initializeBodyParts(battler);
+      } else if (typeof initializeEnemyBodyParts === "function") {
+        initializeEnemyBodyParts(battler);
+      }
+    }
     const out = [];
     const parts = battler && battler._bodyParts;
     if (!parts) return out;
@@ -1878,6 +1893,13 @@
   // stab, not something a hand can close on. Aim (above) is still the way to
   // put a weapon through one.
   function wrestleTargetParts(enemy) {
+    if (enemy && !enemy._bodyParts) {
+      if (typeof initializeEnemyBodyParts === "function") {
+        initializeEnemyBodyParts(enemy);
+      } else if (typeof window.initializeBodyParts === "function" && enemy.isActor && enemy.isActor()) {
+        window.initializeBodyParts(enemy);
+      }
+    }
     const out = [];
     if (!enemy || !enemy._bodyParts) return out;
     for (const key in enemy._bodyParts) {
@@ -2265,6 +2287,12 @@
       const action = BattleManager.inputtingAction();
       if (!action) return false;
       action.setSkill(WRESTLE_SKILL_ID);
+      const alive = $gameTroop.aliveMembers();
+      if (alive.length === 1) {
+        action.setTarget(alive[0].index());
+        return scene.openWrestleMenu(alive[0]);
+      }
+      scene._wrestleSelecting = true;
       scene.startEnemySelection();
       return true;
     },
@@ -2375,12 +2403,17 @@
     const actor = BattleManager.actor();
     const win = this._actorCommandWindow;
     if (!actor || !enemy || !win) return false;
+    if (actor && !actor._bodyParts && typeof window.initializeBodyParts === "function") {
+      window.initializeBodyParts(actor);
+    }
     if (!enemy._bodyParts) initializeEnemyBodyParts(enemy);
     const session = wrestleSession(actor, enemy);
     if (session.myParts.length === 0 || session.theirParts.length === 0) {
       SoundManager.playBuzzer();
       return false;
     }
+    this._wrestleSelecting = false;
+    win._targetSession = null;
     // Which command opened the list the Wrestle skill was picked from, read
     // while the window is still showing the actor's own commands. Backing out
     // of the plan hands that symbol back to the scene's ordinary
@@ -2508,11 +2541,11 @@
     this.closeWrestleMenu();
     const action = BattleManager.inputtingAction();
     if (action) action._wrestlePlan = null;
+    if (this._enemyWindow) this._enemyWindow.hide();
+    win.show();
     win.refresh();
-    if (this._wrestleReturnSymbol) win.selectSymbol(this._wrestleReturnSymbol);
-    // onEnemyCancel is the scene's own way back out of a target choice, and
-    // CategorizedBattleSkills has already taught it about the Basic list.
-    this.onEnemyCancel();
+    win.selectSymbol(this._wrestleReturnSymbol || "wrestle");
+    win.activate();
   };
 
   // Picking the monster is picking the body. A lone monster is chosen for the
@@ -2534,10 +2567,21 @@
   const _SB_onEnemyOk_WR = Scene_Battle.prototype.onEnemyOk;
   Scene_Battle.prototype.onEnemyOk = function () {
     const action = BattleManager.inputtingAction();
-    if (isWrestleAction(action) && this._enemyWindow) {
-      const enemy = this._enemyWindow.enemy();
-      action.setTarget(this._enemyWindow.enemyIndex());
-      if (this.openWrestleMenu(enemy)) return;
+    if (this._wrestleSelecting || isWrestleAction(action)) {
+      this._wrestleSelecting = false;
+      const enemy = this._enemyWindow ? this._enemyWindow.enemy() : null;
+      if (this._enemyWindow) { this._enemyWindow.hide(); this._enemyWindow.deactivate(); }
+      if (action && enemy) {
+        action.setTarget(enemy.isEnemy && typeof enemy.index === "function" ? enemy.index() : (this._enemyWindow ? this._enemyWindow.enemyIndex() : 0));
+      }
+      if (enemy && this.openWrestleMenu(enemy)) return;
+      SoundManager.playBuzzer();
+      if (this._actorCommandWindow) {
+        this._actorCommandWindow.show();
+        this._actorCommandWindow.refresh();
+        this._actorCommandWindow.activate();
+      }
+      return;
     }
     _SB_onEnemyOk_WR.call(this);
   };
@@ -2547,6 +2591,18 @@
   // no window listening at all.
   const _SB_onEnemyCancel_WRC = Scene_Battle.prototype.onEnemyCancel;
   Scene_Battle.prototype.onEnemyCancel = function () {
+    if (this._wrestleSelecting) {
+      this._wrestleSelecting = false;
+      const win = this._actorCommandWindow;
+      if (win) {
+        win._targetSession = null;
+        win.show();
+        win.refresh();
+        win.selectSymbol(this._wrestleReturnSymbol || "wrestle");
+        win.activate();
+      }
+      return;
+    }
     const win = this._actorCommandWindow;
     if (win && win.currentSymbol() === "wrestle") {
       if (this._enemyWindow) this._enemyWindow.hide();
@@ -2563,12 +2619,14 @@
   const _SB_startActorCommandSelection_WR = Scene_Battle.prototype.startActorCommandSelection;
   Scene_Battle.prototype.startActorCommandSelection = function () {
     this.closeWrestleMenu();
+    this._wrestleSelecting = false;
     _SB_startActorCommandSelection_WR.call(this);
   };
 
   const _SB_endCommandSelection_WR = Scene_Battle.prototype.endCommandSelection;
   Scene_Battle.prototype.endCommandSelection = function () {
     this.closeWrestleMenu();
+    this._wrestleSelecting = false;
     _SB_endCommandSelection_WR.call(this);
   };
 
@@ -2999,7 +3057,7 @@
     // number on the row is the number that is rolled.
     chance(actor, enemy, partKey) {
       if (!enemy || !enemy._bodyParts) return 0;
-      return calculateHitChance(enemy, partKey, actor);
+      return Math.round(calculateHitChance(enemy, partKey, actor));
     },
 
     set(actor, enemy, partKey) {

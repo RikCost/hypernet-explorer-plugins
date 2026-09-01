@@ -35,7 +35,7 @@
  * @type number
  * @min -9999
  * @max 9999
- * @default 650
+ * @default 740
  * @desc X position of the held weapon, in game pixels from the left.
  *
  * @param weaponSpriteY
@@ -114,6 +114,17 @@
  * - Set max bullets for weapon (default: unlimited)
  * - Example: <Bullets: 6>
  *
+ * <HitSounds: file1, file2, file3>
+ * - The sounds this weapon may land with; one is picked per blow. Stamped by
+ *   tools/weapons/gen-hit-sounds.js from the weapon's attack animation.
+ * - Example: <HitSounds: Slash5, Melee/hit07_mp3>
+ *
+ * <HitFX: profile>
+ * - Draws a named WeaponHitFX profile where the blow lands instead of the one
+ *   this weapon's type hits with (light, sword, heavy, axe, whip, staff, bow,
+ *   projectile, gun, claw, glove, spear).
+ * - Example: <HitFX: gun>
+ *
  * <ReloadSound: filename>
  * - Sound effect from audio/se for reloading
  * - Example: <ReloadSound: Reload>
@@ -177,9 +188,9 @@
       // Left hand weapons: scale from left edge
       return Math.round(200 * scale.x);
     }
-    // Right hand weapons: scale from their base position.
-    // Shift left so the weapon clears the battle command menu on the right edge.
-    return Math.round(weaponSpriteX * scale.x) - 120;
+    // Right-hand weapon sits on the right side of the screen, behind the
+    // battle command menu (command overlay is z-index 350, weapon canvas is 10).
+    return Math.round(weaponSpriteX * scale.x);
   };
 
   const getScaledWeaponY = () => {
@@ -203,8 +214,8 @@
         "Slash1", "Slash2", "Slash3"], // Axe
     5: ["Whip1", "Whip2", "Whip3", "Whip4"], // Whip
     6: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8", "Magic2"], // Staff
-    7: ["Bow"], // Bow
-    8: ["Bow"], // Projectile (name-routed further, see PROJECTILE_NAME_SOUND_RULES)
+    7: ["Bow", "Bow2", "Bow3"], // Bow
+    8: ["Sling1", "Sling2", "Sling3", "Throw1", "Throw2", "Throw3"], // Projectile (name-routed further, see PROJECTILE_NAME_SOUND_RULES)
     9: ["Pistol1", "Pistol2", "Pistol3", "Pistol4", "Pistol5"], // Gun (name-routed further, see GUN_NAME_SOUND_RULES)
     10: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
          "knifeSlice", "knifeSlice2"], // Claw
@@ -218,38 +229,80 @@
   // hundreds of procedurally named variants. Routed by name instead, closest
   // match first; anything left over keeps the generic Pistol bank above.
   const GUN_NAME_SOUND_RULES = [
-    { test: /shotgun|blunderbuss|riot gun/i,
+    // The outliers first: half the Gun slot is not a firearm at all, and each
+    // of these has a bank of its own cut for it. Nothing here reaches into
+    // another SE folder at play time, and nothing here is an engine stock
+    // sound: every file named below lives in audio/se/Weapons.
+    { test: /taser|stun|shock|\bemp\b|neural|scrambler|paralyz/i,
+      sounds: ["Taser1", "Taser2"],
+      reload: "Reload" },
+    { test: /brainwave|mind|thought|psionic|telepath|headache|knowledge|adaptive combat|cyberarm|arsenal|projector/i,
+      sounds: ["Psi1", "Psi2"],
+      reload: "Reload" },
+    { test: /rail\s*gun|railgun|coil\s*gun|coilgun|gauss|mass driver/i,
+      sounds: ["Railgun1", "Railgun2"],
+      reload: "Reload5" },
+    { test: /laser|beam|optical|photon|disintegr/i,
+      sounds: ["BeamShot1", "BeamShot2", "LaserShot1"],
+      reload: "Reload5" },
+    { test: /plasma|heat ray|ion|blaster|energy/i,
+      sounds: ["LaserShot1", "LaserShot2", "LaserShot3"],
+      reload: "Reload5" },
+    // A launcher is heard twice: the tube letting go, then what lands.
+    { test: /rocket|missile|\brpg\b|manpads|bazooka|launcher|mortar|grenade/i,
+      sounds: ["Launch1", "Launch2", "Boom1", "Boom2", "Boom3"],
+      reload: "Reload3" },
+    { test: /flame|flamethrower|torch|incendiar|napalm|sprayer/i,
+      sounds: ["Flame1", "Flame2", "Flame3", "Flame4"],
+      reload: "Reload5" },
+    { test: /air |pneumat|pump|pressure|potato|spud|t-shirt|cap gun|suction|water|hose|jet cutter|dart|blowgun|seed gun|nail/i,
+      sounds: ["AirGun1", "AirGun2", "AirGun3"],
+      reload: "Reload" },
+    // Real firearms, closest match first.
+    { test: /shotgun|blunderbuss|riot gun|scattergun|\b12 gauge\b/i,
       sounds: ["Shotgun1", "Shotgun2", "Shotgun3", "Shotgun4", "Shotgun5", "Shotgun6", "Shotgun7", "Shotgun8"],
       reload: "Reload3" },
-    { test: /taser|stun|shock|\bemp\b|neural|scrambler/i,
-      sounds: ["Buzzer1"],
-      reload: "Reload" },
-    { test: /sniper|bolt-action|bolt action/i,
+    { test: /minigun|gatling|machine gun|\bhmg\b|\blmg\b|tommy|thompson|chain gun|volley|autocannon|repeater/i,
+      sounds: ["MachineGun1", "MachineGun2", "MachineGun3", "UziAutomatic"],
+      reload: "Reload5" },
+    { test: /sniper|bolt-action|bolt action|\bdmr\b|marksman|match grade|anti-materiel/i,
       sounds: ["Sniper1", "Sniper2", "Sniper3"],
       reload: "Reload4" },
-    { test: /\bsmg\b|uzi|submachine/i,
+    { test: /\bsmg\b|uzi|submachine|\bmp\d|\bpdw\b|vector|\baks?-?74u\b|machine pistol/i,
       sounds: ["SMG1", "SMG2", "SMG3", "SMG4", "SMG5", "UziAutomatic"],
       reload: "Reload5" },
-    { test: /desert eagle|hand cannon/i,
+    // Black powder comes before the plain rifle rule: a flintlock is not an
+    // AK, and half the muzzle-loaders in the database are called rifles.
+    { test: /flintlock|wheellock|matchlock|musket|black powder|percussion|arquebus|dueling|harquebus/i,
+      sounds: ["Musket1", "Musket2", "Musket3"],
+      reload: "Reload4" },
+    { test: /desert eagle|hand cannon|\.50\b|magnum/i,
       sounds: ["DesertEagle", "DoubleGunshot"],
       reload: "Reload6" },
-    { test: /revolver|six-shooter|six shooter|peacemaker|pepperbox|percussion/i,
-      sounds: ["DoubleGunshot", "Pistol1", "Pistol2", "Pistol3", "Pistol4", "Pistol5"],
+    { test: /revolver|six-shooter|six shooter|peacemaker|pepperbox|double-barrel/i,
+      sounds: ["Revolver1", "Revolver2", "DoubleGunshot"],
       reload: "Reload7" },
-    { test: /rifle|musket|carbine/i,
-      sounds: ["Sniper1", "Sniper2", "Sniper3"],
+    { test: /rifle|carbine|garand|\bak-|\bar-|\bsks\b|assault|battle rifle/i,
+      sounds: ["Rifle1", "Rifle2", "Rifle3", "Rifle4"],
       reload: "Reload4" }
   ];
 
   // The projectile slot (wtypeId 8) holds slings, blowguns, crossbows and a
   // handful of sci-fi throwables, none of which move or sound like each
-  // other; routed the same way as guns, by name, on top of the generic Bow
+  // other; routed the same way as guns, by name, on top of the generic sling
   // fallback above.
   const PROJECTILE_NAME_SOUND_RULES = [
-    { test: /bow|crossbow/i, sounds: ["Bow"], reload: "ReloadBow" },
-    { test: /sling|atlatl|bola/i, sounds: ["Whip1", "Whip2"], reload: null },
-    { test: /taser|\bemp\b|neural|scrambler|disruptor/i, sounds: ["Buzzer1"], reload: null },
-    { test: /grenade|explos|launcher/i, sounds: ["Shotgun1", "Shotgun2"], reload: "Reload3" }
+    { test: /crossbow|arbalest/i, sounds: ["Crossbow1", "Crossbow2"], reload: "ReloadBow" },
+    { test: /bow\b|longbow|shortbow|recurve/i, sounds: ["Bow", "Bow2", "Bow3"], reload: "ReloadBow" },
+    { test: /sling|atlatl|bola|shongo|rope dart/i, sounds: ["Sling1", "Sling2", "Sling3"], reload: null },
+    { test: /blowgun|blowpipe|dart|skewer|staple|needle/i, sounds: ["Blowgun1", "Blowgun2"], reload: null },
+    { test: /taser|\bemp\b|neural|scrambler|disruptor|cyber warfare|knowledge injector/i,
+      sounds: ["Taser1", "Taser2"], reload: null },
+    { test: /grenade|explos|rocket|missile|launcher/i,
+      sounds: ["Launch1", "Boom1", "Boom2"], reload: "Reload3" },
+    { test: /chakram|discus|disc|boomerang|portal/i, sounds: ["Throw1", "Throw2", "Throw3"], reload: null },
+    { test: /pepper spray|hairspray|torch|flame/i, sounds: ["Flame1", "Flame3"], reload: null },
+    { test: /drone|stellar|swarm/i, sounds: ["Psi1", "LaserShot2"], reload: null }
   ];
 
   // Static animation keyframes (no movement, just holds position)
@@ -376,6 +429,28 @@
     if (bulletsMatch) {
       weapon.maxBullets = parseInt(bulletsMatch[1]);
       debugLog(`Weapon ${weapon.name}: Max bullets ${weapon.maxBullets}`);
+    }
+
+    // <HitFX: name> names one of WeaponHitFX.PROFILES instead of the profile
+    // this weapon's type would hit with. Nothing declares one yet: the type
+    // profiles are the whole picture until a weapon asks for its own.
+    // <HitSounds: a, b, c> is the pool the procedural hit effect draws its
+    // contact sound from, stamped onto every weapon by
+    // tools/weapons/gen-hit-sounds.js out of the weapon's own attack
+    // animation. One is picked per blow, so the same weapon does not land on
+    // the same sample twice running.
+    const hitSoundsMatch = note.match(/<HitSounds:\s*(.+?)>/i);
+    if (hitSoundsMatch) {
+      weapon.hitSounds = hitSoundsMatch[1].split(",").map(x => x.trim()).filter(Boolean);
+      debugLog(`Weapon ${weapon.name}: hit sounds`, weapon.hitSounds);
+    } else {
+      weapon.hitSounds = [];
+    }
+
+    const hitFXMatch = note.match(/<HitFX:\s*(\w+)>/i);
+    if (hitFXMatch) {
+      weapon.hitFX = hitFXMatch[1].toLowerCase();
+      debugLog(`Weapon ${weapon.name}: hit FX profile "${weapon.hitFX}"`);
     }
 
     const reloadMatch = note.match(/<ReloadSound:\s*(\w+)>/i);
@@ -604,9 +679,12 @@
     if (weapons.length > 0) {
       const weapon = weapons[0];
       const soundName = weapon.reloadSound || "Reload";  // i18n-ignore  audio/se/Weapons filename
+      // A reload named with a folder of its own (an energy weapon spinning up,
+      // say) is left alone; a bare name is a file in audio/se/Weapons.
+      const reloadName = soundName.includes("/") ? soundName : "Weapons/" + soundName;
 
       AudioManager.playSe({
-        name: "Weapons/" + soundName,
+        name: reloadName,
         volume: 90,
         pitch: 100,
         pan: 0,
@@ -728,8 +806,31 @@
       this._skillAnimations = null;
     }
 
+    // A plain weapon attack is drawn by WeaponHitFX now, so the database
+    // animation the weapon names is not shown on top of it. Skills keep
+    // whatever animation they were authored with.
+    this._hitFXAttack = !!(
+      action && action.isAttack && action.isAttack() &&
+      subject && subject.isActor() &&
+      window.WeaponHitFX && window.WeaponHitFX.isEnabled()
+    );
+
     _Window_BattleLog_startAction.call(this, subject, action, targets);
   };
+
+  /**
+   * A plain weapon attack is drawn by WeaponHitFX and heard through the tags
+   * on the weapon itself, so the database animation is not played at all: not
+   * its picture, and not its sound timings either. What it used to sound like
+   * now lives on the weapon as <WeaponSounds:> and <HitSounds:>, stamped there
+   * by tools/weapons/gen-hit-sounds.js.
+   */
+  const _Window_BattleLog_showAnimation = Window_BattleLog.prototype.showAnimation;
+  Window_BattleLog.prototype.showAnimation = function (subject, targets, animationId) {
+    if (this._hitFXAttack) return;
+    _Window_BattleLog_showAnimation.call(this, subject, targets, animationId);
+  };
+
   const _Window_BattleLog_displayActionResults =
     Window_BattleLog.prototype.displayActionResults;
   Window_BattleLog.prototype.displayActionResults = function (subject, target) {
@@ -766,15 +867,36 @@
         );
       }
 
-      // Play sound on hit, or on miss/block/counter for ranged weapons (types 7, 8, 9)
-      const shouldPlaySound = target.result().isHit() || (() => {
-        const weapons = actor.weapons();
-        if (weapons.length === 0) return false;
-        const weapon = weapons[0];
-        return weapon && (weapon.wtypeId === 7 || weapon.wtypeId === 8 || weapon.wtypeId === 9);
-      })();
+      // The mark the blow leaves, drawn on the target rather than played out
+      // of Animations.json. Only on a landed hit: a miss has the swing sound
+      // and nothing else.
+      if (this._hitFXAttack && target.result().isHit() &&
+          spriteset && typeof spriteset.playWeaponHitFX === "function") {
+        let hitWeapon = weapons[weaponIndex] || weapons[0];
+        if (!hitWeapon && window.WeaponSystemProcedural) {
+          hitWeapon = WeaponSystemProcedural.unarmedWeaponFor(actor);
+        }
+        spriteset.playWeaponHitFX(hitWeapon, target, {
+          crit: !!target.result().critical,
+          leftHand: weaponIndex === 1,
+          // The animation's own SE travels with the effect and is played on
+          // the beat it lands on, so the fallback impact bank stays quiet.
+          // A bow, a sling and a gun are heard through their own shot, which
+          // displayActionResults plays below; they have no contact sound.
+          silent: !window.WeaponHitFX.swings(hitWeapon),
+          // Nothing got through: the blow rings off the target instead of
+          // cutting it, and holds on the contact for longer.
+          blocked: (target.result().hpDamage || 0) <= 0
+        });
+      }
 
-      if (shouldPlaySound && !this._skillAnimations) {
+      // The swing is heard whether or not it connects. A blade going past a
+      // target that dodged still cuts the air, an arrow still leaves the
+      // string and a gun still goes off; only the impact above is gated on
+      // the blow landing, which is why a miss is a whoosh and nothing else.
+      // (A landed hit on an enemy is sounded again by displayHpDamage, which
+      // never runs on a miss, so this cannot double one up.)
+      if (!this._skillAnimations) {
         const noMultiSound = actor.hasNoMultiAttackSound();
         this._multiAttackHitCount = this._multiAttackHitCount || 0;
 
@@ -1146,6 +1268,9 @@
 
   /** Drop every held model, e.g. leaving the scene or entering card mode. */
   Spriteset_Battle.prototype.clearWeaponModels = function () {
+    // Anything still playing is drawn in the same overlay and would be left
+    // painted over the screen once the layer goes idle.
+    if (window.WeaponHitFX) window.WeaponHitFX.clear();
     if (!this._3dWeaponSprites) return;
     for (const key in this._3dWeaponSprites) {
       const s = this._3dWeaponSprites[key];
@@ -1161,6 +1286,7 @@
    */
   Spriteset_Battle.prototype.fadeOutWeaponModels = function () {
     this._weaponModelsExiting = true;
+    if (window.WeaponHitFX) window.WeaponHitFX.clear();
     if (!this._3dWeaponSprites) return;
     for (const key in this._3dWeaponSprites) {
       const s = this._3dWeaponSprites[key];
@@ -1225,6 +1351,11 @@
     this.setHeldWeaponModel('right', rightWeapon || shieldModel(rightShield));
     this.setHeldWeaponModel('left', leftWeapon || shieldModel(leftShield));
   };
+
+  // How long a blow takes to arrive when the weapon has no movement to read it
+  // off: a little under half of a stock swing, which since the attack clips
+  // were paced up (WeaponSystemProcedural.ATTACK_PACE) runs about 600ms.
+  const DEFAULT_STRIKE_DELAY = 260;
 
   /** Show `weapon` in `hand`, rebuilding the model only when it changed. */
   Spriteset_Battle.prototype.setHeldWeaponModel = function (hand, weapon) {
@@ -1299,6 +1430,55 @@
     // Both of those are battlefield-local; the weapon overlay is in game pixels.
     const field = this._battleField;
     return { x: p.x + (field ? field.x : 0), y: p.y + (field ? field.y : 0) };
+  };
+
+  /**
+   * Where `battler` is on screen in game pixels: its 3D model's projection
+   * when it has one, otherwise the middle of its 2D sprite. This is where a
+   * blow lands, and where WeaponHitFX draws it.
+   */
+  Spriteset_Battle.prototype.battlerScreenPoint = function (battler) {
+    if (!battler) return null;
+    let p = this.getBattlerPartPosition
+      ? this.getBattlerPartPosition(battler, battler._fxLastHitPart)
+      : null;
+    if (!p && this.getBattlerPartPosition) p = this.getBattlerPartPosition(battler, null);
+    if (!p) {
+      const sprite = this.findTargetSprite(battler);
+      if (!sprite) return null;
+      p = { x: sprite.x, y: sprite.y - (sprite.height || 120) / 2 };
+    }
+    const field = this._battleField;
+    return { x: p.x + (field ? field.x : 0), y: p.y + (field ? field.y : 0) };
+  };
+
+  /**
+   * Draw the blow `weapon` just landed on `target`. The line of the hit runs
+   * from the hand the weapon is held in to wherever the target stands, which
+   * is what a shot or a thrust is drawn along.
+   */
+  Spriteset_Battle.prototype.playWeaponHitFX = function (weapon, target, opts) {
+    if (!window.WeaponHitFX || !weapon) return;
+    const point = this.battlerScreenPoint(target);
+    if (!point) return;
+    const handX = getScaledWeaponX(!!(opts && opts.leftHand));
+    const handY = getScaledWeaponY();
+    const angle = Math.atan2(-(point.y - handY), point.x - handX);
+    // The blow is drawn on the beat of the swing that is playing and along the
+    // line that swing sweeps, so the trail follows the weapon rather than
+    // appearing beside it.
+    const hand = (opts && opts.leftHand) ? 'left' : 'right';
+    const sprite = this._3dWeaponSprites && this._3dWeaponSprites[hand];
+    const strike = (sprite && sprite.strikeInfo) ? sprite.strikeInfo() : null;
+    // No clip resolved yet (the model or the keyframe table is still loading):
+    // the blow still waits roughly the time a swing takes to arrive rather
+    // than flashing on the frame the action started.
+    const delay = strike ? strike.delay : DEFAULT_STRIKE_DELAY;
+    window.WeaponHitFX.play(weapon, point, Object.assign({
+      angle: angle,
+      motionAngle: strike ? strike.angle : undefined,
+      delay: delay
+    }, opts || {}));
   };
 
   // Add helper method to find enemy sprite
@@ -1379,21 +1559,31 @@
         if (aimPoint === undefined) aimPoint = this.weaponAimPoint();
         spr._aimPoint = aimPoint;
         spr.update();
-        if (spr._model && spr._model.visible) {
+        // A stroke still fading counts as something to draw: the weapon may
+        // already be out of frame behind its own trail.
+        if ((spr._model && spr._model.visible) ||
+            (spr.trailActive && spr.trailActive())) {
           anyModelVisible = true;
         }
       }
+    }
+    // The impact effects live in the same overlay scene and are stepped here,
+    // so a hit keeps playing on a frame where no weapon is held.
+    let fxActive = false;
+    if (window.WeaponHitFX) {
+      window.WeaponHitFX.update();
+      fxActive = window.WeaponHitFX.active();
     }
     // Batch the shared three.js overlay render once per frame (formerly done
     // per weapon instance inside each Sprite_3DWeapon.update). Only render when
     // at least one weapon model is visible, plus one last pass on the frame the
     // last one goes: the overlay canvas keeps whatever was drawn into it, so
     // without it a faded-out weapon would stay painted over the battle.
-    if ((anyModelVisible || this._weaponOverlayDrawn) && window.WeaponThreeScene &&
+    if ((anyModelVisible || fxActive || this._weaponOverlayDrawn) && window.WeaponThreeScene &&
         typeof window.WeaponThreeScene.render === 'function') {
       window.WeaponThreeScene.render();
     }
-    this._weaponOverlayDrawn = anyModelVisible;
+    this._weaponOverlayDrawn = anyModelVisible || fxActive;
   };
   //=============================================================================
   // Scene_Battle - Command Handling and Updates

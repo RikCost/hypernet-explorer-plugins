@@ -986,8 +986,11 @@
     return biomeCategory !== "road";
   }
 
-  // Driving move speed by biome: fast highways, slower town traffic.
+  // Driving move speed by biome: fast highways, slower town traffic, super speed during waiting.
   function drivingSpeedForBiome() {
+    if (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._isWaitingFastForward) {
+      return 5.5;
+    }
     return biomeCategory === "road" ? CAR_SPEED_ROAD : CAR_SPEED_CITY;
   }
 

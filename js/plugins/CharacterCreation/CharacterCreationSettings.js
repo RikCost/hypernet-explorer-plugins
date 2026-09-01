@@ -53,6 +53,9 @@
       // only covers a config that never had one.
       if (ConfigManager.enemySpawnMode === undefined) ConfigManager.enemySpawnMode = 0;
       if (ConfigManager.dialogueMode === undefined) ConfigManager.dialogueMode = 'empathize';
+      // The look every 3D scene wears; PSXShader.js and the options menu
+      // share this key and its snapvertex default.
+      if (ConfigManager.retroShaderMode === undefined) ConfigManager.retroShaderMode = 'snapvertex';
 
       if (window.$gameSystem && $gameSystem._difficultyMode === undefined) {
         if ($gameSystem._bloodAndOilMode) {
@@ -317,6 +320,37 @@
           },
           next() { this._apply(window.EnemyBattlerModes.step(this.currentIndex, 1)); },
           prev() { this._apply(window.EnemyBattlerModes.step(this.currentIndex, -1)); },
+        },
+        {
+          // Which look every three.js viewport wears (PSXShader.js). Mirrors
+          // Options > Shader > Shader Style, which owns the very same
+          // ConfigManager.retroShaderMode and can still change it later; it is
+          // asked here because it decides how the whole game looks in 3D from
+          // the first battle on.
+          key: 'retroShaderMode',
+          label: T('GameOptions.label.shaderStyle'),
+          get _values() { return ['off', 'snapvertex', 'pixelart']; },
+          get _modes() {
+            return this._values.map(v => T('GameOptions.shaderMode.' + v));
+          },
+          get description() {
+            const states = T.list('GameOptions.descState.shaderStyle');
+            return states[this.currentIndex] || '';
+          },
+          get currentIndex() {
+            const i = this._values.indexOf(ConfigManager.retroShaderMode);
+            return i >= 0 ? i : this._values.indexOf('snapvertex');
+          },
+          get currentLabel() { return this._modes[this.currentIndex] || this._modes[0] || ''; },
+          _changeBy(delta) {
+            const values = this._values;
+            const next = values[(this.currentIndex + delta + values.length) % values.length];
+            ConfigManager.retroShaderMode = next;
+            if (window.RetroShader) window.RetroShader.setMode(next);
+            ConfigManager.save();
+          },
+          next() { this._changeBy(1); },
+          prev() { this._changeBy(-1); },
         },
         {
           // Still a work in progress (hence the label), so it sits low on the

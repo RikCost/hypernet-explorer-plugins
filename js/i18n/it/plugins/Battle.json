@@ -79,20 +79,6 @@
     ]
   },
   "unknownMap": "Mappa sconosciuta",
-  "healthProtection": {
-    "messages": [
-      "{actor} ha evitato la morte per un soffio!",
-      "{actor} è stato salvato da un intervento divino!",
-      "{actor} si è aggrappato alla vita con ostinazione!",
-      "{actor} si è rifiutato di arrendersi!",
-      "{actor} è sopravvissuto per pura forza di volontà!",
-      "{actor} è stato protetto dal destino!"
-    ],
-    "reset": "Protezione vitale ripristinata per tutti i personaggi!",
-    "available": "Disponibile",
-    "used": "Usata",
-    "status": "{actor}: protezione {status}"
-  },
   "popup": {
     "miss": "Mancato",
     "evaded": "Schivato"

@@ -62,6 +62,18 @@
     const CAVE_RADIUS   = 3;   // tiles streamed while underground (surface: 5)
     const CAVE_DRAW_R   = 1;   // ...and how many of them are actually drawn
 
+    // How long a frame may spend meshing patches.
+    //
+    // A patch measures 2.5 ms of ordinary ground and 4 ms of cave against the
+    // real mesher, and the clock is only checked BETWEEN patches - so the worst
+    // a frame can cost is this plus one patch. Three milliseconds lands the
+    // worst frame at nine on the surface and fourteen underground, against
+    // seventy-five and a hundred and thirty when a tile was one indivisible
+    // job. Raising it does not empty the queue any sooner (the queue is a
+    // burst of forty-eight patches every twenty frames, and it drains inside
+    // that either way); it only makes the worst frame worse.
+    const DRAIN_MS = 3;
+
     // =========================================================================
     // VoxelTerrain
     // =========================================================================
@@ -99,9 +111,41 @@
         // around the camera, which is the price of not carrying the caves about
         // above ground - and it is paid once, on the way in and on the way out.
         setCavesVisible(on) {
-            this._caves = false;
+            const want = !!on;
+            if (this._caves === want) return;
+            this._caves = want;
+            // The streaming radius shrinks the moment the party is inside the
+            // rock and opens back out when they climb into the daylight (see
+            // CAVE_RADIUS): meshing a passage cube by cube out to five tiles is
+            // what a cave used to cost, and none of it could be seen.
+            this._radius = want ? CAVE_RADIUS : 5;
+
+            // Every full-detail tile is meshed again, because whether its
+            // passages are drawn has just changed - but it is QUEUED, not
+            // thrown away. Clearing the chunks outright left the party in an
+            // empty world for the best part of three seconds every time they
+            // walked into a cave or out of one: the nine-tile full-detail ring
+            // is some 880 ms of meshing, and it was being rebuilt from nothing
+            // at a few milliseconds a frame with nothing on screen meanwhile.
+            // Re-meshing in place keeps the old geometry up until the new
+            // geometry replaces it, patch by patch.
+            for (const ch of this._chunks.values()) {
+                if (ch.step !== 1) continue;
+                for (let sj = 0; sj < VOX.SUB; sj++) {
+                    for (let si = 0; si < VOX.SUB; si++) {
+                        this._dirty.add(ch.wx + ',' + ch.wy + ',' + si + ',' + sj);
+                    }
+                }
+                // ...and what is standing in its passages, which no tile built
+                // in the daylight has.
+                this._dressCave(ch);
+            }
+            this._pendingBuilds = true;
+            // The ring the streaming loop keeps is a different size now, so the
+            // "nothing has moved" early-out must not hold it at the old one.
+            this._lastCwx = this._lastCwy = undefined;
         }
-        cavesVisible() { return false; }
+        cavesVisible() { return this._caves; }
 
         // ---------------------------------------------------------------------
         // The height every other system asks for, in tile coordinates, exactly
@@ -284,9 +328,15 @@
             const cwx = Math.floor(camperX / this._ts);
             const cwy = Math.floor(camperZ / this._ts);
 
-            // Re-mesh anything a dig touched first: a hole the player is still
-            // looking at matters more than a tile on the horizon.
-            this._drainDirty(buildAll ? 64 : 2);
+            // Re-mesh anything waiting first: a hole the player is still looking
+            // at matters more than a tile on the horizon, and the patches of a
+            // tile just streamed in are what the ground round them is made of.
+            //
+            // This is where nearly all the meshing in the world now happens, so
+            // it gets nearly all of the frame's build time: several patches a
+            // frame while there is room for them, and never more than one patch
+            // past the budget.
+            this._drainDirty(buildAll ? 4096 : 8, buildAll ? Infinity : DRAIN_MS);
 
             if (!buildAll && cwx === this._lastCwx && cwy === this._lastCwy &&
                 this._radius === this._lastRadius && !this._pendingBuilds) {
@@ -324,23 +374,29 @@
             // The budget is in patches and execution time: a full-detail tile is sixteen
             // twenty-five column patches and a far one is a fraction of one.
             // Using a strict millisecond budget alongside patch credits guarantees smooth 60 FPS.
+            //
+            // A full-detail tile's SHELL is cheap now - its scenery and its
+            // streetlights, no meshing at all - because its sixteen patches go
+            // on the dirty queue instead (see _buildChunk). What is still worth
+            // rationing here is that scenery: a settled square plans a town and
+            // instances every sprite on it.
             const isDriving = hasDir && dirLen > 0.5;
             const credits = buildAll ? Infinity
                 : Math.max(1, (this._lodMode ? 12 : this._buildBudget)) * (isDriving ? 6 : 4);
             const maxMs = buildAll ? Infinity : (this._lodMode ? 7.0 : (isDriving ? 6.5 : 5.0));
-            const tStart = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+            const clock = () => ((typeof performance !== 'undefined') ? performance.now() : Date.now());
+            const tStart = clock();
             let spent = 0, built = 0;
             for (const job of needed) {
-                if (built > 0) {
-                    const now = (typeof performance !== 'undefined') ? performance.now() : Date.now();
-                    if (now - tStart >= maxMs || spent >= credits) break;
-                }
+                if (built > 0 && (clock() - tStart >= maxMs || spent >= credits)) break;
                 spent += this._chunkCost(job.step);
                 built++;
                 if (job.rebuild) this._disposeChunk(job.key);
-                this._chunks.set(job.key, this._buildChunk(job.wx, job.wy, job.step));
+                // Behind a transition the whole neighbourhood is meshed on the
+                // spot: the fade must not lift on a world with no ground in it.
+                this._chunks.set(job.key, this._buildChunk(job.wx, job.wy, job.step, buildAll));
             }
-            this._pendingBuilds = needed.length > built;
+            this._pendingBuilds = needed.length > built || this._dirty.size > 0;
 
             for (const [key, ch] of this._chunks) {
                 if (Math.abs(ch.wx - cwx) > this._radius + 2 ||
@@ -370,7 +426,29 @@
         // ---------------------------------------------------------------------
         // Chunk building
         // ---------------------------------------------------------------------
-        _buildChunk(wx, wy, step) {
+        // A tile is NOT meshed here any more, and that is the whole point.
+        //
+        // A full-detail tile is sixteen patches and costs 41 ms to mesh on the
+        // surface and 98 ms with the caves on. The streaming loop's time budget
+        // could not touch any of it, because a tile was one indivisible job: it
+        // checked the clock BETWEEN jobs, and the first job of a frame runs
+        // unconditionally. So every time the camera crossed into a new square
+        // the frame that noticed paid the whole tile - a four to eight frame
+        // freeze, once per square, for as long as anybody kept driving.
+        //
+        // One patch is 2.5 ms (4 ms with caves), which fits inside the budget
+        // several times over. So the shell of the tile is built here - its
+        // group, its scenery, its streetlights - and the sixteen patches go on
+        // the same dirty queue a dig uses, to be drained a few milliseconds at
+        // a time (see _drainDirty). Nothing about the world's SHAPE waits on
+        // that: heights, collision and raycasts all come from the field, not
+        // from the mesh, so a patch that has not been drawn yet is a patch you
+        // can still stand on.
+        //
+        // `now` forces the old behaviour, for the one case that needs it: the
+        // scene builds its whole neighbourhood up front behind a transition,
+        // and that must be finished before the fade lifts.
+        _buildChunk(wx, wy, step, now) {
             const ts    = this._ts;
             const biome = sampleBiomeAt(wx, wy);
             const type  = getRenderType(biome.name);
@@ -383,8 +461,12 @@
             if (step === 1) {
                 // Sixteen patches, so a dig re-meshes one of them.
                 for (let sj = 0; sj < VOX.SUB; sj++) {
-                    for (let si = 0; si < VOX.SUB; si++) this._buildSub(ch, si, sj);
+                    for (let si = 0; si < VOX.SUB; si++) {
+                        if (now) this._buildSub(ch, si, sj);
+                        else this._dirty.add(wx + ',' + wy + ',' + si + ',' + sj);
+                    }
                 }
+                if (!now) this._pendingBuilds = true;
             } else {
                 const n = Math.max(1, Math.round(VOX.PER_TILE / step));
                 // Far chunks are drawn in blocks several voxels across; a
@@ -403,12 +485,56 @@
             // tile is scattered on its SURFACE, which is the one part of the
             // world nobody in a cave can see. Decorating the ring down there was
             // most of what a cave cost and none of what it showed.
-            if (type !== 'road' && type !== 'water' && !this._lodMode && !this._caves) {
-                this._decorator.decorate(grp, wx, wy, biome, ts, (gx, gz) => this.getTerrainHeight(gx, gz));
+            // Water is no longer skipped: the bed of the sea is furnished like
+            // anywhere else, and the rare island standing out of it is dressed
+            // and lived on. Only the near, full-detail ring pays for it - a weed
+            // on the sea floor cannot be seen from the surface, let alone from
+            // three tiles off - so it is gated on the LOD step as well.
+            const wet = (type === 'water');
+            if (type !== 'road' && !this._lodMode && !this._caves &&
+                (!wet || step === 1)) {
+                this._decorator.decorate(grp, wx, wy, biome, ts,
+                    (gx, gz) => this.getTerrainHeight(gx, gz),
+                    (x, z) => this.waterSurfaceAt(x, z));
             }
+
+            this._dressCave(ch);
 
             this._scene.add(grp);
             return ch;
+        }
+
+        // What stands in the passages of a tile. Underground the SURFACE is not
+        // decorated at all - there is nothing of it to see through the rock, and
+        // decorating the ring down there was most of what a cave cost and none
+        // of what it showed - so this is the whole of what a cave is furnished
+        // with, and it goes down once per tile.
+        //
+        // Split out of _buildChunk because the caves are switched on and off
+        // under tiles that are already built (see setCavesVisible): those tiles
+        // are re-meshed in place rather than thrown away now, so something has
+        // to dress them that is not the constructor.
+        _dressCave(ch) {
+            if (!this._caves || ch.step !== 1 || ch.dressed) return;
+            const D = this._decorator;
+            if (!D || !D._scatterCaveChests) return;
+            ch.dressed = true;
+            const floorAt = (x, z) => {
+                const span = this.field.caveSpan(
+                    Math.floor(x / VOX.SIZE), Math.floor(z / VOX.SIZE));
+                if (!span) return null;
+                // The floor of the LOWEST passage in the column, which is where
+                // a chest would have been put down and left. Absolute, like
+                // every other scattered thing: a chunk group sits at y = 0 and
+                // only its x/z are the tile's.
+                const y = this.field.supportY(x, z, (span.lo + 1) * VOX.SIZE);
+                return (y == null || !isFinite(y)) ? null : y;
+            };
+            D._scatterCaveChests(ch.grp, ch.wx, ch.wy, this._ts, floorAt);
+            if (D._scatterCaveScenery) {
+                D._scatterCaveScenery(ch.grp, ch.wx, ch.wy, this._ts, floorAt,
+                    sampleBiomeAt(ch.wx, ch.wy));
+            }
         }
 
         _buildSub(ch, si, sj) {
@@ -473,6 +599,21 @@
             ch.grp.traverse(o => { if (o.geometry) o.geometry.dispose(); });
             ch.subs.clear();
             this._chunks.delete(key);
+            // Anything still queued for it is queued for a tile that no longer
+            // exists. _drainDirty would skip those entries anyway, but a tile
+            // streamed out and back in at a different detail level would leave
+            // sixteen of them behind every time, and the queue is walked in
+            // order: the dead entries would sit in front of the live ones.
+            this._dropDirty(key);
+        }
+
+        // Forget every patch queued for one tile.
+        _dropDirty(key) {
+            if (!this._dirty.size) return;
+            const prefix = key + ',';
+            for (const k of this._dirty) {
+                if (k.startsWith(prefix)) this._dirty.delete(k);
+            }
         }
 
         _clearChunks() {
@@ -505,20 +646,36 @@
             }
         }
 
-        _drainDirty(budget) {
+        // Work the queue of patches waiting to be meshed: the ones a dig
+        // touched, and every patch of every tile that has just been streamed in
+        // (see _buildChunk).
+        //
+        // Bounded by TIME as well as by count. The count alone could not bound
+        // it: a patch is 2.5 ms of ordinary ground and 4 ms of cave, but a
+        // wholesale '*' entry is a whole tile, and two of those in a frame is
+        // eighty milliseconds. The clock is checked between patches, so the
+        // worst a frame can overrun by is one patch.
+        _drainDirty(budget, maxMs) {
             if (!this._dirty.size) return;
-            let n = budget;
+            const clock = () => ((typeof performance !== 'undefined') ? performance.now() : Date.now());
+            const tStart = clock();
+            const cap = maxMs === undefined ? Infinity : maxMs;
+            let n = budget, done = 0;
             for (const key of this._dirty) {
                 if (n-- <= 0) break;
+                if (done > 0 && clock() - tStart >= cap) break;
+                done++;
                 this._dirty.delete(key);
                 const [sx, sy, si, sj] = key.split(',');
                 const ch = this._chunks.get(sx + ',' + sy);
                 if (!ch) continue;
                 if (ch.step !== 1 || si === '*') {
                     // Coarse or wholesale: rebuild the tile at its current step.
+                    // Meshed on the spot rather than re-queued - this is the one
+                    // path that means "this whole tile is wrong now".
                     const step = ch.step;
                     this._disposeChunk(sx + ',' + sy);
-                    this._chunks.set(sx + ',' + sy, this._buildChunk(Number(sx), Number(sy), step));
+                    this._chunks.set(sx + ',' + sy, this._buildChunk(Number(sx), Number(sy), step, true));
                 } else {
                     this._buildSub(ch, Number(si), Number(sj));
                 }

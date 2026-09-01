@@ -218,6 +218,10 @@
     visitPlace: "Select",
     wait: "L3",
     zoom: "L2 / R2",
+    stick: "Left stick",
+    look: "Right stick",
+    dig: "R1",
+    barMode: "L2",
   };
   // i18n-ignore-end
 
@@ -280,6 +284,43 @@
       key: "Z / Enter", mouseKey: "MapLegend.controls.leftClick", pad: PAD.ok,
     },
     { id: "procReturn", labelKey: "MapLegend.controls.returnToWorld", key: "T", pad: PAD.visitPlace },
+  ];
+
+  // The 3D world (the VoxelWorld suite) is not a map at all: it is a DOM
+  // overlay laid over whatever map the party was standing on, so it has no map
+  // id to be recognised by and is asked for by name instead. Nothing it answers
+  // to is anything the 2D ground taught - the party walk with the mouse in
+  // their hand, the ground comes apart, and the quick bar along the bottom is
+  // three bars behind one key - so it carries a sheet of its own.
+  //
+  // What it teaches is what a walker cannot get out of the world without:
+  // moving, breaking and building, the three bars, and the way back to 315.
+  // The controls that are the same as anywhere else (the party menu on Esc)
+  // are left off: a sheet is worth reading only while everything on it is new.
+  const VOXEL_CONTROLS = [
+    { id: "voxWalk", labelKey: "MapLegend.controls.voxWalk", key: "W A S D", pad: PAD.stick },
+    { id: "voxLook", labelKey: "MapLegend.controls.voxLook", keyKey: "MapLegend.controls.moveMouse", pad: PAD.look },
+    { id: "voxJump", labelKey: "MapLegend.controls.voxJump", key: "Space", pad: PAD.ok },
+    { id: "voxRun", labelKey: "MapLegend.controls.voxRun", keyKey: "MapLegend.controls.holdShift", pad: PAD.run },
+    {
+      id: "voxDig", labelKey: "MapLegend.controls.voxDig",
+      keyKey: "MapLegend.controls.holdLeftClick", pad: PAD.dig,
+    },
+    { id: "voxPlace", labelKey: "MapLegend.controls.voxPlace", key: "G", keyboardOnly: true },
+    {
+      id: "voxBar", labelKey: "MapLegend.controls.voxBar",
+      key: "Tab", pad: PAD.barMode,
+    },
+    {
+      id: "voxSlot", labelKey: "MapLegend.controls.voxSlot", key: "1 - 9",
+      padLabelKey: "MapLegend.controls.hotbarCycle", pad: PAD.hotbarStep,
+    },
+    // E has no button of its own out there, so like the menu hotkeys on the
+    // tutorial ground it is taught to the keys alone rather than asked of a
+    // player holding a pad.
+    { id: "voxInteract", labelKey: "MapLegend.controls.voxInteract", key: "E", keyboardOnly: true },
+    { id: "voxMap", labelKey: "MapLegend.controls.voxMap", key: "M", pad: PAD.openMap },
+    { id: "voxReturn", labelKey: "MapLegend.controls.returnToWorld", key: "T", pad: PAD.visitPlace },
   ];
 
   //===========================================================================
@@ -525,6 +566,19 @@
     return $gameMap.mapId() === proceduralMapId();
   }
 
+  // The 3D world stands on the same terms as the world map and the generated
+  // ground: walking into it during the tutorial is enough to bring the sheet
+  // up, and it is gone for good once every row has been used once. It is asked
+  // for by name rather than by map id because it has none: the world is a DOM
+  // overlay over whatever map the party walked out of.
+  function voxelRowsVisible() {
+    if (!$gameSystem) return false;
+    if (!tutorialMode()) return false;
+    if ($gameSystem._voxelControlsSeen) return false;
+    const VWS = window.VoxelWorldSystem;
+    return !!(VWS && VWS.isActive && VWS.isActive());
+  }
+
   function proceduralMapId() {
     const wmt = window.WorldMapTransfer;
     return (wmt && wmt.procMapId) || PROCEDURAL_MAP_ID;
@@ -535,7 +589,8 @@
       {},
       ($gameSystem && $gameSystem._tutorialControlsLit) || {},
       ($gameSystem && $gameSystem._worldMapControlsLit) || {},
-      ($gameSystem && $gameSystem._proceduralControlsLit) || {}
+      ($gameSystem && $gameSystem._proceduralControlsLit) || {},
+      ($gameSystem && $gameSystem._voxelControlsLit) || {}
     );
   }
 
@@ -547,6 +602,7 @@
     $gameSystem._tutorialControlsLit = litSubset(lit, TUTORIAL_CONTROLS);
     $gameSystem._worldMapControlsLit = litSubset(lit, WORLD_MAP_CONTROLS);
     $gameSystem._proceduralControlsLit = litSubset(lit, PROCEDURAL_CONTROLS);
+    $gameSystem._voxelControlsLit = litSubset(lit, VOXEL_CONTROLS);
     SoundManager.playCursor();
     return true;
   }
@@ -565,6 +621,10 @@
 
   function visibleRows() {
     const rows = [];
+    // The 3D world is the only thing on screen while it is up, and its own
+    // rows are the only ones that mean anything in it: the walking rows below
+    // are about a 2D map nobody is standing on.
+    if (voxelRowsVisible()) return rowsFor(VOXEL_CONTROLS);
     if (coreRowsVisible()) rows.push(...rowsFor(TUTORIAL_CONTROLS));
     if (proceduralRowsVisible()) rows.push(...PROCEDURAL_CONTROLS);
     if (worldRowsVisible()) rows.push(...WORLD_MAP_CONTROLS);
@@ -1056,6 +1116,9 @@
     if (proceduralRowsVisible() && listComplete(PROCEDURAL_CONTROLS) && $gameSystem) {
       $gameSystem._proceduralControlsSeen = true;
     }
+    if (voxelRowsVisible() && listComplete(VOXEL_CONTROLS) && $gameSystem) {
+      $gameSystem._voxelControlsSeen = true;
+    }
   }
 
   //===========================================================================
@@ -1197,6 +1260,8 @@
     WORLD_MAP_CONTROLS,
     PROCEDURAL_CONTROLS,
     PROCEDURAL_MAP_ID,
+    VOXEL_CONTROLS,
+    voxelRowsVisible,
     ERRAND_COMMON_EVENT_ID,
     ERRAND_STEPS,
     updateTutorialErrand,
@@ -1237,6 +1302,19 @@
     tutorialMode,
     isFolded,
     toggleFold,
+
+    // The 3D world reads its own keyboard and its own mouse (it is a DOM
+    // overlay, and Input never sees most of what is pressed in it), so it
+    // lights its rows by name instead of the sheet reading the keys. Ignored
+    // wherever the row is not one of the ones standing.
+    markControl(id) {
+      if (!voxelRowsVisible()) return false;
+      const known = VOXEL_CONTROLS.some((entry) => entry.id === id);
+      if (!known) return false;
+      const lit = markLit(id);
+      if (lit) retireCompletedLists();
+      return lit;
+    },
 
     refresh() { sheet.destroy(); updateLegend(); },
     hide() { sheet.hide(); },

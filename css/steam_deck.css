@@ -1,0 +1,4772 @@
+/* ==========================================================================
+   HANDHELD / STEAM DECK OVERRIDES
+   --------------------------------------------------------------------------
+   Everything in this game that is sized for a desk and has to be re-sized for
+   a 1280x800 handheld panel. It used to be one block at the foot of
+   css/theme.css plus a re-stated half in each of the theme token files; both
+   are now here, and every new handheld rule belongs here too rather than
+   beside the desktop rule it corrects.
+
+   WHY IT IS A FILE OF ITS OWN, LOADED LAST
+   index.html links this after css/game.css, css/theme.css and
+   css/hypernet.css, so at equal specificity these rules win on source order
+   against all three, and against both theme presets (css/themes/*.css arrive
+   via the @import at the head of theme.css, so they are earlier still). Where
+   the rule being corrected is itself `!important`, the override repeats
+   `!important` and wins on order again. It is NOT pulled in with an @import:
+   @import has to precede every rule in its file, which would put this stylesheet
+   *before* the rules it exists to beat.
+
+   THE BREAKPOINT
+   The Steam Deck's native 1280x800 panel, with headroom for the 1366x768
+   laptops and the smaller handhelds in the same class. It must be kept in step
+   with HANDHELD_MAX_W / HANDHELD_MAX_H in Core/GameOptions.js: that plugin
+   switches to a 1400x880 design box at exactly this size, and this file is what
+   makes a menu fit that smaller box.
+
+   WHY COMPACTION RATHER THAN ONLY BIGGER TYPE
+   On a Deck the whole panel is scaled down to fit the screen, so type authored
+   bigger is then shrunk by the same amount and nothing is gained. Reclaiming
+   space from the chrome -- page margins, card padding, gaps, header rules --
+   lets the panel be scaled down less (0.91 rather than 0.82), and it is that
+   reduced downscale, on top of the raised per-rule sizes, that puts real pixels
+   behind the text. So the order inside every block below is space first, then
+   the type floors that the reclaimed space pays for.
+
+   HOW TO ADD A MENU
+   One @media block per plugin, headed by the plugin path, holding only the
+   selectors that plugin actually authors. Read the desktop values first: a
+   handheld rule that is not smaller than what it replaces is dead weight, and
+   one that is smaller than the desktop rule but loses to it on specificity
+   (a `#container .thing` beating a bare `.thing`) is worse, because it reads as
+   done. Where the desktop rule is scoped, scope the override the same way.
+
+   TWO PLACES THIS FILE CANNOT REACH
+   Source order is the whole of its authority, so anything that arrives later
+   in the document beats it at equal specificity, and there are two such things.
+   A stylesheet a plugin appends at runtime: css/vending_machine.css is the only
+   one, linked by RealisticVendingMachine.loadStylesheet, and it carries its own
+   handheld block at the shared breakpoint for exactly this reason. And a
+   <style> element a plugin injects: nine plugins do this, but the layout in
+   them is either computed from the viewport already (the HyperDeck chip lab
+   sizes its palette, bar and type off the rect it is handed) or is a badge and
+   a shimmer, so none of it wants a handheld rule today. If one ever does, the
+   rule belongs in that plugin, not here.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   THE SHARED SPREAD, THE POCKETS LIST AND CHARACTER CREATION
+   --------------------------------------------------------------------------
+   The furniture every parchment menu is built out of: the two pages of the
+   book spread and their margins, the command rows of the pockets list, the
+   cards on the right page. Compacting them here is what buys the reduced
+   downscale described at the head of this file, so it comes first and every
+   per-plugin block below is spending what this block reclaimed.
+
+   Character creation follows in the same block: it is the one flow with a
+   full per-step calibration for 1280x800 (the tab bar, the sidebar, the grids,
+   the modals and the detail cards), because it is where a new player meets the
+   game and it is authored as its own layout rather than on the spread.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* --- Page margins. The single biggest reserve: 35/50 a side around both
+           pages of every spread, ~100px of width and 70px of height per menu. */
+    .left-page {
+        padding: 20px 28px 20px 26px;
+    }
+
+    .right-page {
+        padding: 20px 26px 20px 28px;
+    }
+
+    /* The spread's frame is decoration, and 6px of double border plus the inset
+       outline is 12px off each axis at a size where that matters. */
+    .book-spread,
+    .cc-pockets-spread,
+    #thinker-container .book-spread,
+    #blacksmith-container .book-spread,
+    .save-book-spread,
+    .shop-spread,
+    .mp-spread,
+    .travel-book-spread,
+    .stock-spread,
+    .mp-type-spread {
+        border-width: 3px;
+        outline-offset: -5px;
+    }
+
+    /* --- Pockets list: the main menu's own rows (the Backpack / Status /
+           Equip grid) and the icon standing at the head of each. */
+    .command-item {
+        padding: 3px 6px;
+    }
+
+    .command-item .icon {
+        --icon-size: 21px;
+        margin-right: 5px;
+    }
+
+    /* --- Right page: the actor card and the readings stacked under it. */
+    .status-card,
+    .save-details-card,
+    .inspect-lore {
+        padding: 8px 10px;
+    }
+
+    /* --- Character creation: Complete Steam Deck (1280x800) Revision ---
+           Full responsive calibration for all steps of character creation so the
+           spread, sidebar, tab bar, grids, modals, and detail cards fit the
+           Steam Deck 1280x800 resolution with optimal spacing and crisp readability. */
+
+    /* 1. Top Folder Tabs Bar */
+    .cc-dossier-top-bar {
+        height: 40px;
+        padding: 0 12px;
+    }
+
+    .cc-folder-tabs-left,
+    .cc-folder-tabs-right {
+        gap: 4px;
+    }
+
+    .cc-folder-tab {
+        padding: 5px 10px;
+        font-size: 0.82rem;
+        gap: 5px;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .cc-folder-tab .cc-tab-portrait {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+    }
+
+    .cc-folder-tab .cc-tab-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .cc-tab-done-mark {
+        font-size: 0.7rem;
+    }
+
+    .cc-tab-remove-x {
+        width: 12px;
+        height: 12px;
+        font-size: 0.58rem;
+        margin-left: 3px;
+    }
+
+    .cc-tab-add-plus {
+        padding: 4px 8px;
+        font-size: 0.95rem;
+    }
+
+    /* 2. Dossier Main Container & Center Spine */
+    .cc-pockets-spread::after {
+        width: 14px;
+    }
+
+    /* 3. Compact Dossier Sidebar (Scaled from 440px to 320px for 1280px screen width) */
+    .cc-compact-sidebar {
+        width: 320px;
+        min-width: 300px;
+        max-width: 330px;
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .cc-compact-sidebar-body {
+        gap: 6px;
+    }
+
+    .cc-compact-identity-card {
+        padding: 6px 8px;
+        gap: 4px;
+    }
+
+    .cc-compact-avatar-wrap {
+        width: 42px;
+        height: 42px;
+    }
+
+    .cc-compact-avatar {
+        width: 38px;
+        height: 38px;
+    }
+
+    .cc-bio-identity {
+        padding: 2px 0 4px 0;
+        gap: 6px;
+    }
+
+    .cc-bio-identity-name {
+        font-size: 0.95rem;
+    }
+
+    .cc-bio-identity-class {
+        font-size: 0.78rem;
+    }
+
+    /* Portrait scaled from 320px to 185px height to fit within 800px vertical bounds */
+    .cc-compact-bust-full {
+        height: 185px;
+    }
+
+    .cc-dossier-large-bust {
+        width: 120px;
+        height: 150px;
+    }
+
+    .cc-compact-portrait-controls {
+        padding: 4px 6px;
+        gap: 4px;
+    }
+
+    .cc-compact-toggle-row {
+        gap: 4px;
+    }
+
+    .cc-compact-toggle-btn {
+        padding: 4px 6px;
+        font-size: 0.78rem;
+    }
+
+    .cc-compact-edit-btn {
+        padding: 4px 6px;
+        font-size: 0.78rem;
+        gap: 4px;
+    }
+
+    .cc-compact-type-pills {
+        gap: 4px;
+    }
+
+    .cc-compact-type-pill {
+        padding: 4px 5px;
+        font-size: 0.76rem;
+    }
+
+    .cc-compact-loadout-grid {
+        max-height: 105px;
+        gap: 2px;
+        padding: 1px 0;
+    }
+
+    .cc-compact-loadout-grid .cc-compact-loadout-item {
+        padding: 2px;
+        font-size: 0.82rem;
+    }
+
+    .cc-compact-loadout-grid .cc-compact-loadout-item .cc-loadout-name {
+        font-size: 0.82rem;
+    }
+
+    .cc-compact-loadout-grid.cc-loadout-grid-cols {
+        gap: 2px 10px;
+    }
+
+    .cc-compact-loadout-grid.cc-loadout-grid-cols-3 {
+        gap: 2px 6px;
+    }
+
+    .cc-compact-loadout-grid.cc-loadout-grid-cols-3 .cc-compact-loadout-item .cc-loadout-name {
+        font-size: 0.78rem;
+    }
+
+    .cc-compact-actions {
+        gap: 4px;
+        padding-top: 4px;
+    }
+
+    .cc-compact-btn,
+    .cc-sidebar-btn {
+        padding: 5px 8px;
+        font-size: 0.84rem;
+        height: 32px;
+    }
+
+    .cc-stat-grid {
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+
+    .cc-stat-box {
+        padding: 3px 4px;
+    }
+
+    .cc-stat-label {
+        font-size: 0.65rem;
+    }
+
+    .cc-stat-val {
+        font-size: 0.82rem;
+    }
+
+    /* 4. Spread Pages & Layout Metrics */
+    .cc-page,
+    .cc-page-left,
+    .cc-page-right,
+    .cc-pockets-spread .cc-page {
+        padding: 10px 14px;
+    }
+
+    .cc-dossier-card,
+    .cc-card-option,
+    .cc-party-card,
+    .cc-bust-card {
+        padding: 6px 8px;
+    }
+
+    .cc-categories-list,
+    .cc-presets-board {
+        gap: 6px;
+    }
+
+    .cc-header-gothic {
+        font-size: 1.45rem;
+        margin: 0 0 8px 0;
+        padding-bottom: 4px;
+    }
+
+    .cc-subheader {
+        font-size: 1.12rem;
+        margin-bottom: 6px;
+        padding-bottom: 3px;
+    }
+
+    .cc-weapon-slots {
+        font-size: 0.92rem;
+        margin: -4px 0 6px 0;
+    }
+
+    .cc-text-desc {
+        font-size: 0.9rem;
+        line-height: 1.35;
+        margin-bottom: 10px;
+    }
+
+    .cc-dossier-card {
+        padding: 6px 4px;
+        margin-bottom: 6px;
+    }
+
+    .cc-dossier-grid {
+        gap: 4px 14px;
+    }
+
+    .cc-dossier-grid.cc-loadout-grid {
+        gap: 0 14px;
+        margin-top: 4px;
+    }
+
+    .cc-dossier-row {
+        font-size: 0.88rem;
+        margin-bottom: 4px;
+        padding-bottom: 2px;
+    }
+
+    .cc-card-tight {
+        padding: 6px 8px;
+        margin-bottom: 6px;
+    }
+
+    .cc-card-tight .cc-subheader {
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+        padding-bottom: 2px;
+    }
+
+    .cc-card-tight .cc-dossier-row {
+        font-size: 0.82rem;
+        margin-bottom: 2px;
+        padding-bottom: 1px;
+    }
+
+    /* 5. Name Input, Dice, & Trait Budget Bar */
+    .cc-step-single-page {
+        padding: 14px 20px;
+    }
+
+    .cc-name-input-group {
+        max-width: 380px;
+        margin: 8px auto 14px auto;
+        gap: 8px;
+    }
+
+    .cc-name-text-input {
+        padding: 6px 12px;
+        font-size: 1.15rem;
+    }
+
+    .cc-dice-btn {
+        padding: 6px 12px;
+        font-size: 1.1rem;
+    }
+
+    .cc-trait-budget-container {
+        padding: 6px 12px;
+        margin-bottom: 8px;
+    }
+
+    .cc-trait-budget-label {
+        font-size: 0.78rem;
+    }
+
+    .cc-trait-budget-val {
+        font-size: 1.15rem;
+    }
+
+    /* 6. Settings Mode (Initial Settings Screen) */
+    #character-creation-container .option-row {
+        padding: 8px 12px;
+    }
+
+    #character-creation-container .option-name {
+        font-size: 1.05rem;
+    }
+
+    #character-creation-container .option-status-toggle {
+        font-size: 0.92rem;
+    }
+
+    #character-creation-container .option-select-val {
+        min-width: 90px;
+        font-size: 0.92rem;
+    }
+
+    #character-creation-container .option-select .arrow-btn {
+        padding: 2px 6px;
+    }
+
+    .cc-settings-list {
+        gap: 6px;
+    }
+
+    .cc-settings-detail {
+        padding: 8px;
+    }
+
+    .cc-settings-detail-title {
+        font-size: 1.25rem;
+    }
+
+    .cc-settings-glyph {
+        font-size: 2.5rem;
+        margin: 8px 0;
+    }
+
+    .cc-settings-value {
+        font-size: 1.15rem;
+        margin: 4px 0;
+    }
+
+    .cc-settings-desc {
+        font-size: 0.92rem;
+        line-height: 1.35;
+        max-width: 28em;
+        margin-bottom: 6px;
+    }
+
+    .cc-settings-preview-img {
+        max-width: 320px;
+    }
+
+    .cc-settings-img-caption {
+        font-size: 0.92rem;
+        margin-top: 4px;
+        max-width: 320px;
+    }
+
+    .cc-settings-hint {
+        font-size: 0.84rem;
+        margin-top: 4px;
+    }
+
+    /* 7. Presets, Wanted Cards & Skin Selector */
+    .cc-presets-board {
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .cc-wanted-card {
+        padding: 8px 6px;
+        min-height: 115px;
+    }
+
+    .cc-wanted-sprite {
+        width: 36px;
+        height: 36px;
+        margin: 4px 0 6px;
+    }
+
+    .cc-wanted-name {
+        font-size: 1.05rem;
+        margin-bottom: 1px;
+    }
+
+    .cc-wanted-class {
+        font-size: 0.78rem;
+    }
+
+    .cc-presets-board .cc-wanted-card.cc-card-flat {
+        padding: 4px 8px;
+        gap: 6px;
+    }
+
+    .cc-card-flat .cc-wanted-name {
+        font-size: 0.95rem;
+    }
+
+    .cc-card-flat .cc-wanted-class {
+        font-size: 0.78rem;
+    }
+
+    .cc-roster-head {
+        font-size: 0.88rem;
+        margin: 6px 0 2px;
+        padding-bottom: 2px;
+    }
+
+    .cc-skins-row {
+        gap: 8px;
+        padding: 2px;
+    }
+
+    .cc-wanted-card.cc-skin-card {
+        width: 65px;
+        padding: 4px 3px 6px;
+    }
+
+    .cc-skin-name {
+        font-size: 0.76rem;
+    }
+
+    .cc-skins-hint {
+        font-size: 0.82rem;
+        margin-top: 6px;
+        gap: 5px;
+    }
+
+    /* 8. Class Selection Step */
+    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-class-board {
+        width: 54%;
+        flex: 1 1 54%;
+        padding: 10px 12px;
+        gap: 6px;
+    }
+
+    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-class-detail {
+        width: 46%;
+        flex: 1 1 46%;
+        padding: 10px 12px;
+        gap: 6px;
+    }
+
+    .cc-class-board-head .cc-subheader {
+        font-size: 1.1rem;
+    }
+
+    .cc-class-search {
+        height: 26px;
+        font-size: 0.85rem;
+        padding: 3px 6px;
+    }
+
+    .cc-select-grid.cc-class-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        padding: 2px 2px 10px 2px;
+    }
+
+    .cc-class-grid .cc-card-option.cc-class-card {
+        padding: 5px 7px;
+        gap: 1px;
+    }
+
+    .cc-class-grid .cc-class-card .cc-option-title {
+        font-size: 0.92rem;
+    }
+
+    .cc-class-detail-head .cc-header-gothic {
+        font-size: 1.25rem;
+    }
+
+    .cc-class-quote {
+        font-size: 0.8rem;
+        line-height: 1.25;
+    }
+
+    .cc-class-section {
+        padding: 4px 6px;
+        margin-bottom: 4px;
+    }
+
+    .cc-class-section .cc-subheader {
+        font-size: 0.84rem;
+        margin: 0 0 2px 0;
+    }
+
+    .cc-class-section .cc-dossier-row {
+        font-size: 0.8rem;
+    }
+
+    .cc-class-passive {
+        margin-top: 4px;
+        padding-top: 4px;
+    }
+
+    .cc-class-passive-name {
+        font-size: 0.85rem;
+        gap: 4px;
+    }
+
+    .cc-class-passive-desc {
+        font-size: 0.78rem;
+        line-height: 1.25;
+        margin-top: 2px;
+    }
+
+    .cc-class-stat-grid {
+        gap: 1px 8px;
+    }
+
+    .cc-class-growth {
+        font-size: 0.74rem;
+    }
+
+    .cc-class-confirm {
+        height: 30px;
+        margin-top: 4px;
+        font-size: 0.88rem;
+    }
+
+    /* 9. Traits Selection Step */
+    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-trait-board {
+        width: 62%;
+        flex: 1 1 62%;
+        padding: 10px 12px;
+    }
+
+    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-trait-detail {
+        width: 38%;
+        flex: 1 1 38%;
+        padding: 10px 12px;
+    }
+
+    .ts-purse {
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .ts-purse-cell {
+        padding: 4px;
+        gap: 1px;
+    }
+
+    .ts-purse-value {
+        font-size: 1.15rem;
+    }
+
+    .ts-purse-label {
+        font-size: 0.74rem;
+    }
+
+    .ts-tab-row {
+        gap: 4px;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+    }
+
+    .ts-tab {
+        padding: 3px 7px;
+        font-size: 0.78rem;
+    }
+
+    .ts-search-slot {
+        margin-top: 4px;
+    }
+
+    .cc-select-grid.cc-trait-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 2px 2px 12px 2px;
+    }
+
+    .cc-trait-grid .cc-card-option {
+        padding: 4px 6px;
+        gap: 4px;
+    }
+
+    .cc-trait-grid .cc-option-title {
+        font-size: 0.82rem;
+    }
+
+    .trait-cost {
+        font-size: 0.74rem;
+        min-width: 16px;
+        padding: 0 3px;
+    }
+
+    .ts-sheet-head {
+        gap: 6px;
+        margin-bottom: 6px;
+        padding-bottom: 6px;
+    }
+
+    .ts-purse--sheet .ts-purse-value {
+        font-size: 1.05rem;
+    }
+
+    .ts-detail {
+        max-height: 38%;
+        margin-bottom: 6px;
+    }
+
+    .ts-detail-head {
+        gap: 6px;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+    }
+
+    .ts-detail-label {
+        font-size: 1.02rem;
+    }
+
+    .ts-detail-desc {
+        font-size: 0.82rem;
+        line-height: 1.3;
+        margin-bottom: 4px;
+    }
+
+    .ts-detail-note {
+        font-size: 0.78rem;
+        padding: 3px 6px;
+        margin-bottom: 4px;
+    }
+
+    .ts-picked-list {
+        min-height: 50px;
+        padding: 3px 6px;
+        margin-bottom: 6px;
+    }
+
+    .cc-trait-picked {
+        padding: 3px 0;
+        gap: 4px;
+    }
+
+    .cc-trait-picked-name {
+        font-size: 0.82rem;
+    }
+
+    .cc-slot-remove {
+        font-size: 0.85rem;
+        padding: 0 4px;
+    }
+
+    .ts-summary {
+        padding: 4px 6px;
+        margin-bottom: 6px;
+    }
+
+    .ts-summary-row {
+        padding: 2px 0;
+        font-size: 0.78rem;
+    }
+
+    .cc-picked-row {
+        gap: 3px;
+        padding: 2px;
+        max-height: 72px;
+    }
+
+    .cc-picked-chip {
+        padding: 2px 5px;
+        font-size: 0.74rem;
+        gap: 3px;
+    }
+
+    /* 10. Specializations Step */
+    .cc-content-pane .cc-pockets-spread > .cc-page-left.cc-spec-board {
+        width: 68%;
+        flex: 1 1 68%;
+        padding: 10px 12px;
+    }
+
+    .cc-content-pane .cc-pockets-spread > .cc-page-right.cc-spec-detail {
+        width: 32%;
+        flex: 1 1 32%;
+        padding: 10px 12px;
+    }
+
+    .cc-spec-tab-row {
+        gap: 4px;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+    }
+
+    .cc-spec-tab {
+        padding: 3px 7px;
+        font-size: 0.78rem;
+    }
+
+    .cc-spec-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 2px;
+    }
+
+    .cc-spec-card {
+        padding: 4px 6px;
+        gap: 4px;
+    }
+
+    .cc-spec-title {
+        font-size: 0.82rem;
+    }
+
+    .cc-spec-meta {
+        font-size: 0.72rem;
+        gap: 3px;
+    }
+
+    .cc-spec-cat-label {
+        font-size: 0.68rem;
+    }
+
+    .cc-spec-stat-badge {
+        font-size: 0.72rem;
+        padding: 1px 4px;
+    }
+
+    .cc-spec-controls {
+        gap: 2px;
+    }
+
+    .cc-spec-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 0.8rem;
+    }
+
+    .cc-spec-pip {
+        width: 6px;
+        height: 10px;
+    }
+
+    .cc-spec-badge-row {
+        padding: 3px 5px;
+        font-size: 0.76rem;
+        gap: 4px;
+    }
+
+    .cc-spec-badge-delete {
+        width: 16px;
+        height: 16px;
+        font-size: 0.7rem;
+    }
+
+    /* 11. Bio Step (Demographics, Gender, Ideology, Morality) */
+    .cc-bio-container {
+        gap: 4px;
+        padding-right: 2px;
+    }
+
+    .cc-bio-section {
+        padding: 3px 0 5px 0;
+    }
+
+    .cc-bio-section-title {
+        font-size: 0.92rem;
+        margin-bottom: 3px;
+        gap: 4px;
+    }
+
+    .cc-bio-chips-row {
+        gap: 3px;
+    }
+
+    .cc-bio-chip {
+        padding: 3px 7px;
+        font-size: 0.8rem;
+    }
+
+    .cc-bio-select {
+        padding: 3px 6px;
+        font-size: 0.84rem;
+    }
+
+    .cc-bio-slider-row {
+        gap: 6px;
+    }
+
+    .cc-bio-slider-end {
+        font-size: 0.78rem;
+    }
+
+    .cc-bio-slider-readout {
+        font-size: 0.8rem;
+        margin-top: 2px;
+    }
+
+    /* 12. Companion / Pet Step */
+    .cc-pet-grid {
+        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+        gap: 5px;
+        padding: 3px;
+    }
+
+    .cc-pet-card {
+        padding: 5px 3px;
+    }
+
+    .cc-pet-avatar {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 3px;
+    }
+
+    .cc-pet-name {
+        font-size: 0.78rem;
+        margin-bottom: 1px;
+    }
+
+    .cc-pet-kind {
+        font-size: 0.65rem;
+    }
+
+    .cc-pet-trait-toggle {
+        font-size: 0.72rem;
+        padding: 3px 5px;
+    }
+
+    .cc-pet-portrait {
+        min-height: 80px;
+        padding: 6px;
+        margin-bottom: 6px;
+    }
+
+    .cc-pet-sidebar .cc-pet-portrait {
+        min-height: 64px;
+        margin-bottom: 4px;
+    }
+
+    .cc-pet-sidebar-name {
+        font-size: 0.95rem;
+    }
+
+    /* 13. Generic Option Cards, Archetype & Dropdown Lists */
+    .cc-select-grid {
+        gap: 6px;
+        margin-top: 4px;
+    }
+
+    .cc-select-grid.cc-two-col {
+        gap: 6px;
+    }
+
+    .cc-select-grid.cc-three-col {
+        gap: 5px;
+    }
+
+    .cc-card-option {
+        padding: 6px 8px;
+    }
+
+    .cc-option-title {
+        font-size: 1.05rem;
+        margin-bottom: 3px;
+    }
+
+    .cc-option-desc {
+        font-size: 0.84rem;
+        line-height: 1.25;
+    }
+
+    .cc-select-grid.cc-compact .cc-option-title {
+        font-size: 0.92rem;
+    }
+
+    .cc-select-grid.cc-compact.cc-three-col.cc-align-left .cc-option-title {
+        font-size: 0.85rem;
+    }
+
+    .cc-select-grid.cc-archetype-grid .cc-card-option {
+        padding: 5px 4px;
+        min-height: 48px;
+        gap: 1px;
+    }
+
+    .cc-archetype-card-meta {
+        font-size: 0.72rem;
+    }
+
+    .cc-select-grid.cc-dropdown-list {
+        max-height: 50vh;
+        gap: 2px;
+        padding: 3px;
+    }
+
+    .cc-select-grid.cc-dropdown-list .cc-card-option {
+        padding: 4px 6px;
+    }
+
+    /* 14. Sprites & Busts Gallery */
+    .cc-sprite-tab-bar {
+        max-height: 72px;
+        margin-bottom: 4px;
+        gap: 4px;
+    }
+
+    .cc-sprite-portrait {
+        min-height: 200px;
+        margin: 4px 0 8px;
+        gap: 4px;
+    }
+
+    .cc-sprite-portrait-bust {
+        width: 150px;
+        height: 160px;
+    }
+
+    .cc-sprite-portrait.no-bust {
+        width: 110px;
+        height: 110px;
+        min-height: 110px;
+    }
+
+    .cc-bust-preview {
+        height: 25%;
+        margin-bottom: 6px;
+    }
+
+    .cc-categories-list .cc-card-option {
+        padding: 6px 10px !important;
+        gap: 8px !important;
+    }
+
+    .cc-categories-list .cc-option-title {
+        font-size: 0.9rem;
+    }
+
+    .cc-categories-list .cc-element-badge {
+        font-size: 0.74rem;
+        padding: 1px 5px;
+    }
+
+    .cc-species-search {
+        padding: 4px 8px;
+        font-size: 0.88rem;
+        margin-bottom: 4px;
+    }
+
+    .cc-presets-board.cc-sprite-board {
+        gap: 6px;
+    }
+
+    .cc-presets-board.cc-sprite-board .cc-sprite-card.cc-wanted-card {
+        height: 60px;
+        padding: 2px;
+    }
+
+    /* 15. Scenario Mode (Dedicated Scenario Dossier Spread) */
+    .cc-scenario-dossier .cc-scenario-list {
+        flex: 0 0 24%;
+        width: 24%;
+    }
+
+    .cc-scenario-dossier .cc-scenario-roster-col {
+        flex: 0 0 34%;
+        width: 34%;
+    }
+
+    .cc-page.cc-scenario-list,
+    .cc-page.cc-scenario-brief,
+    .cc-page.cc-scenario-roster-col {
+        padding: 8px 10px;
+        gap: 5px;
+    }
+
+    .cc-scenario-brief-head .cc-header-gothic {
+        font-size: 1.2rem;
+    }
+
+    .cc-scenario-brief-head .cc-money-badge {
+        font-size: 0.88rem;
+        padding: 2px 6px;
+    }
+
+    .cc-scenario-brief .cc-class-quote {
+        font-size: 0.82rem;
+        padding-bottom: 4px;
+    }
+
+    .cc-scenario-grid .cc-scenario-card .cc-option-title {
+        font-size: 0.92rem;
+    }
+
+    .cc-scenario-grid .cc-card-option.cc-scenario-card {
+        padding: 5px 8px;
+    }
+
+    .cc-scenario-back {
+        height: 30px;
+        font-size: 0.84rem;
+    }
+
+    .cc-scenario-sheet {
+        padding: 4px 6px;
+    }
+
+    .cc-scenario-sheet-head {
+        gap: 6px;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+    }
+
+    .cc-scenario-sheet-bust {
+        width: 28px;
+        height: 38px;
+    }
+
+    .cc-scenario-sheet-name {
+        font-size: 0.92rem;
+    }
+
+    .cc-scenario-sheet-class,
+    .cc-scenario-sheet-money {
+        font-size: 0.8rem;
+    }
+
+    .cc-scenario-stat-grid {
+        gap: 2px 4px;
+        margin-bottom: 4px;
+    }
+
+    .cc-scenario-stat {
+        font-size: 0.72rem;
+    }
+
+    .cc-scenario-stat b {
+        font-size: 0.84rem;
+    }
+
+    .cc-scenario-dossier .cc-dossier-label,
+    .cc-scenario-dossier .cc-dossier-value {
+        font-size: 0.84rem !important;
+    }
+
+    .cc-scenario-dossier .cc-loadout-section-title {
+        font-size: 0.88rem !important;
+    }
+
+    .cc-scenario-dossier .cc-loadout-section-count {
+        font-size: 0.78rem !important;
+    }
+
+    .cc-scenario-dossier .cc-loadout-empty {
+        font-size: 0.8rem !important;
+    }
+
+    /* 16. Creature Lab & 3D Anatomy Editor */
+    .cc3d-top {
+        padding: 3px 6px;
+        gap: 4px;
+    }
+
+    .cc3d-title {
+        font-size: 0.88rem;
+    }
+
+    .cc3d-chip {
+        font-size: 0.74rem;
+        padding: 2px 6px;
+    }
+
+    .cc3d-anat {
+        width: 175px;
+        min-width: 150px;
+    }
+
+    .cc3d-parts {
+        width: 240px;
+        min-width: 190px;
+    }
+
+    .cc3d-part {
+        padding: 2px 5px;
+        font-size: 0.78rem;
+        gap: 3px;
+    }
+
+    .cc-alchemical-chamber {
+        width: 130px;
+        height: 170px;
+        padding-bottom: 14px;
+    }
+
+    .cc-chamber-label {
+        font-size: 1.15rem;
+    }
+
+    .cc-incubator-frame {
+        width: 150px;
+        height: 150px;
+        margin: 10px auto;
+    }
+
+    .cc-anatomy-checklist {
+        gap: 4px;
+        margin-top: 6px;
+    }
+
+    .cc-anatomy-row {
+        padding: 4px 8px;
+        font-size: 0.84rem;
+    }
+
+    .cc-balance-pockets {
+        margin-top: 8px;
+        padding: 8px;
+    }
+
+    .cc-balance-line {
+        font-size: 0.85rem;
+        margin-bottom: 3px;
+        padding-bottom: 2px;
+    }
+
+    /* 17. Signature Bottom Buttons Panel & Navigation */
+    .cc-button-panel {
+        padding-top: 6px;
+        gap: 8px;
+    }
+
+    .cc-button-panel.cc-nav {
+        min-height: 44px;
+        gap: 6px;
+    }
+
+    .cc-nav-slot {
+        gap: 6px;
+    }
+
+    .cc-btn-treaty {
+        font-size: 1.15rem;
+        padding: 6px 16px;
+    }
+
+    .cc-nav-slot > .cc-btn-treaty {
+        min-width: min(110px, 100%);
+    }
+
+    .cc-modal {
+        padding: 12px 16px;
+        width: min(380px, 85%);
+    }
+
+    .cc-modal-title {
+        font-size: 1.05rem;
+        margin-bottom: 6px;
+    }
+
+    .cc-modal-body {
+        font-size: 0.84rem;
+        margin-bottom: 12px;
+    }
+
+    .cc-modal-actions .cc-sidebar-btn {
+        min-width: 90px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+}
+
+
+/* ==========================================================================
+   PANELS THE THEME PRESETS SIZE THEMSELVES (css/vars.css, css/themes/*.css)
+   --------------------------------------------------------------------------
+   The presets carry colour tokens, so nearly everything above reaches them
+   untouched. What does not is the handful of panels a preset also spaces for
+   itself. Those rules used to be re-stated at the foot of each preset file,
+   because a preset is *earlier* in the cascade than theme.css and theme.css's
+   handheld block could not reach them at equal specificity. Loading this file
+   last settles that, so the three copies are one copy, here.
+
+   Type is deliberately NOT capped: a preset's own .item-inspect
+   .inspect-spec-row is raised at its declaration, and a handheld rule pinning
+   it to a smaller absolute size would undo that.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* Preset-scoped panels that paint their own plate: the dense ones take the
+       same reclaimed padding the shared spread pages get. */
+    .item-inspect .inspect-lore,
+    #pt-container .pt-props,
+    #pt-container .pt-desc {
+        padding: 8px 10px;
+    }
+}
+
+
+/* ==========================================================================
+   PER-PLUGIN OVERRIDES
+   --------------------------------------------------------------------------
+   The blocks above are the shared furniture every parchment menu is built out
+   of. What follows is per plugin, in the order the main menu reaches them
+   (UI/CustomMainMenuLayout.js: its own pockets list first, then each tile).
+   ========================================================================== */
+
+
+/* ==========================================================================
+   The main menu and its Dynamics hub (UI/CustomMainMenuLayout.js)
+   --------------------------------------------------------------------------
+   The pockets list itself (.command-item and its icon) is compacted with the
+   shared spread above, because every menu built on the spread draws those rows.
+   What is left here is the chrome only this page has.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* The clock plate at the head of the left page. */
+    .pockets-clock {
+        padding: 6px 14px;
+    }
+
+    /* The key letter on the right of each row. It gives up its padding rather
+       than its size: it is the one thing on the row a player is scanning for
+       when they already know where they are going. */
+    .command-item .hotkey-badge {
+        padding: 0 4px;
+        font-size: 0.8em;
+    }
+}
+
+
+/* ==========================================================================
+   The shared search strip (UI/MenuSearchBar.js)
+   --------------------------------------------------------------------------
+   Stands at the head of the backpack, the augments register, the specialization
+   menu, the help codex, the sandbox and the build panel, so it earns its own
+   block: six pixels off it is six pixels off all of them.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .msb {
+        gap: 4px;
+        margin-bottom: 6px;
+    }
+
+    .msb-row,
+    .msb-row .backpack-sort-tags,
+    .msb-field-only {
+        gap: 4px;
+    }
+
+    .msb-toggle {
+        width: 22px;
+        height: 22px;
+    }
+
+    .msb-num,
+    .msb-select {
+        padding: 2px 5px;
+    }
+}
+
+
+/* ==========================================================================
+   The backpack and the item inspect card
+   (ItemSystem/ItemSystemInventoryUI.js, ItemSystem/ItemSystemUtils.js)
+   --------------------------------------------------------------------------
+   The inspect card is not the backpack's alone: the shop counter, the forge and
+   the equip menu all draw it, so compacting it here pays off in each of them.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* --- Left page: the tab strip, the search field and the grid. */
+    .backpack-tabs,
+    .cc-sprite-tab-bar,
+    .ts-tab-row,
+    .cc-spec-tab-row {
+        gap: 4px;
+        margin-bottom: 8px;
+        padding-bottom: 5px;
+    }
+
+    .backpack-tab,
+    .cc-sprite-tab-btn,
+    .ts-tab,
+    .cc-spec-tab {
+        padding: 3px 8px;
+    }
+
+    /* Scoped copies, because the desktop rules for these are scoped too and
+       would otherwise beat the bare selector above on specificity. */
+    .inspect-pockets .backpack-tab,
+    #equip-container .equip-commands .backpack-tab {
+        padding: 2px 8px;
+    }
+
+    .backpack-search,
+    .inspect-pockets .backpack-search {
+        margin-bottom: 6px;
+    }
+
+    .backpack-grid,
+    .inspect-pockets .backpack-grid {
+        margin-bottom: 8px;
+    }
+
+    .backpack-group-title {
+        margin: 5px 0 2px 0;
+    }
+
+    /* --- Right page: the inspect card. The frame shrinks because it is the one
+           element on the card whose size carries no information. */
+    .inspect-header {
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .inspect-frame {
+        width: 54px;
+        height: 54px;
+    }
+
+    .inspect-pockets .inspect-frame {
+        width: 46px;
+        height: 46px;
+    }
+
+    .inspect-meta-grid {
+        padding: 4px 9px;
+        margin-bottom: 8px;
+    }
+
+    .inspect-section-title {
+        margin: 8px 0 4px 0;
+    }
+
+    .inspect-actions {
+        gap: 5px;
+    }
+
+    .inspect-btn {
+        padding: 6px 16px;
+        margin-top: 6px;
+    }
+
+    /* The quick bar under the grid, and the weight gauge sharing its row. */
+    .backpack-hotbar {
+        margin-top: 6px;
+    }
+
+    .backpack-hotbar-head {
+        gap: 10px;
+    }
+}
+
+
+/* ==========================================================================
+   The equip menu (ItemSystem/ItemSystemEquipmentUI.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .equip-commands {
+        gap: 4px;
+        margin-bottom: 10px;
+    }
+
+    .equip-command-bar {
+        margin-bottom: 9px;
+        padding-bottom: 5px;
+    }
+
+    /* Eight slot rows stacked down the left page: two pixels a row is a whole
+       row's worth of height back. */
+    .equip-slot-row {
+        padding: 4px 10px 4px 0;
+        margin-bottom: 4px;
+    }
+
+    #equip-container .companion-tab {
+        padding: 4px 11px;
+        margin: 0 4px;
+    }
+
+    .equip-right-content .stats-grid {
+        gap: 3px 9px;
+    }
+}
+
+
+/* ==========================================================================
+   The status sheet (UI/CustomSceneStatus.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #status-tabs .backpack-tab {
+        padding: 2px 9px;
+    }
+
+    .status-actions .inspect-btn {
+        padding: 4px 16px;
+    }
+}
+
+
+/* ==========================================================================
+   The specialization menu (UI/SpecializationMenu.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* The tier chip, which also rides along in the skills page and the battle
+       command window (window.SpecBadge). */
+    .spec-badge {
+        gap: 0.4em;
+        padding: 0.25em 0.7em;
+    }
+
+    #spec-category-row {
+        gap: 4px;
+        padding: 4px 0 7px;
+    }
+
+    .spec-category-tab {
+        padding: 3px 8px;
+    }
+
+    /* One row per specialization, and there are a great many of them. */
+    .spec-row {
+        gap: 8px;
+        padding: 4px 8px;
+    }
+
+    .spec-section-header {
+        padding: 6px 8px 3px;
+    }
+}
+
+
+/* ==========================================================================
+   The save and load spread (Core/SaveSystem.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .save-left-page,
+    .save-right-page {
+        padding: 20px 26px;
+    }
+
+    .save-title {
+        margin-bottom: 12px;
+        padding-bottom: 5px;
+    }
+
+    .save-list {
+        gap: 4px;
+    }
+
+    .save-item {
+        padding: 5px 4px 6px 4px;
+    }
+
+    /* The member row gets tighter on the handheld, never a second line. */
+    .party-members-list {
+        gap: 6px;
+    }
+
+    .save-member .char-sprite-canvas {
+        width: 28px;
+        height: 34px;
+    }
+
+    /* The party card on the right page: a portrait row with a gauge each, the
+       densest thing in the menu. */
+    .save-details-card {
+        gap: 9px;
+    }
+
+    .save-detail-rows {
+        margin-top: 6px;
+        gap: 6px;
+    }
+
+    .save-party-title {
+        margin: 9px 0 4px 0;
+    }
+
+    .save-modal {
+        padding: 18px 22px 16px 22px;
+    }
+
+    .save-modal-message {
+        margin-bottom: 14px;
+    }
+}
+
+
+/* ==========================================================================
+   The preferences menu (Core/GameOptions.js)
+   --------------------------------------------------------------------------
+   The plugin that owns the handheld design box in the first place, so its own
+   menu had better fit it.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #options-list.pockets-scroll {
+        gap: 7px;
+    }
+
+    /* The preview picture on the right page. Capped hard: it is the one element
+       in the menu that will happily take the whole page and leave the setting's
+       own text below the fold. */
+    #menu-container .opt-inspect-img {
+        max-height: 200px;
+    }
+
+    #menu-container .opt-inspect-img-wrap {
+        margin: 0 0 8px 0;
+    }
+}
+
+
+/* ==========================================================================
+   The quest log board (Quest/KanbanQuestLog.js)
+   --------------------------------------------------------------------------
+   Not a spread: a full-screen cork board of three columns, authored at desk
+   size throughout, and the worst offender in the menu tree on a handheld. The
+   card is what has to fit, four to a column rather than two, so the reclaim is
+   concentrated on the card and on the pinboard air between cards.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #kb-board-header {
+        gap: 12px;
+        padding: 10px 20px 8px;
+    }
+
+    .kb-board-title {
+        font-size: 1.85rem;
+    }
+
+    .kb-column {
+        padding: 0 6px;
+    }
+
+    .kb-col-header {
+        padding: 5px 14px 6px;
+        margin: 0 0 9px;
+    }
+
+    .kb-col-divider {
+        margin: 8px 6px;
+    }
+
+    /* 26px between cards was pinboard air. Halved, and the card's own top
+       padding, which is there to clear the pin, comes down with it. */
+    .kb-cards-wrap {
+        gap: 13px;
+        padding: 8px 5px 14px;
+    }
+
+    .kb-card {
+        min-height: 96px;
+        padding: 22px 12px 12px;
+    }
+
+    .kb-card-title,
+    .kb-card-giver {
+        margin-bottom: 5px;
+    }
+
+    .kb-empty-col {
+        padding: 16px 10px;
+    }
+
+    /* The quest's own page, opened over the board. Its margins are a printed
+       page's, and a printed page is not what this is on a handheld. */
+    .kb-detail-page {
+        padding: 24px 32px 32px;
+    }
+
+    .kb-detail-header {
+        font-size: 2rem;
+        padding-bottom: 8px;
+    }
+
+    .kb-detail-giver {
+        margin: 8px 0 16px;
+    }
+
+    .kb-detail-body {
+        font-size: 1.38rem;
+        margin-bottom: 16px;
+    }
+
+    .kb-detail-sec {
+        margin: 18px 0 8px;
+    }
+
+    .kb-detail-btns {
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    .kb-detail-close {
+        padding: 9px 26px;
+    }
+}
+
+
+/* ==========================================================================
+   The skill atlas (CharacterCreation/SkillMaster.js)
+   --------------------------------------------------------------------------
+   A star chart with a label floating at every node: the labels are what
+   collides on a smaller panel, not the chart, which is drawn to its box.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .sg3-label-name {
+        font-size: 1.02rem;
+    }
+
+    .sg3-label-cost {
+        margin-left: 3px;
+        font-size: 0.9rem;
+    }
+
+    .sg3-label.sg3-focus .sg3-label-name {
+        padding: 1px 4px;
+    }
+}
+
+
+/* ==========================================================================
+   The tech tree (Procedural/ProceduralTechTreeUI.js)
+   --------------------------------------------------------------------------
+   Already authored in clamp() against the viewport, so it needs the least of
+   any menu here. What clamp cannot express is the rail, which is a fixed share
+   of the width the tree wants back, and the node grid's row rhythm.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .tt-rail {
+        width: clamp(126px, 12vw, 170px);
+    }
+
+    .tt-tree {
+        gap: clamp(7px, 1.4vh, 14px);
+    }
+
+    .tt-node {
+        width: clamp(92px, 8vw, 132px);
+    }
+
+    .tt-detail-head {
+        padding-bottom: 5px;
+        margin-bottom: 7px;
+    }
+
+    .tt-research-btn {
+        margin-top: 9px;
+    }
+}
+
+
+/* ==========================================================================
+   The help codex (UI/HelpMenu.js)
+   --------------------------------------------------------------------------
+   This menu re-states .left-page / .right-page under its own id, which beats
+   the shared spread rule above on specificity, so the codex was the one menu
+   on the spread still carrying desktop margins on a handheld. Restated at the
+   same specificity here, which is the whole reason for the block.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #help-container .left-page {
+        padding: 20px 28px 20px 26px;
+    }
+
+    #help-container .right-page {
+        padding: 20px 26px 20px 28px;
+    }
+
+    #help-container .help-group-chips {
+        max-height: 3.4em;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+    }
+
+    .topic-item {
+        padding: 6px 10px;
+        margin-bottom: 4px;
+    }
+
+    .topic-group-header {
+        margin: 9px 0 4px 0;
+    }
+
+    .help-title {
+        margin: 2px 0 6px 0;
+    }
+
+    .help-divider {
+        margin: 6px 0 9px 0;
+    }
+
+    .help-image {
+        margin: 12px auto;
+    }
+
+    .help-hints-bar {
+        padding-top: 6px;
+        margin-top: 5px;
+    }
+}
+
+
+/* ==========================================================================
+   The diary (Core/DiaryUI.js)
+   --------------------------------------------------------------------------
+   The one menu here whose line height must NOT be touched: DiaryUI measures a
+   line to decide how many entries fit a page and paginates on the answer (its
+   .diary-measure pass), so a handheld line height that CSS knows about and the
+   plugin does not would tear the page. Margins only, plus the date header,
+   which stands outside the measured column.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #diary-container .diary-book {
+        padding: 8px;
+    }
+
+    #diary-container .diary-page {
+        padding: 24px 26px 30px 30px;
+    }
+
+    #diary-container .diary-date {
+        height: 48px;
+        padding-bottom: 5px;
+    }
+
+    #diary-container .diary-date-text {
+        font-size: 1.5rem;
+    }
+
+    #diary-container .diary-binding {
+        width: 22px;
+        flex: 0 0 22px;
+    }
+}
+
+
+/* ==========================================================================
+   Army recruitment (Army/ArmyManager.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .army-grid {
+        gap: 7px;
+        margin-top: 5px;
+    }
+
+    .army-card {
+        padding: 7px 10px;
+    }
+
+    .army-table th,
+    .army-table td {
+        padding: 3px 5px;
+    }
+
+    /* The recruit dialogs are centred boxes rather than pages, so they take a
+       width cap instead of trimmed margins. */
+    .army-dialog {
+        width: 268px;
+        padding: 12px 15px;
+    }
+
+    .army-dialog--cryo {
+        width: 330px;
+    }
+
+    .army-dialog-options--scroll {
+        max-height: 52vh;
+    }
+}
+
+
+/* ==========================================================================
+   The build panel (Crafting/FurnitureSystem.js)
+   --------------------------------------------------------------------------
+   A fixed 620px column standing over the map. On a 1280 panel that is nearly
+   half the screen, and the map behind it is the thing being furnished, so the
+   panel narrows and its catalogue keeps its three columns by giving up card
+   padding instead.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #fbuild-panel {
+        width: 520px;
+    }
+
+    .fbuild-header {
+        padding: 8px 11px;
+    }
+
+    .fbuild-modebar {
+        gap: 7px;
+        padding: 6px 11px;
+    }
+
+    .fbuild-toptabs,
+    .fbuild-catbar {
+        padding: 6px 11px;
+    }
+
+    .fbuild-section-label {
+        padding: 5px 11px 3px;
+    }
+
+    .fbuild-materials {
+        padding: 0 11px 7px;
+        max-height: 72px;
+    }
+
+    .fbuild-grid {
+        padding: 7px 9px;
+        gap: 7px;
+    }
+
+    .fbuild-card {
+        padding: 6px;
+    }
+
+    .fbuild-card-img {
+        height: 66px;
+    }
+
+    .fbuild-hint {
+        padding: 5px 11px;
+    }
+}
+
+
+/* ==========================================================================
+   The bestiary (Quest/Bestiary.js)
+   --------------------------------------------------------------------------
+   Four monster cards to a row, each carrying a 64px sprite that is the whole
+   point of the card: the sprite keeps its size and the card gives up the space
+   around it.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #bestiary-page-tabs {
+        margin-bottom: 8px;
+    }
+
+    #bestiary-list-viewport {
+        gap: 7px;
+        padding: 5px 8px 8px 8px;
+    }
+
+    #bestiary-list-viewport .monster-card {
+        min-height: 96px;
+        padding: 7px 4px;
+    }
+
+    #bestiary-list-viewport .monster-sprite-frame {
+        margin-bottom: 4px;
+    }
+
+    #bestiary-container .ecology-row {
+        padding: 4px;
+    }
+
+    .bestiary-portrait-btn {
+        padding: 3px 8px;
+    }
+}
+
+
+/* ==========================================================================
+   The card collection (Cards/CardGameCollection.js)
+   --------------------------------------------------------------------------
+   The grid is auto-fill, so it answers a narrower page by itself; what does
+   not is the cell height and the dossier's art box on the right page.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .cc-head {
+        padding-bottom: 4px;
+        margin-bottom: 7px;
+    }
+
+    .cc-tabs {
+        gap: 4px;
+        margin-bottom: 6px;
+    }
+
+    .cc-tab {
+        padding: 2px 9px;
+    }
+
+    .cc-grid {
+        grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
+        gap: 5px;
+    }
+
+    .cc-cell {
+        height: 82px;
+    }
+
+    .cc-cell canvas,
+    .cc-cell img {
+        max-height: 48px;
+    }
+
+    .cc-art {
+        height: 128px;
+        margin-bottom: 6px;
+    }
+
+    .cc-decklist {
+        max-height: 120px;
+    }
+}
+
+
+/* ==========================================================================
+   The faction register (NPC/FactionDataManager.js)
+   --------------------------------------------------------------------------
+   The heraldry grid on the left page is a .backpack-grid, so it is compacted
+   with the backpack above. These are the register's own plates.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .facrep-26 {
+        width: min(400px, 82vw);
+        padding: 15px 18px 13px 18px;
+    }
+
+    .facrep-27 {
+        margin: 9px 0 4px 0;
+        padding: 6px 8px;
+    }
+
+    .facrep-28 {
+        gap: 7px;
+        margin-top: 9px;
+    }
+
+    .facrep-29 {
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+
+    .facrep-30 {
+        padding: 1px 6px;
+    }
+}
+
+
+/* ==========================================================================
+   The biologic simulation (Health/Health_BiologicSimulation.js)
+   --------------------------------------------------------------------------
+   Sixty-odd metric rows and nine gauges over two pages. Every row is worth two
+   pixels here, and the vitals column beside the portrait is worth more.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .bio-row {
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .bio-vital {
+        gap: 5px;
+    }
+
+    #biologic-container .card {
+        padding: 7px 10px;
+        margin-bottom: 9px;
+    }
+
+    #biologic-container .card-header {
+        margin-bottom: 5px;
+    }
+
+    #biologic-container .metric-row {
+        padding: 3px 0;
+    }
+
+    #biologic-container .badge {
+        padding: 1px 5px;
+    }
+
+    #biologic-container .gauge-container {
+        margin-top: 3px;
+    }
+}
+
+
+/* ==========================================================================
+   The augments register (Health/PartyAugmentsMenu.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .aug-tab {
+        padding: 3px 8px;
+    }
+
+    .aug-row {
+        gap: 8px;
+        padding: 4px 8px;
+    }
+}
+
+
+/* ==========================================================================
+   The assets portfolio (Economy/AssetsMenu.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #menu-container .assets-summary {
+        gap: 7px;
+        margin-bottom: 9px;
+    }
+
+    #menu-container .assets-sum-card {
+        padding: 5px 9px;
+    }
+
+    #menu-container .assets-cat-header {
+        margin: 6px 0 2px;
+    }
+
+    #menu-container .assets-row {
+        gap: 8px;
+        padding: 5px 9px;
+    }
+
+    /* The value graph on the right page: it is read for its shape, and the
+       shape survives a shorter box. */
+    #menu-container .assets-graph-box {
+        padding: 7px 9px;
+        margin-bottom: 9px;
+    }
+
+    #menu-container .assets-graph-legend {
+        gap: 11px;
+        margin-top: 4px;
+    }
+
+    #menu-container .assets-detail-head {
+        padding-bottom: 4px;
+        margin-bottom: 6px;
+    }
+}
+
+
+/* ==========================================================================
+   The thinker menu (Quest/ThinkerMenu.js), and the forge that shares its
+   spread (Crafting/BlacksmithingMenu.js)
+   --------------------------------------------------------------------------
+   Both are scoped under their own container id and most of their type is
+   `!important`, so an override here has to be scoped the same way and shouted
+   back at the same specificity to land at all.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #thinker-container .left-page,
+    #blacksmith-container .left-page,
+    #thinker-container .right-page,
+    #blacksmith-container .right-page {
+        padding: 8px 16px;
+    }
+
+    /* The right page is inset by a share of its own width to clear the spine.
+       At 1280 that indent is most of a column of text. */
+    #thinker-container .right-page,
+    #blacksmith-container .right-page {
+        padding-left: 9%;
+    }
+
+    #thinker-container .title,
+    #blacksmith-container .title {
+        margin: 0 0 8px 0;
+        padding-bottom: 4px;
+    }
+
+    /* The bubbling pot is decoration, and at 4.325em it is decoration the size
+       of a paragraph. */
+    #thinker-container .cauldron-animation,
+    #blacksmith-container .cauldron-animation {
+        font-size: 2.8em !important;
+    }
+}
+
+
+/* ==========================================================================
+   Sandbox mode (Debug/SandboxMode.js)
+   --------------------------------------------------------------------------
+   The wishing grid's cells and the list rows under them. These are the classes
+   the plugin's own inline styles were lifted into, which is why they are
+   numbered rather than named; the semantic hooks it puts on the same elements
+   (#sandbox-search and friends) carry no spacing of their own.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .sandbox-badge {
+        padding: 1px 6px;
+        margin-bottom: 6px;
+    }
+
+    .sandbox-14 {
+        padding: 7px 5px;
+        min-height: 50px;
+    }
+
+    .sandbox-18 {
+        max-height: 52vh;
+        padding-bottom: 6px;
+        margin-bottom: 6px;
+    }
+
+    .sandbox-28 {
+        padding: 5px 9px;
+    }
+
+    .sandbox-08,
+    .sandbox-19 {
+        padding: 8px 10px;
+    }
+}
+
+
+/* ==========================================================================
+   The ledger spread (Work/WorkSystem.js, Work/WorkSystemJobOffers.js,
+   Economy/BankLoanSystem.js, Vehicle/VehicleSystemRepair.js)
+   --------------------------------------------------------------------------
+   Four screens that are the same page under four names: a 50% page inset by
+   28/36 with a 32px spine down the middle. They were lifted out of their
+   plugins one at a time, so the shape is stated four times over rather than
+   once, and the only way to compact it without touching the desktop layout is
+   to name all four here. If those declarations are ever folded into one rule
+   in theme.css, this block folds with them.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .work-02,
+    .bank-22,
+    .joboffer-04,
+    .vrep-21 {
+        padding: 16px 22px;
+    }
+
+    /* The spine. It is a drawn gutter between two pages, not a margin either
+       page needs, so it is the cheapest 12px on the screen. */
+    .work-01,
+    .bank-21,
+    .joboffer-03,
+    .vrep-20 {
+        width: 20px;
+    }
+
+    /* The page headings, all 2.035rem and all followed by 16px of air. */
+    .work-09,
+    .work-21,
+    .bank-23,
+    .joboffer-18,
+    .joboffer-51,
+    .vrep-10 {
+        font-size: 1.7rem;
+        margin-bottom: 9px;
+    }
+
+    /* The "nothing here" plates, which are 40px of padding around one line. */
+    .work-03,
+    .work-13,
+    .joboffer-05,
+    .joboffer-14,
+    .joboffer-22 {
+        padding: 22px;
+    }
+
+    .work-11,
+    .work-33,
+    .joboffer-19 {
+        padding-top: 7px;
+    }
+}
+
+
+/* ==========================================================================
+   The work board (Work/WorkSystem.js)
+   --------------------------------------------------------------------------
+   A stack of job cards on the right page, each with a header, a description
+   and two ruled-off sections under it. The rules between the sections are
+   where the height goes.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .work-22 {
+        gap: 8px;
+    }
+
+    .work-23 {
+        padding: 14px;
+        gap: 7px;
+    }
+
+    .work-24 {
+        font-size: 1.45rem;
+        padding-bottom: 4px;
+    }
+
+    .work-25 {
+        padding-bottom: 6px;
+        margin-bottom: 4px;
+    }
+
+    .work-28,
+    .work-30 {
+        margin-top: 6px;
+        padding-top: 6px;
+    }
+
+    .work-32 {
+        margin-top: 5px;
+        padding: 6px 9px;
+    }
+
+    .work-42 {
+        margin-top: 8px;
+        padding-top: 8px;
+    }
+
+    .work-43 {
+        padding: 7px;
+    }
+}
+
+
+/* ==========================================================================
+   Job offers (Work/WorkSystemJobOffers.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .joboffer-21 {
+        padding: 12px;
+    }
+
+    .joboffer-31 {
+        gap: 6px;
+    }
+
+    .joboffer-32 {
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .joboffer-43 {
+        margin-top: 4px;
+        padding: 5px;
+    }
+}
+
+
+/* ==========================================================================
+   The bank counter (Economy/BankLoanSystem.js)
+   --------------------------------------------------------------------------
+   Card after card of figures. The figures keep their size, because a balance
+   read wrong is worse than a balance read late; the cards around them give up
+   the padding instead. The one exception is the loan headline at 2.64rem,
+   which is about 50px of type for a number that already has a label.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .bank-12 {
+        gap: 10px;
+    }
+
+    .bank-24 {
+        padding: 9px;
+        margin-bottom: 8px;
+    }
+
+    .bank-36 {
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .bank-46 {
+        gap: 8px;
+    }
+
+    .bank-47 {
+        padding: 12px;
+        gap: 7px;
+    }
+
+    .bank-51 {
+        font-size: 2.1rem;
+    }
+
+    .bank-55 {
+        padding-top: 8px;
+    }
+
+    .bank-56 {
+        padding: 8px;
+    }
+}
+
+
+/* ==========================================================================
+   The Hypernet Chronicle (Quest/NewsSystem.js)
+   --------------------------------------------------------------------------
+   A broadsheet: a masthead across the top and two columns under it. The
+   masthead is the one place on this screen where type is cut rather than
+   protected -- at 3.52rem it is 67px of paper name above a story nobody can
+   see the end of.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .newspaper-header {
+        padding: 12px 26px 8px 26px;
+    }
+
+    .news-masthead-title {
+        font-size: 2.6rem;
+    }
+
+    .news-masthead-rule {
+        padding: 3px 0;
+        margin-top: 5px;
+    }
+
+    .news-page {
+        padding: 14px 20px;
+    }
+
+    .news-subheader {
+        margin-bottom: 9px;
+    }
+
+    .news-month-nav {
+        margin-bottom: 9px;
+        padding: 5px 9px;
+    }
+
+    .newspaper-headline-item {
+        padding: 7px 11px;
+    }
+
+    .news-article-title {
+        font-size: 1.55rem;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+    }
+
+    .news-article-meta {
+        margin-bottom: 9px;
+    }
+
+    .news-effects {
+        margin-top: 9px;
+        padding: 7px;
+    }
+
+    .news-footer {
+        padding-top: 7px;
+    }
+}
+
+
+/* ==========================================================================
+   The shop counter (ItemSystem/ItemSystemShop.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .shop-left,
+    .shop-right {
+        padding: 8px 14px;
+    }
+
+    /* The right page's extra indent clears the spine; at 1280 it is a column
+       of prices wide. */
+    .shop-right {
+        padding-left: 20px;
+    }
+
+    .shop-title {
+        margin: 0 0 9px 0;
+        padding-bottom: 4px;
+    }
+
+    .shop-funds {
+        margin-bottom: 8px;
+    }
+
+    .shop-tabs {
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    .shop-tab {
+        padding: 4px;
+    }
+
+    .shop-chips {
+        margin-bottom: 8px;
+    }
+
+    .shop-selection-bar {
+        gap: 8px;
+        padding: 5px 8px;
+        margin-bottom: 7px;
+    }
+
+    .shop-cat-header {
+        padding: 3px 8px;
+        margin: 6px 0 4px;
+    }
+}
+
+
+/* ==========================================================================
+   The quest board (Quest/QuestBoardUI.js)
+   --------------------------------------------------------------------------
+   Notices pinned to a cork board at a size meant to be read across a desk.
+   The note is the unit: three across a 1280 panel instead of two, so it is the
+   note's own width and the padding that clears the pin which come down, and
+   the reading itself that does not.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .qb-tab {
+        padding: 5px 20px 6px;
+    }
+
+    .qb-note {
+        flex: 0 0 214px;
+        width: 214px;
+        min-height: 168px;
+        padding: 22px 13px 13px;
+    }
+
+    .qb-note-title,
+    .qb-note-giver {
+        margin-bottom: 5px;
+    }
+
+    .qb-contract {
+        flex: 0 0 320px;
+        width: 320px;
+        min-height: 164px;
+    }
+
+    .qb-posted {
+        flex: 0 0 262px;
+        width: 262px;
+    }
+
+    .qb-btnrow {
+        gap: 7px;
+        margin-top: 8px;
+    }
+
+    .qb-btn {
+        padding: 4px 13px;
+    }
+
+    .qb-empty {
+        font-size: 1.35rem;
+        padding: 32px 20px;
+    }
+
+    /* The notice opened full page, and the compose sheet behind the Post tile.
+       Both are printed-page margins on a handheld screen. */
+    #qb-detail .qb-d-page {
+        padding: 24px 32px 32px;
+    }
+
+    #qb-detail .qb-d-giver {
+        margin: 8px 0 16px;
+    }
+
+    #qb-detail .qb-d-body {
+        font-size: 1.38rem;
+        margin-bottom: 16px;
+    }
+
+    #qb-detail .qb-d-sec {
+        margin: 18px 0 8px;
+    }
+
+    #qb-detail .qb-d-btns {
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    #qb-detail .qb-d-btns .qb-btn {
+        padding: 9px 26px;
+    }
+
+    #qb-compose .qb-c-page {
+        padding: 22px 32px 32px;
+    }
+
+    .qb-c-intro {
+        margin: 8px 0 14px;
+    }
+
+    .qb-c-row {
+        gap: 12px;
+        padding: 5px 9px;
+        min-height: 32px;
+    }
+
+    /* A quarter of the sheet was standing empty to the right of the labels. */
+    .qb-c-label {
+        flex: 0 0 190px;
+    }
+
+    .qb-c-preview {
+        margin-top: 7px;
+        padding: 12px 16px;
+    }
+}
+
+
+/* ==========================================================================
+   Fast travel (Vehicle/FastTravelSystem.js)
+   --------------------------------------------------------------------------
+   The destination list only. The map beside it is drawn at a fixed 1232x1039
+   and panned, so it is not a layout that a narrower panel changes: it just
+   shows less of the world at once, which is what panning is for.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .travel-left-page {
+        padding: 16px 20px;
+    }
+
+    .travel-title {
+        margin-bottom: 9px;
+        padding-bottom: 5px;
+    }
+
+    .travel-transport-info {
+        padding: 7px;
+        margin-bottom: 9px;
+    }
+
+    .travel-dest-list {
+        gap: 4px;
+    }
+
+    .travel-dest-item {
+        padding: 6px 9px;
+    }
+
+    /* The zoom buttons sit over the map and cover it while they do. */
+    .travel-zoom-controls {
+        gap: 6px;
+    }
+
+    .travel-zoom-btn {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+
+/* ==========================================================================
+   Vehicle repairs (Vehicle/VehicleSystemRepair.js)
+   --------------------------------------------------------------------------
+   The parts grid is the screen: two columns of damage readings capped at 480px
+   tall, which on an 800px panel is taller than the page holding it.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .vrep-01 {
+        padding: 7px 9px;
+    }
+
+    .vrep-11 {
+        gap: 10px;
+    }
+
+    /* The vehicle's portrait, which is decoration next to the readings. */
+    .vrep-12 {
+        width: 132px;
+        height: 132px;
+    }
+
+    .vrep-14 {
+        margin: 4px 0;
+        padding: 8px 18px;
+    }
+
+    .vrep-16 {
+        margin-bottom: 9px;
+    }
+
+    .vrep-26 {
+        gap: 7px 12px;
+        margin-bottom: 9px;
+        max-height: 300px;
+    }
+
+    .vrep-27 {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .vrep-35 {
+        padding: 8px;
+    }
+}
+
+
+/* ==========================================================================
+   The prosthetics shop (Health/Health_ProstheticShop.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .pros-05 {
+        width: 38px;
+        height: 38px;
+    }
+
+    .pros-13 {
+        gap: 7px;
+    }
+
+    .pros-15 {
+        gap: 8px;
+    }
+
+    .pros-16 {
+        padding: 6px 5px;
+    }
+
+    .pros-17 {
+        padding: 7px 5px;
+    }
+
+    .pros-18,
+    .pros-21 {
+        padding: 12px;
+    }
+
+    .pros-22 {
+        font-size: 2.1em;
+        margin-bottom: 9px;
+    }
+
+    /* The fitted-augment list under the card, which is the part of this screen
+       that has more rows than room. */
+    .pros-27 {
+        margin-top: 6px;
+        max-height: 118px;
+        padding-top: 5px;
+    }
+
+    .pros-36 {
+        padding: 6px 9px;
+        margin-bottom: 7px;
+    }
+}
+
+
+/* ==========================================================================
+   The ONU assembly (NPC/ONUAssembly.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .onu-09 {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* The floor's own scrolling record of who said what. */
+    .onu-11 {
+        max-height: 96px;
+        margin-bottom: 8px;
+    }
+
+    .onu-13 {
+        margin-top: 8px;
+        padding-top: 6px;
+    }
+
+    .onu-16 {
+        padding: 4px 5px;
+    }
+
+    .onu-18 {
+        margin-top: 9px;
+    }
+
+    .onu-22 {
+        padding: 22px 10px;
+    }
+}
+
+
+/* ==========================================================================
+   The arena (BattleSystem/ArenaBattleHandlerUI.js)
+   --------------------------------------------------------------------------
+   Every desktop rule here is scoped under #arena-ui-container, so every
+   override has to be as well or it loses before it is read.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #arena-ui-container .arena-header {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    #arena-ui-container .arena-scroll {
+        gap: 5px;
+    }
+
+    #arena-ui-container .arena-row {
+        gap: 8px;
+        padding: 6px 10px;
+    }
+
+    #arena-ui-container .arena-icon,
+    #arena-ui-container .arena-thumb {
+        width: 34px;
+        height: 34px;
+    }
+
+    #arena-ui-container .arena-icon {
+        font-size: 1.4rem;
+    }
+
+    #arena-ui-container .arena-right {
+        gap: 8px;
+    }
+
+    #arena-ui-container .arena-right.center {
+        padding: 14px;
+        gap: 9px;
+    }
+
+    #arena-ui-container .arena-big-glyph {
+        font-size: 3rem;
+    }
+
+    #arena-ui-container .arena-info-card {
+        padding: 8px;
+    }
+
+    #arena-ui-container .arena-member {
+        gap: 8px;
+        padding: 5px 8px;
+    }
+
+    #arena-ui-container .arena-action-btn {
+        padding: 8px 18px;
+    }
+
+    #arena-ui-container .arena-empty {
+        margin-top: 14px;
+    }
+}
+
+
+/* ==========================================================================
+   The container and harvest window (Crafting/ContainerSystemUI.js)
+   --------------------------------------------------------------------------
+   The one screen in the game sized in raw pixels rather than em: 29px titles,
+   54px icons, a list floored at 315px. That floor plus the head, the tabs and
+   the action bar is most of a 800px panel before a single row is drawn, so
+   here the numbers come down together rather than the padding alone.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #cs-mini .cs-head,
+    #hv-mini .cs-head {
+        padding: 11px 15px;
+    }
+
+    #cs-mini .cs-title,
+    #hv-mini .cs-title {
+        font-size: 23px;
+    }
+
+    #cs-mini .cs-close,
+    #hv-mini .cs-close {
+        padding: 2px 10px;
+        font-size: 23px;
+    }
+
+    #cs-mini .cs-tabs {
+        gap: 5px;
+        padding: 8px 10px 0;
+    }
+
+    #cs-mini .cs-tab {
+        padding: 7px 0;
+        font-size: 19px;
+    }
+
+    #cs-mini .cs-list,
+    #hv-mini .cs-list {
+        padding: 8px;
+        min-height: 210px;
+    }
+
+    #cs-mini .cs-row,
+    #hv-mini .cs-row {
+        gap: 11px;
+        padding: 7px 11px;
+    }
+
+    #cs-mini .cs-ic,
+    #hv-mini .cs-ic {
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
+    }
+
+    #cs-mini .cs-name,
+    #hv-mini .cs-name {
+        font-size: 20px;
+    }
+
+    #cs-mini .cs-empty,
+    #hv-mini .cs-empty {
+        padding: 40px 12px;
+    }
+
+    #cs-mini .cs-qty-box {
+        padding: 16px 18px;
+    }
+
+    #hv-mini .cs-actbar {
+        gap: 9px;
+        padding: 9px 11px;
+    }
+
+    #hv-mini .cs-actbtn {
+        padding: 8px 11px;
+        font-size: 19px;
+    }
+}
+
+
+/* ==========================================================================
+   Earth adventures (Procedural/ProceduralAdventureSystem.js)
+   --------------------------------------------------------------------------
+   A card of prose laid over a lit battleback with the cast standing in it. The
+   card is 940px wide and capped at 48vh, which on a 1280x800 panel is 73% of
+   the width and 384px of height sitting on top of the picture it is about. It
+   narrows and is allowed to be taller instead, because the branches under the
+   prose are what has to stay on screen.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .pas-adv-panel {
+        width: 760px;
+        max-height: 56vh;
+        margin-top: 1vh;
+        padding: 12px 20px 11px;
+    }
+
+    .pas-adv-title {
+        margin-bottom: 6px;
+        padding-bottom: 5px;
+    }
+
+    .pas-adv-rewards {
+        max-height: 20vh;
+        margin-top: 6px;
+        padding-top: 7px;
+    }
+
+    .pas-adv-rows {
+        gap: 4px;
+        margin-top: 9px;
+    }
+
+    .pas-adv-row {
+        padding: 5px 12px;
+    }
+
+    .pas-adv-hint {
+        margin-top: 6px;
+    }
+}
+
+
+/* ==========================================================================
+   The Empathize panel (NPC/NPCEmpathizeUI.js)
+   --------------------------------------------------------------------------
+   The screen the game spends the most time in after the map: a portrait column
+   on the left, a tabbed panel on the right, and the chat, the wiki and the
+   character sheet inside it. It carries 117 styled classes and is the largest
+   single surface in this file.
+
+   Its type is deliberately big -- this is a visual-novel panel, read at a
+   glance while someone is talking -- so almost nothing here touches a
+   font-size. What comes down is the chrome and the three pictures that are
+   pictures rather than information: the portrait frame, the entity emblem and
+   the wiki card glyphs.
+
+   .npc-wiki-grid's `max-height: calc(100vh - 320px)` is left exactly as it is.
+   The 320 is a hand-counted sum of everything standing above the grid, and
+   this block shrinks several of those things: leaving it means the grid is a
+   little shorter than it could be, which costs a row, where recomputing it
+   wrong means it runs off the bottom of the panel.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* The overlay holds 20px off every edge of a panel that is already capped
+       at 1500x940 and takes whatever is left. Shouted, because the rule it
+       replaces is. */
+    #menu-container.npc-empathize-overlay {
+        padding: 8px !important;
+    }
+
+    .npc-close-btn {
+        width: 26px;
+        height: 26px;
+    }
+
+    /* --- The left column: portrait, name, vitals, the action list. The
+           portrait is the single biggest block on the screen and the one whose
+           size carries the least. */
+    .npc-left-col {
+        width: 296px;
+    }
+
+    .npc-portrait-wrap {
+        height: 216px;
+    }
+
+    .npc-left-ident {
+        padding: 6px 10px 4px;
+    }
+
+    .npc-vitals-footer {
+        padding: 5px 8px 8px;
+    }
+
+    .npc-vital-row {
+        gap: 4px;
+        margin-bottom: 3px;
+    }
+
+    .npc-vital-lbl {
+        width: 72px;
+    }
+
+    .npc-action-row {
+        gap: 6px;
+        padding: 5px 10px;
+    }
+
+    /* --- The tab bar and the panel under it. */
+    .npc-tab-bar {
+        gap: 3px;
+        padding: 6px 12px 0;
+    }
+
+    .npc-tab {
+        padding: 5px 13px 6px;
+    }
+
+    .npc-tab-hint {
+        padding: 3px 7px 4px;
+    }
+
+    .npc-right-panel {
+        padding: 9px 13px 16px;
+    }
+
+    .npc-badge-row {
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+
+    .npc-focus-switcher {
+        margin: 2px 0 4px;
+    }
+
+    .npc-join-msg {
+        padding: 4px 7px;
+        margin-bottom: 6px;
+    }
+
+    /* --- The chat tab. The bubbles are the reading, so they keep their type
+           and give up the box around them; the action strip under them gives up
+           a slice of the panel it is allowed to claim, and scrolls for the
+           rest as it already does. */
+    .npc-chat-header {
+        padding: 7px 12px 6px;
+    }
+
+    .npc-chat-bubbles {
+        gap: 5px;
+        padding: 7px 12px;
+    }
+
+    .npc-bubble {
+        padding: 6px 10px;
+    }
+
+    .npc-chat-input-row,
+    .npc-chat-actions-row {
+        padding: 6px 12px;
+    }
+
+    .npc-chat-actions-row {
+        max-height: 38%;
+    }
+
+    .npc-chat-action-btn {
+        padding: 4px 9px;
+    }
+
+    .npc-chat-elsewhere {
+        padding: 7px 12px;
+    }
+
+    /* --- The entity page, for a thing rather than a person. Its emblem is
+           decoration standing where a face would be. */
+    .npc-entity-emblem {
+        width: 96px;
+        height: 96px;
+        margin: 14px auto 6px;
+        font-size: 2.6rem;
+    }
+
+    .npc-entity-title {
+        padding: 0 10px 4px;
+    }
+
+    /* --- The wiki tab: a grid of cards, then a list of entries. */
+    .npc-wiki-grid--cards {
+        gap: 8px;
+    }
+
+    .npc-wiki-card {
+        padding: 11px 8px 9px;
+    }
+
+    .npc-wiki-card-glyph {
+        font-size: 1.9rem;
+    }
+
+    .npc-wiki-entry {
+        padding: 4px 8px;
+    }
+
+    /* --- The character sheet rows. */
+    .npc-cc-row {
+        gap: 6px;
+        padding: 4px 8px;
+    }
+
+    .npc-cc-note {
+        padding: 2px 8px;
+    }
+}
+
+
+/* ==========================================================================
+   The compact NPC dialogue panel (NPC/NPCEmpathizeUI.js, .npc-dlg-*)
+   --------------------------------------------------------------------------
+   The same plugin's smaller in-world panel, opened on an NPC without leaving
+   the map: its own portrait, chat and action grid, and a second profile page
+   behind it. A separate layout from the one above rather than a narrower copy
+   of it, so it is compacted separately.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .npc-dlg-left {
+        padding: 10px 12px 9px;
+    }
+
+    /* The right page's extra left inset clears the spine between the two. */
+    .npc-dlg-right {
+        padding: 10px 14px 10px 20px;
+    }
+
+    .npc-dlg-hdr {
+        gap: 8px;
+        margin-bottom: 7px;
+    }
+
+    .npc-dlg-portrait {
+        width: 72px;
+        height: 72px;
+    }
+
+    .npc-dlg-sep {
+        margin: 6px 0;
+    }
+
+    .npc-dlg-r-sep {
+        margin: 8px 0 6px;
+    }
+
+    .npc-dlg-chat {
+        gap: 5px;
+        margin-bottom: 6px;
+    }
+
+    .npc-dlg-bubble {
+        padding: 5px 8px;
+    }
+
+    .npc-dlg-input-row {
+        margin-bottom: 6px;
+    }
+
+    .npc-dlg-action-btn {
+        padding: 5px 7px;
+    }
+
+    .npc-dlg-join-msg {
+        padding: 5px 8px;
+    }
+
+    .npc-dlg-steal-item {
+        padding: 5px 8px;
+    }
+
+    .npc-dlg-tag {
+        padding: 1px 6px;
+    }
+
+    /* The profile page behind the panel, whose portrait is drawn at 288px
+       square: on a 800px panel that is a third of the screen for a face. */
+    .npc-dlg-portrait-lg {
+        width: 208px;
+        height: 208px;
+    }
+
+    .npc-dlg-profile-hdr,
+    .npc-dlg-panel-hdr {
+        margin-bottom: 8px;
+    }
+}
+
+
+/* ==========================================================================
+   The state encyclopedia (BattleSystem/ShowStatesUI.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #state-list-container .sl-row {
+        padding: 5px 5px 5px 7px;
+    }
+
+    .sl-row .item-slot-icon {
+        width: 26px;
+        height: 26px;
+        margin-right: 9px;
+    }
+
+    .sl-footer {
+        gap: 9px;
+        margin-top: 6px;
+        padding-top: 6px;
+    }
+
+    .sl-note {
+        margin: 0 0 6px 0;
+    }
+
+    #state-list-container .inspect-section-title {
+        margin: 10px 0 5px 0;
+    }
+
+    #state-list-container .inspect-bullet-item,
+    #state-list-container .inspect-spec-row {
+        margin-bottom: 4px;
+    }
+}
+
+
+/* ==========================================================================
+   The Worlds screen (UI/WorldManagerUI.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #world-manage-container .wm-list {
+        gap: 5px;
+        margin-bottom: 8px;
+    }
+
+    #world-manage-container .wm-world-row {
+        padding: 6px 10px;
+    }
+
+    #world-manage-container .wm-tabs {
+        margin-bottom: 7px;
+    }
+
+    /* The new-world form stands under the list and competes with it for the
+       page, so its rows close up rather than the list losing entries. */
+    #world-manage-container .wm-create {
+        padding-top: 8px;
+        gap: 4px;
+    }
+
+    #world-manage-container .wm-create input,
+    #world-manage-container .wm-create select {
+        padding: 4px 6px;
+    }
+
+    #world-manage-container .wm-history-list {
+        gap: 9px;
+    }
+
+    #world-manage-container .wm-check-row {
+        padding: 3px 6px;
+    }
+}
+
+
+/* ==========================================================================
+   The star map overlay (GalaxySim/GalaxySim_Overlay.js)
+   --------------------------------------------------------------------------
+   Panels floating over a 3D scene rather than a page: what they cost is not
+   layout height but the view they cover, so they close up on every side.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #gx-ui .gx-panel {
+        padding: 8px 10px;
+        line-height: 1.4;
+    }
+
+    #gx-ui .gx-title {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+
+    #gx-ui .gx-row {
+        gap: 7px;
+    }
+
+    #gx-fuel .gx-fuel-row {
+        margin: 3px 0;
+    }
+
+    #gx-fuel .gx-fuel-name {
+        flex: 0 0 62px;
+    }
+
+    #gx-ui .gx-slider-row {
+        margin-top: 5px;
+    }
+}
+
+
+/* ==========================================================================
+   MENUS THAT SCOPE THE SHARED SPREAD OUT OF REACH
+   --------------------------------------------------------------------------
+   The trap named at the head of this file, found by walking every selector
+   here against the desktop rule that outranks it. The shared `.left-page` /
+   `.right-page` compaction at the top is a bare class, so any menu that
+   re-states those pages under its own container id keeps its desktop margins
+   no matter what this file says. The help codex has its own block above
+   because it needed more than the margins; these want nothing else, so they
+   are gathered here.
+
+   Anything added to css/theme.css in the form `#some-container .left-page`
+   belongs in this list on the same commit.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* The apiary (Farming/ApiarySystem.js) and the brewery
+       (Farming/BrewingSystem.js). Their pages are split 58/42 and 55/45 rather
+       than evenly, so only the padding is restated: the widths are the layout,
+       not chrome. */
+    #apiary-container .left-page {
+        padding: 18px 26px 18px 28px;
+    }
+
+    #apiary-container .right-page {
+        padding: 18px 28px 18px 26px;
+    }
+
+    #brewery-container .left-page {
+        padding: 18px 24px 18px 28px;
+    }
+
+    #brewery-container .right-page {
+        padding: 18px 28px 18px 24px;
+    }
+
+    #apiary-container .title,
+    #brewery-container .title {
+        margin: 0 0 8px 0;
+        padding-bottom: 4px;
+    }
+
+    /* Same trap on the spread's frame: the thinker and the forge scope their
+       own copy of .book-spread, so the thinner border set above never reached
+       their outline. */
+    #thinker-container .book-spread,
+    #blacksmith-container .book-spread {
+        outline-offset: -5px;
+    }
+
+    /* And the same on the pockets-style inspect page (the backpack drawn as a
+       full spread rather than in a side panel): every one of these is the
+       scoped twin of a rule compacted with the backpack above, and without the
+       twin the panel a player actually opens keeps the desktop spacing. */
+    .inspect-pockets .backpack-tabs {
+        margin-bottom: 8px;
+        padding-bottom: 5px;
+    }
+
+    .inspect-pockets .inspect-header {
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .inspect-pockets .inspect-actions {
+        gap: 5px;
+    }
+
+    .inspect-pockets .inspect-btn {
+        padding: 6px;
+    }
+
+    .inspect-pockets .item-inspect .inspect-meta-grid {
+        margin-bottom: 8px;
+    }
+
+    .inspect-pockets .item-inspect .inspect-section-title {
+        margin: 9px 0 4px 0;
+    }
+}
+
+
+/* ==========================================================================
+   HYPERNET OS
+   --------------------------------------------------------------------------
+   The Archways XP desktop (css/hypernet.css) is the one surface in the game
+   that does NOT lay out in the 1560x960 design box: it is fixed to the real
+   viewport, so on a Deck it gets a true 1280x800 and every pixel it spends is
+   a pixel the panel actually has. That makes it the opposite case from the
+   parchment menus above -- nothing is scaled down afterwards, so there is no
+   downscale to buy back, and compaction here is worth exactly its own size.
+
+   The desktop icon grid is deliberately absent from all of this. It is laid
+   out by HypernetOS.DesktopGrid, which measures the desktop, picks a cell
+   scale off its own ladder and writes each icon's width inline -- with the 39
+   registered apps it already lands on the 0.68 rung and its own .compact class
+   on a 1280x800 panel. A CSS width here would be overwritten by the inline one
+   anyway, and a smaller icon in a cell the grid still sizes for a big one just
+   buys air, not a column.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* --- The taskbar. 40px is 5% of an 800px panel, where on the 1080p screen
+           it was authored for it is under 4%. The desktop's height and the
+           start menu's anchor are both written against that 40, so all three
+           move together or a strip of desktop is left under the bar.
+
+           HypernetOS.js keeps a TASKBAR_H = 40 of its own, and it is
+           deliberately left at 40. Every use of it there is a floor -- how far
+           a cascading window may fall, how far one may be dragged, where a
+           maximised one stops -- so a value 6px larger than the bar simply
+           holds windows 6px higher than they strictly need to be. Wrong in the
+           other direction, it would walk a titlebar under the bar and take the
+           only way to drag it back with it. */
+    #hypernet-taskbar {
+        height: 34px;
+    }
+
+    #hypernet-os-desktop {
+        height: calc(100% - 34px);
+    }
+
+    #hypernet-start-menu {
+        bottom: 34px;
+    }
+
+    #hypernet-start-btn {
+        width: 92px;
+        padding-right: 10px;
+        font-size: 17px;
+    }
+
+    #hypernet-taskbar-tabs {
+        gap: 4px;
+        padding: 0 6px;
+    }
+
+    /* With a dozen windows open these are what runs out of taskbar first. */
+    .taskbar-tab {
+        width: 122px;
+        max-width: 132px;
+        height: 24px;
+        gap: 5px;
+        padding: 0 6px;
+    }
+
+    #hypernet-system-tray {
+        gap: 8px;
+        padding: 0 8px;
+    }
+
+    /* --- The start menu. Its body is sized by subtracting the header and the
+           footer, so those three numbers are one number and are restated
+           together. */
+    #hypernet-start-menu {
+        width: 330px;
+        height: 420px;
+    }
+
+    .start-menu-header {
+        height: 46px;
+        padding: 6px 12px;
+    }
+
+    .start-menu-body {
+        height: calc(100% - 46px - 38px);
+    }
+
+    .start-menu-footer {
+        height: 38px;
+        gap: 11px;
+        padding: 6px 12px;
+    }
+
+    .start-menu-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 19px;
+    }
+
+    .start-menu-left {
+        padding: 7px 6px;
+    }
+
+    .start-menu-app-item {
+        gap: 7px;
+        padding: 4px;
+    }
+
+    .start-menu-right {
+        gap: 6px;
+        padding: 7px;
+    }
+
+    .start-menu-link {
+        padding: 4px 5px;
+    }
+
+    /* --- Window chrome. Every open window pays this once, and the OS is a
+           screen people open four of them on. */
+    .hypernet-window-titlebar {
+        height: 24px;
+        padding: 3px 7px;
+        font-size: 14px;
+    }
+
+    .hypernet-btn {
+        width: 19px;
+        height: 19px;
+    }
+}
+
+
+/* ==========================================================================
+   Hypernet Explorer, the browser (Hypernet/HypernetBrowser.js)
+   --------------------------------------------------------------------------
+   Six chrome bars stacked over the page: menu, toolbar, address, links, tabs
+   and, at the foot, the status bar. Each is only 3 or 4px of padding, which is
+   why none of them looks worth touching on its own; together they are most of
+   a page of reading on a window that is already clamped to the panel height.
+   The page inside keeps its own type -- it is a document, and this is the
+   application around it.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .hnb-menubar {
+        padding: 1px 4px;
+    }
+
+    .hnb-menu-title {
+        padding: 2px 7px;
+    }
+
+    .hnb-toolbar {
+        padding: 2px 5px;
+    }
+
+    .hnb-tbtn {
+        padding: 2px 6px;
+    }
+
+    .hnb-addressbar {
+        padding: 2px 5px;
+    }
+
+    .hnb-linksbar {
+        gap: 8px;
+        padding: 2px 7px;
+    }
+
+    .hnb-tabstrip {
+        padding: 2px 5px 0 5px;
+    }
+
+    .hnb-tab {
+        max-width: 170px;
+        padding: 3px 5px 3px 7px;
+    }
+
+    .hnb-infobar,
+    .hnb-findbar {
+        padding: 3px 7px;
+    }
+
+    /* The address bar's dropdown, which is drawn over the page: on a short
+       window it covered the whole of what it was suggesting about. */
+    .hnb-suggest {
+        max-height: 168px;
+    }
+
+    .hnb-statusbar {
+        height: 20px;
+        padding: 1px 5px;
+    }
+
+    /* The Explorer bar takes its width off the page, not off the chrome, so it
+       is the single biggest reclaim in the browser. */
+    .hnb-sidebar {
+        width: 190px;
+    }
+
+    .hnb-side-body {
+        padding: 5px;
+    }
+
+    .hnb-side-group {
+        margin: 6px 0 3px 0;
+    }
+
+    /* A rendered Hypernet page. Its 26px gutters are a printed margin. */
+    .hnb-doc {
+        padding: 12px 18px 26px 18px;
+    }
+
+    .hnb-doc h1 {
+        margin: 0 0 7px 0;
+    }
+}
+
+
+/* ==========================================================================
+   The parchment menus hosted in an OS window
+   (Economy/BankLoanSystem.js, Economy/StockMarketSystem.js,
+   Work/WorkSystemJobOffers.js, Quest/NewsSystem.js)
+   --------------------------------------------------------------------------
+   Four menus that build one markup for both places they open from, dressed as
+   XP inside a window. This is the second half of the work done on their
+   fullscreen selves above: the same screens, but here they are inside a window
+   inside a taskbar, with two frames' worth of chrome already spent before the
+   content starts. Most of the desktop rules are shouted, so most of these are.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #bank-system-content .cc-pockets-spread,
+    #stock-container .stock-spread,
+    #job-offers-content .cc-pockets-spread,
+    #news-history-content .cc-pockets-spread {
+        padding: 5px;
+    }
+
+    #bank-system-content .cc-page {
+        padding: 8px !important;
+    }
+
+    #job-offers-content .cc-page,
+    #news-history-content .cc-page {
+        padding: 7px !important;
+    }
+
+    #bank-system-content .xp-tab {
+        padding: 5px 11px;
+    }
+
+    #bank-system-content .stat-card {
+        padding: 7px;
+        margin-bottom: 6px;
+    }
+
+    #bank-system-content .action-button {
+        padding: 6px 12px !important;
+    }
+
+    #stock-container .stock-top {
+        padding: 6px;
+    }
+
+    #stock-container .portfolio-pane,
+    #stock-container .trade-pane {
+        padding: 7px;
+    }
+
+    /* The price chart. It is read for its line, and the line survives a
+       shorter box; 170px of it plus the panes under it did not survive the
+       window. */
+    #stock-container .graph-box {
+        height: 128px;
+    }
+
+    #stock-container .portfolio-header {
+        margin-bottom: 6px;
+    }
+
+    #stock-container .asset-row {
+        padding: 4px 8px;
+        margin-bottom: 4px;
+    }
+
+    #job-offers-content .job-item {
+        padding: 4px 8px !important;
+    }
+
+    #job-offers-content .roster-item {
+        padding: 4px !important;
+        margin-bottom: 4px !important;
+        gap: 6px;
+    }
+}
+
+
+/* ==========================================================================
+   The POST screen, the task manager and the terminal
+   (Hypernet/HyperDeck.js, Hypernet/HypernetOS.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .bios-tabs {
+        padding: 4px 6px 0;
+    }
+
+    .bios-body {
+        margin: 0 6px;
+        padding: 6px 9px;
+    }
+
+    .bios-row {
+        gap: 12px;
+        padding: 2px 0;
+    }
+
+    .bios-foot {
+        gap: 10px;
+        padding: 6px;
+    }
+
+    .bios-key {
+        padding: 3px 11px;
+    }
+
+    .sys-task-mgr-container {
+        padding: 7px;
+    }
+
+    .sys-task-mgr-header {
+        margin-bottom: 7px;
+    }
+}
+
+
+/* ==========================================================================
+   The skills page (BattleSystem/CategorizedBattleSkills.js)
+   --------------------------------------------------------------------------
+   A tab rail down the left and a scrolling list of every skill beside it. The
+   list is the screen, and it is the only one here a player reads mid-fight, so
+   the rows close up and the type on them does not.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .skills-box {
+        padding: 6px 9px;
+        margin-bottom: 9px;
+    }
+
+    .skill-tabs-col {
+        margin-right: 10px;
+        padding-right: 7px;
+    }
+
+    .skill-tab {
+        padding: 4px 8px;
+        margin-bottom: 4px;
+    }
+
+    .skill-row {
+        padding: 5px 9px;
+        margin-bottom: 4px;
+    }
+
+    .skill-scale-badge {
+        padding: 1px 5px;
+    }
+}
+
+
+/* ==========================================================================
+   The quick bar (Core/HotbarUI.js)
+   --------------------------------------------------------------------------
+   Sits over the map and over the battle screen, so its height is taken from
+   the game rather than from a panel. The slots themselves are sized by the
+   plugin and left alone; this is the label strip under them.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .hotbar-label {
+        height: 16px;
+        line-height: 16px;
+        margin-top: 3px;
+        font-size: 14px;
+    }
+
+    .hotbar-tooltip {
+        padding: 3px 7px;
+        font-size: 15px;
+    }
+}
+
+
+/* ==========================================================================
+   The sleep menu and the cryogenic pods (Core/TimeDateSystemUI.js)
+   --------------------------------------------------------------------------
+   The pod panel is a centred box rather than a page, so it takes a width cap
+   as well as trimmed padding, and the pod cards reflow to more per row off a
+   smaller flex basis rather than scrolling.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .cryo-panel {
+        width: min(94%, 680px);
+        padding: 12px 16px;
+    }
+
+    .cryo-panel-sub {
+        margin: 0 0 9px 0;
+    }
+
+    .cryo-unavailable {
+        margin: 4px 0 9px 0;
+    }
+
+    .cryo-date-row {
+        gap: 8px;
+        margin: 3px 0 9px 0;
+    }
+
+    .cryo-summary {
+        margin-bottom: 9px;
+        padding: 6px 8px;
+    }
+
+    /* The year the party wakes in, at 3.28em roughly 62px of one number. */
+    .cryo-clock-year {
+        font-size: 2.5em;
+    }
+
+    .cryo-progress {
+        margin: 7px auto 5px auto;
+    }
+
+    .cryo-pods {
+        gap: 8px;
+        margin-top: 9px;
+    }
+
+    .cryo-pod-card {
+        flex: 1 1 168px;
+        padding: 6px 8px;
+    }
+
+    .cryo-pod-head {
+        margin-bottom: 4px;
+    }
+}
+
+
+/* ==========================================================================
+   The vehicle status card (Vehicle/VehicleSystem.js)
+   --------------------------------------------------------------------------
+   A card standing over the map while the party drives, so what it costs is the
+   road behind it.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #vehicle-status-card {
+        padding: 8px 14px;
+    }
+
+    #vehicle-status-card .vsc-title {
+        font-size: 18px;
+        padding-bottom: 5px;
+    }
+
+    #vehicle-status-card .vsc-row {
+        gap: 8px;
+        padding-top: 4px;
+    }
+
+    #vehicle-status-card .vsc-warn {
+        padding-top: 6px;
+    }
+}
+
+
+/* ==========================================================================
+   The estate agent (Economy/RealEstateMarket.js)
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .re-stats {
+        padding: 7px 11px;
+        margin-bottom: 9px;
+    }
+
+    .re-tabs {
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+
+    .re-tab {
+        padding: 5px 8px;
+    }
+
+    .re-list {
+        gap: 5px;
+    }
+
+    .re-nav-hint {
+        margin-top: 8px;
+        padding-top: 7px;
+    }
+
+    .estate-04 {
+        padding: 22px 10px;
+    }
+
+    .estate-08 {
+        margin-top: 10px;
+    }
+}
+
+
+/* ==========================================================================
+   Stealing (Economy/StealingSystemUI.js)
+   --------------------------------------------------------------------------
+   A short list of what is worth taking, drawn over the shop it is being taken
+   from. Every row is one line, so this is gutters only.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .steal-title {
+        padding: 2px 12px 5px;
+    }
+
+    .steal-choice {
+        gap: 12px;
+        padding: 3px 12px;
+    }
+
+    .steal-empty {
+        padding: 5px 12px;
+    }
+}
+
+
+/* ==========================================================================
+   The tournament HUD (Minigames/MonsterTournament.js)
+   --------------------------------------------------------------------------
+   Panels laid over a 3D arena with a real fight going on under them, so the
+   whole point of the screen is what they are covering.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #mt-hud .mt-panel {
+        padding: 8px 12px;
+    }
+
+    #mt-stats .mt-name {
+        font-size: 20px;
+    }
+
+    #mt-stats .mt-statgrid {
+        gap: 6px;
+        margin: 6px 0;
+    }
+
+    #mt-stats .mt-stat .val {
+        font-size: 18px;
+    }
+
+    #mt-bet .mt-bet-amount {
+        font-size: 22px;
+    }
+
+    #mt-bet .mt-bet-avail {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+
+    #mt-addbet .mt-opt {
+        padding: 6px 12px;
+        margin: 4px 0;
+    }
+}
+
+
+/* ==========================================================================
+   Blade seeds (Weapon/BladeSeedSystemUI.js)
+   --------------------------------------------------------------------------
+   The live 3D look of the weapon sits above the stat grid and the buttons, and
+   at 150px tall it was pushing the buttons off a short page. It is the one
+   thing here that shrinks rather than losing padding, because padding is not
+   what it has.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .bs-look-canvas {
+        height: 118px;
+    }
+
+    .bs-warning {
+        margin: 4px 6px;
+        padding: 4px 8px;
+    }
+
+    .bs-el-badge {
+        padding: 2px 8px;
+    }
+
+    .bs-stat-grid {
+        gap: 3px 9px;
+        margin-top: 6px;
+    }
+
+    .bs-stat-cell {
+        padding: 2px 5px;
+    }
+
+    .bs-spirit-portrait {
+        padding: 7px;
+        margin: 4px 0;
+    }
+
+    .bs-actions {
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .bs-btn {
+        padding: 6px 9px;
+    }
+}
+
+
+/* ==========================================================================
+   Plants and livestock (Farming/PlantGrowthSystem.js,
+   Farming/AnimalGrowthSystem.js)
+   --------------------------------------------------------------------------
+   Both are a list on the left and one specimen's card on the right, and on
+   both the specimen's portrait is the thing standing between the reader and
+   the readings under it.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .plant-grid {
+        gap: 5px;
+    }
+
+    .plant-04 {
+        margin-bottom: 12px;
+    }
+
+    .plant-05 {
+        margin-bottom: 13px;
+    }
+
+    .plant-06 {
+        width: 84px;
+        height: 84px;
+        margin-bottom: 5px;
+    }
+
+    .plant-09 {
+        padding: 8px 12px;
+    }
+
+    .plant-16 {
+        padding: 8px 11px;
+    }
+
+    .ag-sprite-canvas {
+        margin: 5px auto 7px;
+    }
+
+    .ag-actions {
+        gap: 4px;
+        margin-top: 8px;
+    }
+
+    .ag-action-btn {
+        padding: 4px 8px;
+    }
+}
+
+
+/* ==========================================================================
+   The battle music picker (Audio/MusicSelectionSystemUI.js)
+   --------------------------------------------------------------------------
+   A track list capped at 520px, which is two thirds of an 800px panel before
+   the header and the hint under it are counted.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .ms-track-list {
+        max-height: 360px;
+        margin-top: 5px;
+    }
+
+    .ms-track-row {
+        padding: 3px 6px;
+    }
+
+    .ms-active-badge {
+        margin: 5px 0;
+        padding: 3px 8px;
+    }
+
+    .ms-note-anim {
+        margin: 8px 0;
+    }
+
+    .ms-ok-hint {
+        margin-top: 10px;
+    }
+}
+
+
+/* ==========================================================================
+   The credits roll (UI/TitleMenuCreditsSettings.js)
+   --------------------------------------------------------------------------
+   Sized in em throughout, so it already tracks the root font size the player
+   sets; what it does not track is the panel being short. The rhythm between
+   entries closes up and the panel's own box is left alone: it is centred on
+   the title screen and its proportions are the look of the thing.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .credits-panel {
+        padding: 1em 1.1em 0.8em 1.1em;
+    }
+
+    .credits-title {
+        padding-bottom: 0.5em;
+    }
+
+    .credits-body {
+        padding-top: 1em;
+    }
+
+    .credits-section {
+        margin-bottom: 1.5em;
+    }
+
+    .credits-section-title {
+        margin-bottom: 0.7em;
+    }
+
+    .credits-entry {
+        margin-bottom: 0.6em;
+    }
+
+    .credits-tail {
+        height: 4em;
+    }
+
+    .credits-hint {
+        padding-top: 0.5em;
+    }
+}
+
+
+/* ==========================================================================
+   The grimoire and the teacher's shop (ItemSystem/ForgottenGrimoire.js,
+   Economy/RandomDailyShop.js)
+   --------------------------------------------------------------------------
+   Two screens that offer a short list of cards to pick one from, built the
+   same way and scoped the same way, so they compact together.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #menu-container .grim-list,
+    #menu-container .teach-list {
+        gap: 5px;
+    }
+
+    #menu-container .grim-actor,
+    #menu-container .teach-actor {
+        padding: 5px 9px;
+    }
+
+    #menu-container .grim-card,
+    #menu-container .teach-card {
+        padding: 7px 10px;
+    }
+
+    #menu-container .grim-empty,
+    #menu-container .teach-empty {
+        padding: 22px 14px;
+    }
+
+    #menu-container .grim-psi {
+        padding: 7px 9px;
+    }
+}
+
+
+/* ==========================================================================
+   The card duel (Cards/CardGameDuel.js)
+   --------------------------------------------------------------------------
+   The board, the cards and the type on them are all sized off --cd-cell and
+   --cd-cardw, which the plugin computes from the space it is given: the duel
+   already fits any panel, and pinning any of that here would fight it. What
+   is left is the furniture around the board, which is stated in absolutes.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .cd-head {
+        gap: 10px;
+        padding: 6px 12px;
+    }
+
+    .cd-grid {
+        gap: 8px;
+    }
+
+    /* The hand's own reserve above the cards it holds. */
+    .cd-hand {
+        height: calc(var(--cd-cardh) + 20px);
+    }
+
+    .cd-foot {
+        padding: 4px 11px;
+    }
+
+    .cd-btn {
+        padding: 3px 9px;
+    }
+
+    .cd-detail {
+        width: 190px;
+        padding: 7px 9px;
+    }
+
+    .cd-banner {
+        padding: 12px 30px;
+    }
+}
+
+
+/* ==========================================================================
+   The hotbar target picker (ItemSystem/ItemSystemHotbar.js)
+   --------------------------------------------------------------------------
+   A short modal asking which party member the item is for. It is opened
+   mid-action, so nothing on it moves: it only stops being a full screen's
+   worth of box around four rows.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #hotbar-target-picker .htp-panel {
+        padding: 15px 20px;
+    }
+
+    #hotbar-target-picker .htp-row {
+        gap: 10px;
+        padding: 6px 10px;
+    }
+
+    #hotbar-target-picker .htp-vitals {
+        gap: 12px;
+    }
+}
+
+
+/* ==========================================================================
+   The main menu search page (UI/CustomMainMenuSearch.js)
+   --------------------------------------------------------------------------
+   The results list is the page and takes what it is given. What does not is
+   the 3D weapon preview on the detail side, which reserves a fixed 180px
+   whether or not the result is a weapon.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .search-weapon-viewport {
+        height: 128px;
+        margin: 5px 0;
+    }
+}
+
+
+/* ==========================================================================
+   The ship appearance editor (GalaxySim/GalaxySim_ShipModel.js)
+   --------------------------------------------------------------------------
+   Its panel is already viewport-capped (min(820px, 92vh)), so on a Deck the
+   box is right and what is wrong is what is inside it: seventeen trait rows
+   and the buttons under them, behind 18/20 of panel margin on both halves.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #gx-ship-appearance .gx-left,
+    #gx-ship-appearance .gx-right {
+        padding: 10px 12px;
+    }
+
+    #gx-ship-appearance .gx-rows {
+        gap: 3px;
+        padding-right: 5px;
+    }
+
+    #gx-ship-appearance .gx-row {
+        gap: 6px;
+        padding: 3px 6px;
+    }
+
+    #gx-ship-appearance .gx-btns {
+        gap: 7px;
+        margin-top: 8px;
+    }
+
+    #gx-ship-appearance .gx-btn {
+        padding: 7px 6px;
+    }
+
+    #gx-ship-appearance .gx-hint {
+        margin-top: 5px;
+    }
+}
+
+
+/* ==========================================================================
+   DELIBERATELY NOT HERE
+   --------------------------------------------------------------------------
+   Two screens that css/theme.css styles and this file does not, so that the
+   next person to notice the gap does not have to work out why twice.
+
+   The battle card hand (BattleSystem/RoguelikeCardSystem.js). Its cards are
+   sized off --rcs-card-w / --rcs-card-h, which come from a plugin parameter,
+   and the absolutes inside a card are tied to that size by hand: .rcs-desc
+   takes `calc(100% - 130px)`, where the 130 is the name bar, the icon and the
+   margins added up. Shrinking any one of them here silently breaks that sum.
+   The handheld answer for this screen is the plugin parameter, not CSS.
+
+   The sky chart (GalaxySim/GalaxySimSkyViewer.js). It is an SVG that fills the
+   viewport and is panned and zoomed; its type comes through
+   --gsv-const-label-size, which the plugin sets from the zoom. There is no
+   chrome around it to reclaim -- a smaller panel simply shows less sky, which
+   is what panning is for.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   The map info card (Core/TimeDateSystem.js, MapInfoHUD -- css/game.css)
+   --------------------------------------------------------------------------
+   The one part of css/game.css with a layout to answer for: a card standing in
+   the bottom-right corner of the map with the date, the place, the temperature
+   and a gauge per need. It is over the world rather than in a panel, so what it
+   costs is the corner of the map it covers.
+
+   The star glyph, the gap after it and the 28px indent that lines the rows up
+   under it are left exactly as they are: they are three numbers that add up to
+   one column edge, and trimming any of them alone knocks the card crooked for
+   two pixels of width.
+
+   #party-hud, in the same file, is not here at all. PartyHud.js writes
+   --phud-scale from the canvas' own scale, so those cards already hold their
+   size against the game view rather than against the window.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #map-info-hud {
+        min-width: 268px;
+        padding: 12px 18px;
+        bottom: 12px;
+        right: 12px;
+    }
+
+    #map-info-hud .mih-datetime {
+        line-height: 1.4;
+    }
+
+    #map-info-hud .mih-location {
+        line-height: 1.3;
+    }
+
+    #map-info-hud .mih-region {
+        line-height: 1.25;
+    }
+
+    #map-info-hud .mih-needs {
+        gap: 5px;
+        padding-top: 6px;
+        margin-top: 4px;
+    }
+
+    #map-info-hud .mih-need {
+        gap: 8px;
+    }
+
+    #map-info-hud .mih-need-lbl {
+        flex: 0 0 64px;
+    }
+
+    #map-info-hud .mih-need-bar {
+        height: 8px;
+    }
+
+    #map-info-hud .mih-need-pct {
+        flex: 0 0 48px;
+    }
+}
+
+
+/* ==========================================================================
+   HYPERNET OS APPS
+   --------------------------------------------------------------------------
+   The four apps whose interiors css/hypernet.css styles: the control panel,
+   My Computer, the notepad and the artifact analyzer. Everything above stopped
+   at the window frame; this is what is inside it.
+
+   These are targeted by their semantic class where the plugin gives them one
+   (.explorer-toolbar, .cp-tab-pane, .notepad-status-bar) and by the lifted
+   hn-style-NNNN class where it does not -- both sit on the same element, so
+   either lands, and the readable one is used wherever it exists. The analyzer
+   has almost no semantic names at all, which is why its block reads as numbers.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* --- The control panel (Hypernet/HypernetControlPanel.js). */
+    .cp-tabs {
+        padding: 4px 8px 0;
+    }
+
+    .cp-tab {
+        padding: 4px 11px;
+    }
+
+    .cp-content-box {
+        padding: 10px;
+    }
+
+    .cp-tab-pane {
+        gap: 10px;
+    }
+
+    /* The header strip of a settings pane, and the big glyph standing in it. */
+    .hn-style-0057 {
+        gap: 14px;
+        padding-bottom: 10px;
+    }
+
+    .hn-style-0058 {
+        font-size: 32px;
+    }
+
+    .hn-style-0060,
+    .hn-style-0072 {
+        gap: 10px;
+    }
+
+    .hn-style-0061 {
+        padding: 8px;
+    }
+
+    .wp-card {
+        padding: 6px;
+    }
+
+    /* The wallpaper swatches on those cards: pure preview, and four of them at
+       70px tall is most of the pane. */
+    .hn-style-0074,
+    .hn-style-0077,
+    .hn-style-0078,
+    .hn-style-0079 {
+        height: 54px;
+    }
+
+    /* --- My Computer (Hypernet/HypernetMyComputer.js).
+           The toolbar gives up horizontal padding ONLY. Its height is set by
+           its tallest child rather than declared, and .explorer-body subtracts
+           a hand-counted `calc(100% - 32px)` for it: a vertical trim here would
+           have to be matched by a number nobody can derive, and guessing it low
+           overflows the window. */
+    .explorer-toolbar {
+        padding: 5px 7px;
+    }
+
+    .explorer-sidebar {
+        width: 132px;
+        gap: 7px;
+        padding: 8px;
+    }
+
+    /* The file pane and the drive tiles in it. */
+    .hn-style-0093 {
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .hn-style-0094,
+    .hn-style-0095 {
+        padding: 7px;
+    }
+
+    /* --- The notepad (Hypernet/HypernetNotepad.js). */
+    .notepad-menu-bar {
+        gap: 9px;
+        padding: 2px 8px;
+    }
+
+    .notepad-dropdown-action {
+        padding: 4px 8px;
+    }
+
+    .notepad-textarea {
+        padding: 5px;
+    }
+
+    .notepad-status-bar {
+        padding: 2px 11px;
+    }
+
+    /* --- The artifact analyzer (Hypernet/HypernetArtifactAnalyzer.js): a list
+           of finds on the left, one find's reading on the right. */
+    .hn-style-0004 {
+        padding: 5px;
+    }
+
+    .hn-style-0005 {
+        padding: 4px 9px;
+        margin-bottom: 4px;
+    }
+
+    .hn-style-0007 {
+        gap: 6px;
+    }
+
+    .hn-style-0008 {
+        padding: 4px;
+    }
+
+    .hn-style-0013 {
+        padding: 7px;
+    }
+
+    .hn-style-0019 {
+        margin: 0 0 6px 0;
+    }
+
+    .hn-style-0020 {
+        gap: 9px;
+        margin-bottom: 7px;
+        padding: 6px;
+    }
+
+    .hn-style-0024 {
+        gap: 4px;
+    }
+
+    /* The reading itself and the list of traces under it, both capped. */
+    .hn-style-0035 {
+        max-height: 64px;
+    }
+
+    .hn-style-0036 {
+        padding: 5px;
+        max-height: 96px;
+    }
+
+    .hn-style-0039 {
+        padding: 7px;
+    }
+
+    .hn-style-0040 {
+        margin-top: 6px;
+        padding-top: 5px;
+    }
+
+    /* The "nothing selected" plates and their glyphs, in both panes. */
+    .hn-style-0014 {
+        padding: 22px 8px;
+    }
+
+    .hn-style-0015,
+    .hn-style-0043 {
+        padding: 12px;
+    }
+
+    .hn-style-0016 {
+        font-size: 26px;
+    }
+
+    .hn-style-0044 {
+        font-size: 28px;
+    }
+}
+
+
+/* ==========================================================================
+   The shop's description page (ItemSystem/ItemSystemShop.js)
+   --------------------------------------------------------------------------
+   The right page of the counter: the item's name, its badges, the price box,
+   the reading and the stat gauges, all in one scrolling column with the buy
+   button pinned under it. The block above compacts the shop's two pages; this
+   is what stands on them.
+
+   The 3D preview card comes first, because it is the one element here with a
+   size of its own rather than a size taken from its contents, and 240px of it
+   plus the header is a third of an 800px panel before a price is read.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #shop-container .weapon-previews-container {
+        height: 176px;
+        margin-bottom: 8px;
+        padding: 4px;
+    }
+
+    .detail-scroll {
+        padding: 12px;
+    }
+
+    .detail-header {
+        gap: 10px;
+        padding-bottom: 7px;
+        margin-bottom: 9px;
+    }
+
+    .detail-spec-grid {
+        gap: 6px;
+        margin-bottom: 9px;
+    }
+
+    .detail-spec-badge {
+        padding: 4px 7px;
+    }
+
+    .detail-price-box {
+        padding: 7px 10px;
+        margin-bottom: 9px;
+    }
+
+    .detail-price-row {
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .detail-desc {
+        padding: 7px 10px;
+        margin-bottom: 7px;
+    }
+
+    .detail-lore {
+        margin-bottom: 9px;
+    }
+
+    .gauges-section {
+        margin-bottom: 9px;
+    }
+
+    .gauge-row {
+        margin-bottom: 5px;
+    }
+
+    .gauge-bar-outer {
+        margin: 0 8px;
+    }
+
+    .detail-effect-chips {
+        gap: 4px;
+    }
+
+    .detail-effect-chip {
+        padding: 2px 6px;
+    }
+}
+
+
+/* ==========================================================================
+   The weapon preview box and the equip page's readings
+   (ItemSystem/ItemSystemEquipmentUI.js, Crafting/BlacksmithingMenu.js)
+   --------------------------------------------------------------------------
+   The shared preview box is the tallest fixed block on every page that carries
+   one -- two cards side by side in the equip menu, one large one in the forge,
+   one in the shop -- so it is the first thing to give ground on a short panel.
+   Under it sit the scaling line and the stat grids the equip menu shares with
+   the forge and the inspect card; the equip menu's own copies are already
+   flattened to zero margin, so what is left to win is in the shared rules.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    .weapon-previews-container {
+        gap: 12px;
+        min-height: 208px;
+        margin-bottom: 7px;
+        padding: 6px;
+    }
+
+    .weapon-preview-card {
+        padding: 5px;
+    }
+
+    #blacksmith-container .weapon-previews-container {
+        height: 300px;
+        margin-bottom: 7px;
+    }
+
+    /* The fallback ring drawn in place of a model, for a piece that has none. */
+    .weapon-preview-icon-circle {
+        width: 72px;
+        height: 72px;
+    }
+
+    .scaling-box {
+        padding: 3px 8px;
+        margin-bottom: 9px;
+    }
+
+    .stats-grid {
+        gap: 4px 9px;
+        margin-bottom: 9px;
+    }
+
+    .alchemical-stats {
+        gap: 4px;
+    }
+}

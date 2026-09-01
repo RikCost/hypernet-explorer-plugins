@@ -490,13 +490,13 @@
     // The course a building stands on. A wall that meets the pavement dead
     // flush reads as printed onto the ground; a plinth of the scheme's own
     // masonry, one step proud of the wall above it, is what a real one has.
-    const PLINTH_H = 3.0;
+    const PLINTH_H = 3.6;
     const PLINTH_OUT = 0.9;
     function buildPlinth(M, dec, lot, y) {
         const sc = schemeOf(lot);
         if (!sc.plinth) return;
         const mat = blockMat(dec, sc.plinth);
-        M.box(mat, lot.x, y - PLINTH_H * 0.4, lot.z,
+        M.box(mat, lot.x, y - PLINTH_H * 0.5, lot.z,
             lot.w + PLINTH_OUT * 2, PLINTH_H, lot.d + PLINTH_OUT * 2, lot.rot || 0,
             skinOf(dec, mat));
     }

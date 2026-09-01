@@ -123,13 +123,11 @@
                 return d;
             };
 
-            this._fuelPanel = this._walk ? null : panel(`
-                <div style="font-size:14px; font-weight:bold; color:#a1680d; letter-spacing:1px; margin-bottom:4px">${T('CamperDrive.hud.fuel')}</div>
-                <div id="cds-fuel-bar-wrap" style="width:160px; height:10px; background:rgba(255,255,255,0.1); border-radius:5px; overflow:hidden; margin-bottom:4px">
-                  <div id="cds-fuel-bar" style="height:100%; width:80%; background:#4caf50; border-radius:5px; transition:width 0.5s,background 0.5s"></div>
-                </div>
-                <div id="cds-fuel-text" style="font-size:15px; color:#ecdcb9">-- L / 100 L</div>
-            `, 'top:16px;left:16px;min-width:200px;');
+            // No fuel gauge of its own out here. The tank is a line on the
+            // vehicle's row of the party HUD (UI/PartyHud.js), which stands
+            // over this world with the cards, and one gauge in one place is
+            // what the party reads whether they are driving or parked.
+            this._fuelPanel = null;
 
             // Top-right minimap mirroring the 2D world map (map 315). The camper
             // dot tracks the live 3D world position so 2D and 3D stay in sync.
@@ -187,6 +185,7 @@
                 ['LMB', T('VoxelWorld.hud.cmdDig')],
                 ['G', T('VoxelWorld.hud.cmdPlace')],
                 ['Q', T('VoxelWorld.hud.cmdBlock')],
+                ['TAB', T('VoxelWorld.hud.cmdBar')],
                 ['ESC', T('CamperDrive.hud.cmdMenu')],
                 ['T', T('CamperDrive.hud.cmdExitWalk')]
             ] : [
@@ -194,7 +193,8 @@
                 ['SHIFT', T('CamperDrive.hud.cmdTurbo')],
                 ['E', T('CamperDrive.hud.cmdDoor')],
                 ['TAB', T('CamperDrive.hud.cmdView')],
-                ['ESC', T('CamperDrive.hud.cmdVehicle')]
+                ['ESC', T('CamperDrive.hud.cmdVehicle')],
+                ['T', T('CamperDrive.hud.cmdExit')]
             ];
             const cmdRowHTML = ([key, label]) => `
                 <div style="display:flex; align-items:center; gap:8px">
@@ -254,17 +254,10 @@
                 </div>
             `, 'top:88px;left:50%;transform:translateX(-50%);min-width:150px;text-align:center;');
 
-            // The walker's own abilities, where the camper's speedo and its
-            // Fly / Float / Dive chips would be: the water is always open to a
-            // swimmer, and the air is open to whoever leads a party that knows
-            // the Fly skill.
-            this._walkStatusPanel = this._walk ? panel(`
-                <div style="display:flex; gap:9px; justify-content:center; align-items:center; font-size:14px; font-weight:bold; letter-spacing:0.5px">
-                    <span id="cds-ab-swim">${T('CamperDrive.hud.swim')}</span>
-                    <span id="cds-ab-dive">${T('CamperDrive.hud.dive')}</span>
-                    <span id="cds-ab-fly">${T('CamperDrive.hud.fly')}</span>
-                </div>
-            `, 'top:16px;left:50%;transform:translateX(-50%);min-width:150px;text-align:center;') : null;
+            // The walker carries no ability strip of its own: swimming, diving
+            // and flying are answered by the water and the air the party is
+            // standing in, not by a row of chips over the crosshair.
+            this._walkStatusPanel = null;
 
             // Respawn prompt: shown centred when the camper is stuck (in water
             // without float/dive/fly, flipped, or wedged). Hidden by default.
@@ -366,8 +359,6 @@
             // Cache HUD element refs once so the per-frame update() avoids
             // ~10 getElementById lookups every rAF frame.
             this._els = {
-                fuelBar:  document.getElementById('cds-fuel-bar'),
-                fuelTxt:  document.getElementById('cds-fuel-text'),
                 timeEl:   document.getElementById('cds-time-text'),
                 distEl:   document.getElementById('cds-dist-text'),
                 speedEl:  document.getElementById('cds-speed-text'),
@@ -376,7 +367,6 @@
                 abFly:    document.getElementById('cds-ab-fly'),
                 abFloat:  document.getElementById('cds-ab-float'),
                 abDive:   document.getElementById('cds-ab-dive'),
-                abSwim:   document.getElementById('cds-ab-swim'),
                 cmdList:  document.getElementById('cds-cmd-list'),
                 cmdHint:  document.getElementById('cds-cmd-hint'),
                 controllerHint: document.getElementById('cds-controller-hint'),
@@ -467,7 +457,6 @@
             paint(els.abFly,   'abFly',   abilities.fly);
             paint(els.abFloat, 'abFloat', abilities.float);
             paint(els.abDive,  'abDive',  abilities.dive);
-            paint(els.abSwim,  'abSwim',  abilities.swim);
         }
 
         // Vehicle condition % (null hides the chip when the repair plugin is
@@ -499,19 +488,6 @@
             this._heading = heading || 0;
             const els  = this._els || {};
             const last = this._last || (this._last = {});
-            const maxFuel = camperMaxFuel();
-            const fuel    = camperFuelGet();
-            const fuelPct = Math.max(0, Math.min(100, (fuel / maxFuel) * 100));
-            if (els.fuelBar) {
-                const w = fuelPct + '%';
-                if (w !== last.fuelW) { els.fuelBar.style.width = w; last.fuelW = w; }
-                const bg = fuelPct > 50 ? '#4caf50' : fuelPct > 20 ? '#e8c840' : '#c0392b';
-                if (bg !== last.fuelBg) { els.fuelBar.style.background = bg; last.fuelBg = bg; }
-            }
-            if (els.fuelTxt) {
-                const t = fuel <= 0 ? 'OUT OF FUEL' : `${fuel.toFixed(1)} L / ${maxFuel} L`;
-                if (t !== last.fuelTxt) { els.fuelTxt.textContent = t; last.fuelTxt = t; }
-            }
 
             const data      = (typeof $gameSystem !== 'undefined') ? $gameSystem.getFastTravelData() : null;
             const remaining = data ? data.timerRemainingTime : 0;
@@ -925,7 +901,25 @@
             if (!rows || !rows.length) { this._bar.hide(); return; }
             let selected = -1;
             const entries = rows.map((r, i) => {
+                if (!r) return null;
                 if (r.on) selected = i;
+                // A spell cell is the skill's own icon, dimmed while there is
+                // not the magic to pay for it, exactly as the skill menu draws
+                // one the character cannot afford.
+                if (r.spell) {
+                    return {
+                        iconIndex: r.iconIndex || 0, enabled: r.enabled !== false,
+                        label: r.name || ''
+                    };
+                }
+                // A quick-use favourite, with how many are left on it: the same
+                // cell the map's own item bar draws.
+                if (r.item) {
+                    return {
+                        iconIndex: r.iconIndex || 0, enabled: r.enabled !== false,
+                        count: r.count, label: r.name || ''
+                    };
+                }
                 if (r.weapon) {
                     // The sword off the game's own icon sheet rather than a
                     // glyph: every other bar in the game is drawn from it.

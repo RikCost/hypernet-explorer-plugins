@@ -1434,8 +1434,33 @@
     this.syncUIShopState();
   };
 
+  // =============================================================================
+  // 3D weapon preview on the description page
+  // =============================================================================
+  // The viewer is window.Weapon3DPreview, declared by ItemSystemEquipmentUI.js
+  // and shared by every menu that shows a weapon. Exactly one is ever mounted
+  // here -- the shelf can hold hundreds of blades, and one context per line
+  // would exhaust the browser's supply and take the game's own canvas with it.
+
+  Scene_Shop.prototype.mountShopWeaponPreview = function () {
+    const model = this._pendingPreviewModel;
+    this._pendingPreviewModel = null;
+    if (!model || !window.Weapon3DPreview) return;
+    const canvas = document.getElementById("shop-preview-canvas");
+    if (!canvas) return;
+    const entry = window.Weapon3DPreview.mount(canvas, model);
+    this._shopPreviewRenderers = entry ? [entry] : [];
+  };
+
+  Scene_Shop.prototype.cleanupShopWeaponPreview = function () {
+    if (!this._shopPreviewRenderers || !window.Weapon3DPreview) return;
+    window.Weapon3DPreview.disposeAll(this._shopPreviewRenderers);
+    this._shopPreviewRenderers = [];
+  };
+
   const _Scene_Shop_terminate = Scene_Shop.prototype.terminate;
   Scene_Shop.prototype.terminate = function () {
+    this.cleanupShopWeaponPreview();
     this.destroyUIShopDOM();
 
     // Clean up event listeners to avoid memory leaks
@@ -1850,6 +1875,12 @@
     const detailViewport = container.querySelector("#detail-viewport");
     if (detailViewport && (this._renderedDetailItem !== selectedItem || forceListRedraw)) {
       this._renderedDetailItem = selectedItem;
+      // Whatever was being shown is about to be written over, and a WebGL
+      // context that is only dropped on the floor is never given back: the
+      // browser caps how many may live and force-loses the OLDEST, which is the
+      // game's own canvas (see Weapon3DPreview.disposeAll). Every path that
+      // rewrites this panel goes through here, so this is the one release.
+      this.cleanupShopWeaponPreview();
 
       if (selectedItem) {
         const isFood = safe("isFoodItem", () => utils.isFoodItem(selectedItem), false);
@@ -2207,6 +2238,25 @@
           `;
         }
 
+        // A weapon or a shield on the shelf is shown as the model it will be in
+        // the party's hands, not as its icon: the same viewer the equip menu and
+        // the forge mount (window.Weapon3DPreview), asked the same question
+        // through modelFor so a shield -- which is drawn through the weapon
+        // pipeline rather than having a model of its own -- is not missed.
+        // Anything else, and anything on a machine with no three.js, keeps the
+        // icon header it always had.
+        const previewModel = window.Weapon3DPreview
+          ? safe("preview model", () => window.Weapon3DPreview.modelFor(selectedItem), null)
+          : null;
+        this._pendingPreviewModel = previewModel;
+        const previewHTML = previewModel
+          ? `<div class="weapon-previews-container">
+               <div class="weapon-preview-card weapon-preview-card--single">
+                 <canvas id="shop-preview-canvas" width="260" height="240"></canvas>
+               </div>
+             </div>`
+          : "";
+
         detailViewport.innerHTML = `
           <div class="detail-scroll" style="flex: 1; min-height: 0; display: flex; flex-direction: column; overflow-y: auto;">
               <div class="detail-header">
@@ -2215,6 +2265,8 @@
                       <span class="detail-name">${esc(itemName(selectedItem))}</span>
                   </div>
               </div>
+
+              ${previewHTML}
 
               <div class="detail-spec-grid">
                   <div class="detail-spec-badge">
@@ -2243,6 +2295,11 @@
               ${esc(actionLabel)}
           </div>
         `;
+
+        // Mounted after innerHTML rather than before it: the viewer measures the
+        // canvas to size its viewport, and a canvas that is not in the document
+        // yet measures zero.
+        this.mountShopWeaponPreview();
 
         // Bind BUY/SELL action button
         const actBtn = detailViewport.querySelector("#right-action-btn");

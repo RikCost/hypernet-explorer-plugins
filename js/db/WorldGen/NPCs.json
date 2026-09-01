@@ -1359,7 +1359,33 @@
       63
     ],
     "markovDB": "companion",
-    "source": "Animals01Color#0"
+    "source": "Animals01Color#0",
+    "animalGrowth": {
+      "breed": "Cat",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 8000,
+      "sellValue": 4000,
+      "growthDays": 0,
+      "company": 13,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Graveyard",
+        "Landfill"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 22,
+      "ridable": false
+    }
   },
   "Animals/!$Dog1": {
     "varlenian": false,
@@ -1386,7 +1412,34 @@
     ],
     "markovDB": "companion",
     "source": "Animals01Color#1",
-    "dogShop": true
+    "dogShop": true,
+    "animalGrowth": {
+      "breed": "Dog",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 0,
+      "company": 14,
+      "produces": [],
+      "lifespanDays": 4745,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Farm",
+        "Road",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Landfill"
+      ],
+      "wildJoinChance": 25,
+      "ownedJoinChance": 2,
+      "ridable": false
+    }
   },
   "Animals/!$AvianNoble1": {
     "varlenian": false,
@@ -1412,7 +1465,33 @@
       63
     ],
     "markovDB": "companion",
-    "source": "Animals01Color#2"
+    "source": "Animals01Color#2",
+    "animalGrowth": {
+      "breed": "Pigeon",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 1500,
+      "sellValue": 700,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2190,
+      "indoors": false,
+      "biomes": [
+        "City",
+        "Burg",
+        "Village",
+        "Docks",
+        "Park",
+        "Houses",
+        "Metro",
+        "MetroStation",
+        "Ruins"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$Crab": {
     "varlenian": false,
@@ -1438,7 +1517,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "Animals01Color#3"
+    "source": "Animals01Color#3",
+    "animalGrowth": {
+      "breed": "Crab",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 2000,
+      "sellValue": 1000,
+      "growthDays": 0,
+      "company": 1,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": true,
+      "biomes": [
+        "Beach",
+        "Ocean",
+        "SeaBed",
+        "Docks",
+        "Mangrove",
+        "RiverBank",
+        "SeaGrotto",
+        "VillageSea"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Creatures/!$InsectoidBee1": {
     "varlenian": false,
@@ -1493,7 +1597,33 @@
       63
     ],
     "markovDB": "companion",
-    "source": "Animals01#0"
+    "source": "Animals01#0",
+    "animalGrowth": {
+      "breed": "Cat",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 8000,
+      "sellValue": 4000,
+      "growthDays": 0,
+      "company": 13,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Graveyard",
+        "Landfill"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 22,
+      "ridable": false
+    }
   },
   "Animals/!$DogZombie": {
     "varlenian": false,
@@ -1520,7 +1650,34 @@
     ],
     "markovDB": "companion",
     "source": "Animals01#1",
-    "dogShop": true
+    "dogShop": true,
+    "animalGrowth": {
+      "breed": "Dog",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 0,
+      "company": 14,
+      "produces": [],
+      "lifespanDays": 4745,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Farm",
+        "Road",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Landfill"
+      ],
+      "wildJoinChance": 25,
+      "ownedJoinChance": 2,
+      "ridable": false
+    }
   },
   "Creatures/!$ZombieBird": {
     "varlenian": false,
@@ -1572,7 +1729,32 @@
       68
     ],
     "markovDB": "companion",
-    "source": "Animals01#3"
+    "source": "Animals01#3",
+    "animalGrowth": {
+      "breed": "Crab",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 2000,
+      "sellValue": 1000,
+      "growthDays": 0,
+      "company": 1,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": true,
+      "biomes": [
+        "Beach",
+        "Ocean",
+        "SeaBed",
+        "Docks",
+        "Mangrove",
+        "RiverBank",
+        "SeaGrotto",
+        "VillageSea"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Creatures/!$InsectoidBee2": {
     "varlenian": false,
@@ -1627,7 +1809,33 @@
       63
     ],
     "markovDB": "companion",
-    "source": "GrayAnimals01#0"
+    "source": "GrayAnimals01#0",
+    "animalGrowth": {
+      "breed": "Cat",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 8000,
+      "sellValue": 4000,
+      "growthDays": 0,
+      "company": 13,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Graveyard",
+        "Landfill"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 22,
+      "ridable": false
+    }
   },
   "Animals/!$DogTail3": {
     "varlenian": false,
@@ -1654,7 +1862,34 @@
     ],
     "markovDB": "companion",
     "source": "GrayAnimals01#1",
-    "dogShop": true
+    "dogShop": true,
+    "animalGrowth": {
+      "breed": "Dog",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 0,
+      "company": 14,
+      "produces": [],
+      "lifespanDays": 4745,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Farm",
+        "Road",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Landfill"
+      ],
+      "wildJoinChance": 25,
+      "ownedJoinChance": 2,
+      "ridable": false
+    }
   },
   "Animals/!$AvianNoble3": {
     "varlenian": false,
@@ -1680,7 +1915,33 @@
       63
     ],
     "markovDB": "companion",
-    "source": "GrayAnimals01#2"
+    "source": "GrayAnimals01#2",
+    "animalGrowth": {
+      "breed": "Pigeon",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 1500,
+      "sellValue": 700,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2190,
+      "indoors": false,
+      "biomes": [
+        "City",
+        "Burg",
+        "Village",
+        "Docks",
+        "Park",
+        "Houses",
+        "Metro",
+        "MetroStation",
+        "Ruins"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$GrayAnimals014": {
     "varlenian": false,
@@ -1706,7 +1967,33 @@
       63
     ],
     "markovDB": "companion",
-    "source": "GrayAnimals01#3"
+    "source": "GrayAnimals01#3",
+    "animalGrowth": {
+      "breed": "Cat",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 8000,
+      "sellValue": 4000,
+      "growthDays": 0,
+      "company": 13,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Graveyard",
+        "Landfill"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 22,
+      "ridable": false
+    }
   },
   "Creatures/!$InsectoidBee3": {
     "varlenian": false,
@@ -2316,7 +2603,32 @@
       63
     ],
     "markovDB": "zombie_alien",
-    "source": "Dungeon_Monsters2#3"
+    "source": "Dungeon_Monsters2#3",
+    "animalGrowth": {
+      "breed": "Toad",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 1200,
+      "sellValue": 600,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 3650,
+      "indoors": true,
+      "biomes": [
+        "Swamp",
+        "Mangrove",
+        "River",
+        "RiverBank",
+        "Lake",
+        "Jungle",
+        "ForestTropical",
+        "Mushroom"
+      ],
+      "wildJoinChance": 20,
+      "ownedJoinChance": 15,
+      "ridable": false
+    }
   },
   "Creatures/!$Mushroom1": {
     "varlenian": false,
@@ -4208,7 +4520,39 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals01RM#0"
+    "source": "FarmAnimals01RM#0",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$Chick": {
     "varlenian": false,
@@ -4234,7 +4578,39 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals01RM#1"
+    "source": "FarmAnimals01RM#1",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 2000,
+      "sellValue": 1000,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$BigPig": {
     "varlenian": false,
@@ -4260,7 +4636,29 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals01RM#2"
+    "source": "FarmAnimals01RM#2",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 12000,
+      "sellValue": 6000,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$SmallPig": {
     "varlenian": false,
@@ -4286,7 +4684,29 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals01RM#3"
+    "source": "FarmAnimals01RM#3",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$Sheep": {
     "varlenian": false,
@@ -4312,7 +4732,38 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals01RM#4"
+    "source": "FarmAnimals01RM#4",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$FarmAnimals01RM6": {
     "varlenian": false,
@@ -4338,7 +4789,38 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals01RM#5"
+    "source": "FarmAnimals01RM#5",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$BabyCow": {
     "varlenian": false,
@@ -4364,7 +4846,38 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals01RM#6"
+    "source": "FarmAnimals01RM#6",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": false
+    }
   },
   "Animals/!$Cow": {
     "varlenian": false,
@@ -4390,7 +4903,38 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals01RM#7"
+    "source": "FarmAnimals01RM#7",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 30000,
+      "sellValue": 15000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$Horse1": {
     "varlenian": false,
@@ -4416,7 +4960,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals02RM#0"
+    "source": "FarmAnimals02RM#0",
+    "animalGrowth": {
+      "breed": "Horse",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 60000,
+      "sellValue": 30000,
+      "growthDays": 0,
+      "company": 12,
+      "produces": [],
+      "lifespanDays": 10220,
+      "indoors": false,
+      "biomes": [
+        "Fields",
+        "Meadows",
+        "Steppe",
+        "Savannah",
+        "Highlands",
+        "Farm",
+        "Village",
+        "Road"
+      ],
+      "wildJoinChance": 6,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$Horse2": {
     "varlenian": false,
@@ -4442,7 +5011,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals02RM#1"
+    "source": "FarmAnimals02RM#1",
+    "animalGrowth": {
+      "breed": "Horse",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 60000,
+      "sellValue": 30000,
+      "growthDays": 0,
+      "company": 12,
+      "produces": [],
+      "lifespanDays": 10220,
+      "indoors": false,
+      "biomes": [
+        "Fields",
+        "Meadows",
+        "Steppe",
+        "Savannah",
+        "Highlands",
+        "Farm",
+        "Village",
+        "Road"
+      ],
+      "wildJoinChance": 6,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$Horse3": {
     "varlenian": false,
@@ -4468,7 +5062,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals02RM#2"
+    "source": "FarmAnimals02RM#2",
+    "animalGrowth": {
+      "breed": "Horse",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 60000,
+      "sellValue": 30000,
+      "growthDays": 0,
+      "company": 12,
+      "produces": [],
+      "lifespanDays": 10220,
+      "indoors": false,
+      "biomes": [
+        "Fields",
+        "Meadows",
+        "Steppe",
+        "Savannah",
+        "Highlands",
+        "Farm",
+        "Village",
+        "Road"
+      ],
+      "wildJoinChance": 6,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$Horse4": {
     "varlenian": false,
@@ -4494,7 +5113,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals02RM#3"
+    "source": "FarmAnimals02RM#3",
+    "animalGrowth": {
+      "breed": "Horse",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 60000,
+      "sellValue": 30000,
+      "growthDays": 0,
+      "company": 12,
+      "produces": [],
+      "lifespanDays": 10220,
+      "indoors": false,
+      "biomes": [
+        "Fields",
+        "Meadows",
+        "Steppe",
+        "Savannah",
+        "Highlands",
+        "Farm",
+        "Village",
+        "Road"
+      ],
+      "wildJoinChance": 6,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$Horse5": {
     "varlenian": false,
@@ -4520,7 +5164,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals02RM#4"
+    "source": "FarmAnimals02RM#4",
+    "animalGrowth": {
+      "breed": "Horse",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 60000,
+      "sellValue": 30000,
+      "growthDays": 0,
+      "company": 12,
+      "produces": [],
+      "lifespanDays": 10220,
+      "indoors": false,
+      "biomes": [
+        "Fields",
+        "Meadows",
+        "Steppe",
+        "Savannah",
+        "Highlands",
+        "Farm",
+        "Village",
+        "Road"
+      ],
+      "wildJoinChance": 6,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$Horse6": {
     "varlenian": false,
@@ -4546,7 +5215,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals02RM#5"
+    "source": "FarmAnimals02RM#5",
+    "animalGrowth": {
+      "breed": "Horse",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 60000,
+      "sellValue": 30000,
+      "growthDays": 0,
+      "company": 12,
+      "produces": [],
+      "lifespanDays": 10220,
+      "indoors": false,
+      "biomes": [
+        "Fields",
+        "Meadows",
+        "Steppe",
+        "Savannah",
+        "Highlands",
+        "Farm",
+        "Village",
+        "Road"
+      ],
+      "wildJoinChance": 6,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$Horse7": {
     "varlenian": false,
@@ -4572,7 +5266,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals02RM#6"
+    "source": "FarmAnimals02RM#6",
+    "animalGrowth": {
+      "breed": "Horse",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 60000,
+      "sellValue": 30000,
+      "growthDays": 0,
+      "company": 12,
+      "produces": [],
+      "lifespanDays": 10220,
+      "indoors": false,
+      "biomes": [
+        "Fields",
+        "Meadows",
+        "Steppe",
+        "Savannah",
+        "Highlands",
+        "Farm",
+        "Village",
+        "Road"
+      ],
+      "wildJoinChance": 6,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$Horse8": {
     "varlenian": false,
@@ -4598,7 +5317,32 @@
       63
     ],
     "markovDB": "companion",
-    "source": "FarmAnimals02RM#7"
+    "source": "FarmAnimals02RM#7",
+    "animalGrowth": {
+      "breed": "Horse",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 60000,
+      "sellValue": 30000,
+      "growthDays": 0,
+      "company": 12,
+      "produces": [],
+      "lifespanDays": 10220,
+      "indoors": false,
+      "biomes": [
+        "Fields",
+        "Meadows",
+        "Steppe",
+        "Savannah",
+        "Highlands",
+        "Farm",
+        "Village",
+        "Road"
+      ],
+      "wildJoinChance": 6,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "NPCs/!$ArcticWorker1": {
     "varlenian": false,
@@ -26434,7 +27178,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 2000,
+      "sellValue": 1000,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Chicken_1": {
     "varlenian": false,
@@ -26459,7 +27235,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Chicken_2": {
     "varlenian": false,
@@ -26484,7 +27292,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Chicken_3": {
     "varlenian": false,
@@ -26509,7 +27349,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Chicken_4": {
     "varlenian": false,
@@ -26534,7 +27406,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Chicken_5": {
     "varlenian": false,
@@ -26559,7 +27463,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Chicken_6": {
     "varlenian": false,
@@ -26584,7 +27520,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Chicken_7": {
     "varlenian": false,
@@ -26609,7 +27577,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Chicken_Old": {
     "varlenian": false,
@@ -26634,7 +27634,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Chicken",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 7,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1791,
+          "interval": 1,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageSea",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Cow": {
     "varlenian": false,
@@ -26659,7 +27691,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 30000,
+      "sellValue": 15000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Cow_Baby_1": {
     "varlenian": false,
@@ -26684,7 +27747,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Cow_Baby_2": {
     "varlenian": false,
@@ -26709,7 +27803,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Cow_Big": {
     "varlenian": false,
@@ -26734,7 +27859,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 30000,
+      "sellValue": 15000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Cow_Big_2": {
     "varlenian": false,
@@ -26759,7 +27915,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 30000,
+      "sellValue": 15000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Cow_Big_3": {
     "varlenian": false,
@@ -26784,7 +27971,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 30000,
+      "sellValue": 15000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Cow_Big_4": {
     "varlenian": false,
@@ -26809,7 +28027,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 30000,
+      "sellValue": 15000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Cow_Big_5": {
     "varlenian": false,
@@ -26834,7 +28083,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Cow",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 30000,
+      "sellValue": 15000,
+      "growthDays": 14,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 438,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 7300,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Savannah",
+        "Village"
+      ],
+      "wildJoinChance": 5,
+      "ownedJoinChance": 4,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Dog_Basenji": {
     "varlenian": false,
@@ -26860,7 +28140,34 @@
       63
     ],
     "markovDB": "companion",
-    "dogShop": true
+    "dogShop": true,
+    "animalGrowth": {
+      "breed": "Dog",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 0,
+      "company": 14,
+      "produces": [],
+      "lifespanDays": 4745,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Farm",
+        "Road",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Landfill"
+      ],
+      "wildJoinChance": 25,
+      "ownedJoinChance": 2,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Dog_German_Shepherd": {
     "varlenian": false,
@@ -26886,7 +28193,34 @@
       63
     ],
     "markovDB": "companion",
-    "dogShop": true
+    "dogShop": true,
+    "animalGrowth": {
+      "breed": "Dog",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 0,
+      "company": 14,
+      "produces": [],
+      "lifespanDays": 4745,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Farm",
+        "Road",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Landfill"
+      ],
+      "wildJoinChance": 25,
+      "ownedJoinChance": 2,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Dog_Labrador": {
     "varlenian": false,
@@ -26912,7 +28246,34 @@
       63
     ],
     "markovDB": "companion",
-    "dogShop": true
+    "dogShop": true,
+    "animalGrowth": {
+      "breed": "Dog",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 0,
+      "company": 14,
+      "produces": [],
+      "lifespanDays": 4745,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Farm",
+        "Road",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Landfill"
+      ],
+      "wildJoinChance": 25,
+      "ownedJoinChance": 2,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Dog_Shepherd": {
     "varlenian": false,
@@ -26938,7 +28299,34 @@
       63
     ],
     "markovDB": "companion",
-    "dogShop": true
+    "dogShop": true,
+    "animalGrowth": {
+      "breed": "Dog",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 0,
+      "company": 14,
+      "produces": [],
+      "lifespanDays": 4745,
+      "indoors": true,
+      "biomes": [
+        "Village",
+        "Burg",
+        "City",
+        "Houses",
+        "Farm",
+        "Road",
+        "Docks",
+        "Park",
+        "Ruins",
+        "Landfill"
+      ],
+      "wildJoinChance": 25,
+      "ownedJoinChance": 2,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Donkey": {
     "varlenian": false,
@@ -26963,7 +28351,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Donkey",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 14,
+      "company": 8,
+      "produces": [],
+      "lifespanDays": 10950,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Desert",
+        "MountainDesert",
+        "Steppe",
+        "Badlands",
+        "VillageDesert",
+        "Highway"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 7,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Donkey_2": {
     "varlenian": false,
@@ -26988,7 +28401,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Donkey",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 14,
+      "company": 8,
+      "produces": [],
+      "lifespanDays": 10950,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Desert",
+        "MountainDesert",
+        "Steppe",
+        "Badlands",
+        "VillageDesert",
+        "Highway"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 7,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Donkey_3": {
     "varlenian": false,
@@ -27013,7 +28451,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Donkey",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 14,
+      "company": 8,
+      "produces": [],
+      "lifespanDays": 10950,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Desert",
+        "MountainDesert",
+        "Steppe",
+        "Badlands",
+        "VillageDesert",
+        "Highway"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 7,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Donkey_4": {
     "varlenian": false,
@@ -27038,7 +28501,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Donkey",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 14,
+      "company": 8,
+      "produces": [],
+      "lifespanDays": 10950,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Desert",
+        "MountainDesert",
+        "Steppe",
+        "Badlands",
+        "VillageDesert",
+        "Highway"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 7,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Donkey_Baby_1": {
     "varlenian": false,
@@ -27063,7 +28551,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Donkey",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 8000,
+      "sellValue": 4000,
+      "growthDays": 14,
+      "company": 8,
+      "produces": [],
+      "lifespanDays": 10950,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Desert",
+        "MountainDesert",
+        "Steppe",
+        "Badlands",
+        "VillageDesert",
+        "Highway"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 7,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Donkey_Baby_2": {
     "varlenian": false,
@@ -27088,7 +28601,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Donkey",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 8000,
+      "sellValue": 4000,
+      "growthDays": 14,
+      "company": 8,
+      "produces": [],
+      "lifespanDays": 10950,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Desert",
+        "MountainDesert",
+        "Steppe",
+        "Badlands",
+        "VillageDesert",
+        "Highway"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 7,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Donkey_Front_Ears_Up": {
     "varlenian": false,
@@ -27113,7 +28651,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Donkey",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 20000,
+      "sellValue": 10000,
+      "growthDays": 14,
+      "company": 8,
+      "produces": [],
+      "lifespanDays": 10950,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Desert",
+        "MountainDesert",
+        "Steppe",
+        "Badlands",
+        "VillageDesert",
+        "Highway"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 7,
+      "ridable": true
+    }
   },
   "Animals/!$MV_Duck_1": {
     "varlenian": false,
@@ -27138,7 +28701,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Duck",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 5,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1792,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 3650,
+      "indoors": false,
+      "biomes": [
+        "Lake",
+        "River",
+        "RiverBank",
+        "Swamp",
+        "Mangrove",
+        "Farm",
+        "Fields",
+        "VillageRiver"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Duck_2": {
     "varlenian": false,
@@ -27163,7 +28758,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Duck",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 5,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1792,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 3650,
+      "indoors": false,
+      "biomes": [
+        "Lake",
+        "River",
+        "RiverBank",
+        "Swamp",
+        "Mangrove",
+        "Farm",
+        "Fields",
+        "VillageRiver"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Duck_3": {
     "varlenian": false,
@@ -27188,7 +28815,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Duck",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 5,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1792,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 3650,
+      "indoors": false,
+      "biomes": [
+        "Lake",
+        "River",
+        "RiverBank",
+        "Swamp",
+        "Mangrove",
+        "Farm",
+        "Fields",
+        "VillageRiver"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Duck_4": {
     "varlenian": false,
@@ -27213,7 +28872,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Duck",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 5,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1792,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 3650,
+      "indoors": false,
+      "biomes": [
+        "Lake",
+        "River",
+        "RiverBank",
+        "Swamp",
+        "Mangrove",
+        "Farm",
+        "Fields",
+        "VillageRiver"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Duckling_1": {
     "varlenian": false,
@@ -27238,7 +28929,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Duck",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 1500,
+      "sellValue": 750,
+      "growthDays": 5,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1792,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 3650,
+      "indoors": false,
+      "biomes": [
+        "Lake",
+        "River",
+        "RiverBank",
+        "Swamp",
+        "Mangrove",
+        "Farm",
+        "Fields",
+        "VillageRiver"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Duckling_2": {
     "varlenian": false,
@@ -27263,7 +28986,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Duck",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 1500,
+      "sellValue": 750,
+      "growthDays": 5,
+      "company": 3,
+      "produces": [
+        {
+          "itemId": 1792,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 3650,
+      "indoors": false,
+      "biomes": [
+        "Lake",
+        "River",
+        "RiverBank",
+        "Swamp",
+        "Mangrove",
+        "Farm",
+        "Fields",
+        "VillageRiver"
+      ],
+      "wildJoinChance": 12,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Goat_1": {
     "varlenian": false,
@@ -27288,7 +29043,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Goat",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 15000,
+      "sellValue": 7500,
+      "growthDays": 10,
+      "company": 6,
+      "produces": [
+        {
+          "itemId": 1793,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Highlands",
+        "Mountain",
+        "MountainDesert",
+        "Steppe",
+        "VillageMountain",
+        "Badlands"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Goat_2": {
     "varlenian": false,
@@ -27313,7 +29100,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Goat",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 15000,
+      "sellValue": 7500,
+      "growthDays": 10,
+      "company": 6,
+      "produces": [
+        {
+          "itemId": 1793,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Highlands",
+        "Mountain",
+        "MountainDesert",
+        "Steppe",
+        "VillageMountain",
+        "Badlands"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Goat_3": {
     "varlenian": false,
@@ -27338,7 +29157,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Goat",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 15000,
+      "sellValue": 7500,
+      "growthDays": 10,
+      "company": 6,
+      "produces": [
+        {
+          "itemId": 1793,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Highlands",
+        "Mountain",
+        "MountainDesert",
+        "Steppe",
+        "VillageMountain",
+        "Badlands"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Goat_4": {
     "varlenian": false,
@@ -27363,7 +29214,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Goat",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 15000,
+      "sellValue": 7500,
+      "growthDays": 10,
+      "company": 6,
+      "produces": [
+        {
+          "itemId": 1793,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Highlands",
+        "Mountain",
+        "MountainDesert",
+        "Steppe",
+        "VillageMountain",
+        "Badlands"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Goat_Baby_1": {
     "varlenian": false,
@@ -27388,7 +29271,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Goat",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 6000,
+      "sellValue": 3000,
+      "growthDays": 10,
+      "company": 6,
+      "produces": [
+        {
+          "itemId": 1793,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Highlands",
+        "Mountain",
+        "MountainDesert",
+        "Steppe",
+        "VillageMountain",
+        "Badlands"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Goat_Baby_2": {
     "varlenian": false,
@@ -27413,7 +29328,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Goat",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 6000,
+      "sellValue": 3000,
+      "growthDays": 10,
+      "company": 6,
+      "produces": [
+        {
+          "itemId": 1793,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Highlands",
+        "Mountain",
+        "MountainDesert",
+        "Steppe",
+        "VillageMountain",
+        "Badlands"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Goat_Old": {
     "varlenian": false,
@@ -27438,7 +29385,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Goat",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 15000,
+      "sellValue": 7500,
+      "growthDays": 10,
+      "company": 6,
+      "produces": [
+        {
+          "itemId": 1793,
+          "interval": 2,
+          "yieldMin": 1,
+          "yieldMax": 2
+        }
+      ],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Highlands",
+        "Mountain",
+        "MountainDesert",
+        "Steppe",
+        "VillageMountain",
+        "Badlands"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 8,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Pig_1": {
     "varlenian": false,
@@ -27463,7 +29442,29 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 12000,
+      "sellValue": 6000,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Pig_2": {
     "varlenian": false,
@@ -27488,7 +29489,29 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 12000,
+      "sellValue": 6000,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Pig_3": {
     "varlenian": false,
@@ -27513,7 +29536,29 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 12000,
+      "sellValue": 6000,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Pig_4": {
     "varlenian": false,
@@ -27538,7 +29583,29 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 12000,
+      "sellValue": 6000,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Pig_5": {
     "varlenian": false,
@@ -27563,7 +29630,29 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 12000,
+      "sellValue": 6000,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Piglet_1": {
     "varlenian": false,
@@ -27588,7 +29677,29 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Piglet_2": {
     "varlenian": false,
@@ -27613,7 +29724,29 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Pig",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 5000,
+      "sellValue": 2500,
+      "growthDays": 10,
+      "company": 7,
+      "produces": [],
+      "lifespanDays": 5475,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Forest",
+        "Village",
+        "Swamp"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 5,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_1": {
     "varlenian": false,
@@ -27638,7 +29771,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 3000,
+      "sellValue": 1500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_2": {
     "varlenian": false,
@@ -27663,7 +29828,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 3000,
+      "sellValue": 1500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_3": {
     "varlenian": false,
@@ -27688,7 +29885,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 3000,
+      "sellValue": 1500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_4": {
     "varlenian": false,
@@ -27713,7 +29942,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 3000,
+      "sellValue": 1500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_5": {
     "varlenian": false,
@@ -27738,7 +29999,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 3000,
+      "sellValue": 1500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_6": {
     "varlenian": false,
@@ -27763,7 +30056,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 3000,
+      "sellValue": 1500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_Baby_1": {
     "varlenian": false,
@@ -27788,7 +30113,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 1000,
+      "sellValue": 500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_Baby_2": {
     "varlenian": false,
@@ -27813,7 +30170,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 1000,
+      "sellValue": 500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rabbit_Baby_3": {
     "varlenian": false,
@@ -27838,7 +30227,39 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rabbit",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 1000,
+      "sellValue": 500,
+      "growthDays": 5,
+      "company": 8,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 4,
+          "yieldMin": 1,
+          "yieldMax": 1
+        }
+      ],
+      "lifespanDays": 3285,
+      "indoors": true,
+      "biomes": [
+        "Meadows",
+        "Fields",
+        "Forest",
+        "Taiga",
+        "Tundra",
+        "Highlands",
+        "Farm",
+        "Park"
+      ],
+      "wildJoinChance": 15,
+      "ownedJoinChance": 10,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rooster_1": {
     "varlenian": false,
@@ -27863,7 +30284,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rooster",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageMountain",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rooster_2": {
     "varlenian": false,
@@ -27888,7 +30334,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rooster",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageMountain",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rooster_3": {
     "varlenian": false,
@@ -27913,7 +30384,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rooster",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageMountain",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rooster_4": {
     "varlenian": false,
@@ -27938,7 +30434,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rooster",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageMountain",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rooster_5": {
     "varlenian": false,
@@ -27963,7 +30484,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rooster",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageMountain",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rooster_6": {
     "varlenian": false,
@@ -27988,7 +30534,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rooster",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageMountain",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Rooster_7": {
     "varlenian": false,
@@ -28013,7 +30584,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Rooster",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2920,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Village",
+        "VillageRiver",
+        "VillageMountain",
+        "Houses",
+        "Burg"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_1": {
     "varlenian": false,
@@ -28038,7 +30634,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_10": {
     "varlenian": false,
@@ -28063,7 +30690,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_11": {
     "varlenian": false,
@@ -28088,7 +30746,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_2": {
     "varlenian": false,
@@ -28113,7 +30802,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_3": {
     "varlenian": false,
@@ -28138,7 +30858,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_4": {
     "varlenian": false,
@@ -28163,7 +30914,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_5": {
     "varlenian": false,
@@ -28188,7 +30970,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_6": {
     "varlenian": false,
@@ -28213,7 +31026,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_7": {
     "varlenian": false,
@@ -28238,7 +31082,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_8": {
     "varlenian": false,
@@ -28263,7 +31138,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_9": {
     "varlenian": false,
@@ -28288,7 +31194,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "adult",
+      "hasBaby": true,
+      "buyCost": 10000,
+      "sellValue": 5000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_Baby_1": {
     "varlenian": false,
@@ -28313,7 +31250,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$MV_Sheep_Baby_2": {
     "varlenian": false,
@@ -28338,7 +31306,38 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Sheep",
+      "stage": "baby",
+      "hasBaby": true,
+      "buyCost": 4000,
+      "sellValue": 2000,
+      "growthDays": 10,
+      "company": 5,
+      "produces": [
+        {
+          "itemId": 861,
+          "interval": 3,
+          "yieldMin": 1,
+          "yieldMax": 3
+        }
+      ],
+      "lifespanDays": 4380,
+      "indoors": false,
+      "biomes": [
+        "Farm",
+        "Fields",
+        "Meadows",
+        "Highlands",
+        "Steppe",
+        "Tundra",
+        "VillageMountain"
+      ],
+      "wildJoinChance": 10,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   },
   "Animals/!$Pigeon": {
     "varlenian": false,
@@ -28363,6 +31362,32 @@
     "classes": [
       63
     ],
-    "markovDB": "companion"
+    "markovDB": "companion",
+    "animalGrowth": {
+      "breed": "Pigeon",
+      "stage": "adult",
+      "hasBaby": false,
+      "buyCost": 1500,
+      "sellValue": 700,
+      "growthDays": 0,
+      "company": 2,
+      "produces": [],
+      "lifespanDays": 2190,
+      "indoors": false,
+      "biomes": [
+        "City",
+        "Burg",
+        "Village",
+        "Docks",
+        "Park",
+        "Houses",
+        "Metro",
+        "MetroStation",
+        "Ruins"
+      ],
+      "wildJoinChance": 8,
+      "ownedJoinChance": 6,
+      "ridable": false
+    }
   }
 }

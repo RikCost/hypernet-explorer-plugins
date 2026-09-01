@@ -2213,7 +2213,7 @@
             let line = text;
             const EM = window.NPCEmpathize;
             if (npcName && EM?.isNonSentientNPC?.(npcName)) {
-                line = EM.growlFor(line) || line;
+                line = EM.growlFor(line, npcName) || line;
             }
             if (npcName) EM?.recordNPCLine?.(npcName, line);
             return line;

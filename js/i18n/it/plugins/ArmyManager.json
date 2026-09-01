@@ -43,7 +43,7 @@
   "assignOfficer": "Assegna ufficiale",
   "emptyArmy": "Il tuo esercito è vuoto. Cerca i punti di reclutamento del posto per ingaggiare mercenari!",
   "ledByCommander": "Al comando: {name} (+8% alle statistiche)",
-  "dossierHint": "Scegli una truppa dalla lista a destra per aprirne il dossier militare e controllare i bonus di comando attivi.",
+  "dossierHint": "Scegli una truppa dal ruolino per aprirne il dossier militare e controllare i bonus di comando attivi.",
   "regimentalBreakdown": "Composizione del reggimento",
   "noLocalTroops": "A queste coordinate non ci sono truppe da ingaggiare.",
   "recruitHint": "Scegli un mercenario dalla pagina di destra per vederne il dossier e il compenso richiesto.",
@@ -63,5 +63,7 @@
   "regimentLabel": "Reggimento:",
   "manualFooter": "Manuale d'Esercito Mount & Blade ✦ Esoteric Industries",
   "clickToRecruit": "Clicca per ingaggiare",
-  "cannotAfford": "Fondi insufficienti"
+  "cannotAfford": "Fondi insufficienti",
+  "combatStatistics": "Statistiche di combattimento",
+  "release": "Congeda"
 }

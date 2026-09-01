@@ -776,7 +776,27 @@
         tundra:   { farm: 0.00, cottage: 0.02 },
     };
 
+    // How big an open-ocean island has to be before anybody would live on one,
+    // and how many of those actually have somebody on them. A sandbar gets
+    // nothing; the two largest sizes are worth a cottage.
+    const ISLE_HOUSE_MIN_SIZE = 3;
+    const ISLE_HOUSE_CHANCE   = 0.45;
+
+    // The island a square carries, if it is one of the rare open-ocean ones and
+    // it is big enough to build on. Null everywhere else, which is all the land
+    // in the world and nearly all of the sea.
+    function islandHouseAt(wx, wy) {
+        const isl = VW.oceanIslandOf ? VW.oceanIslandOf(wx, wy) : null;
+        if (!isl || isl.size < ISLE_HOUSE_MIN_SIZE) return null;
+        if (settleRnd(wx, wy, 9411) >= ISLE_HOUSE_CHANCE) return null;
+        return isl;
+    }
+
     function steadingKindAt(wx, wy) {
+        // Somebody's house out on a rock in the ocean. It is a cottage like any
+        // other, so everything downstream - the walls, the door, the furnished
+        // rooms - works on it without knowing where it stands.
+        if (islandHouseAt(wx, wy)) return 'cottage';
         const odds = STEADING_ODDS[profileFor(sampleBiomeAt(wx, wy).name).key];
         if (!odds) return null;
         const r = settleRnd(wx, wy, 9101);
@@ -802,9 +822,12 @@
         };
 
         // The yard, set down clear of the square's edges so it never straddles
-        // two, and turned a quarter round half the time.
-        const cx = (rnd() - 0.5) * ts * 0.40;
-        const cz = (rnd() - 0.5) * ts * 0.40;
+        // two, and turned a quarter round half the time. On an island it stands
+        // in the MIDDLE of the island instead, which is the only dry ground
+        // there is: the square is open sea everywhere else.
+        const isle = islandHouseAt(wx, wy);
+        const cx = isle ? isle.cx - (wx + 0.5) * ts : (rnd() - 0.5) * ts * 0.40;
+        const cz = isle ? isle.cz - (wy + 0.5) * ts : (rnd() - 0.5) * ts * 0.40;
         const turn = rnd() < 0.5 ? 0 : 1;    // 0: the yard runs east-west
         const put = (ox, oz, w, d, o) => {
             const lot = Object.assign({
@@ -896,15 +919,17 @@
         return plan;
     }
 
+    const HOUSE_BASE_LIFT = 1.0;
+
     // The height whatever is built on a square stands at: a town is a level pad
     // with its pavement on top, a lone structure sits on its own patch of ground.
     function planBaseY(plan, tx, tz, heightAt) {
-        if (!plan) return heightAt(tx + 0.5, tz + 0.5);
+        if (!plan) return heightAt(tx + 0.5, tz + 0.5) + HOUSE_BASE_LIFT;
         if ((plan.abandoned || plan.steading) && plan.lots.length) {
             const lot = plan.lots[0];
-            return heightAt(tx + 0.5 + lot.x / WORLD_TILE_SIZE, tz + 0.5 + lot.z / WORLD_TILE_SIZE);
+            return heightAt(tx + 0.5 + lot.x / WORLD_TILE_SIZE, tz + 0.5 + lot.z / WORLD_TILE_SIZE) + HOUSE_BASE_LIFT;
         }
-        return heightAt(tx + 0.5, tz + 0.5) + (plan.paveH || 0);
+        return heightAt(tx + 0.5, tz + 0.5) + (plan.paveH || 0) + HOUSE_BASE_LIFT;
     }
 
     // =========================================================================

@@ -15,7 +15,13 @@
     "key": "E",
     "talk": "{key}  Talk to {name}",
     "loot": "{key}  Search the {name}",
-    "board": "{key}  Climb into the camper"
+    "board": "{key}  Climb into the camper",
+    "fish": "{key}  Cast a line",
+    "chest": {
+      "item": "{key}  Open the supply chest",
+      "armor": "{key}  Open the armour chest",
+      "weapon": "{key}  Open the weapon chest"
+    }
   },
   "enemy": {
     "level": "L. {n}"
@@ -92,5 +98,7 @@
   "driverSave": {
     "avoided": "[Driver DEX save: {roll}{mod}={total}] Expertly countersteered, crash avoided!",
     "failed": "[Driver DEX save: {roll}{mod}={total} vs DC {dc}] Reflex save failed, the vehicle hits!"
-  }
+  },
+  "maintenance": "Vehicle maintenance",
+  "refuel": "Refuel from the cans"
 }

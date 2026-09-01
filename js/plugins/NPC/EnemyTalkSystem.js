@@ -433,59 +433,38 @@
     Scene_Battle.prototype.openTalkMenu = function () {
         const alive = $gameTroop.aliveMembers();
         if (alive.length > 1 && this._enemyWindow) {
-            this._selectTalkTarget();
+            this._talkSelecting = true;
+            this.startEnemySelection();
             return;
         }
         this._openTalkPanel();
     };
 
-    Scene_Battle.prototype._selectTalkTarget = function () {
-        // The picker hides the actor's command list itself and puts it back if
-        // the choice is backed out of (BattleSystemEnhancedHUD.js), which is
-        // exactly what a single-target skill gets: the same chevron over the
-        // monster and the same named rows where the commands were.
-        this._partyCommandWindow.deactivate();
-        this._partyCommandWindow.hide();
-
-        this._enemyWindow.refresh();
-        this._enemyWindow.show();
-        this._enemyWindow.setHandler('ok', this._onTalkTargetOk.bind(this));
-        this._enemyWindow.setHandler('cancel', this._onTalkTargetCancel.bind(this));
-        this._enemyWindow.select(0);
-        this._enemyWindow.activate();
-    };
-
-    // Hands the enemy window back to the vanilla single-target action flow
-    // it belongs to the rest of the time.
-    Scene_Battle.prototype._restoreEnemyWindowHandlers = function () {
-        if (!this._enemyWindow) return;
-        this._enemyWindow.setHandler('ok', this.onEnemyOk.bind(this));
-        this._enemyWindow.setHandler('cancel', this.onEnemyCancel.bind(this));
-    };
-
-    Scene_Battle.prototype._onTalkTargetOk = function () {
-        const enemy = this._enemyWindow.enemy();
-        this._enemyWindow.hide();
-        this._enemyWindow.deactivate();
-        this._restoreEnemyWindowHandlers();
-        this._talkEnemyRef = enemy || null;
-        // Consumed once by _buildTalkOptions, so the hand-picked target isn't
-        // immediately overwritten by the automatic resolver the panel it
-        // opens would otherwise re-pin.
-        this._talkTargetManuallyPicked = !!enemy;
-        this._openTalkPanel();
-    };
-
-    Scene_Battle.prototype._onTalkTargetCancel = function () {
-        this._enemyWindow.hide();
-        this._enemyWindow.deactivate();
-        this._restoreEnemyWindowHandlers();
-        this._actorCommandWindow.show();
-        this._actorCommandWindow.activate();
-        if (this._talkInterpreter && this._talkInterpreter._waitMode === 'talk') {
-            this._talkInterpreter.setWaitMode('');
-            this._talkInterpreter = null;
+    const _SB_onEnemyOk_TALK = Scene_Battle.prototype.onEnemyOk;
+    Scene_Battle.prototype.onEnemyOk = function () {
+        if (this._talkSelecting) {
+            this._talkSelecting = false;
+            const enemy = this._enemyWindow ? this._enemyWindow.enemy() : null;
+            if (this._enemyWindow) { this._enemyWindow.hide(); this._enemyWindow.deactivate(); }
+            this._talkEnemyRef = enemy || null;
+            this._talkTargetManuallyPicked = !!enemy;
+            this._openTalkPanel();
+            return;
         }
+        _SB_onEnemyOk_TALK.call(this);
+    };
+
+    const _SB_onEnemyCancel_TALK = Scene_Battle.prototype.onEnemyCancel;
+    Scene_Battle.prototype.onEnemyCancel = function () {
+        if (this._talkSelecting) {
+            this._talkSelecting = false;
+            if (this._talkInterpreter && this._talkInterpreter._waitMode === 'talk') {
+                this._talkInterpreter.setWaitMode('');
+                this._talkInterpreter = null;
+            }
+            return;
+        }
+        _SB_onEnemyCancel_TALK.call(this);
     };
 
     Scene_Battle.prototype._openTalkPanel = function () {

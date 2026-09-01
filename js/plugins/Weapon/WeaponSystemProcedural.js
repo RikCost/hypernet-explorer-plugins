@@ -1281,19 +1281,37 @@ var WeaponSystemProcedural = {
   },
 
   /** Starts a firing sequence. Called when a firing animation is played. */
-  beginGunFire(model, weapon) {
+  /**
+   * Fits a gun out to fire, on the clock its own recoil clip runs on.
+   *
+   * @param {number} [duration] - the finished clip's length in ms. The rounds
+   *   are timed off it, because the flash, the action and the case belong to
+   *   the frame the gun KICKS on: MOTIONS.recoil puts round i's kick at
+   *   (i + 0.15) / shots of the clip, and firing on the profile's own rate
+   *   instead (which starts every gun at t=0) lit the muzzle a fifth of a
+   *   second before the weapon moved, and walked a burst out of step with the
+   *   kicks it was supposed to be causing.
+   */
+  beginGunFire(model, weapon, duration) {
     if (!model) return;
     const profile = this.gunProfileFor(weapon);
     const m = this.weaponMetrics(weapon, model);
+    const count = Math.max(1, profile.shots);
     const shots = [];
-    for (let i = 0; i < profile.shots; i++) shots.push(i * (profile.rate || 0));
+    for (let i = 0; i < count; i++) {
+      shots.push(duration
+        ? duration * (i + 0.15) / count
+        : i * (profile.rate || 0));
+    }
+    // A heavy action takes longer to cycle than a light one, but never longer
+    // than the gap to the next round or a burst cycles on top of itself.
+    const gap = shots.length > 1 ? shots[1] - shots[0] : Infinity;
     model._gunFire = {
       elapsed: 0,
       shots: shots,
       next: 0,
       profile: profile,
-      // A heavy action takes longer to cycle than a light one.
-      cycleMs: 90 + m.heft * 130,
+      cycleMs: Math.max(50, Math.min(90 + m.heft * 130, gap * 0.9)),
       flashUntil: -1,
       seed: Math.random() * 6.28
     };
@@ -2011,35 +2029,35 @@ var WeaponSystemProcedural = {
   // taller than the screen. Each weapon type declares the share of the screen
   // height its widest visible dimension should cover.
   screenFractionFor(weapon) {
-    if (!weapon) return 0.60;
-    if (weapon.isWhip) return 0.74;
-    if (weapon.isFlail) return 0.70;
+    if (!weapon) return 0.81;
+    if (weapon.isWhip) return 1.00;
+    if (weapon.isFlail) return 0.95;
     // An unarmed fist is measured with its forearm attached (Weapon3D_Unarmed
     // _uArm), so its widest extent is roughly 3-4x a bare hand's: fitted this
     // large, the fist itself lands at about the size a held Glove weapon
     // reads at while the forearm runs on past the bottom edge of the screen,
     // rather than a held weapon's grip simply floating at the anchor.
-    if (weapon.unarmedArchetype) return 1.55;
+    if (weapon.unarmedArchetype) return 2.10;
     switch (weapon.wtypeId) {
-      case 1:  return 0.46; // Light (dagger)
-      case 2:  return 0.66; // Sword
-      case 3:  return 0.72; // Heavy
-      case 4:  return 0.70; // Axe
-      case 5:  return 0.74; // Whip
-      case 6:  return 0.84; // Staff
+      case 1:  return 0.62; // Light (dagger)
+      case 2:  return 0.89; // Sword
+      case 3:  return 0.97; // Heavy
+      case 4:  return 0.95; // Axe
+      case 5:  return 1.00; // Whip
+      case 6:  return 1.13; // Staff
       // A bow is the tallest thing anyone carries, and it is held out at
       // arm's length rather than tucked in like a gun: drawn any smaller it
       // reads as a twig at the edge of the frame. A crossbow is a shoulder
       // weapon of ordinary size and keeps the old figure.
-      case 7:  return weapon.isCrossbow ? 0.62 : 0.86;
+      case 7:  return weapon.isCrossbow ? 0.84 : 1.16;
       // Thrown weapons are small in the hand; a crossbow filed in the same
       // rack is not one of them.
-      case 8:  return weapon.isCrossbow ? 0.62 : 0.34;
-      case 9:  return 0.58; // Gun (first-person)
-      case 10: return 0.42; // Claw
-      case 11: return 0.40; // Glove
-      case 12: return 0.84; // Spear
-      default: return 0.60;
+      case 8:  return weapon.isCrossbow ? 0.84 : 0.46;
+      case 9:  return 0.78; // Gun (first-person)
+      case 10: return 0.57; // Claw
+      case 11: return 0.54; // Glove
+      case 12: return 1.13; // Spear
+      default: return 0.81;
     }
   },
 
@@ -3098,10 +3116,10 @@ var WeaponSystemProcedural = {
     const m = this.weaponMetrics(weapon, model);
     const H = (typeof Graphics !== 'undefined' && Graphics.height) ? Graphics.height : 624;
     if (motion.kind === 'recoil') {
-      // The class profile decides the shape of the kick and how many rounds
-      // go out; the model's own parts are told to cycle in step with it.
+      // The class profile decides the shape of the kick and how many rounds go
+      // out. The model's own parts are started further down, once the clip has
+      // a finished length to cycle against.
       motion = Object.assign({}, motion, { profile: this.gunProfileFor(weapon) });
-      if (model) this.beginGunFire(model, weapon);
     }
     const clip = build.call(this, m, motion, H);
     if (motion.pace && Number.isFinite(motion.pace) && !this.TIMED_MOTIONS[motion.kind]) {
@@ -3110,17 +3128,72 @@ var WeaponSystemProcedural = {
     // Shaken before anything is driven off the finished length, so the parts
     // that run on this clip's own clock run on the length it actually got.
     this.jitterClip(clip, weapon, !!this.TIMED_MOTIONS[motion.kind]);
+    // After the shake, never before it: the hold is two frames that have to be
+    // the SAME pose, and jittering them apart is what turns a stop into a
+    // wobble. Paced and accented here rather than in each of the thirty motion
+    // builders.
+    if (!this.TIMED_MOTIONS[motion.kind]) this.accentClip(clip, m, motion);
     // The blade has to leave the shaft on the same clock the shaft is moving
     // on, so the draw is started from the finished clip's own duration.
     if (motion.kind === 'swordcane' && model) this.beginCaneDraw(model, clip.duration);
     // The hand tightening into the blow it is throwing, on the same clock the
     // arm is travelling on.
     if (motion.kind === 'punch' && model) this.beginPunch(model, clip.duration);
+    // The muzzle flash, the action and the case, on the clock the kicks are
+    // on: same reason as the punch and the bow below.
+    if (motion.kind === 'recoil' && model) {
+      this.beginGunFire(model, weapon, clip.duration);
+    }
     // Same clock for the string, the limbs and the arrow: the hand kicks on
     // the frame they let go.
     if ((motion.kind === 'draw' || motion.kind === 'crossbow') && model) {
       this.beginBowShot(model, weapon, clip.duration);
     }
+    return clip;
+  },
+
+  // How much longer than it was authored a swung blow now takes. Monster
+  // Hunter's blows are slow: the weight of the thing is sold by how long it
+  // takes to come round, and a fast swing reads as a wave rather than a hit.
+  ATTACK_PACE: 1.2,
+  // The contact hold, as a fraction of the clip. The pose stops on the frame
+  // the blow lands and does not move for a moment before the follow through
+  // starts. This is the single thing that makes a hit feel like it met
+  // something, and it costs two keyframes.
+  ATTACK_HOLD: 0.055,
+
+  /**
+   * Pace and accent a finished attack clip: stretch it, then stop it dead on
+   * the contact and let it come out of that a fraction harder.
+   *
+   * The contact is whichever frame reaches furthest from rest, which is the
+   * same frame the re-aim points at the enemy and the same one the hit effect
+   * takes its timing from, so all three agree about where the blow lands.
+   */
+  accentClip(clip, m, motion) {
+    if (!clip || !clip.frames || clip.frames.length < 3) return clip;
+    clip.duration *= this.ATTACK_PACE;
+
+    let best = -1, bestReach = -1;
+    clip.frames.forEach((f, i) => {
+      const reach = (f.x || 0) * (f.x || 0) + (f.y || 0) * (f.y || 0);
+      if (reach > bestReach) { bestReach = reach; best = i; }
+    });
+    const strike = clip.frames[best];
+    const after = clip.frames[best + 1];
+    if (!strike || !after) return clip;
+
+    // A heavier weapon holds longer, and a critical holds longer still.
+    const hold = this.ATTACK_HOLD * (0.7 + m.heft * 0.5) * (motion.crit ? 1.4 : 1);
+    const at = Math.min(strike.t + hold, after.t - 0.004);
+    if (at <= strike.t) return clip;
+
+    // Landing harder: the contact itself is pushed a little further than it
+    // was authored, and the hold sits on that pose rather than easing off it.
+    strike.scale = (strike.scale === undefined ? 1 : strike.scale) * 1.04;
+    strike.ease = 'expoOut';
+    const held = Object.assign({}, strike, { t: at, ease: 'in' });
+    clip.frames.splice(best + 1, 0, held);
     return clip;
   },
 
@@ -3689,9 +3762,10 @@ var WeaponSystemProcedural = {
     //
     // `from` is the motion asked for before the flail took it over: a swing
     // orbits level, an overhead comes over the top, a rising blow is slung
-    // underhand. The orbit accumulates a whole turn in rz, so as with `spin`
-    // the last keyframe carries that multiple of 360 rather than zero, which is
-    // the same pose and saves unwinding the turn in the final beat.
+    // underhand. The orbit belongs to the HEAD, not to the hand: the haft is
+    // held, not spun, so rz never accumulates a turn here the way `spin` does.
+    // The fist only rolls a little as it leads the circle, and the chain
+    // physics carries the head round it.
     flail(m, o, H) {
       const dir = o.dir === undefined ? 1 : o.dir;
       const from = o.from;
@@ -3704,51 +3778,54 @@ var WeaponSystemProcedural = {
       const circle = (0.09 + m.heft * 0.05) * H;
       const travel = (0.42 + m.reach * 0.40) * H * power;
       const lift = (0.09 + m.reach * 0.13) * H;
-      const spin = 360 * orbits * dir;
+      // The wrist rolls with the circle instead of turning over with it, so
+      // this is a small angle that comes back to nothing, not a multiple of 360.
+      const roll = (10 + m.heft * 8) * dir;
       const punch = 1.16 + m.heft * 0.26 * power;
       const kick = travel * (0.26 + lag * 0.20);
       // Height of the orbit, which is what the shape of the blow comes down to.
       const high = over ? 1.5 : (under ? -0.7 : 1);
       const hit = 0.50 + m.heft * 0.04 + (o.crit ? 0.06 : 0);
       return {
-        duration: (520 + m.heft * 500 + m.reach * 180) * (o.crit ? 1.16 : 1),
+        duration: (520 + m.heft * 500 + m.reach * 180) * (o.crit ? 1.16 : 1) *
+          (1 + (orbits - 1) * 0.15),
         frames: [
           { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'in' },
           // Round it goes, the fist tracing its little circle underneath.
           {
             t: hit * 0.28, x: dir * circle, y: -circle * 0.55 * high, z: -0.05 * H,
-            rx: -10, ry: dir * 30, rz: spin * 0.18, scale: 0.95, ease: 'linear'
+            rx: -10, ry: dir * 30, rz: roll * 0.5, scale: 0.95, ease: 'linear'
           },
           {
             t: hit * 0.52, x: -dir * circle * 0.7, y: -circle * 1.1 * high, z: -0.07 * H,
-            rx: -16 - m.heft * 10, ry: dir * 58, rz: spin * 0.42, scale: 0.90, ease: 'linear'
+            rx: -16 - m.heft * 10, ry: dir * 58, rz: -roll * 0.6, scale: 0.90, ease: 'linear'
           },
           {
             t: hit * 0.76, x: -dir * circle * 0.2, y: -circle * 0.2 * high, z: -0.02 * H,
-            rx: -6, ry: dir * 30, rz: spin * 0.72, scale: 0.93, ease: 'in'
+            rx: -6, ry: dir * 30, rz: roll * 0.3, scale: 0.93, ease: 'in'
           },
           // Slung. The head is out there and the hand is not with it yet.
           {
             t: hit, x: -dir * travel, y: lift * (over ? 1.5 : (under ? -1.3 : 0.5)), z: 0.18 * H,
-            rx: 14 + (over ? 20 : 0), ry: -dir * 20, rz: spin * 0.95, scale: punch, ease: 'out'
+            rx: 14 + (over ? 20 : 0), ry: -dir * 20, rz: roll, scale: punch, ease: 'out'
           },
           // Dragged through after it, which is where the chain actually pulls
           // the arm out of shape.
           {
             t: hit + 0.09, x: -dir * travel * (1.18 + lag * 0.12), y: lift * (over ? 1.7 : (under ? -1.5 : 0.6)), z: 0.12 * H,
-            rx: 8, ry: -dir * 14, rz: spin * 1.06, scale: punch * 0.93, ease: 'inOut'
+            rx: 8, ry: -dir * 14, rz: roll * 1.2, scale: punch * 0.93, ease: 'inOut'
           },
           // And yanked back the other way by what is left in the chain.
           {
             t: hit + 0.24, x: dir * kick, y: -lift * 0.4 * high, z: 0.02 * H,
-            rx: -8 - lag * 6, ry: dir * 10, rz: spin * 1.02, scale: 1.04, ease: 'out'
+            rx: -8 - lag * 6, ry: dir * 10, rz: -roll * 0.7, scale: 1.04, ease: 'out'
           },
           // A second, smaller swing of it before the thing hangs still.
           {
             t: hit + 0.36, x: -dir * kick * 0.38, y: lift * 0.16 * high, z: 0,
-            rx: 4, ry: -dir * 4, rz: spin * 0.99, scale: 0.99, ease: 'inOut'
+            rx: 4, ry: -dir * 4, rz: roll * 0.25, scale: 0.99, ease: 'inOut'
           },
-          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: spin, scale: 1 }
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
     },
@@ -5680,7 +5757,8 @@ var WeaponSystemProcedural = {
         if (!window.THREE) return;
         this._model = WeaponSystemProcedural.createModel(this._weapon);
         if (this._model) {
-          if (window.PSXShader) window.PSXShader.applyToObject(this._model);
+          const _retro = window.RetroShader ? window.RetroShader.active() : window.PSXShader;
+          if (_retro) _retro.applyToObject(this._model);
 
           // Rotate first: the fit measures the model's on-screen footprint,
           // which depends on the idle pose.
@@ -5718,7 +5796,8 @@ var WeaponSystemProcedural = {
         `models/${this._weapon.model3d}`,
         (gltf) => {
           this._model = gltf.scene;
-          if (window.PSXShader) window.PSXShader.applyToObject(this._model);
+          const _retro = window.RetroShader ? window.RetroShader.active() : window.PSXShader;
+          if (_retro) _retro.applyToObject(this._model);
           const s = this._weapon.model3dScale || 1.0;
           this._model.scale.set(s, s, s);
           const r = this._baseRotation;
@@ -5848,7 +5927,15 @@ var WeaponSystemProcedural = {
       // Procedural motion for procedural models.
       if (!this._weapon.model3d) {
         this._animData = WeaponSystemProcedural.buildAttack(this._weapon, name, this._model, opts);
-        if (this._animData) { this._prepareStrike(); return; }
+        if (this._animData) {
+          this._prepareStrike();
+          // The blade starts leaving a trail the moment the movement does, not
+          // when the blow lands: this override is the one playAnimation that
+          // ever runs for a procedural weapon, so the stroke has to be started
+          // from here and not from the base class.
+          if (this.beginTrail) this.beginTrail();
+          return;
+        }
       }
 
       // GLB models with no clip of their own fall back to the shared table.
@@ -5856,6 +5943,7 @@ var WeaponSystemProcedural = {
       if (kf) {
         this._animData = kf[name] || kf['Swing'] || null;
         this._prepareStrike();
+        if (this.beginTrail) this.beginTrail();
       } else {
         // '' rather than null: no name means "this weapon's own motion",
         // which is a real request and must survive the wait for the model.
@@ -5868,6 +5956,7 @@ var WeaponSystemProcedural = {
     const _Sprite_3DWeapon_playClip = Sprite_3DWeapon.prototype.playClip;
     Sprite_3DWeapon.prototype.playClip = function(clipName) {
       this._clipPlaying = true;
+      if (this.beginTrail) this.beginTrail();
       if (_Sprite_3DWeapon_playClip) {
         _Sprite_3DWeapon_playClip.call(this, clipName);
       }
@@ -5987,6 +6076,13 @@ var WeaponSystemProcedural = {
       // here, so leaving it out of the override is what had the shimmer never
       // appear on any of them.
       if (this._updateShimmer) this._updateShimmer();
+
+      // Last, with the frame's pose and every moving part already written: the
+      // blade is sampled where it actually ended up this frame, which is what
+      // the trail is skinned from (WeaponTrail, Weapon3DOverlay.js). Same
+      // reason as the shimmer above, this override replaces the base update
+      // outright and every procedural weapon comes through here.
+      if (this._updateTrail) this._updateTrail(now);
 
       // Scene render is batched once per frame by the Spriteset_Battle
       // iterator (WeaponSystem.js) rather than once per weapon instance.

@@ -175,23 +175,42 @@
     // 304 and 305 declare lamps but had no entry at all. That table is gone now
     // rather than corrected, because a second list of the same fact is what let
     // it drift in the first place. Memoised per tileset: the answer is static.
-    const _streetlightIdCache = {};
-    function streetlightTileIdsFor(tilesetId) {
+    const _featureIdCache = {};
+    function featureTileIdsFor(tilesetId, featureName) {
         if (!tilesetId) return null;
-        if (_streetlightIdCache[tilesetId]) return _streetlightIdCache[tilesetId];
+        const key = tilesetId + ':' + featureName;
+        if (_featureIdCache[key]) return _featureIdCache[key];
         const ids = new Set();
         const U = window.ProcGenUtils;
         if (U && U.Cache && typeof U.Cache.getTilesetFeatures === 'function') {
             const features = U.Cache.getTilesetFeatures(tilesetId) || {};
-            for (const variant of features[LightTypes.STREET] || []) {
+            for (const variant of features[featureName] || []) {
                 if (variant.type === 'single' && variant.tileId) ids.add(variant.tileId);
                 else if (variant.grid) {
                     for (const row of variant.grid) for (const t of row) if (t) ids.add(t);
                 }
+                else if (variant.tiles) {
+                    for (const row of variant.tiles) for (const t of row) if (t) ids.add(t);
+                }
             }
         }
-        _streetlightIdCache[tilesetId] = ids;
+        _featureIdCache[key] = ids;
         return ids;
+    }
+    function streetlightTileIdsFor(tilesetId) {
+        return featureTileIdsFor(tilesetId, LightTypes.STREET);
+    }
+
+    // What a cave lights itself with. The tilesets already declare both as
+    // terrain features (<Torch:>, <Mushroom:>) and the cave generator scatters
+    // them from the biome feature list, so the same declaration that draws the
+    // tile is what lights it - no second table of tile ids to drift.
+    // i18n-ignore-start  terrain feature names, not labels
+    const CAVE_LIGHT_FEATURES = ['Torch', 'Mushroom', 'MushroomIce'];
+    // i18n-ignore-end
+    function isDeadWorldNow() {
+        return !!(window.WorldManager &&
+            (window.WorldManager.isEmptyWorld?.() || window.WorldManager.isDeathWorld?.()));
     }
 
     // Plugin Commands
@@ -463,9 +482,15 @@
             this.y = this._event.screenY() - th / 2 + this._lightConfig.offsetY;
         }
 
-        // MODIFIED FUNCTION
         updateVisibility() {
             if (this._manuallyDisabled) {
+                this._targetOpacity = 0;
+                return;
+            }
+
+            // In empty world or death world, automated lights start off
+            const isDeadWorld = !!(window.WorldManager && (window.WorldManager.isEmptyWorld?.() || window.WorldManager.isDeathWorld?.()));
+            if (isDeadWorld && this._lightType !== LightTypes.ALWAYS) {
                 this._targetOpacity = 0;
                 return;
             }
@@ -624,6 +649,13 @@
             // follows the sunset/sunrise schedule below.
             if (this._lightType === LightTypes.ALWAYS) {
                 this._targetOpacity = this._lightConfig.opacity;
+                return;
+            }
+
+            // In empty world or death world, streetlights start off
+            const isDeadWorld = !!(window.WorldManager && (window.WorldManager.isEmptyWorld?.() || window.WorldManager.isDeathWorld?.()));
+            if (isDeadWorld) {
+                this._targetOpacity = 0;
                 return;
             }
 
@@ -1001,31 +1033,73 @@
         }
     }
 
-    // Night Light Sprite Class (follows player, visible at night on Exterior maps)
-    class Sprite_NightLight extends Sprite {
+    // Global lighting system object
+    window.$gameLighting = null;
+
+    // Initialize lighting system with game objects
+    const _DataManager_createGameObjects = DataManager.createGameObjects;
+    DataManager.createGameObjects = function () {
+        _DataManager_createGameObjects.call(this);
+        $gameLighting = new Game_LightingSystem();
+    };
+
+    // Save/Load lighting system
+    const _DataManager_makeSaveContents = DataManager.makeSaveContents;
+    DataManager.makeSaveContents = function () {
+        const contents = _DataManager_makeSaveContents.call(this);
+        contents.lighting = {
+            _enabled: $gameLighting._enabled,
+            _hasPlayerLight: $gameLighting._hasPlayerLight
+        };
+        return contents;
+    };
+
+    const _DataManager_extractSaveContents = DataManager.extractSaveContents;
+    DataManager.extractSaveContents = function (contents) {
+        _DataManager_extractSaveContents.call(this, contents);
+        const lightingData = contents.lighting;
+        $gameLighting = new Game_LightingSystem();
+        if (lightingData) {
+            $gameLighting._enabled = lightingData._enabled;
+            $gameLighting._hasPlayerLight = lightingData._hasPlayerLight;
+        }
+    };
+
+    // Dark & Night Lighting Layer (Dark maps, Dungeons, and Time-of-Day Exterior Night Light)
+    class Sprite_DungeonLighting extends Sprite {
         constructor() {
             super();
-            this.anchor.set(0.5, 0.5);
-            this.blendMode = lightBlendMode;
-            this._targetOpacity = 0;
-            this._fadeSpeed = fadeSpeed;
+            this._renderScale = 0.5;
+            this._canvasWidth = 0;
+            this._canvasHeight = 0;
+            this._canvas = document.createElement('canvas');
+            this._ctx = this._canvas.getContext('2d', { willReadFrequently: false });
+            this._texture = PIXI.Texture.from(this._canvas);
+            this.texture = this._texture;
+            this.scale.set(1 / this._renderScale);
+            this.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+            this.visible = false;
+            this._targetIntensity = 0;
+            this._currentIntensity = 0;
+            this._fadeSpeed = fadeSpeed || 30;
             this._visCheck = 1;
-            this.initMembers();
+            this._resizeCanvas();
         }
 
-        initMembers() {
-            this.bitmap = ImageManager.loadBitmap('img/lights/', 'nightlight');
-            this.updateScale();
-            this.opacity = 0;
+        _resizeCanvas() {
+            const w = Graphics.width || 816;
+            const h = Graphics.height || 624;
+            const cw = Math.ceil(w * this._renderScale);
+            const ch = Math.ceil(h * this._renderScale);
+            if (this._canvasWidth !== cw || this._canvasHeight !== ch) {
+                this._canvasWidth = cw;
+                this._canvasHeight = ch;
+                this._canvas.width = cw;
+                this._canvas.height = ch;
+                this.scale.set(1 / this._renderScale);
+            }
         }
 
-        updateScale() {
-            const mapId = $gameMap ? $gameMap.mapId() : 0;
-            const scaleFactor = (mapId === 315 || mapId === 1049) ? 0.25 : 1.0;
-            this.scale.set(defaultScale * scaleFactor);
-        }
-
-        // Returns a float like 18.5 for 18:30
         getCurrentHourFloat() {
             if ($gameVariables) {
                 const dateStr = $gameVariables.value(113);
@@ -1045,10 +1119,8 @@
             return 12;
         }
 
-        // Returns opacity multiplier 0.0-1.0 based on time of day
         getNightLightIntensity() {
             const sunlightMode = getSunlightModeCached();
-
             switch (sunlightMode) {
                 case 'night':
                     return 1.0;
@@ -1064,161 +1136,399 @@
 
         calcIntensityFromTime() {
             const t = this.getCurrentHourFloat();
-            const fadeWindow = 2; // 2-hour transition window
+            const fadeWindow = 2;
 
-            // Sunset fade-in: from sunsetHour-1 to sunsetHour+1
             const fadeInStart = sunsetHour - 1;
             const fadeInEnd = sunsetHour + 1;
-
-            // Sunrise fade-out: from sunriseHour-1 to sunriseHour+1
             const fadeOutStart = sunriseHour - 1;
             const fadeOutEnd = sunriseHour + 1;
 
-            // Full night: between fadeInEnd and fadeOutStart (wrapping midnight)
             if (t >= fadeInEnd || t < fadeOutStart) {
-                // Could be full night - check more carefully with wrap
                 if (fadeInEnd <= fadeOutStart) {
-                    // No midnight wrap (unusual config)
                     if (t >= fadeInEnd && t < fadeOutStart) return 1.0;
                 } else {
-                    // Normal case: night wraps midnight
                     if (t >= fadeInEnd || t < fadeOutStart) return 1.0;
                 }
             }
 
-            // Fade in during sunset
             if (t >= fadeInStart && t < fadeInEnd) {
                 return (t - fadeInStart) / fadeWindow;
             }
 
-            // Fade out during sunrise
             if (t >= fadeOutStart && t < fadeOutEnd) {
                 return 1.0 - (t - fadeOutStart) / fadeWindow;
             }
 
-            // Daytime
             return 0.0;
         }
 
-        isExteriorMap() {
-            // Respect WeatherSystem's runtime exterior/interior override
-            if ($gameWeather && typeof $gameWeather.isInterior !== 'undefined') {
-                return !$gameWeather.isInterior;
+        // Which kind of dark this is, because they do not look alike: the sea
+        // floor is a near-black blue with the party's lamp shrunk to arm's
+        // length, a cave is lit by its own torches and its glowing mushrooms,
+        // and everything else keeps the plain dungeon look.
+        // i18n-ignore-start  biome ids, not labels
+        darkContext() {
+            if ($gamePlayer && $gamePlayer._isDiving) return 'seabed';
+            const data = $gameSystem && $gameSystem._procGenData;
+            const biome = ((data && data.currentBiome) || '').toLowerCase().replace(/[\s_-]+/g, '');
+            if (biome === 'seabed') return 'seabed';
+            if ($dataMap && $dataMap.note && /<Biome:\s*sea\s*bed\s*>/i.test($dataMap.note)) return 'seabed';
+            if (!this.isDarkOrDungeon()) return null;
+            if (biome.includes('cave') || biome.includes('cavern') ||
+                biome.includes('underdark') || biome.includes('grotto')) return 'cave';
+            return 'dark';
+        }
+        // i18n-ignore-end
+
+        isDarkOrDungeon() {
+            if ($dataMap && $dataMap.note && /<Dark>/i.test($dataMap.note)) {
+                return true;
             }
-            // Generated caves/dungeons/crypts/sewers are roofed over even though
-            // the procedural map itself is tagged <Exterior>
+            if ($gameWeather && $gameWeather.forcedLighting === 'dark') {
+                return true;
+            }
             if (typeof window.isProceduralInteriorMap === 'function' && window.isProceduralInteriorMap()) {
-                return false;
+                return true;
             }
-            // Fallback to map note tag
-            return $dataMap && $dataMap.note && /<Exterior>/i.test($dataMap.note);
+            if (window.DungeonFloors && typeof window.DungeonFloors.currentFloor === 'function' && window.DungeonFloors.currentFloor() < 0) {
+                return true;
+            }
+            if ($gameVariables && typeof $gameVariables.value(1) === 'number' && $gameVariables.value(1) < 0) {
+                return true;
+            }
+            if ($gameMap && $gameMap.mapId() === 636) {
+                const data = $gameSystem && $gameSystem._procGenData;
+                if (data) {
+                    if (data._dungeonSession && data._dungeonSession.type === "tower") return true;
+                    if (data.biomeLayerStack && data.biomeLayerStack.length > 0) return true;
+                    if (typeof window.isInteriorBiome === 'function' && window.isInteriorBiome(data.currentBiome)) return true;
+                    const b = (data.currentBiome || '').toLowerCase().replace(/[\s_-]+/g, '');
+                    if (b === 'seabed') return true;
+                    if (b.includes('cave') || b.includes('dungeon') || b.includes('crypt') || b.includes('sewer') || b.includes('cellar') || b.includes('vault') || b.includes('templeinside') || b.includes('caveden')) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
-        updatePosition() {
-            if (!$gamePlayer) return;
-            const th = $gameMap.tileHeight();
-            this.x = $gamePlayer.screenX();
-            this.y = $gamePlayer.screenY() - th / 2;
+        isInteriorMap() {
+            if ($gameWeather && typeof $gameWeather.isInterior !== 'undefined') {
+                return $gameWeather.isInterior;
+            }
+            return $dataMap && $dataMap.note && /<Interior>/i.test($dataMap.note);
         }
 
-        updateVisibility() {
-            // Global Lighting is the master switch; it also gates the night-light overlay.
-            if (!ConfigManager.globalLighting || !ConfigManager.nightLight) {
-                this._targetOpacity = 0;
-                return;
+        computeTargetIntensity() {
+            // Never show in map 315 (World Map)
+            if ($gameMap && $gameMap.mapId() === 315) {
+                return 0.0;
             }
 
-            // Force show on Dark maps, force hide on Light maps
-            const forcedLighting = $gameWeather ? $gameWeather.forcedLighting : null;
-            if (forcedLighting === 'dark') {
-                this._targetOpacity = 200;
-                return;
-            }
-            if (forcedLighting === 'light') {
-                this._targetOpacity = 0;
-                return;
+            // 1. Dark maps, dungeons, crypts, negative floors, the sea floor:
+            //    always 100% full dark look
+            if (this.darkContext()) {
+                return 1.0;
             }
 
-            if (!this.isExteriorMap()) {
-                this._targetOpacity = 0;
-                return;
+            // 2. Weather forced lighting 'light': force off
+            if ($gameWeather && $gameWeather.forcedLighting === 'light') {
+                return 0.0;
             }
-            const intensity = this.getNightLightIntensity();
-            this._targetOpacity = Math.round(200 * intensity);
+
+            // 3. Interior maps without <Dark>: do not show night light
+            if (this.isInteriorMap()) {
+                return 0.0;
+            }
+
+            // 4. Exterior maps: show night light if enabled, scaled by time of day
+            if (!ConfigManager.nightLight) {
+                return 0.0;
+            }
+
+            return this.getNightLightIntensity();
         }
 
-        updateOpacity() {
-            if (this.opacity < this._targetOpacity) {
-                this.opacity = Math.min(this.opacity + (255 / this._fadeSpeed), this._targetOpacity);
-            } else if (this.opacity > this._targetOpacity) {
-                this.opacity = Math.max(this.opacity - (255 / this._fadeSpeed), this._targetOpacity);
-            }
+        getFlicker(seed = 0) {
+            const f = Graphics.frameCount;
+            const f1 = Math.sin(f * 0.08 + seed) * 0.035;
+            const f2 = Math.sin(f * 0.19 + seed * 2.7) * 0.025;
+            const f3 = Math.sin(f * 0.37 + seed * 5.1) * 0.015;
+            return 1.0 + f1 + f2 + f3;
         }
 
         update() {
             super.update();
-            this.updatePosition();
-            // Scale and time-of-day visibility change slowly; recompute them on
-            // an interval instead of every frame. Position/opacity stay per-frame
-            // so the light keeps following the player and fades smoothly.
+
             if (--this._visCheck <= 0) {
-                this.updateScale();
-                this.updateVisibility();
+                this._context = this.darkContext();
+                this._nightFactor = this.getNightLightIntensity();
+                this._targetIntensity = this.computeTargetIntensity();
                 this._visCheck = VISIBILITY_REFRESH_INTERVAL;
             }
-            this.updateOpacity();
+
+            // Smooth transition
+            const step = 1 / (this._fadeSpeed || 30);
+            if (this._currentIntensity < this._targetIntensity) {
+                this._currentIntensity = Math.min(this._currentIntensity + step, this._targetIntensity);
+            } else if (this._currentIntensity > this._targetIntensity) {
+                this._currentIntensity = Math.max(this._currentIntensity - step, this._targetIntensity);
+            }
+
+            if (this._currentIntensity <= 0.001) {
+                if (this.visible) this.visible = false;
+                return;
+            }
+
+            if (!this.visible) this.visible = true;
+            this.alpha = this._currentIntensity;
+            this._resizeCanvas();
+            this.renderLighting();
+        }
+
+        renderLighting() {
+            const ctx = this._ctx;
+            const cw = this._canvasWidth;
+            const ch = this._canvasHeight;
+            const s = this._renderScale;
+
+            if (cw <= 0 || ch <= 0) return;
+
+            // 1. Reset composite and fill base ambient dark tone. The sea floor
+            //    is a near-black blue rather than the indigo of a dungeon, and a
+            //    cave sits between the two.
+            const context = this._context || 'dark';
+            const isSeabed = context === 'seabed';
+            const isCave = context === 'cave';
+            // Under water there is no lamp light to speak of, and at night there
+            // is not even a surface to let anything down: the party's own glow
+            // shrinks to arm's length and the dark closes in.
+            const night = isSeabed ? (this._nightFactor || 0) : 0;
+            const depthDim = isSeabed ? 0.60 - 0.22 * night : 1.0;
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = isSeabed ? '#03080f' : (isCave ? '#191325' : '#221c32');
+            ctx.fillRect(0, 0, cw, ch);
+
+            // 2. Radial vignette: smooth darkening towards screen edges and corners
+            const cx = cw / 2;
+            const cy = ch / 2;
+            const maxRadius = Math.hypot(cw, ch) / 2;
+            const vigInner = isSeabed ? 0.28 - 0.10 * night : 0.60;
+            const vig = ctx.createRadialGradient(cx, cy, maxRadius * vigInner, cx, cy, maxRadius);
+            vig.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            vig.addColorStop(0.75, isSeabed ? 'rgba(0, 0, 0, 0.72)' : 'rgba(0, 0, 0, 0.35)');
+            vig.addColorStop(1.0, isSeabed ? 'rgba(0, 0, 0, 0.98)' : 'rgba(0, 0, 0, 0.88)');
+            ctx.fillStyle = vig;
+            ctx.fillRect(0, 0, cw, ch);
+
+            // 3. Draw light sources with additive blending ('lighter')
+            ctx.globalCompositeOperation = 'lighter';
+
+            const th = $gameMap ? $gameMap.tileHeight() : 48;
+            const basePartyRadius = 290 * s * depthDim;
+
+            // --- Party Leader ---
+            if ($gamePlayer && !$gamePlayer.isTransparent()) {
+                const px = $gamePlayer.screenX() * s;
+                const py = ($gamePlayer.screenY() - th / 2) * s;
+                const flicker = this.getFlicker(1.1);
+                this.drawLightCircle(ctx, px, py, basePartyRadius * flicker, 1.0, 'party');
+            }
+
+            // --- Followers / Party Members ---
+            if ($gamePlayer && $gamePlayer.followers()) {
+                const followers = $gamePlayer.followers().data();
+                for (let i = 0; i < followers.length; i++) {
+                    const f = followers[i];
+                    if (f && f.isVisible() && !f.isTransparent()) {
+                        const fx = f.screenX() * s;
+                        const fy = (f.screenY() - th / 2) * s;
+                        if (fx >= -120 && fx <= cw + 120 && fy >= -120 && fy <= ch + 120) {
+                            const flicker = this.getFlicker(2.3 + i * 1.7);
+                            this.drawLightCircle(ctx, fx, fy, basePartyRadius * flicker, 0.95, 'party');
+                        }
+                    }
+                }
+            }
+
+            // --- SplitScreen Player 2 ---
+            if (window.SplitScreenManager && window.SplitScreenManager.active) {
+                const p2 = typeof window.SplitScreenManager.getP2Event === 'function' ? window.SplitScreenManager.getP2Event() : null;
+                if (p2 && !p2.isTransparent && !p2.isTransparent()) {
+                    const p2x = p2.screenX() * s;
+                    const p2y = (p2.screenY() - th / 2) * s;
+                    if (p2x >= -120 && p2x <= cw + 120 && p2y >= -120 && p2y <= ch + 120) {
+                        const flicker = this.getFlicker(5.7);
+                        this.drawLightCircle(ctx, p2x, p2y, basePartyRadius * flicker, 1.0, 'party');
+                    }
+                }
+            }
+
+            // --- Placed Event Lights ---
+            if ($gameMap && typeof $gameMap.events === 'function') {
+                const events = $gameMap.events();
+                for (let i = 0; i < events.length; i++) {
+                    const ev = events[i];
+                    if (ev && !ev._erased && typeof ev.screenX === 'function') {
+                        const evData = ev.event ? ev.event() : null;
+                        const name = evData ? evData.name : '';
+                        if (name === LightTypes.ALWAYS || name === LightTypes.STREET || name === LightTypes.DAY || (evData && evData.note && /<light/i.test(evData.note))) {
+                            const ex = ev.screenX() * s;
+                            const ey = (ev.screenY() - th / 2) * s;
+                            if (ex >= -150 && ex <= cw + 150 && ey >= -150 && ey <= ch + 150) {
+                                const flicker = this.getFlicker(ev.eventId() * 1.3);
+                                this.drawLightCircle(ctx, ex, ey, basePartyRadius * 1.25 * flicker, 1.0, 'torch');
+                            }
+                        }
+                    }
+                }
+            }
+
+            // --- Placed Tile Lights & Streetlights/Torches ---
+            // Nothing burns in an empty or dead world: every flame the world
+            // lit for itself is out, exactly as the light sprites already have
+            // it. The glowing mushrooms of a cave are not a flame and keep
+            // shining down there whatever became of the world above.
+            const deadWorld = isDeadWorldNow();
+            if ($gameMap) {
+                const tileset = $gameMap.tileset();
+                const tilesetId = tileset ? tileset.id : 0;
+                const streetlightTileIds = deadWorld ? null : streetlightTileIdsFor(tilesetId);
+                if (streetlightTileIds && streetlightTileIds.size > 0) {
+                    const ox = $gameMap.displayX();
+                    const oy = $gameMap.displayY();
+                    const tw = $gameMap.tileWidth();
+                    const minX = Math.floor(ox) - 2;
+                    const maxX = Math.ceil(ox + $gameMap.screenTileX()) + 2;
+                    const minY = Math.floor(oy) - 2;
+                    const maxY = Math.ceil(oy + $gameMap.screenTileY()) + 2;
+
+                    for (let x = Math.max(0, minX); x < Math.min($gameMap.width(), maxX); x++) {
+                        for (let y = Math.max(0, minY); y < Math.min($gameMap.height(), maxY); y++) {
+                            let isLamp = false;
+                            for (const layer of [4, 3, 2]) {
+                                const tileId = $gameMap.tileId(x, y, layer);
+                                if (tileId !== 0 && streetlightTileIds.has(tileId)) {
+                                    isLamp = true;
+                                    break;
+                                }
+                            }
+                            if (isLamp) {
+                                let aboveIsLamp = false;
+                                if (y > 0) {
+                                    for (const layer of [4, 3, 2]) {
+                                        const tid = $gameMap.tileId(x, y - 1, layer);
+                                        if (tid !== 0 && streetlightTileIds.has(tid)) {
+                                            aboveIsLamp = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!aboveIsLamp) {
+                                    const lx = ($gameMap.adjustX(x) + 0.5) * tw * s;
+                                    const ly = ($gameMap.adjustY(y) + 0.5) * th * s;
+                                    const flicker = this.getFlicker(x * 31 + y * 17);
+                                    this.drawLightCircle(ctx, lx, ly, basePartyRadius * 1.3 * flicker, 1.0, 'torch');
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // --- Cave Torches & Glowing Mushrooms ---
+                // The cave generator scatters <Torch:> and <Mushroom:> terrain
+                // features across the floor from the biome feature list; here
+                // they are what the cave is lit by, the torches burning and the
+                // mushrooms giving off their own cold glow.
+                if (isCave) {
+                    const tw2 = $gameMap.tileWidth();
+                    const ox2 = $gameMap.displayX();
+                    const oy2 = $gameMap.displayY();
+                    const minX2 = Math.max(0, Math.floor(ox2) - 2);
+                    const maxX2 = Math.min($gameMap.width(), Math.ceil(ox2 + $gameMap.screenTileX()) + 2);
+                    const minY2 = Math.max(0, Math.floor(oy2) - 2);
+                    const maxY2 = Math.min($gameMap.height(), Math.ceil(oy2 + $gameMap.screenTileY()) + 2);
+                    for (const feature of CAVE_LIGHT_FEATURES) {
+                        const isTorch = feature === 'Torch';  // i18n-ignore  feature name
+                        if (isTorch && deadWorld) continue;
+                        const ids = featureTileIdsFor(tilesetId, feature);
+                        if (!ids || !ids.size) continue;
+                        for (let x = minX2; x < maxX2; x++) {
+                            for (let y = minY2; y < maxY2; y++) {
+                                let lit = false;
+                                for (const layer of [3, 2, 1]) {
+                                    const tid = $gameMap.tileId(x, y, layer);
+                                    if (tid !== 0 && ids.has(tid)) { lit = true; break; }
+                                }
+                                if (!lit) continue;
+                                const lx = ($gameMap.adjustX(x) + 0.5) * tw2 * s;
+                                const ly = ($gameMap.adjustY(y) + 0.5) * th * s;
+                                const flicker = this.getFlicker(x * 7 + y * 23);
+                                if (isTorch) {
+                                    this.drawLightCircle(ctx, lx, ly, basePartyRadius * 0.85 * flicker, 1.0, 'torch');
+                                } else {
+                                    // A mushroom pulses slowly instead of guttering.
+                                    const pulse = 1.0 + Math.sin(Graphics.frameCount * 0.03 + x * 0.7 + y * 1.3) * 0.10;
+                                    this.drawLightCircle(ctx, lx, ly, basePartyRadius * 0.45 * pulse, 0.85, 'mushroom');
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // --- Ad-Hoc Player-Lit Tiles (Torches/Candles) ---
+                const TD = window.TerrainInteractions;
+                if (TD && typeof TD.getLitTiles === 'function') {
+                    const tw = $gameMap.tileWidth();
+                    for (const t of TD.getLitTiles()) {
+                        const ax = ($gameMap.adjustX(t.x) + 0.5) * tw * s;
+                        const ay = ($gameMap.adjustY(t.y) + 0.5) * th * s;
+                        if (ax >= -150 && ax <= cw + 150 && ay >= -150 && ay <= ch + 150) {
+                            const flicker = this.getFlicker(t.x * 13 + t.y * 29);
+                            this.drawLightCircle(ctx, ax, ay, basePartyRadius * 1.2 * flicker, 1.0, 'torch');
+                        }
+                    }
+                }
+            }
+
+            this._texture.update();
+        }
+
+        drawLightCircle(ctx, x, y, radius, intensity = 1.0, type = 'party') {
+            if (radius <= 0) return;
+            const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+            if (type === 'mushroom') {
+                grad.addColorStop(0.0, `rgba(190, 255, 225, ${1.0 * intensity})`);
+                grad.addColorStop(0.30, `rgba(120, 225, 200, ${0.80 * intensity})`);
+                grad.addColorStop(0.60, `rgba(70, 150, 160, ${0.45 * intensity})`);
+                grad.addColorStop(0.85, `rgba(35, 70, 90, ${0.18 * intensity})`);
+                grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+            } else if (type === 'torch') {
+                grad.addColorStop(0.0, `rgba(255, 245, 220, ${1.0 * intensity})`);
+                grad.addColorStop(0.30, `rgba(245, 220, 180, ${0.90 * intensity})`);
+                grad.addColorStop(0.60, `rgba(180, 140, 120, ${0.60 * intensity})`);
+                grad.addColorStop(0.85, `rgba(90, 70, 75, ${0.25 * intensity})`);
+                grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+            } else {
+                grad.addColorStop(0.0, `rgba(255, 250, 240, ${1.0 * intensity})`);
+                grad.addColorStop(0.30, `rgba(245, 235, 215, ${0.90 * intensity})`);
+                grad.addColorStop(0.60, `rgba(170, 150, 170, ${0.60 * intensity})`);
+                grad.addColorStop(0.85, `rgba(85, 75, 95, ${0.25 * intensity})`);
+                grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+            }
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
         }
     }
-
-    // Global lighting system object
-    window.$gameLighting = null;
-
-    // Initialize lighting system with game objects
-    const _DataManager_createGameObjects = DataManager.createGameObjects;
-    DataManager.createGameObjects = function () {
-        _DataManager_createGameObjects.call(this);
-        $gameLighting = new Game_LightingSystem();
-    };
-
-    // Save/Load lighting system
-    // Save/Load lighting system
-    const _DataManager_makeSaveContents = DataManager.makeSaveContents;
-    DataManager.makeSaveContents = function () {
-        const contents = _DataManager_makeSaveContents.call(this);
-        // Manually store only the necessary, serializable data
-        contents.lighting = {
-            _enabled: $gameLighting._enabled,
-            _hasPlayerLight: $gameLighting._hasPlayerLight
-        };
-        return contents;
-    };
-
-    const _DataManager_extractSaveContents = DataManager.extractSaveContents;
-    DataManager.extractSaveContents = function (contents) {
-        _DataManager_extractSaveContents.call(this, contents);
-        const lightingData = contents.lighting;
-        // Recreate the system object and restore its saved state
-        $gameLighting = new Game_LightingSystem();
-        if (lightingData) {
-            $gameLighting._enabled = lightingData._enabled;
-            $gameLighting._hasPlayerLight = lightingData._hasPlayerLight;
-        }
-    };
-    // Add night light to tilemap (below character sprites)
-    const _Spriteset_Map_createCharacters = Spriteset_Map.prototype.createCharacters;
-    Spriteset_Map.prototype.createCharacters = function () {
-        // Create night light before characters so it renders behind them
-        this._nightLight = new Sprite_NightLight();
-        this._nightLight.z = 0; // Characters use z=3, so this goes below
-        this._tilemap.addChild(this._nightLight);
-        _Spriteset_Map_createCharacters.call(this);
-    };
 
     // Add lighting layer to map spriteset
     const _Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer;
     Spriteset_Map.prototype.createLowerLayer = function () {
         _Spriteset_Map_createLowerLayer.call(this);
         this.createLightingLayer();
+        this.createDungeonLightingLayer();
     };
 
     Spriteset_Map.prototype.createLightingLayer = function () {
@@ -1232,6 +1542,16 @@
 
         if ($gameLighting) {
             $gameLighting.setLightingLayer(this._lightingLayer);
+        }
+    };
+
+    Spriteset_Map.prototype.createDungeonLightingLayer = function () {
+        this._dungeonLighting = new Sprite_DungeonLighting();
+        const weatherIndex = this.children.indexOf(this._weather);
+        if (weatherIndex >= 0) {
+            this.addChildAt(this._dungeonLighting, weatherIndex);
+        } else {
+            this.addChild(this._dungeonLighting);
         }
     };
 
@@ -1268,41 +1588,33 @@
     const _DataManager_setupNewGame = DataManager.setupNewGame;
     DataManager.setupNewGame = function () {
         _DataManager_setupNewGame.call(this);
-        ConfigManager.nightLight = false;
+        ConfigManager.nightLight = true;
         ConfigManager.globalLighting = true;
         ConfigManager.save();
     };
 
     // ==========================================================================
-    // ConfigManager - Night Light option (default OFF) and Global Lighting
-    // (default ON). Global Lighting is the master switch: when off, every light
-    // (streetlights, tile lights, event lights and the night-light overlay) is
-    // hidden and stops updating.
+    // ConfigManager - Night Light option (default ON). Dynamic lighting is always ON.
     // ==========================================================================
-    ConfigManager.nightLight = false;
+    ConfigManager.nightLight = true;
     ConfigManager.globalLighting = true;
 
     const _ConfigManager_makeData_lighting = ConfigManager.makeData;
     ConfigManager.makeData = function () {
         const config = _ConfigManager_makeData_lighting.call(this);
         config.nightLight = this.nightLight;
-        config.globalLighting = this.globalLighting;
         return config;
     };
 
     const _ConfigManager_applyData_lighting = ConfigManager.applyData;
     ConfigManager.applyData = function (config) {
         _ConfigManager_applyData_lighting.call(this, config);
-        this.nightLight = this.readFlag(config, 'nightLight', false);
-        this.globalLighting = this.readFlag(config, 'globalLighting', true);
+        this.nightLight = this.readFlag(config, 'nightLight', true);
+        this.globalLighting = true;
     };
 
-    // Add lighting options to the Options menu
+    // Add night light option to the Options menu (Dynamic Lighting is always ON)
     if (window.GameOptions) {
-        window.GameOptions.registerOption('globalLighting', T('DynamicLighting.globalLighting'),
-            () => ConfigManager.globalLighting,
-            (value) => ConfigManager.globalLighting = value,
-            'video', 'boolean');
         window.GameOptions.registerOption('nightLight', T('DynamicLighting.nightLight'),
             () => ConfigManager.nightLight,
             (value) => ConfigManager.nightLight = value,
@@ -1311,7 +1623,6 @@
         const _Window_Options_addGeneralOptions_lighting = Window_Options.prototype.addGeneralOptions;
         Window_Options.prototype.addGeneralOptions = function () {
             _Window_Options_addGeneralOptions_lighting.call(this);
-            this.addCommand(T('DynamicLighting.globalLighting'), 'globalLighting');
             this.addCommand(T('DynamicLighting.nightLight'), 'nightLight');
         };
     }

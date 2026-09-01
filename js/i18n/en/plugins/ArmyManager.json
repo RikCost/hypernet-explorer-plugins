@@ -43,7 +43,7 @@
   "assignOfficer": "Assign Officer",
   "emptyArmy": "Your army is empty. Find local recruitment stations to hire mercenaries!",
   "ledByCommander": "Led by Commander: {name} (+8% Stat Bonus)",
-  "dossierHint": "Select any troop from the right list to open their detailed military combat dossier and inspect active leadership stats.",
+  "dossierHint": "Select any troop from the roster to open their detailed military combat dossier and inspect active leadership stats.",
   "regimentalBreakdown": "Regimental Breakdown",
   "noLocalTroops": "No local troops are available for hire in this coordinates.",
   "recruitHint": "Select a mercenary recruit from the right manual page to review their stats dossier and contract fees.",
@@ -63,5 +63,7 @@
   "regimentLabel": "Regiment:",
   "manualFooter": "Mount & Blade Army Manual ✦ Esoteric Industries",
   "clickToRecruit": "Click to recruit",
-  "cannotAfford": "Cannot afford"
+  "cannotAfford": "Cannot afford",
+  "combatStatistics": "Combat Statistics",
+  "release": "Release"
 }

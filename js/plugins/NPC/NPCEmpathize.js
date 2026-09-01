@@ -396,7 +396,59 @@
     return Math.round(Math.max(JOIN_MIN, Math.min(JOIN_MAX, raw)));
   }
 
-  // ── Infecting somebody out of a vial ──────────────────────────────────────
+  // ── Talking an animal into coming along ───────────────────────────────────
+  // The stat behind it is WIS (mdf, "SAG" in Italian): reading an animal and
+  // being read by one is neither muscle nor glibness. Same D&D modifier every
+  // other check in the game uses.
+  function _wisMod(actor) {
+    if (!actor) return 0;
+    return Math.floor((((actor.mdf ?? 10)) - 10) / 2);
+  }
+
+  // The odds the button advertises and the roll actually makes. The base is the
+  // animal's own (wildJoinChance / ownedJoinChance off its wardrobe entry), and
+  // how it feels about the person asking moves it: an animal that has been fed
+  // and petted comes more readily than one that has only been stared at. The
+  // owned floor is deliberately low, so a well-loved dog stays almost
+  // impossible however much the party has ingratiated itself.
+  const ANIMAL_JOIN_MIN = 1;
+  const ANIMAL_JOIN_MAX = 95;
+  function _animalJoinChance(status, actor, opinion = 0) {
+    if (!status) return ANIMAL_JOIN_MIN;
+    if (_forceHighJoinChance()) return ANIMAL_JOIN_MAX;
+    const base = Number(status.joinChance) || ANIMAL_JOIN_MIN;
+    // Opinion runs -100..+100 and is worth a fifth of itself in points, so a
+    // devoted animal roughly doubles a middling base and a frightened one
+    // gives up most of it.
+    const raw = base + (Number(opinion) || 0) * 0.2 + _wisMod(actor);
+    return Math.round(Math.max(ANIMAL_JOIN_MIN, Math.min(ANIMAL_JOIN_MAX, raw)));
+  }
+
+  // An animal joins as a PET, trailing the party (PetFollowerSystem), not as a
+  // party member holding one of the three slots. Its placement record goes with
+  // it so the farm it came off no longer counts it as stock, and the map event
+  // it was standing in is erased.
+  function _recruitAnimalAsPet(rec, status, npcName, eventId) {
+    const AG = window.AnimalGrowthSystem;
+    const PS = window.PetSystem;
+    if (!AG || !PS || typeof PS.recruitPet !== 'function') return false;
+    const def = AG.ANIMAL_DB?.[rec.animalId];
+    const sprite = def ? AG.getCurrentSprite(rec, def) : null;
+    const pet = PS.recruitPet({
+      name: npcName || rec.animalId,
+      characterName: sprite,
+      characterIndex: 0,
+      isFollower: false,
+      note: _getT().beastPetNote
+        ? String(_getT().beastPetNote).replace(/\{kind\}/g, status.breed || '')
+        : '',
+    });
+    if (!pet) return false;
+    AG.releaseAnimal?.(rec, eventId);
+    return true;
+  }
+
+  // ── Infecting somebody out of a vial ──────────────────────────────────────  // ── Infecting somebody out of a vial ──────────────────────────────────────
   // A sealed culture vial names the disease in it, which is the only metadata
   // the action needs: <DiseaseVial: influenza>, written by
   // tools/health/gen_disease_vials.py onto all 228 of them.
@@ -589,6 +641,22 @@
     return null;
   }
 
+  // The bust an NPCs.json wardrobe entry carries for the sheet this NPC is
+  // wearing, at the face index its profile was dealt. Null for anybody whose
+  // sheet is not in the wardrobe, or whose entry lists no faces at all (a
+  // Monsters/ bestiary sheet in a monster world), and those are portrayed by
+  // their 3D model instead.
+  function _creatureBustPath(npcName) {
+    const profile = npcName ? _getProfile(npcName) : null;
+    if (!profile || !profile.spriteKey) return null;
+    const entry = window.WorldGen?.NPCs?.[profile.spriteKey];
+    const busts = (entry && Array.isArray(entry.busts)) ? entry.busts : [];
+    if (!busts.length) return null;
+    const index = Math.min(Math.max(Number(profile.bustIndex) || 0, 0), busts.length - 1);
+    const name = busts[index];
+    return name ? _bustUrl(name) : null;
+  }
+
   function _resolveBustPath(npcName, event) {
     // A bust named in the event's comments wins, exactly as in the message box.
     const commentBust = _bustNameFromEvent(event);
@@ -606,6 +674,12 @@
       const b = window.NPCSim.getBustForNPC(npcName);
       if (b && b !== '7') return _bustUrl(b);
     }
+    // A creature or an animal wears a sheet out of the NPCs.json wardrobe, and
+    // that entry names the faces it comes with. Those are ITS busts and are
+    // read straight off the profile the wardrobe wrote, rather than hunted for
+    // through the sprite-to-bust table, which knows only about people.
+    const creatureBust = _creatureBustPath(npcName);
+    if (creatureBust) return creatureBust;
     let charName  = event?.event()?.characterName  ?? event?.event()?.pages?.[0]?.image?.characterName;
     let charIndex = event?.event()?.characterIndex ?? event?.event()?.pages?.[0]?.image?.characterIndex ?? 0;
     // Remote NPC (no on-map event, opened from the wiki, web graph, or a
@@ -1107,20 +1181,90 @@
       .replace(/\{kind\}/g, kind || '');
   }
 
+  // ── The eight voices ────────────────────────────────────────────────────
+  // A growl belongs to a Feral and to nothing else. The other seven creature
+  // classes are not animals and do not sound like one: a Mimic clacks, a Ghost
+  // is barely a sound at all, a Drone answers in machine code. Each class has
+  // its own syllable bank in js/i18n/<lang>/plugins/Empathize.json, and every
+  // noise this panel makes is drawn from the bank of the class of whoever is
+  // making it. An id with no bank of its own falls back to the Feral one, so
+  // a roster that grows is never left mute.
+  const CREATURE_VOICE_BANKS = {
+    63: 'feralGrowlSyllables',      // Feral
+    64: 'mimicClackSyllables',      // Mimic
+    65: 'monsterRoarSyllables',     // Monster
+    66: 'manaCyborgHumSyllables',   // Mana Cyborg
+    67: 'ghostWhisperSyllables',    // Ghost
+    68: 'zombieMoanSyllables',      // Zombie
+    69: 'mutantGurgleSyllables',    // Mutant
+    70: 'droneSignalSyllables',     // Drone
+  };
+
+  // Two of the eight do not make a NOISE at all. A Mana Cyborg and a Drone are
+  // machines wearing a body: what comes back from them is a terminal's answer,
+  // a short acknowledgement in a fixed register, not a growl. They draw whole
+  // lines from their own bank (`botLines`) instead of syllables, and the line
+  // is picked by the LENGTH of what was said to them, so a question gets a
+  // longer readout than a greeting does.
+  const CREATURE_BOT_BANKS = {
+    66: 'manaCyborgBotLines',
+    70: 'droneBotLines',
+  };
+
+  function _isBotClass(classId) {
+    return !!CREATURE_BOT_BANKS[Number(classId)];
+  }
+
+  // One machine line for a class, chosen off `words` so the same input gets a
+  // steady answer rather than a lottery. Empty when the bank is missing, which
+  // every caller reads as "fall through to the syllables".
+  function _botLine(classId, words) {
+    const T = _getT();
+    const bank = T[CREATURE_BOT_BANKS[Number(classId)]] || [];
+    if (!bank.length) return '';
+    const n = Math.max(0, Math.floor(Number(words) || 0));
+    return String(bank[n % bank.length] || '');
+  }
+
+  // The creature class of a party member, of an NPC by name, or 0 for anything
+  // that is a person.
+  function _creatureClassOfActor(actor) {
+    if (!actor) return 0;
+    const id = actor.currentClass?.()?.id ?? actor._classId ?? 0;
+    return _isNonSentientActor(actor) ? id : 0;
+  }
+
+  function _creatureClassOfNpc(npcName) {
+    if (!_isNonSentientNpc(npcName)) return 0;
+    if (typeof $gameParty !== 'undefined' && $gameParty) {
+      const member = ($gameParty.members() || []).find(m => m && m.name() === npcName);
+      if (member) return _creatureClassOfActor(member);
+    }
+    const profile = _getProfile(npcName);
+    return Number(profile?.assignedClassId) || 0;
+  }
+
   // What a typed sentence comes out as. The player still writes words, the
   // creature still has no mouth for them: the length of what was typed decides
-  // how long the noise is, and the noise itself is drawn from the bank.
-  function _feralGrowlFor(phrase) {
+  // how long the noise is, and the noise itself is drawn from the bank its
+  // CLASS answers in.
+  function _feralGrowlFor(phrase, classId) {
     const words = String(phrase || '').trim().split(/\s+/).filter(Boolean).length;
-    const noise = _feralNoise(Math.round(words / 2) || 1);
+    const bot = _isBotClass(classId) ? _botLine(classId, words) : '';
+    if (bot) return bot;
+    const noise = _feralNoise(Math.round(words / 2) || 1, classId);
     return noise || String(phrase || '');
   }
 
-  // `count` syllables off the bank, as one capitalized noise. Empty when the
-  // bank is missing, which every caller reads as "leave the words alone".
-  function _feralNoise(count) {
+  // `count` syllables off the class's bank, as one capitalized noise. Empty
+  // when the bank is missing, which every caller reads as "leave the words
+  // alone".
+  function _feralNoise(count, classId) {
+    const bot = _isBotClass(classId) ? _botLine(classId, count) : '';
+    if (bot) return bot;
     const T = _getT();
-    const bank = T.feralGrowlSyllables || [];
+    const key = CREATURE_VOICE_BANKS[Number(classId)] || CREATURE_VOICE_BANKS[63];
+    const bank = T[key] || T.feralGrowlSyllables || [];
     if (!bank.length) return '';
     const n = Math.max(1, Math.min(6, Number(count) || 1));
     const out = [];
@@ -2671,6 +2815,8 @@
         case 'freeChat':   this._openChatModal(); break;
         case 'gift':       this._gift();        break;
         case 'pet':        this._pet();         break;
+        case 'collect':    this._collect();     break;
+        case 'animalJoin': this._animalJoin();  break;
         case 'feed':       this._feed();        break;
         case 'bribe':      this._bribe();       break;
         case 'attack':     this._attack();      break;
@@ -2956,6 +3102,14 @@
     }
     // Is the one being talked to a beast? In actor mode the panel is about a
     // party member, everywhere else about the NPC standing there.
+    // Which of the eight creature classes the subject of this panel is played
+    // as, so every noise it makes comes out in its own voice rather than a
+    // dog's.
+    _subjectCreatureClass() {
+      if (this._actorId != null) return _creatureClassOfActor($gameActors.actor(this._actorId));
+      const name = this._eventId != null ? _getNPCName(this._eventId) : this._npcName;
+      return _creatureClassOfNpc(name);
+    }
     _isNonSentientSubject() {
       if (this._actorId != null) {
         return _isNonSentientActor($gameActors.actor(this._actorId));
@@ -3066,7 +3220,7 @@
       // Unless the one being growled at is a beast too, in which case what
       // comes back is a beast's answer: noise, not a sentence about noise.
       let reply = _feralLine('feralReact', this._focusOpinion(profile), npcName, kind);
-      if (reply && this._isNonSentientSubject()) reply = _feralGrowlFor(reply);
+      if (reply && this._isNonSentientSubject()) reply = _feralGrowlFor(reply, this._subjectCreatureClass());
       if (reply) this._chatHistory.push({ role: 'npc', text: reply });
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
 
@@ -3086,10 +3240,18 @@
       if (!_isNonSentientActor(actor)) return;
       const npcName = this._targetName();
       if (!npcName) return;
-      const line = _feralLine(
+      let line = _feralLine(
         'feralGreet', this._focusOpinion(_getProfile(npcName)), npcName, _feralKind(actor)
       );
       if (!line) return;
+      // Two beasts facing each other. The greeting above is a PERSON noticing
+      // an animal, and a beast has no such sentence in it: what it has is the
+      // noise its own class answers in. Same rule as the reaction in _feralAct,
+      // so the two halves of a beast-to-beast meeting sound alike.
+      if (this._isNonSentientSubject()) {
+        line = _feralGrowlFor(line, this._subjectCreatureClass());
+        this._beastGreeted = true; // one greeting between them, not two
+      }
       this._feralGreeted = true;
       this._chatHistory.push({ role: 'npc', text: line });
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
@@ -3103,7 +3265,7 @@
       if (this._entity || this._actorId != null) return;
       if (this._beastGreeted) return;
       if (!this._isNonSentientSubject()) return;
-      const line = _feralNoise(2);
+      const line = _feralNoise(2, this._subjectCreatureClass());
       if (!line) return;
       this._beastGreeted = true;
       this._chatHistory.push({ role: 'npc', text: line });
@@ -3147,10 +3309,156 @@
           timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
         });
       }
-      this._pushChat('npc', _feralNoise(2));
+      this._pushChat('npc', _feralNoise(2, this._subjectCreatureClass()));
 
       SoundManager.playOk();
       this._activeTab = 'chat';
+      this._render();
+      this._scrollChatToBottom();
+    }
+
+    // ── The livestock half of a beast ───────────────────────────────────────
+    // An `animal: true` sheet is not only something to talk to: it is a hen, a
+    // cow, a rabbit, and AnimalGrowthSystem knows what each of those is worth
+    // in eggs, milk and wool. Every animal answers here, not only one the
+    // player bought: a hen dealt by the wardrobe onto a village street has a
+    // breed, an age, an appetite and a laying cycle exactly like a bought one
+    // (AnimalGrowthSystem.recordForAnimal mints its record on first sight).
+    // Null for anybody who is not an animal at all.
+    _animalRecord() {
+      const AG = window.AnimalGrowthSystem;
+      if (!AG || !AG.recordForAnimal) return null;
+      if (this._actorId != null) return null;   // a party member is not livestock
+      const name = this._targetName();
+      const profile = name ? _getProfile(name) : null;
+      if (!name || !profile || !profile.spriteKey) return null;
+      const event = this._eventId != null ? $gameMap?.event(this._eventId) : null;
+      return AG.recordForAnimal(name, profile.spriteKey, event) || null;
+    }
+
+    _animalStatus() {
+      const AG = window.AnimalGrowthSystem;
+      const rec = this._animalRecord();
+      return (rec && AG.animalStatus) ? AG.animalStatus(rec) : null;
+    }
+
+    // Taking what the animal has ready. On the board only while there IS
+    // something ready (see the action list), so reaching it with empty hands is
+    // the rare race of the batch being collected from the Assets menu first.
+    _collect() {
+      const AG = window.AnimalGrowthSystem;
+      const rec = this._animalRecord();
+      const def = rec && AG?.ANIMAL_DB?.[rec.animalId];
+      if (!rec || !def) { SoundManager.playBuzzer(); return; }
+      const items = AG.collectProduce(rec, def);
+      const T = _getT();
+      const kind = this._beastKind();
+      if (!items.length) {
+        this._pushChat('npc', String(T.beastCollectNothing || '').replace(/\{kind\}/g, kind));
+        SoundManager.playBuzzer();
+      } else {
+        AG.reportCollected?.(items);
+        const what = items
+          .map(r => `${$dataItems[r.itemId]?.name ?? ''} x${r.qty}`)
+          .filter(Boolean).join(', ');
+        this._pushChat('player', String(T.beastCollected || '')
+          .replace(/\{kind\}/g, kind).replace(/\{items\}/g, what));
+        this._pushChat('npc', _feralNoise(2, this._subjectCreatureClass()));
+        SoundManager.playShop();
+      }
+      this._activeTab = 'chat';
+      this._render();
+      this._scrollChatToBottom();
+    }
+
+    // ── Asking an animal to come along ──────────────────────────────────────
+    // A wild animal is simply asked ("Join as pet"); somebody's animal has to be
+    // talked away from them ("Convince to join"), which is always the harder
+    // ask and, for a dog, very nearly impossible: a dog knows whose it is. The
+    // base odds come off the animal's own wardrobe entry (wildJoinChance /
+    // ownedJoinChance) and the person asking adds their WIS: reading an animal
+    // and being read by one is not a matter of muscle or of glibness.
+    //
+    // Thrown on the same d20 every other check in the game is thrown on, so the
+    // player sees the number they were quoted actually rolled.
+    async _animalJoin() {
+      const AG = window.AnimalGrowthSystem;
+      const status = this._animalStatus?.();
+      const rec = this._animalRecord?.();
+      if (!AG || !status || !rec) { SoundManager.playBuzzer(); return; }
+
+      const T = _getT();
+      const npcName = this._targetName() || '';
+      const profile = npcName ? _getProfile(npcName) : null;
+      const actor = this._focusActor() || $gameParty?.leader();
+      const kind = this._beastKind();
+
+      if (_travellingPartyCount() >= 3) { SoundManager.playBuzzer(); return; }
+
+      const chance = _animalJoinChance(status, actor);
+      const wisMod = _wisMod(actor);
+      let success;
+      if (window.Dice3D) {
+        const res = await window.Dice3D.rollPercentage(chance, {
+          actionName: status.owned ? `Convince: ${npcName}` : `Tame: ${npcName}`, // i18n-ignore: Dice3D check id
+          statName: 'WIS', // i18n-ignore: Dice3D stat id
+          modifier: wisMod,
+          actor,
+          force3D: true,
+        });
+        success = res.success;
+      } else {
+        success = Math.random() * 100 < chance;
+      }
+
+      if (!success) {
+        SoundManager.playBuzzer();
+        // Being pressed to leave sours it. The animal thinks less of the person
+        // who asked, and an owned one takes it harder: it was being asked to
+        // walk out on somebody.
+        const sting = status.owned ? -8 : -4;
+        if (profile) {
+          _addNpcOpinion(profile, actor?.actorId(), sting);
+          (profile.eventLog ??= []).push({
+            tag: 'animalJoin', desc: 'refused to come along', // i18n-ignore: event-log record id
+            timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+          });
+        }
+        this._pushChat('npc', String(T.beastJoinRefused || '')
+          .replace(/\{kind\}/g, kind).replace(/\{name\}/g, npcName));
+        this._joinMessage = {
+          type: 'reject',
+          text: String(T.beastJoinRefusedToast || '').replace(/\{name\}/g, npcName),
+        };
+        this._render();
+        this._scrollChatToBottom();
+        return;
+      }
+
+      SoundManager.playOk();
+      // It comes along as a pet rather than as a party member: an animal walks
+      // with the party, it does not hold a slot in it (PetFollowerSystem).
+      const joined = _recruitAnimalAsPet(rec, status, npcName, this._eventId);
+      if (!joined) {
+        this._pushChat('npc', String(T.beastJoinRefused || '')
+          .replace(/\{kind\}/g, kind).replace(/\{name\}/g, npcName));
+        this._render();
+        return;
+      }
+      if (profile) {
+        _addNpcOpinion(profile, actor?.actorId(), 25);
+        (profile.eventLog ??= []).push({
+          tag: 'animalJoin', desc: 'came along with the party', // i18n-ignore: event-log record id
+          timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+        });
+      }
+      this._pushChat('npc', String(T.beastJoinAccepted || '')
+        .replace(/\{kind\}/g, kind).replace(/\{name\}/g, npcName));
+      this._joinMessage = {
+        type: 'accept',
+        text: String(T.beastJoinAcceptedToast || '').replace(/\{name\}/g, npcName),
+      };
+      this._justJoined = true;
       this._render();
       this._scrollChatToBottom();
     }
@@ -3192,6 +3500,16 @@
         // A fed animal is a fed animal whatever it thought of the meal, so the
         // stomach is filled even when the opinion drops.
         profile.hunger = Math.max(0, Math.min(100, (profile.hunger ?? 100) + _feedNourishment(item)));
+      }
+      // And if this is livestock, the same meal fills the bowl the growth and
+      // the laying cycle are measured against: a hen nobody feeds stops laying
+      // (AnimalGrowthSystem.nutritionOf).
+      const AG = window.AnimalGrowthSystem;
+      const animalRec = this._animalRecord?.();
+      if (AG && animalRec) {
+        AG.feedAnimal(animalRec);
+      }
+      if (profile) {
         (profile.eventLog ??= []).push({
           tag: 'feed', desc: `fed ${item.name}`, // i18n-ignore: event-log record id
           timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
@@ -4162,7 +4480,7 @@
       this._render();
     }
 
-    _join() {
+    async _join() {
       const evId    = this._eventId;
       const npcName = _getNPCName(evId);
       const profile = _getProfile(npcName);
@@ -4204,7 +4522,27 @@
       // play forces it near-certain so companions can be assembled for testing.
       const chance  = _joinChance(opinion, this._focusActor());
 
-      if (Math.random() * 100 >= chance) {
+      // Thrown on the same d20 every other check in the game is thrown on, so
+      // the player watches the odds the button quoted actually roll. Talking
+      // somebody into travelling with you is PSI, the stat every other social
+      // move in this panel is argued with.
+      const actor  = this._focusActor() || $gameParty?.leader();
+      const psiMod = actor ? (actor.psiMod ?? Math.floor(((actor.luk || 10) - 10) / 2)) : 0;
+      let joinRoll;
+      if (window.Dice3D) {
+        const res = await window.Dice3D.rollPercentage(chance, {
+          actionName: `Join: ${npcName}`, // i18n-ignore: Dice3D check id
+          statName: 'PSI', // i18n-ignore: Dice3D stat id
+          modifier: psiMod,
+          actor,
+          force3D: true,
+        });
+        joinRoll = !res.success;
+      } else {
+        joinRoll = Math.random() * 100 >= chance;
+      }
+
+      if (joinRoll) {
         SoundManager.playBuzzer();
         // Being turned down stings a little, the NPC remembers being pressed.
         if (profile) {
@@ -4332,7 +4670,9 @@
       // A non-sentient member types like anybody else and is heard like the
       // animal it is: what leaves its throat is noise, and the noise is what
       // the NPC answers.
-      if (_isNonSentientActor(this._focusActor())) phrase = _feralGrowlFor(phrase);
+      if (_isNonSentientActor(this._focusActor())) {
+        phrase = _feralGrowlFor(phrase, _creatureClassOfActor(this._focusActor()));
+      }
       this._askDraft = '';
       // Small talk moves no opinion, but it is still somebody to talk to.
       this._gainCompany();
@@ -4429,7 +4769,7 @@
       if (response.length > 280) response = response.slice(0, 277) + '…';
       // And a beast answers the way it was spoken to: whoever wrote the line,
       // what actually comes back out is noise the length of it.
-      if (this._isNonSentientSubject()) response = _feralGrowlFor(response);
+      if (this._isNonSentientSubject()) response = _feralGrowlFor(response, this._subjectCreatureClass());
       this._isTyping = false;
       this._chatHistory.push({ role: 'npc', text: response });
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
@@ -5371,7 +5711,10 @@
     // has to be able to ask both questions without reaching into the panel's
     // private helpers.
     isNonSentientNPC(npcName) { return _isNonSentientNpc(npcName); },
-    growlFor(text) { return _feralGrowlFor(text); },
+    // `npcName` is what decides which of the eight voices the noise comes out
+    // in; without it the Feral bank answers, which is what every caller written
+    // before the classes had voices of their own expects.
+    growlFor(text, npcName) { return _feralGrowlFor(text, _creatureClassOfNpc(npcName)); },
     // Log a line an NPC said outside this panel (e.g. MarkovTextGenerator's
     // "Generate NPC Dialogue" plugin command drawing a message box) so it shows
     // up in that NPC's chat history the next time the panel is opened. Stored on
@@ -5438,6 +5781,7 @@
       _bubbaPlaythrough, _isBubbaActor, _bubbaContext, _bubbaDb,
       // Non-sentient members (classes 63+): the UI layer builds their action
       // list out of these and hides everything a beast cannot do.
+      _animalJoinChance, _wisMod, _recruitAnimalAsPet,
       _isNonSentientActor, _feralKind, _feralBand, _feralCanGift, FERAL_ACTIONS,
       _feralGrowlFor, _feralNoise, _isNonSentientNpc,
       // Petting and feeding: the UI layer builds the beast action row and the

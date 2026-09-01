@@ -46,10 +46,11 @@ class Main {
     }
 
     setupNwjsWindow() {
-        // [Note] NW.js opens the window at the size declared in package.json
-        //   before any game code runs, so the boot screen would otherwise show
-        //   in a small window until the fullscreen plugins reach
-        //   Scene_Boot.start several seconds later. Size it natively up front.
+        // [Note] NW.js opens the window before any game code runs, so asking
+        //   for fullscreen from here only takes effect seconds later, after a
+        //   windowed frame has already been shown. package.json declares the
+        //   window fullscreen instead, which the OS honours from the very
+        //   first paint; all this has to do is undo it for a playtest.
         if (typeof nw !== "object") {
             return;
         }
@@ -59,8 +60,9 @@ class Main {
         win.on("enter-fullscreen", () => (Main.isNwFullscreen = true));
         win.on("leave-fullscreen", () => (Main.isNwFullscreen = false));
         if (this.isPlaytest()) {
+            win.leaveFullscreen();
             win.maximize();
-        } else {
+        } else if (!win.isFullscreen) {
             win.enterFullscreen();
         }
         win.focus();

@@ -201,7 +201,10 @@
     "trainStop": "Call it off",
     "traitSentient": "Sentient",
     "traitMagical": "Magical",
-    "traitGeneticFreak": "Genetic Freak"
+    "traitGeneticFreak": "Genetic Freak",
+    "ride": "Ride",
+    "dismount": "Dismount",
+    "mounted": "Ridden"
   },
   "vehicles": {
     "spawn": "Spawn",

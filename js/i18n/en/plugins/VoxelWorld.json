@@ -63,6 +63,13 @@
   "hud": {
     "cmdDig": "Dig / mine",
     "cmdPlace": "Place block",
-    "cmdBlock": "Change block"
+    "cmdBlock": "Change block",
+    "cmdBar": "Change quick bar",
+    "cmdCast": "Cast the spell in hand"
+  },
+  "bar": {
+    "blocks": "Blocks",
+    "items": "Items",
+    "spells": "Spells"
   }
 }

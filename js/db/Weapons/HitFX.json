@@ -1,0 +1,4148 @@
+{
+  "_comment": "Bespoke hit effects. Merge order: weapon type profile <- family <- weapon. Every field is optional; anything left out is inherited. Families are named by <HitFX: name> too. See docs/tasks/bespoke_weapon_hit_fx.md.",
+  "families": {
+    "shiv": {
+      "shape": "thrust",
+      "color": "0xd9e6f0",
+      "core": "0xffffff",
+      "size": 62,
+      "thickness": 5,
+      "lines": 4,
+      "life": 230,
+      "sparks": 6,
+      "sparkles": 3,
+      "hitstop": 50,
+      "shake": 2,
+      "se": "pierce",
+      "trails": 1
+    },
+    "slice": {
+      "shape": "ribbon",
+      "color": "0xe8f4ff",
+      "core": "0xffffff",
+      "size": 58,
+      "sweep": 120,
+      "width": 4,
+      "bow": 0.1,
+      "twist": 1,
+      "head": 0.2,
+      "tail": 0.22,
+      "life": 250,
+      "sparks": 6,
+      "sparkles": 6,
+      "hitstop": 55,
+      "shake": 2,
+      "se": "slash",
+      "trails": 1
+    },
+    "cleaver": {
+      "shape": "ribbon",
+      "color": "0xffe4c4",
+      "core": "0xffffff",
+      "size": 82,
+      "sweep": 95,
+      "width": 15,
+      "bow": 0.22,
+      "twist": 0.5,
+      "head": 0.3,
+      "tail": 0.34,
+      "life": 330,
+      "sparks": 12,
+      "sparkles": 6,
+      "hitstop": 115,
+      "shake": 5,
+      "se": "cleave",
+      "trails": 1
+    },
+    "glass": {
+      "shape": "shatter",
+      "color": "0xbfe8d8",
+      "core": "0xffffff",
+      "size": 66,
+      "life": 300,
+      "sparks": 8,
+      "hitstop": 70,
+      "shake": 3,
+      "se": "slash",
+      "trails": 1
+    },
+    "scissors": {
+      "shape": "snip",
+      "color": "0xdfe9f2",
+      "core": "0xffffff",
+      "size": 70,
+      "width": 4,
+      "life": 240,
+      "sparks": 8,
+      "hitstop": 60,
+      "shake": 2,
+      "se": "slash",
+      "trails": 2
+    },
+    "wood": {
+      "shape": "thwack",
+      "color": "0xd9c49a",
+      "core": "0xfff0d0",
+      "splinter": "0xc49a5a",
+      "dustColor": "0xa89878",
+      "size": 64,
+      "lines": 4,
+      "life": 300,
+      "sparks": 0,
+      "hitstop": 95,
+      "shake": 3,
+      "se": "blunt",
+      "trails": 1
+    },
+    "cheapsteel": {
+      "shape": "ribbon",
+      "color": "0xc9d6e0",
+      "core": "0xffffff",
+      "size": 74,
+      "sweep": 140,
+      "width": 7,
+      "bow": 0.12,
+      "twist": 0.8,
+      "head": 0.26,
+      "tail": 0.3,
+      "life": 300,
+      "sparks": 12,
+      "sparkles": 5,
+      "hitstop": 85,
+      "shake": 3,
+      "se": "slash",
+      "trails": 1
+    },
+    "sawblade": {
+      "shape": "sawtooth",
+      "color": "0xffd9a0",
+      "core": "0xffffff",
+      "size": 92,
+      "width": 6,
+      "teeth": 7,
+      "life": 340,
+      "sparks": 16,
+      "hitstop": 105,
+      "shake": 4,
+      "se": "cleave",
+      "trails": 1
+    },
+    "pipegun": {
+      "shape": "tracer",
+      "color": "0xffe08a",
+      "core": "0xffffff",
+      "size": 220,
+      "thickness": 4,
+      "lines": 7,
+      "life": 260,
+      "sparks": 14,
+      "smoke": 8,
+      "casing": true,
+      "hitstop": 70,
+      "shake": 5,
+      "se": "bullet",
+      "swing": false
+    },
+    "airgun": {
+      "shape": "tracer",
+      "color": "0xdfeeff",
+      "core": "0xffffff",
+      "size": 200,
+      "thickness": 3,
+      "lines": 5,
+      "life": 220,
+      "sparks": 8,
+      "smoke": 4,
+      "casing": false,
+      "hitstop": 50,
+      "shake": 3,
+      "se": "bullet",
+      "swing": false
+    },
+    "flintlock": {
+      "shape": "tracer",
+      "color": "0xffd27a",
+      "core": "0xffffff",
+      "size": 230,
+      "thickness": 5,
+      "lines": 8,
+      "life": 300,
+      "sparks": 18,
+      "smoke": 14,
+      "casing": false,
+      "hitstop": 90,
+      "shake": 6,
+      "se": "bullet",
+      "swing": false
+    },
+    "flamer": {
+      "shape": "flame",
+      "color": "0xff7a2a",
+      "core": "0xffe9a0",
+      "size": 150,
+      "life": 420,
+      "sparks": 10,
+      "smoke": 4,
+      "hitstop": 45,
+      "shake": 3,
+      "se": "bullet",
+      "swing": false
+    },
+    "lobber": {
+      "shape": "lob",
+      "color": "0xd8c8a8",
+      "core": "0xffffff",
+      "chunkColor": "0x8a7a62",
+      "dustColor": "0x9c9184",
+      "size": 110,
+      "chunks": 12,
+      "life": 400,
+      "sparks": 10,
+      "hitstop": 120,
+      "shake": 7,
+      "se": "blunt",
+      "swing": false
+    },
+    "pellet": {
+      "shape": "spray",
+      "color": "0xd8e8b0",
+      "core": "0xffffff",
+      "size": 150,
+      "width": 3,
+      "pellets": 9,
+      "spread": 0.45,
+      "life": 230,
+      "sparks": 6,
+      "hitstop": 40,
+      "shake": 2,
+      "se": "pierce",
+      "swing": false
+    },
+    "finesse": {
+      "shape": "ribbon",
+      "color": "0xe8f6ff",
+      "core": "0xffffff",
+      "size": 56,
+      "sweep": 125,
+      "width": 4,
+      "bow": 0.1,
+      "twist": 1.1,
+      "head": 0.18,
+      "tail": 0.2,
+      "life": 230,
+      "sparks": 7,
+      "sparkles": 7,
+      "hits": 2,
+      "hitGap": 62,
+      "hitstop": 45,
+      "shake": 2,
+      "se": "slash",
+      "trails": 1
+    },
+    "punchdagger": {
+      "shape": "thrust",
+      "color": "0xdfe8f0",
+      "core": "0xffffff",
+      "size": 78,
+      "thickness": 7,
+      "lines": 6,
+      "life": 250,
+      "sparks": 10,
+      "sparkles": 4,
+      "hitstop": 80,
+      "shake": 4,
+      "se": "pierce",
+      "trails": 1
+    },
+    "nunchaku": {
+      "shape": "thwack",
+      "color": "0xd9c49a",
+      "core": "0xfff0d0",
+      "splinter": "0xb08a52",
+      "dustColor": "0xa08c6c",
+      "size": 60,
+      "lines": 5,
+      "life": 260,
+      "sparks": 0,
+      "hits": 2,
+      "hitGap": 55,
+      "hitstop": 70,
+      "shake": 3,
+      "se": "blunt",
+      "trails": 1
+    },
+    "curvedknife": {
+      "shape": "ribbon",
+      "color": "0xdceaf5",
+      "core": "0xffffff",
+      "size": 68,
+      "sweep": 155,
+      "width": 6,
+      "bow": 0.26,
+      "twist": 0.9,
+      "head": 0.24,
+      "tail": 0.26,
+      "life": 280,
+      "sparks": 9,
+      "sparkles": 7,
+      "hitstop": 70,
+      "shake": 3,
+      "se": "slash",
+      "trails": 1
+    },
+    "twinblade": {
+      "shape": "ribbon",
+      "color": "0xd8ecff",
+      "core": "0xffffff",
+      "size": 64,
+      "sweep": 140,
+      "width": 5,
+      "bow": 0.14,
+      "twist": 1,
+      "head": 0.2,
+      "tail": 0.24,
+      "blades": 2,
+      "cross": 1.4,
+      "stagger": 0.14,
+      "life": 280,
+      "sparks": 10,
+      "sparkles": 10,
+      "hits": 2,
+      "hitGap": 70,
+      "hitstop": 55,
+      "shake": 3,
+      "se": "slash",
+      "trails": 2
+    },
+    "seedblade": {
+      "shape": "ribbon",
+      "color": "0xa8e08a",
+      "core": "0xeaffd8",
+      "sparkleColor": "0xc8f0a0",
+      "size": 70,
+      "sweep": 140,
+      "width": 6,
+      "bow": 0.16,
+      "twist": 0.8,
+      "head": 0.24,
+      "tail": 0.3,
+      "life": 340,
+      "sparks": 6,
+      "sparkles": 16,
+      "hitstop": 70,
+      "shake": 2,
+      "se": "slash",
+      "trails": 1
+    },
+    "mithril": {
+      "shape": "ribbon",
+      "color": "0xbfe4ff",
+      "core": "0xffffff",
+      "size": 84,
+      "sweep": 160,
+      "width": 8,
+      "bow": 0.12,
+      "twist": 0.9,
+      "head": 0.24,
+      "tail": 0.28,
+      "life": 330,
+      "sparks": 14,
+      "sparkles": 18,
+      "hitstop": 85,
+      "shake": 3,
+      "se": "slash",
+      "trails": 1
+    },
+    "shuriken": {
+      "shape": "spray",
+      "color": "0xdfe9f2",
+      "core": "0xffffff",
+      "size": 140,
+      "width": 4,
+      "pellets": 3,
+      "spread": 0.35,
+      "life": 260,
+      "sparks": 8,
+      "hitstop": 55,
+      "shake": 3,
+      "se": "pierce",
+      "trails": 1
+    },
+    "dragonfang": {
+      "shape": "ribbon",
+      "color": "0xff9a4a",
+      "core": "0xffe8b0",
+      "sparkleColor": "0xffc266",
+      "size": 90,
+      "sweep": 150,
+      "width": 9,
+      "bow": 0.18,
+      "twist": 0.9,
+      "head": 0.26,
+      "tail": 0.3,
+      "life": 380,
+      "sparks": 16,
+      "sparkles": 14,
+      "hitstop": 105,
+      "shake": 5,
+      "se": "cleave",
+      "trails": 1
+    },
+    "psionic": {
+      "shape": "rune",
+      "color": "0xc7a8ff",
+      "core": "0xf0e4ff",
+      "sparkleColor": "0xd8c0ff",
+      "size": 84,
+      "thickness": 0.1,
+      "lines": 8,
+      "life": 460,
+      "sparks": 6,
+      "sparkles": 20,
+      "hitstop": 60,
+      "shake": 2,
+      "se": "magic",
+      "trails": 1
+    },
+    "chrono": {
+      "shape": "rune",
+      "color": "0x9fd8ff",
+      "core": "0xffffff",
+      "sparkleColor": "0xdff2ff",
+      "size": 96,
+      "thickness": 0.07,
+      "lines": 4,
+      "life": 520,
+      "sparks": 4,
+      "sparkles": 22,
+      "hitstop": 140,
+      "shake": 2,
+      "se": "magic",
+      "trails": 1
+    },
+    "bronze": {
+      "shape": "ribbon",
+      "color": "0xd8a86a",
+      "core": "0xffe8bf",
+      "size": 80,
+      "sweep": 135,
+      "width": 9,
+      "bow": 0.15,
+      "twist": 0.7,
+      "head": 0.28,
+      "tail": 0.32,
+      "life": 320,
+      "sparks": 10,
+      "sparkles": 5,
+      "hitstop": 95,
+      "shake": 4,
+      "se": "cleave",
+      "trails": 1
+    },
+    "obsidian": {
+      "shape": "shatter",
+      "color": "0x6a5a8a",
+      "core": "0xe8dcff",
+      "size": 84,
+      "life": 330,
+      "sparks": 12,
+      "hitstop": 90,
+      "shake": 4,
+      "se": "slash",
+      "trails": 1
+    },
+    "knightsteel": {
+      "shape": "ribbon",
+      "color": "0xe4f0ff",
+      "core": "0xffffff",
+      "size": 92,
+      "sweep": 165,
+      "width": 10,
+      "bow": 0.14,
+      "twist": 0.85,
+      "head": 0.28,
+      "tail": 0.3,
+      "life": 350,
+      "sparks": 14,
+      "sparkles": 10,
+      "hitstop": 100,
+      "shake": 4,
+      "se": "slash",
+      "trails": 1
+    },
+    "greatsword": {
+      "shape": "ribbon",
+      "color": "0xf0f6ff",
+      "core": "0xffffff",
+      "size": 128,
+      "sweep": 285,
+      "width": 20,
+      "bow": 0.1,
+      "twist": 0.6,
+      "head": 0.34,
+      "tail": 0.38,
+      "life": 480,
+      "sparks": 20,
+      "sparkles": 12,
+      "hitstop": 155,
+      "shake": 8,
+      "se": "cleave",
+      "trails": 1
+    },
+    "curvedsword": {
+      "shape": "ribbon",
+      "color": "0xdff0ff",
+      "core": "0xffffff",
+      "size": 100,
+      "sweep": 205,
+      "width": 9,
+      "bow": 0.3,
+      "twist": 1,
+      "head": 0.24,
+      "tail": 0.28,
+      "life": 330,
+      "sparks": 12,
+      "sparkles": 10,
+      "hitstop": 85,
+      "shake": 4,
+      "se": "slash",
+      "trails": 1
+    },
+    "rapier": {
+      "shape": "needle",
+      "color": "0xe8f2ff",
+      "core": "0xffffff",
+      "size": 120,
+      "width": 3,
+      "stabs": 5,
+      "life": 280,
+      "sparks": 8,
+      "sparkles": 6,
+      "hitstop": 45,
+      "shake": 2,
+      "se": "pierce",
+      "trails": 1
+    },
+    "katana": {
+      "shape": "ribbon",
+      "color": "0xeaf6ff",
+      "core": "0xffffff",
+      "size": 116,
+      "sweep": 195,
+      "width": 7,
+      "bow": 0.08,
+      "twist": 1.2,
+      "head": 0.2,
+      "tail": 0.24,
+      "life": 400,
+      "sparks": 10,
+      "sparkles": 18,
+      "hitstop": 120,
+      "shake": 4,
+      "se": "slash",
+      "trails": 1
+    },
+    "whipsword": {
+      "shape": "lash",
+      "color": "0xdfeef8",
+      "core": "0xffffff",
+      "size": 150,
+      "sweep": 230,
+      "width": 5,
+      "bow": 0.05,
+      "wave": 0.32,
+      "head": 0.3,
+      "tail": 0.26,
+      "life": 330,
+      "sparks": 10,
+      "sparkles": 8,
+      "hitstop": 70,
+      "shake": 3,
+      "se": "lash",
+      "trails": 1
+    },
+    "keenedge": {
+      "shape": "ribbon",
+      "color": "0xdffbf0",
+      "core": "0xffffff",
+      "size": 104,
+      "sweep": 210,
+      "width": 6,
+      "bow": 0.1,
+      "twist": 1.15,
+      "head": 0.18,
+      "tail": 0.22,
+      "life": 300,
+      "sparks": 8,
+      "sparkles": 14,
+      "hitstop": 60,
+      "shake": 3,
+      "se": "slash",
+      "trails": 1
+    },
+    "vibro": {
+      "shape": "sawtooth",
+      "color": "0xbfe8ff",
+      "core": "0xffffff",
+      "size": 104,
+      "width": 4,
+      "teeth": 11,
+      "life": 300,
+      "sparks": 18,
+      "hitstop": 70,
+      "shake": 4,
+      "se": "slash",
+      "trails": 2
+    },
+    "shadowsteel": {
+      "shape": "ribbon",
+      "color": "0x2e2740",
+      "core": "0x8a6ac0",
+      "size": 98,
+      "sweep": 175,
+      "width": 11,
+      "bow": 0.16,
+      "twist": 0.9,
+      "head": 0.26,
+      "tail": 0.3,
+      "life": 380,
+      "sparks": 8,
+      "sparkles": 8,
+      "hitstop": 110,
+      "shake": 5,
+      "se": "cleave",
+      "trails": 1
+    },
+    "club": {
+      "shape": "thwack",
+      "color": "0xd9c49a",
+      "core": "0xfff0d0",
+      "splinter": "0xb08a52",
+      "dustColor": "0xa08c6c",
+      "size": 86,
+      "lines": 6,
+      "life": 340,
+      "sparks": 2,
+      "trails": 1,
+      "hitstop": 120,
+      "shake": 5,
+      "se": "blunt"
+    },
+    "mace": {
+      "shape": "shock",
+      "color": "0xffd9a0",
+      "core": "0xffffff",
+      "size": 100,
+      "thickness": 0.3,
+      "lines": 10,
+      "life": 380,
+      "sparks": 14,
+      "dust": 8,
+      "trails": 1,
+      "hitstop": 130,
+      "shake": 6,
+      "se": "blunt"
+    },
+    "warhammer": {
+      "shape": "shock",
+      "color": "0xffe0b0",
+      "core": "0xffffff",
+      "size": 128,
+      "thickness": 0.34,
+      "lines": 12,
+      "life": 460,
+      "sparks": 20,
+      "dust": 14,
+      "trails": 1,
+      "hitstop": 160,
+      "shake": 9,
+      "se": "blunt"
+    },
+    "flail": {
+      "shape": "lash",
+      "color": "0xd8dee4",
+      "core": "0xffffff",
+      "size": 130,
+      "sweep": 250,
+      "width": 8,
+      "bow": 0.08,
+      "wave": 0.2,
+      "head": 0.3,
+      "tail": 0.3,
+      "life": 380,
+      "sparks": 14,
+      "trails": 1,
+      "hitstop": 130,
+      "shake": 6,
+      "se": "blunt"
+    },
+    "improvised": {
+      "shape": "shock",
+      "color": "0xc8c0b0",
+      "core": "0xfff4e0",
+      "size": 88,
+      "thickness": 0.26,
+      "lines": 7,
+      "life": 330,
+      "sparks": 8,
+      "dust": 6,
+      "trails": 1,
+      "hitstop": 105,
+      "shake": 4,
+      "se": "blunt"
+    },
+    "hatchet": {
+      "shape": "ribbon",
+      "color": "0xffe4c4",
+      "core": "0xffffff",
+      "size": 78,
+      "sweep": 105,
+      "width": 12,
+      "bow": 0.2,
+      "twist": 0.6,
+      "head": 0.26,
+      "tail": 0.3,
+      "life": 310,
+      "sparks": 12,
+      "sparkles": 5,
+      "trails": 1,
+      "hitstop": 105,
+      "shake": 4,
+      "se": "cleave"
+    },
+    "battleaxe": {
+      "shape": "ribbon",
+      "color": "0xffdcb0",
+      "core": "0xffffff",
+      "size": 104,
+      "sweep": 130,
+      "width": 18,
+      "bow": 0.22,
+      "twist": 0.55,
+      "head": 0.3,
+      "tail": 0.34,
+      "life": 400,
+      "sparks": 16,
+      "sparkles": 8,
+      "trails": 1,
+      "hitstop": 135,
+      "shake": 6,
+      "se": "cleave"
+    },
+    "greataxe": {
+      "shape": "ribbon",
+      "color": "0xffd8a0",
+      "core": "0xffffff",
+      "size": 132,
+      "sweep": 240,
+      "width": 24,
+      "bow": 0.16,
+      "twist": 0.5,
+      "head": 0.34,
+      "tail": 0.38,
+      "life": 480,
+      "sparks": 22,
+      "sparkles": 10,
+      "trails": 1,
+      "hitstop": 158,
+      "shake": 9,
+      "se": "cleave"
+    },
+    "sickle": {
+      "shape": "ribbon",
+      "color": "0xe0eef8",
+      "core": "0xffffff",
+      "size": 82,
+      "sweep": 200,
+      "width": 7,
+      "bow": 0.34,
+      "twist": 1,
+      "head": 0.22,
+      "tail": 0.26,
+      "life": 300,
+      "sparks": 10,
+      "sparkles": 8,
+      "trails": 1,
+      "hitstop": 85,
+      "shake": 3,
+      "se": "slash"
+    },
+    "whip": {
+      "shape": "lash",
+      "color": "0xffe9c0",
+      "core": "0xfff8e8",
+      "size": 150,
+      "sweep": 230,
+      "width": 5,
+      "bow": 0.05,
+      "wave": 0.3,
+      "head": 0.3,
+      "tail": 0.26,
+      "life": 300,
+      "sparks": 8,
+      "sparkles": 6,
+      "trails": 1,
+      "hitstop": 65,
+      "shake": 3,
+      "se": "lash"
+    },
+    "chainwhip": {
+      "shape": "lash",
+      "color": "0xd0d8e0",
+      "core": "0xffffff",
+      "size": 160,
+      "sweep": 250,
+      "width": 7,
+      "bow": 0.06,
+      "wave": 0.26,
+      "head": 0.32,
+      "tail": 0.28,
+      "life": 340,
+      "sparks": 16,
+      "sparkles": 4,
+      "trails": 1,
+      "hitstop": 95,
+      "shake": 5,
+      "se": "blunt"
+    },
+    "net": {
+      "shape": "spray",
+      "color": "0xd8d0b8",
+      "core": "0xfff8e0",
+      "size": 120,
+      "width": 5,
+      "pellets": 8,
+      "spread": 0.95,
+      "life": 340,
+      "sparks": 4,
+      "trails": 1,
+      "hitstop": 70,
+      "shake": 3,
+      "se": "lash"
+    },
+    "energylash": {
+      "shape": "lash",
+      "color": "0x9fe8ff",
+      "core": "0xffffff",
+      "size": 165,
+      "sweep": 260,
+      "width": 6,
+      "bow": 0.04,
+      "wave": 0.34,
+      "head": 0.26,
+      "tail": 0.24,
+      "life": 320,
+      "sparks": 10,
+      "sparkles": 16,
+      "trails": 1,
+      "hitstop": 70,
+      "shake": 3,
+      "se": "magic"
+    },
+    "quarterstaff": {
+      "shape": "thwack",
+      "color": "0xd9c49a",
+      "core": "0xfff0d0",
+      "splinter": "0xc49a5a",
+      "dustColor": "0xa89878",
+      "size": 92,
+      "lines": 6,
+      "life": 320,
+      "sparks": 2,
+      "trails": 1,
+      "hits": 2,
+      "hitGap": 90,
+      "hitstop": 100,
+      "shake": 4,
+      "se": "blunt"
+    },
+    "magestaff": {
+      "shape": "rune",
+      "color": "0xb9a6ff",
+      "core": "0xf0e4ff",
+      "sparkleColor": "0xd8c0ff",
+      "size": 96,
+      "thickness": 0.11,
+      "lines": 8,
+      "life": 480,
+      "sparks": 8,
+      "sparkles": 20,
+      "trails": 1,
+      "hitstop": 80,
+      "shake": 3,
+      "se": "magic"
+    },
+    "wand": {
+      "shape": "rune",
+      "color": "0xc7e0ff",
+      "core": "0xffffff",
+      "size": 72,
+      "thickness": 0.1,
+      "lines": 5,
+      "life": 400,
+      "sparks": 4,
+      "sparkles": 14,
+      "trails": 1,
+      "hitstop": 55,
+      "shake": 2,
+      "se": "magic"
+    },
+    "baton": {
+      "shape": "thwack",
+      "color": "0xcfd6dc",
+      "core": "0xffffff",
+      "splinter": "0x9aa2a8",
+      "dustColor": "0x9aa2a8",
+      "size": 70,
+      "lines": 5,
+      "life": 260,
+      "sparks": 6,
+      "trails": 1,
+      "hits": 2,
+      "hitGap": 70,
+      "hitstop": 75,
+      "shake": 3,
+      "se": "blunt"
+    },
+    "arrow": {
+      "shape": "thrust",
+      "color": "0xdff0ff",
+      "core": "0xffffff",
+      "size": 130,
+      "thickness": 6,
+      "lines": 5,
+      "life": 270,
+      "sparks": 9,
+      "sparkles": 4,
+      "hitstop": 60,
+      "shake": 3,
+      "se": "pierce",
+      "swing": false
+    },
+    "bolt": {
+      "shape": "thrust",
+      "color": "0xe4eef6",
+      "core": "0xffffff",
+      "size": 150,
+      "thickness": 8,
+      "lines": 6,
+      "life": 280,
+      "sparks": 12,
+      "sparkles": 3,
+      "hitstop": 80,
+      "shake": 4,
+      "se": "pierce",
+      "swing": false
+    },
+    "energyarrow": {
+      "shape": "thrust",
+      "color": "0x9fd8ff",
+      "core": "0xffffff",
+      "size": 150,
+      "thickness": 7,
+      "lines": 8,
+      "life": 320,
+      "sparks": 10,
+      "sparkles": 14,
+      "hitstop": 70,
+      "shake": 3,
+      "se": "magic",
+      "swing": false
+    },
+    "slingstone": {
+      "shape": "spray",
+      "color": "0xcfc6b4",
+      "core": "0xffffff",
+      "size": 150,
+      "width": 5,
+      "pellets": 1,
+      "spread": 0.08,
+      "life": 240,
+      "sparks": 8,
+      "hitstop": 75,
+      "shake": 4,
+      "se": "blunt",
+      "swing": false
+    },
+    "bomb": {
+      "shape": "lob",
+      "color": "0xffb060",
+      "core": "0xffffff",
+      "chunkColor": "0x6a5f4e",
+      "dustColor": "0x8a8078",
+      "size": 130,
+      "chunks": 14,
+      "life": 440,
+      "sparks": 20,
+      "smoke": 8,
+      "hitstop": 140,
+      "shake": 9,
+      "se": "blunt",
+      "swing": false
+    },
+    "disc": {
+      "shape": "ribbon",
+      "color": "0xdfeaf4",
+      "core": "0xffffff",
+      "size": 96,
+      "sweep": 300,
+      "width": 6,
+      "bow": 0.05,
+      "twist": 1.3,
+      "head": 0.24,
+      "tail": 0.26,
+      "life": 320,
+      "sparks": 10,
+      "sparkles": 8,
+      "hitstop": 70,
+      "shake": 3,
+      "se": "slash",
+      "swing": false
+    },
+    "device": {
+      "shape": "starburst",
+      "color": "0x9fe8ff",
+      "core": "0xffffff",
+      "size": 92,
+      "thickness": 0.2,
+      "lines": 12,
+      "life": 360,
+      "sparks": 14,
+      "sparkles": 10,
+      "hitstop": 70,
+      "shake": 4,
+      "se": "magic",
+      "swing": false
+    },
+    "claws": {
+      "shape": "ribbon",
+      "color": "0xffd0e0",
+      "core": "0xffffff",
+      "size": 66,
+      "sweep": 115,
+      "width": 4,
+      "bow": 0.1,
+      "twist": 1,
+      "head": 0.2,
+      "tail": 0.22,
+      "blades": 3,
+      "parallel": true,
+      "stagger": 0.06,
+      "trails": 3,
+      "life": 270,
+      "sparks": 9,
+      "sparkles": 8,
+      "hits": 3,
+      "hitGap": 62,
+      "hitstop": 50,
+      "shake": 3,
+      "se": "slash"
+    },
+    "talons": {
+      "shape": "ribbon",
+      "color": "0xffe0d0",
+      "core": "0xffffff",
+      "size": 82,
+      "sweep": 125,
+      "width": 6,
+      "bow": 0.12,
+      "twist": 0.9,
+      "head": 0.22,
+      "tail": 0.24,
+      "blades": 3,
+      "parallel": true,
+      "stagger": 0.07,
+      "trails": 3,
+      "life": 300,
+      "sparks": 12,
+      "sparkles": 10,
+      "hits": 2,
+      "hitGap": 70,
+      "hitstop": 75,
+      "shake": 4,
+      "se": "cleave"
+    },
+    "fist": {
+      "shape": "starburst",
+      "color": "0xfff2cc",
+      "core": "0xffffff",
+      "size": 72,
+      "thickness": 0.26,
+      "lines": 10,
+      "life": 280,
+      "sparks": 10,
+      "sparkles": 4,
+      "trails": 1,
+      "hits": 2,
+      "hitGap": 68,
+      "hitstop": 80,
+      "shake": 4,
+      "se": "flesh"
+    },
+    "gauntlet": {
+      "shape": "starburst",
+      "color": "0xffe8c0",
+      "core": "0xffffff",
+      "size": 88,
+      "thickness": 0.3,
+      "lines": 12,
+      "life": 320,
+      "sparks": 16,
+      "sparkles": 6,
+      "trails": 1,
+      "hitstop": 115,
+      "shake": 6,
+      "se": "blunt"
+    },
+    "energyfist": {
+      "shape": "starburst",
+      "color": "0x9fd8ff",
+      "core": "0xffffff",
+      "size": 92,
+      "thickness": 0.22,
+      "lines": 14,
+      "life": 340,
+      "sparks": 12,
+      "sparkles": 16,
+      "trails": 1,
+      "hitstop": 90,
+      "shake": 5,
+      "se": "magic"
+    },
+    "spearthrust": {
+      "shape": "thrust",
+      "color": "0xd9f3ff",
+      "core": "0xffffff",
+      "size": 140,
+      "thickness": 7,
+      "lines": 6,
+      "life": 270,
+      "sparks": 10,
+      "sparkles": 6,
+      "trails": 1,
+      "hitstop": 85,
+      "shake": 4,
+      "se": "pierce"
+    },
+    "pike": {
+      "shape": "thrust",
+      "color": "0xdfeaf4",
+      "core": "0xffffff",
+      "size": 172,
+      "thickness": 9,
+      "lines": 7,
+      "life": 300,
+      "sparks": 12,
+      "sparkles": 5,
+      "trails": 1,
+      "hitstop": 110,
+      "shake": 5,
+      "se": "pierce"
+    },
+    "polearm": {
+      "shape": "ribbon",
+      "color": "0xe4f0ff",
+      "core": "0xffffff",
+      "size": 118,
+      "sweep": 200,
+      "width": 14,
+      "bow": 0.18,
+      "twist": 0.7,
+      "head": 0.3,
+      "tail": 0.34,
+      "life": 420,
+      "sparks": 16,
+      "sparkles": 8,
+      "trails": 1,
+      "hitstop": 130,
+      "shake": 6,
+      "se": "cleave"
+    },
+    "trident": {
+      "shape": "thrust",
+      "color": "0xbfe8ff",
+      "core": "0xffffff",
+      "size": 150,
+      "thickness": 6,
+      "lines": 9,
+      "life": 300,
+      "sparks": 14,
+      "sparkles": 8,
+      "trails": 3,
+      "hitstop": 100,
+      "shake": 5,
+      "se": "pierce"
+    },
+    "ehi": {
+      "shape": "shatter",
+      "color": "0x5a4a2a",
+      "core": "0x9a8a4a",
+      "size": 96,
+      "life": 380,
+      "sparks": 10,
+      "trails": 1,
+      "hitstop": 115,
+      "shake": 5,
+      "se": "magic"
+    },
+    "varlenia": {
+      "shape": "ribbon",
+      "color": "0xffeeb8",
+      "core": "0xffffff",
+      "sparkleColor": "0xfff4c4",
+      "size": 104,
+      "sweep": 190,
+      "width": 9,
+      "bow": 0.14,
+      "twist": 0.95,
+      "head": 0.24,
+      "tail": 0.28,
+      "life": 400,
+      "sparks": 12,
+      "sparkles": 20,
+      "trails": 2,
+      "hitstop": 100,
+      "shake": 4,
+      "se": "slash"
+    },
+    "sidearm": {
+      "shape": "tracer",
+      "color": "0xffe8a0",
+      "core": "0xffffff",
+      "size": 210,
+      "thickness": 3,
+      "lines": 6,
+      "life": 230,
+      "sparks": 12,
+      "smoke": 5,
+      "casing": true,
+      "hitstop": 60,
+      "shake": 4,
+      "se": "bullet",
+      "swing": false
+    },
+    "rifle": {
+      "shape": "tracer",
+      "color": "0xfff0b0",
+      "core": "0xffffff",
+      "size": 260,
+      "thickness": 4,
+      "lines": 7,
+      "life": 250,
+      "sparks": 16,
+      "smoke": 6,
+      "casing": true,
+      "hitstop": 80,
+      "shake": 6,
+      "se": "bullet",
+      "swing": false
+    },
+    "smg": {
+      "shape": "tracer",
+      "color": "0xffe8a0",
+      "core": "0xffffff",
+      "size": 200,
+      "thickness": 3,
+      "lines": 5,
+      "life": 200,
+      "sparks": 9,
+      "smoke": 3,
+      "casing": true,
+      "hits": 3,
+      "hitGap": 55,
+      "hitstop": 40,
+      "shake": 3,
+      "se": "bullet",
+      "swing": false
+    },
+    "shotgun": {
+      "shape": "spray",
+      "color": "0xffdc90",
+      "core": "0xffffff",
+      "size": 190,
+      "width": 4,
+      "pellets": 9,
+      "spread": 0.5,
+      "life": 260,
+      "sparks": 18,
+      "smoke": 8,
+      "casing": true,
+      "hitstop": 110,
+      "shake": 8,
+      "se": "bullet",
+      "swing": false
+    },
+    "sniper": {
+      "shape": "tracer",
+      "color": "0xfff8d8",
+      "core": "0xffffff",
+      "size": 330,
+      "thickness": 5,
+      "lines": 8,
+      "life": 300,
+      "sparks": 18,
+      "smoke": 7,
+      "casing": true,
+      "hitstop": 130,
+      "shake": 8,
+      "se": "bullet",
+      "swing": false
+    },
+    "minigun": {
+      "shape": "tracer",
+      "color": "0xffe08a",
+      "core": "0xffffff",
+      "size": 210,
+      "thickness": 3,
+      "lines": 5,
+      "life": 190,
+      "sparks": 8,
+      "smoke": 4,
+      "casing": true,
+      "hits": 4,
+      "hitGap": 45,
+      "hitstop": 35,
+      "shake": 3,
+      "se": "bullet",
+      "swing": false
+    },
+    "energygun": {
+      "shape": "tracer",
+      "color": "0x9fe8ff",
+      "core": "0xffffff",
+      "size": 280,
+      "thickness": 5,
+      "lines": 8,
+      "life": 280,
+      "sparks": 10,
+      "sparkles": 14,
+      "smoke": 0,
+      "casing": false,
+      "hitstop": 70,
+      "shake": 4,
+      "se": "magic",
+      "swing": false
+    }
+  },
+  "weapons": {
+    "2": {
+      "family": "shiv",
+      "size": 70,
+      "lines": 6,
+      "sparks": 9,
+      "hitstop": 45,
+      "_note": "Unbalanced Throwing Knife: thrown, arrives tumbling and wide"
+    },
+    "3": {
+      "family": "shiv",
+      "color": "0xc0c8cf",
+      "size": 56,
+      "sparks": 4,
+      "sparkles": 0,
+      "_note": "Bargain Knife: blunt cheap steel, barely a spark"
+    },
+    "4": {
+      "family": "glass",
+      "_note": "Broken Bottle: the bottle comes apart on the body"
+    },
+    "5": {
+      "family": "shiv",
+      "color": "0xe4d8b0",
+      "size": 58,
+      "sparks": 3,
+      "hitstop": 45,
+      "_note": "Ruler Shiv: plastic, flexes, almost no spark"
+    },
+    "6": {
+      "family": "slice",
+      "color": "0xf0f6ff",
+      "size": 64,
+      "sweep": 135,
+      "_note": "Kitchen Knife: a clean kitchen slice"
+    },
+    "7": {
+      "family": "scissors",
+      "_note": "Combat Scissors: two blades closing on the wound"
+    },
+    "8": {
+      "family": "cleaver",
+      "size": 76,
+      "hitstop": 105,
+      "_note": "Kitchen Cleaver: a butcher's chop"
+    },
+    "9": {
+      "family": "shiv",
+      "color": "0xece0c8",
+      "core": "0xfff8e8",
+      "size": 64,
+      "sparks": 4,
+      "sparkles": 5,
+      "_note": "Bone Dagger: pale, dry, no steel ring to it"
+    },
+    "10": {
+      "family": "shiv",
+      "color": "0xffe9b0",
+      "size": 76,
+      "lines": 7,
+      "life": 300,
+      "hitstop": 85,
+      "shake": 4,
+      "_note": "Wooden Stake: a sacred weapon, its element does the rest"
+    },
+    "11": {
+      "family": "finesse",
+      "size": 46,
+      "width": 3,
+      "hits": 3,
+      "hitGap": 55,
+      "hitstop": 35,
+      "_note": "Knife: 40 grams of it, three flicks before you see one"
+    },
+    "12": {
+      "family": "seedblade",
+      "size": 62,
+      "_note": "Seed Dagger: green, and it leaves motes growing in the air"
+    },
+    "13": {
+      "family": "nunchaku",
+      "_note": "Wooden Nunchaku: two dull cracks, no edge at all"
+    },
+    "14": {
+      "family": "finesse",
+      "color": "0xd8e0e8",
+      "size": 60,
+      "hits": 1,
+      "hitstop": 60,
+      "_note": "Naval Dirk: one committed stab, salt-pitted steel"
+    },
+    "15": {
+      "family": "finesse",
+      "_note": "Daggar: the plain double flick every knife is measured against"
+    },
+    "16": {
+      "family": "punchdagger",
+      "_note": "Katar: a straight punch through, all force on the point"
+    },
+    "17": {
+      "family": "finesse",
+      "size": 60,
+      "sparks": 9,
+      "_note": "Combat Knife: heavier, meaner, sparks on the bone"
+    },
+    "18": {
+      "family": "curvedknife",
+      "_note": "Kukri: the forward-weighted curve does the work"
+    },
+    "19": {
+      "family": "curvedknife",
+      "size": 78,
+      "width": 8,
+      "hitstop": 85,
+      "se": "cleave",
+      "_note": "Machete: a chopping curve, not a cut"
+    },
+    "20": {
+      "family": "twinblade",
+      "_note": "Twin Sai: two prongs crossing on the same wound"
+    },
+    "21": {
+      "family": "mithril",
+      "size": 70,
+      "width": 6,
+      "hits": 2,
+      "hitGap": 65,
+      "_note": "Mithril Daggar: cold silver-blue, twice, and clean"
+    },
+    "22": {
+      "family": "punchdagger",
+      "color": "0xffe0c8",
+      "size": 70,
+      "se": "flesh",
+      "_note": "Knife Hand: no blade, the hand IS the blade"
+    },
+    "23": {
+      "family": "shuriken",
+      "_note": "Splitting Shuriken: one thrown, three arriving"
+    },
+    "24": {
+      "family": "twinblade",
+      "color": "0xd8fff0",
+      "core": "0xffffff",
+      "sparkles": 18,
+      "size": 72,
+      "life": 320,
+      "_note": "Luminous Kukris: two glowing curves, motes left hanging"
+    },
+    "25": {
+      "family": "dragonfang",
+      "_note": "Dragon Daggar: a small blade with a big animal behind it"
+    },
+    "26": {
+      "family": "psionic",
+      "size": 78,
+      "life": 420,
+      "_note": "Memory Thief: nothing is cut, something is taken"
+    },
+    "27": {
+      "family": "psionic",
+      "color": "0xa8d8ff",
+      "size": 88,
+      "sparkles": 24,
+      "_note": "Knowledge Seeker: a sigil reading the wound"
+    },
+    "28": {
+      "family": "psionic",
+      "color": "0xffc8f0",
+      "size": 96,
+      "lines": 10,
+      "hitstop": 80,
+      "shake": 4,
+      "_note": "Psychic Crown: struck from four squares away, mind first"
+    },
+    "29": {
+      "family": "shiv",
+      "size": 74,
+      "hitstop": 70,
+      "_note": "EHI Flesh Dissolver: a thin stab, and its Petro element does the rest"
+    },
+    "30": {
+      "family": "twinblade",
+      "color": "0xffeeb8",
+      "core": "0xffffff",
+      "size": 78,
+      "sparkles": 16,
+      "hitstop": 75,
+      "_note": "Varlenia Twinblades: two sacred edges, and the light after them"
+    },
+    "31": {
+      "family": "chrono",
+      "_note": "Timeflow Manipulator: the blow arrives late and holds too long"
+    },
+    "43": {
+      "family": "wood",
+      "size": 54,
+      "life": 260,
+      "hitstop": 70,
+      "shake": 2,
+      "_note": "Wooden Play Sword: a toy, and it reads as one"
+    },
+    "44": {
+      "family": "wood",
+      "size": 68,
+      "hitstop": 100,
+      "_note": "Training Sword: heavier wood, a real thump"
+    },
+    "45": {
+      "family": "cheapsteel",
+      "color": "0xffe6a8",
+      "core": "0xfffbe8",
+      "sparkles": 12,
+      "sparks": 8,
+      "size": 78,
+      "_note": "Decorative Sword: gilt and glitter, little edge"
+    },
+    "46": {
+      "family": "cheapsteel",
+      "_note": "Cheap Sword: the baseline dull steel cut"
+    },
+    "47": {
+      "family": "cheapsteel",
+      "color": "0xc08a6a",
+      "size": 70,
+      "sweep": 115,
+      "width": 8,
+      "sparks": 16,
+      "hitstop": 95,
+      "_note": "Scrap Metal Shiv: rusty, ragged, throws grit"
+    },
+    "48": {
+      "family": "sawblade",
+      "_note": "Saw Blade Sword: teeth walking down the wound"
+    },
+    "49": {
+      "family": "cleaver",
+      "color": "0xffd0d0",
+      "core": "0xffffff",
+      "size": 94,
+      "width": 18,
+      "sparks": 18,
+      "hitstop": 130,
+      "shake": 6,
+      "_note": "Stop Sign Cleaver: sheet metal, heavy and loud"
+    },
+    "50": {
+      "family": "cleaver",
+      "color": "0xd8dee4",
+      "size": 86,
+      "width": 16,
+      "_note": "Leaf Spring Machete: a car part, swung like one"
+    },
+    "51": {
+      "family": "bronze",
+      "_note": "Bronze Age Sword: soft metal, a dull warm chop"
+    },
+    "52": {
+      "family": "obsidian",
+      "_note": "Obsidian Blade: volcanic glass, and it comes apart as it cuts"
+    },
+    "53": {
+      "family": "knightsteel",
+      "size": 76,
+      "sweep": 150,
+      "width": 8,
+      "hitstop": 85,
+      "_note": "Short Sword: the plain honest cut"
+    },
+    "54": {
+      "family": "seedblade",
+      "size": 88,
+      "width": 9,
+      "hitstop": 90,
+      "_note": "Seed Sword: a grown blade, sprouting where it lands"
+    },
+    "55": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Seed Mace: mace"
+    },
+    "56": {
+      "family": "bronze",
+      "size": 84,
+      "_note": "Mesopotamian Sword: older bronze, heavier in the hand"
+    },
+    "57": {
+      "family": "knightsteel",
+      "_note": "Long Sword: the reference cut every other sword is read against"
+    },
+    "58": {
+      "family": "bronze",
+      "color": "0xe0b878",
+      "size": 78,
+      "sweep": 120,
+      "_note": "Gladius: short bronze, a stabbing chop in close"
+    },
+    "59": {
+      "family": "curvedsword",
+      "color": "0xffe8c0",
+      "size": 96,
+      "se": "cleave",
+      "_note": "Khopesh: the hook drags the cut round"
+    },
+    "60": {
+      "family": "curvedsword",
+      "_note": "Scimitar: one long crescent, the classic sweep"
+    },
+    "61": {
+      "family": "rapier",
+      "_note": "Rapier: five holes before the first is noticed"
+    },
+    "62": {
+      "family": "curvedsword",
+      "size": 104,
+      "sweep": 220,
+      "_note": "Shamshir: a deeper curve, a wider arc"
+    },
+    "63": {
+      "family": "bronze",
+      "color": "0xd0c090",
+      "size": 82,
+      "sweep": 150,
+      "_note": "Patag: a broad chopping blade of soft metal"
+    },
+    "64": {
+      "family": "curvedsword",
+      "size": 98,
+      "sparks": 14,
+      "hitstop": 90,
+      "_note": "Naval Cutlass: short, brutal, and it rings"
+    },
+    "65": {
+      "family": "curvedsword",
+      "size": 92,
+      "width": 12,
+      "hitstop": 95,
+      "se": "cleave",
+      "_note": "Falchion: a cleaver that thinks it is a sword"
+    },
+    "66": {
+      "family": "knightsteel",
+      "size": 100,
+      "sweep": 180,
+      "hitstop": 110,
+      "_note": "Longsword: two hands on it, and the arc says so"
+    },
+    "67": {
+      "family": "wood",
+      "size": 74,
+      "hitstop": 85,
+      "_note": "Shinai: split bamboo, all noise and no cut"
+    },
+    "68": {
+      "family": "rapier",
+      "size": 132,
+      "stabs": 3,
+      "width": 4,
+      "hitstop": 65,
+      "_note": "Estoc: three heavy punctures through the plate"
+    },
+    "69": {
+      "family": "whipsword",
+      "_note": "Urumi Whip Sword: a blade that behaves like a whip"
+    },
+    "70": {
+      "family": "wood",
+      "size": 80,
+      "hitstop": 105,
+      "shake": 4,
+      "_note": "Kendo Bokken: solid oak, a real thump"
+    },
+    "71": {
+      "family": "greatsword",
+      "size": 118,
+      "sweep": 260,
+      "hitstop": 145,
+      "_note": "Claymore: a wide two-handed sweep"
+    },
+    "72": {
+      "family": "katana",
+      "_note": "Katana: one draw-cut, and the light stays where it passed"
+    },
+    "73": {
+      "family": "rapier",
+      "color": "0xd8e0e8",
+      "size": 108,
+      "stabs": 4,
+      "width": 5,
+      "hitstop": 80,
+      "se": "pierce",
+      "_note": "Sword Breaker: toothed, it catches as much as it stabs"
+    },
+    "74": {
+      "family": "greatsword",
+      "_note": "Zweihander: the full 285 degree sweep, the screen with it"
+    },
+    "75": {
+      "family": "knightsteel",
+      "color": "0xfff4d8",
+      "core": "0xffffff",
+      "sparkles": 18,
+      "size": 96,
+      "_note": "Blessed Silver Sword: silver, and its Sacred element haloes it"
+    },
+    "76": {
+      "family": "keenedge",
+      "_note": "Aerodynamic Blade: it cuts the air first, then the target"
+    },
+    "77": {
+      "family": "knightsteel",
+      "color": "0xbfe8ff",
+      "sparkles": 20,
+      "size": 94,
+      "_note": "Runic Blade: cold script down the edge, Ice does the rest"
+    },
+    "78": {
+      "family": "knightsteel",
+      "color": "0xff9a5a",
+      "core": "0xffe0a0",
+      "size": 96,
+      "sparks": 18,
+      "_note": "Flamesong Blade: the cut arrives hot"
+    },
+    "79": {
+      "family": "obsidian",
+      "color": "0x4a3a4a",
+      "size": 92,
+      "sparks": 16,
+      "_note": "Obsidian Sword: black glass, fire and oil both on it"
+    },
+    "80": {
+      "family": "mithril",
+      "_note": "Mithril Sword: the cleanest steel in the game, and it shows"
+    },
+    "81": {
+      "family": "vibro",
+      "_note": "Vibro Blade: eleven bites a second down one line"
+    },
+    "82": {
+      "family": "keenedge",
+      "color": "0xd8e8ff",
+      "size": 112,
+      "sparkles": 20,
+      "_note": "Astral Saber: a wind-borne edge with stars in it"
+    },
+    "83": {
+      "family": "shadowsteel",
+      "_note": "Shadowsteel Sword: the cut takes light instead of throwing it"
+    },
+    "84": {
+      "family": "knightsteel",
+      "color": "0xff7a2a",
+      "core": "0xffe9a0",
+      "size": 104,
+      "sparks": 22,
+      "hitstop": 120,
+      "shake": 5,
+      "_note": "Eternal Flame Sword: it never goes out, and it lands like that"
+    },
+    "85": {
+      "family": "dragonfang",
+      "color": "0xd8c060",
+      "size": 98,
+      "_note": "Dragon Scale Blade: scaled, gold, and it bites"
+    },
+    "86": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Morphblade: knightsteel"
+    },
+    "87": {
+      "family": "mithril",
+      "auto": true,
+      "_note": "Starmetal Blade: mithril"
+    },
+    "88": {
+      "family": "shadowsteel",
+      "auto": true,
+      "_note": "Void Edge: shadowsteel"
+    },
+    "89": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Volt Edge: knightsteel"
+    },
+    "90": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Hero's Legacy: knightsteel"
+    },
+    "91": {
+      "family": "keenedge",
+      "auto": true,
+      "_note": "Phase Blade: keenedge"
+    },
+    "92": {
+      "family": "shadowsteel",
+      "auto": true,
+      "_note": "Shadowsteel Blade: shadowsteel"
+    },
+    "93": {
+      "family": "rapier",
+      "auto": true,
+      "_note": "Spellbreaker Blade: rapier"
+    },
+    "94": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Psionic Edge: knightsteel"
+    },
+    "95": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Bloodthirster: knightsteel"
+    },
+    "96": {
+      "family": "rapier",
+      "auto": true,
+      "_note": "Wardbreaker Blade: rapier"
+    },
+    "97": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Spelldrainer Edge: knightsteel"
+    },
+    "98": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Symbiotic Blade: knightsteel"
+    },
+    "99": {
+      "family": "shadowsteel",
+      "auto": true,
+      "_note": "Twilight Edge: shadowsteel"
+    },
+    "100": {
+      "family": "keenedge",
+      "auto": true,
+      "_note": "Energy Blade: keenedge"
+    },
+    "101": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Divine Smiter: knightsteel"
+    },
+    "102": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Arcane Blade: knightsteel"
+    },
+    "103": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Dimension Blade: knightsteel"
+    },
+    "104": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "T-Pillar Blade: knightsteel"
+    },
+    "105": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Star Cutter: knightsteel"
+    },
+    "106": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Petroleum Edge: ehi"
+    },
+    "107": {
+      "family": "greatsword",
+      "auto": true,
+      "_note": "Skystone Greatsword: greatsword"
+    },
+    "108": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Omniscience Edge: ehi"
+    },
+    "109": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Golden Varlenia Blade: knightsteel"
+    },
+    "110": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Quantum Superposition Blade: knightsteel"
+    },
+    "111": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Excalibur: knightsteel"
+    },
+    "112": {
+      "family": "knightsteel",
+      "auto": true,
+      "_note": "Dimensional Cutter: knightsteel"
+    },
+    "113": {
+      "family": "dragonfang",
+      "auto": true,
+      "_note": "Dragon Blade: dragonfang"
+    },
+    "125": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Stale Baguette: improvised"
+    },
+    "126": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Dented Pan: improvised"
+    },
+    "127": {
+      "family": "club",
+      "auto": true,
+      "_note": "Splintered Club: club"
+    },
+    "128": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Wooden Flail: flail"
+    },
+    "129": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Pot Metal Mace: mace"
+    },
+    "130": {
+      "family": "club",
+      "auto": true,
+      "_note": "Wooden Club: club"
+    },
+    "131": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Unwieldy Hammer: warhammer"
+    },
+    "132": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Trusty Frying Pan: improvised"
+    },
+    "133": {
+      "family": "club",
+      "auto": true,
+      "_note": "Nail Board: club"
+    },
+    "134": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Chain Rolling Pin: flail"
+    },
+    "135": {
+      "family": "club",
+      "auto": true,
+      "_note": "Rebar Club: club"
+    },
+    "136": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Pipe Wrench Mace: mace"
+    },
+    "137": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Bike Chain Flail: flail"
+    },
+    "138": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Modified Wrench: improvised"
+    },
+    "139": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Nail Bat: improvised"
+    },
+    "140": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Toolbox Flail: flail"
+    },
+    "141": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Concrete Sledge: warhammer"
+    },
+    "142": {
+      "family": "club",
+      "auto": true,
+      "_note": "Stone-Studded Club: club"
+    },
+    "143": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Blackjack: improvised"
+    },
+    "144": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Stone Flail: flail"
+    },
+    "145": {
+      "family": "club",
+      "auto": true,
+      "_note": "War Club: club"
+    },
+    "146": {
+      "family": "club",
+      "auto": true,
+      "_note": "Shark Tooth Club: club"
+    },
+    "147": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Sarcastic Pillow: improvised"
+    },
+    "148": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Bronze Flail: flail"
+    },
+    "149": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Master Flipper: improvised"
+    },
+    "150": {
+      "family": "club",
+      "auto": true,
+      "_note": "Mere Club: club"
+    },
+    "151": {
+      "family": "nunchaku",
+      "auto": true,
+      "_note": "Tessen: nunchaku"
+    },
+    "152": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Honking Mallet Duo: mace"
+    },
+    "153": {
+      "family": "club",
+      "auto": true,
+      "_note": "Macuahuitl: club"
+    },
+    "154": {
+      "family": "improvised",
+      "auto": true,
+      "_note": "Number One Fan: improvised"
+    },
+    "155": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Meteor Hammer: flail"
+    },
+    "156": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Medieval Flail: flail"
+    },
+    "157": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Flail: flail"
+    },
+    "158": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Flanged Mace: mace"
+    },
+    "159": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Lucerne Hammer: warhammer"
+    },
+    "160": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "War Hammer: warhammer"
+    },
+    "161": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Flanged War Mace: mace"
+    },
+    "162": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Morning Star: flail"
+    },
+    "163": {
+      "family": "mace",
+      "auto": true,
+      "_note": "War Pick: mace"
+    },
+    "164": {
+      "family": "nunchaku",
+      "auto": true,
+      "_note": "Training Nunchaku: nunchaku"
+    },
+    "165": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Heavy Chain: flail"
+    },
+    "166": {
+      "family": "club",
+      "auto": true,
+      "_note": "Spiked Battle Shield: club"
+    },
+    "167": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Variable Chain Hammer: flail"
+    },
+    "168": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Mithril Flail: flail"
+    },
+    "169": {
+      "family": "nunchaku",
+      "auto": true,
+      "_note": "Steel Nunchaku: nunchaku"
+    },
+    "170": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Siege Breaker: warhammer"
+    },
+    "171": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Seismic Hammer: warhammer"
+    },
+    "172": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Earthshaker Maul: warhammer"
+    },
+    "173": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Dragon Flail: flail"
+    },
+    "174": {
+      "family": "flail",
+      "auto": true,
+      "_note": "Soul Drain Flail: flail"
+    },
+    "175": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Earthshaker Mace: warhammer"
+    },
+    "176": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Spellcrusher Maul: warhammer"
+    },
+    "177": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Thought Crusher: mace"
+    },
+    "178": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Celestial Hammer: warhammer"
+    },
+    "179": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Cosmic Pendulum: mace"
+    },
+    "180": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Chronos Hammer: warhammer"
+    },
+    "181": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Suicide Bomber: ehi"
+    },
+    "182": {
+      "family": "warhammer",
+      "auto": true,
+      "_note": "Boar Totem Hammer: warhammer"
+    },
+    "183": {
+      "family": "varlenia",
+      "auto": true,
+      "_note": "Varlenia War Fan: varlenia"
+    },
+    "184": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Compression Maul: ehi"
+    },
+    "185": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Mjölnir: mace"
+    },
+    "186": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Busker's Acoustic: mace"
+    },
+    "187": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Presidential Saxophone: mace"
+    },
+    "188": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Pawnshop Stratocaster: mace"
+    },
+    "189": {
+      "family": "mace",
+      "auto": true,
+      "_note": "La chitarra infernale: mace"
+    },
+    "190": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Flying V: mace"
+    },
+    "191": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Bass Guitar: mace"
+    },
+    "192": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Double-Neck Warhorse: mace"
+    },
+    "193": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Feedback Cannon: mace"
+    },
+    "194": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Hellfire Superstrat: mace"
+    },
+    "197": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Foam Toy Axe: hatchet"
+    },
+    "198": {
+      "family": "sickle",
+      "auto": true,
+      "_note": "Rusty Sickle: sickle"
+    },
+    "199": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Practice Axe: hatchet"
+    },
+    "200": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Budget Axe: hatchet"
+    },
+    "201": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Stone Axe: hatchet"
+    },
+    "202": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Sharpened Shovel: hatchet"
+    },
+    "203": {
+      "family": "sawblade",
+      "auto": true,
+      "_note": "Mower Blade Axe: sawblade"
+    },
+    "204": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Hubcap Axe: hatchet"
+    },
+    "205": {
+      "family": "battleaxe",
+      "auto": true,
+      "_note": "Razor Fire Axe: battleaxe"
+    },
+    "206": {
+      "family": "battleaxe",
+      "auto": true,
+      "_note": "Seed Axe: battleaxe"
+    },
+    "207": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Hand Axe: hatchet"
+    },
+    "208": {
+      "family": "battleaxe",
+      "auto": true,
+      "_note": "Egyptian Axe: battleaxe"
+    },
+    "209": {
+      "family": "battleaxe",
+      "auto": true,
+      "_note": "Francisca: battleaxe"
+    },
+    "210": {
+      "family": "battleaxe",
+      "auto": true,
+      "_note": "Battle Axe: battleaxe"
+    },
+    "211": {
+      "family": "mace",
+      "auto": true,
+      "_note": "Steel Chair: mace"
+    },
+    "212": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Trash Can Lid: hatchet"
+    },
+    "213": {
+      "family": "greataxe",
+      "auto": true,
+      "_note": "Bardiche: greataxe"
+    },
+    "214": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Breakaway Table: hatchet"
+    },
+    "215": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Ring Bell: hatchet"
+    },
+    "216": {
+      "family": "hatchet",
+      "auto": true,
+      "_note": "Steel Ladder: hatchet"
+    },
+    "217": {
+      "family": "battleaxe",
+      "auto": true,
+      "_note": "Mithril Axe: battleaxe"
+    },
+    "218": {
+      "family": "battleaxe",
+      "auto": true,
+      "_note": "Bound Elemental Axe: battleaxe"
+    },
+    "219": {
+      "family": "greataxe",
+      "auto": true,
+      "_note": "Volcanic Greataxe: greataxe"
+    },
+    "220": {
+      "family": "greataxe",
+      "auto": true,
+      "_note": "Gravity Crusher: greataxe"
+    },
+    "221": {
+      "family": "greataxe",
+      "auto": true,
+      "_note": "Soul Cleaver: greataxe"
+    },
+    "222": {
+      "family": "battleaxe",
+      "auto": true,
+      "_note": "Dragon Axe: battleaxe"
+    },
+    "223": {
+      "family": "greataxe",
+      "auto": true,
+      "_note": "Planar Divider: greataxe"
+    },
+    "224": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Petrocorruptor: ehi"
+    },
+    "225": {
+      "family": "varlenia",
+      "auto": true,
+      "_note": "Varlenia Cleaver: varlenia"
+    },
+    "226": {
+      "family": "greataxe",
+      "auto": true,
+      "_note": "Dimensional Cleaver: greataxe"
+    },
+    "238": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Fly Swatter: whip"
+    },
+    "239": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Cracked Whip: whip"
+    },
+    "240": {
+      "family": "chainwhip",
+      "auto": true,
+      "_note": "Heavy Buckle Belt: chainwhip"
+    },
+    "241": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Combat Fishing Rod: whip"
+    },
+    "242": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Cord Whip: whip"
+    },
+    "243": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Seed Whip: whip"
+    },
+    "244": {
+      "family": "net",
+      "auto": true,
+      "_note": "Retiarius Net: net"
+    },
+    "245": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Bullwhip: whip"
+    },
+    "246": {
+      "family": "net",
+      "auto": true,
+      "_note": "Gladiator Net: net"
+    },
+    "247": {
+      "family": "chainwhip",
+      "auto": true,
+      "_note": "Flying Ring Chain: chainwhip"
+    },
+    "248": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Rope and Hook: whip"
+    },
+    "249": {
+      "family": "chainwhip",
+      "auto": true,
+      "_note": "Steel Cable Whip: chainwhip"
+    },
+    "250": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Urumi: whip"
+    },
+    "251": {
+      "family": "energylash",
+      "auto": true,
+      "_note": "Frost Whip: energylash"
+    },
+    "252": {
+      "family": "whip",
+      "auto": true,
+      "_note": "Thornwhip: whip"
+    },
+    "253": {
+      "family": "energylash",
+      "auto": true,
+      "_note": "Energy Lash: energylash"
+    },
+    "254": {
+      "family": "energylash",
+      "auto": true,
+      "_note": "Banshee's Wail: energylash"
+    },
+    "255": {
+      "family": "chainwhip",
+      "auto": true,
+      "_note": "Champion's Belt: chainwhip"
+    },
+    "256": {
+      "family": "energylash",
+      "auto": true,
+      "_note": "Mindlash Whip: energylash"
+    },
+    "257": {
+      "family": "energylash",
+      "auto": true,
+      "_note": "Phoenix Intestines: energylash"
+    },
+    "258": {
+      "family": "energylash",
+      "auto": true,
+      "_note": "Temporal Echo Whip: energylash"
+    },
+    "259": {
+      "family": "energylash",
+      "auto": true,
+      "_note": "Liquid Stone Whip: energylash"
+    },
+    "260": {
+      "family": "varlenia",
+      "auto": true,
+      "_note": "Varlenia Chain Whip: varlenia"
+    },
+    "261": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Omniscient Binder: ehi"
+    },
+    "273": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Carved Stick: baton"
+    },
+    "274": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Walking Stick: baton"
+    },
+    "275": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Novice Wand: wand"
+    },
+    "276": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Apprentice Staff: magestaff"
+    },
+    "277": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Spike Umbrella: baton"
+    },
+    "278": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Spiked Crutch: baton"
+    },
+    "279": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Nail Mop Staff: baton"
+    },
+    "280": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Razor Mop: baton"
+    },
+    "281": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Barbed Hockey Stick: baton"
+    },
+    "282": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Throwing Stick: baton"
+    },
+    "283": {
+      "family": "quarterstaff",
+      "auto": true,
+      "_note": "Wooden Staff: quarterstaff"
+    },
+    "284": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Seed Staff: magestaff"
+    },
+    "285": {
+      "family": "quarterstaff",
+      "auto": true,
+      "_note": "Quarterstaff: quarterstaff"
+    },
+    "286": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Escrima Sticks: baton"
+    },
+    "287": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Magic Wand: wand"
+    },
+    "288": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Bounce Bubble Blower: magestaff"
+    },
+    "289": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Peppermint Scepter: wand"
+    },
+    "290": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Force Wand: wand"
+    },
+    "291": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Flexible Staff: magestaff"
+    },
+    "292": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Iron Tonfa: baton"
+    },
+    "293": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Wind Staff: magestaff"
+    },
+    "294": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Three-Section Staff: baton"
+    },
+    "295": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Petrified Staff: magestaff"
+    },
+    "296": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Mithril Rod: wand"
+    },
+    "297": {
+      "family": "baton",
+      "auto": true,
+      "_note": "Four-Section Staff: baton"
+    },
+    "298": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Lightning-Struck Staff: magestaff"
+    },
+    "299": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Yggdrasil Branch: magestaff"
+    },
+    "300": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Thundercaller Staff: magestaff"
+    },
+    "301": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Eye of Insight Staff: magestaff"
+    },
+    "302": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Sonic Staff: magestaff"
+    },
+    "303": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "World Tree Staff: magestaff"
+    },
+    "304": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "World Tree Branch: magestaff"
+    },
+    "305": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Unicorn Horn Staff: wand"
+    },
+    "306": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Spell Absorber: magestaff"
+    },
+    "307": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Dragon Staff: magestaff"
+    },
+    "308": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Chronomancer's Staff: magestaff"
+    },
+    "309": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Barrier Staff: magestaff"
+    },
+    "310": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Gravity Manipulation Staff: magestaff"
+    },
+    "311": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Mind Shield Staff: magestaff"
+    },
+    "312": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Arcane Sphere: wand"
+    },
+    "313": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Mind Projector Staff: magestaff"
+    },
+    "314": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Mental Fortress Staff: magestaff"
+    },
+    "315": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Elemental Warden Staff: magestaff"
+    },
+    "316": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Vulture Totem Staff: magestaff"
+    },
+    "317": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Psychic Amplifier Crown: wand"
+    },
+    "318": {
+      "family": "wand",
+      "auto": true,
+      "_note": "Celestial Alignment Rod: wand"
+    },
+    "319": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Toxic Amplifier: ehi"
+    },
+    "320": {
+      "family": "varlenia",
+      "auto": true,
+      "_note": "Varlenia Arcane Staff: varlenia"
+    },
+    "321": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Forbidden Codex: ehi"
+    },
+    "322": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Staff of Eternity: magestaff"
+    },
+    "323": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Petroleum Omniscience: ehi"
+    },
+    "324": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Universal Force Staff: magestaff"
+    },
+    "325": {
+      "family": "magestaff",
+      "auto": true,
+      "_note": "Il bastone infernale: magestaff"
+    },
+    "336": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Toy Bow: arrow"
+    },
+    "337": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Warped Arrows: arrow"
+    },
+    "338": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Flimsy Bow: arrow"
+    },
+    "339": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Misaligned Hand Crossbow: bolt"
+    },
+    "340": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Unreliable Crossbow: bolt"
+    },
+    "341": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Shower Rod Bow: arrow"
+    },
+    "342": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "PVC Bow: arrow"
+    },
+    "343": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Junk Crossbow: bolt"
+    },
+    "344": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Seed Bow: arrow"
+    },
+    "345": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Short Bow: arrow"
+    },
+    "346": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Long Bow: arrow"
+    },
+    "347": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Composite Bow: arrow"
+    },
+    "348": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Chu-Ko-Nu: bolt"
+    },
+    "349": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Net Crossbow: bolt"
+    },
+    "350": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Compound Bow: arrow"
+    },
+    "351": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Multi-Bolt Crossbow: bolt"
+    },
+    "352": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Advanced Compound Bow: arrow"
+    },
+    "353": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Frostbite Bow: arrow"
+    },
+    "354": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "Aetherial Bow: energyarrow"
+    },
+    "355": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "Infinite Quiver Bow: energyarrow"
+    },
+    "356": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Dragon Bow: arrow"
+    },
+    "357": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "Infinite Quiver: energyarrow"
+    },
+    "358": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Arcane Crossbow: bolt"
+    },
+    "359": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Dragonbone Bow: arrow"
+    },
+    "360": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "Mind Arrow Bow: energyarrow"
+    },
+    "361": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Spellbreaker Crossbow: bolt"
+    },
+    "362": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "Soulstring Bow: energyarrow"
+    },
+    "363": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "Moonlight Bow: energyarrow"
+    },
+    "364": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "Spellseeker Bow: energyarrow"
+    },
+    "365": {
+      "family": "arrow",
+      "auto": true,
+      "_note": "Bull Totem Bow: arrow"
+    },
+    "366": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "EHI Identity Eraser: energyarrow"
+    },
+    "367": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "Varlenia Energy Bow: energyarrow"
+    },
+    "368": {
+      "family": "energyarrow",
+      "auto": true,
+      "_note": "EHI Brain Hemorrhager: energyarrow"
+    },
+    "380": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Uneven Slingshot: slingstone"
+    },
+    "381": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Stretchy Sling: slingstone"
+    },
+    "382": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Leaky Blowgun: pellet"
+    },
+    "383": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Hanger Slingshot: slingstone"
+    },
+    "384": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Junk Slingshot: slingstone"
+    },
+    "385": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Pipe Slingshot: slingstone"
+    },
+    "386": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Skewer Dart Gun: pellet"
+    },
+    "387": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Hairspray Torch: pellet"
+    },
+    "388": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Staple Shooter: pellet"
+    },
+    "389": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Stone Darts: pellet"
+    },
+    "390": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Fiber Sling: slingstone"
+    },
+    "391": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Atlatl Dart: pellet"
+    },
+    "392": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Seed Grimorie: slingstone"
+    },
+    "393": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Bola: slingstone"
+    },
+    "394": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Sling: slingstone"
+    },
+    "395": {
+      "family": "disc",
+      "auto": true,
+      "_note": "Boomerang: disc"
+    },
+    "396": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Rope Dart: pellet"
+    },
+    "397": {
+      "family": "disc",
+      "auto": true,
+      "_note": "Chakram: disc"
+    },
+    "398": {
+      "family": "bomb",
+      "auto": true,
+      "_note": "Pepper Spray Cannon: bomb"
+    },
+    "399": {
+      "family": "disc",
+      "auto": true,
+      "_note": "Shongo: disc"
+    },
+    "400": {
+      "family": "disc",
+      "auto": true,
+      "_note": "Returning Discus: disc"
+    },
+    "401": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Poison Blowpipe: pellet"
+    },
+    "402": {
+      "family": "bomb",
+      "auto": true,
+      "_note": "Iron Grenade: bomb"
+    },
+    "403": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Crossbow: bolt"
+    },
+    "404": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Mithril Bow: slingstone"
+    },
+    "405": {
+      "family": "bomb",
+      "auto": true,
+      "_note": "Disc Launcher: bomb"
+    },
+    "406": {
+      "family": "bomb",
+      "auto": true,
+      "_note": "Explosive Crossbow: bomb"
+    },
+    "407": {
+      "family": "device",
+      "auto": true,
+      "_note": "EMP Disruptor: device"
+    },
+    "408": {
+      "family": "bolt",
+      "auto": true,
+      "_note": "Tactical Crossbow: bolt"
+    },
+    "409": {
+      "family": "device",
+      "auto": true,
+      "_note": "Neural Scrambler: device"
+    },
+    "410": {
+      "family": "bomb",
+      "auto": true,
+      "_note": "Timed Explosive Launcher: bomb"
+    },
+    "411": {
+      "family": "device",
+      "auto": true,
+      "_note": "Cyber Warfare Device: device"
+    },
+    "412": {
+      "family": "slingstone",
+      "auto": true,
+      "_note": "Stellar Sling: slingstone"
+    },
+    "413": {
+      "family": "bomb",
+      "auto": true,
+      "_note": "Drone Swarm Launcher: bomb"
+    },
+    "414": {
+      "family": "device",
+      "auto": true,
+      "_note": "EHI Knowledge Injector: device"
+    },
+    "415": {
+      "family": "disc",
+      "auto": true,
+      "_note": "Portal Disc: disc"
+    },
+    "427": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Suction Cup Dart Gun: pellet"
+    },
+    "428": {
+      "family": "sidearm",
+      "auto": true,
+      "_note": "Unreliable Pistol: sidearm"
+    },
+    "429": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Rusty Rifle: rifle"
+    },
+    "430": {
+      "family": "airgun",
+      "auto": true,
+      "_note": "Sand-Filled Hose: airgun"
+    },
+    "431": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Modified Cap Gun: pipegun"
+    },
+    "432": {
+      "family": "airgun",
+      "auto": true,
+      "_note": "Bike Pump Air Gun: airgun"
+    },
+    "433": {
+      "family": "lobber",
+      "auto": true,
+      "_note": "Potato Cannon: lobber"
+    },
+    "434": {
+      "family": "pipegun",
+      "_note": "Pipe Gun: crude, smoky, throws brass"
+    },
+    "435": {
+      "family": "airgun",
+      "_note": "Pressure Gun: compressed air, a white puff and no case"
+    },
+    "436": {
+      "family": "flamer",
+      "_note": "Garden Sprayer Flamer: a tongue of fire over the target"
+    },
+    "437": {
+      "family": "lobber",
+      "chunkColor": "0x6a5f4e",
+      "chunks": 14,
+      "size": 118,
+      "_note": "Rubble Launcher: masonry, and its Petro element oils it"
+    },
+    "438": {
+      "family": "pellet",
+      "color": "0xbfe08a",
+      "pellets": 11,
+      "spread": 0.55,
+      "_note": "Seed Gun: a scatter of seed"
+    },
+    "439": {
+      "family": "pellet",
+      "color": "0xe0d8a8",
+      "pellets": 1,
+      "spread": 0.05,
+      "size": 170,
+      "width": 4,
+      "hitstop": 45,
+      "_note": "Bamboo Blowgun: one dart, dead straight"
+    },
+    "440": {
+      "family": "lobber",
+      "color": "0xf0dfa8",
+      "chunkColor": "0xd8c07a",
+      "chunks": 10,
+      "size": 120,
+      "hitstop": 110,
+      "_note": "Spud Launcher Deluxe: a potato, arriving hard"
+    },
+    "441": {
+      "family": "flintlock",
+      "_note": "Flintlock Pistol: one shot, and a cloud of white smoke"
+    },
+    "442": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Combatant Angler: pipegun"
+    },
+    "443": {
+      "family": "flintlock",
+      "auto": true,
+      "_note": "Wheellock Pistol: flintlock"
+    },
+    "444": {
+      "family": "sidearm",
+      "auto": true,
+      "_note": "Pistol: sidearm"
+    },
+    "445": {
+      "family": "flintlock",
+      "auto": true,
+      "_note": "Musket: flintlock"
+    },
+    "446": {
+      "family": "lobber",
+      "auto": true,
+      "_note": "Extreme T-Shirt Cannon: lobber"
+    },
+    "447": {
+      "family": "flintlock",
+      "auto": true,
+      "_note": "Matchlock Musket: flintlock"
+    },
+    "448": {
+      "family": "pellet",
+      "auto": true,
+      "_note": "Pepperbox Revolver: pellet"
+    },
+    "449": {
+      "family": "flintlock",
+      "auto": true,
+      "_note": "Dueling Pistol: flintlock"
+    },
+    "450": {
+      "family": "flintlock",
+      "auto": true,
+      "_note": "Flintlock Blunderbuss: flintlock"
+    },
+    "451": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Taser Rifle: rifle"
+    },
+    "452": {
+      "family": "lobber",
+      "auto": true,
+      "_note": "Hand Cannon: lobber"
+    },
+    "453": {
+      "family": "flintlock",
+      "auto": true,
+      "_note": "Rifled Musket: flintlock"
+    },
+    "454": {
+      "family": "flintlock",
+      "auto": true,
+      "_note": "Percussion Revolver: flintlock"
+    },
+    "455": {
+      "family": "flintlock",
+      "auto": true,
+      "_note": "Blunderbuss: flintlock"
+    },
+    "456": {
+      "family": "sidearm",
+      "auto": true,
+      "_note": "9mm Pistol: sidearm"
+    },
+    "457": {
+      "family": "shotgun",
+      "auto": true,
+      "_note": "Riot Gun: shotgun"
+    },
+    "458": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Breech-Loading Rifle: rifle"
+    },
+    "459": {
+      "family": "shotgun",
+      "auto": true,
+      "_note": "Bubba'sShotgun: shotgun"
+    },
+    "460": {
+      "family": "shotgun",
+      "auto": true,
+      "_note": "Shotgun: shotgun"
+    },
+    "461": {
+      "family": "sidearm",
+      "auto": true,
+      "_note": "Six-Shooter: sidearm"
+    },
+    "462": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Lever Action Rifle: rifle"
+    },
+    "463": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Military Bolt-Action: rifle"
+    },
+    "464": {
+      "family": "lobber",
+      "auto": true,
+      "_note": "Gas Launcher: lobber"
+    },
+    "465": {
+      "family": "shotgun",
+      "auto": true,
+      "_note": "Double-Barrel Shotgun: shotgun"
+    },
+    "466": {
+      "family": "airgun",
+      "auto": true,
+      "_note": "Tranquilizer Rifle: airgun"
+    },
+    "467": {
+      "family": "smg",
+      "auto": true,
+      "_note": "SMG: smg"
+    },
+    "468": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Bolt-Action Rifle: rifle"
+    },
+    "469": {
+      "family": "smg",
+      "auto": true,
+      "_note": "Tommy Gun: smg"
+    },
+    "470": {
+      "family": "airgun",
+      "auto": true,
+      "_note": "Air Pistol: airgun"
+    },
+    "471": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Volley Gun: pipegun"
+    },
+    "472": {
+      "family": "smg",
+      "auto": true,
+      "_note": "PDW: smg"
+    },
+    "473": {
+      "family": "airgun",
+      "auto": true,
+      "_note": "Paralyzer: airgun"
+    },
+    "474": {
+      "family": "smg",
+      "auto": true,
+      "_note": "Compact SMG: smg"
+    },
+    "475": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "M1 Garand: rifle"
+    },
+    "476": {
+      "family": "shotgun",
+      "auto": true,
+      "_note": "Double-Barrel Pistol: shotgun"
+    },
+    "477": {
+      "family": "smg",
+      "auto": true,
+      "_note": "MP40: smg"
+    },
+    "478": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Assault Rifle: rifle"
+    },
+    "479": {
+      "family": "sidearm",
+      "auto": true,
+      "_note": "Magnum Revolver: sidearm"
+    },
+    "480": {
+      "family": "minigun",
+      "auto": true,
+      "_note": "Gatling Gun: minigun"
+    },
+    "481": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "AKS-74U: rifle"
+    },
+    "482": {
+      "family": "sidearm",
+      "auto": true,
+      "_note": "Match Grade Pistol: sidearm"
+    },
+    "483": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "M14 Battle Rifle: rifle"
+    },
+    "484": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Water Jet Cutter: pipegun"
+    },
+    "485": {
+      "family": "shotgun",
+      "auto": true,
+      "_note": "Combat Shotgun: shotgun"
+    },
+    "486": {
+      "family": "minigun",
+      "auto": true,
+      "_note": "Gatling Gun: minigun"
+    },
+    "487": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Modular Combat Rifle: rifle"
+    },
+    "488": {
+      "family": "lobber",
+      "auto": true,
+      "_note": "Grenade Launcher: lobber"
+    },
+    "489": {
+      "family": "sniper",
+      "auto": true,
+      "_note": "Sniper Rifle: sniper"
+    },
+    "490": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Bullpup Rifle: rifle"
+    },
+    "491": {
+      "family": "flamer",
+      "auto": true,
+      "_note": "Flamethrower: flamer"
+    },
+    "492": {
+      "family": "sniper",
+      "auto": true,
+      "_note": "Marksman Rifle: sniper"
+    },
+    "493": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Tactical Carbine: rifle"
+    },
+    "494": {
+      "family": "shotgun",
+      "auto": true,
+      "_note": "Tactical Shotgun: shotgun"
+    },
+    "495": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Heat Ray: pipegun"
+    },
+    "496": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "DMR: pipegun"
+    },
+    "497": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Heavy Machine Gun: pipegun"
+    },
+    "498": {
+      "family": "energygun",
+      "auto": true,
+      "_note": "Laser Rifle: energygun"
+    },
+    "499": {
+      "family": "energygun",
+      "auto": true,
+      "_note": "Plasma Rifle: energygun"
+    },
+    "500": {
+      "family": "lobber",
+      "auto": true,
+      "_note": "Cyberarm Cannon: lobber"
+    },
+    "501": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Precision Rifle: rifle"
+    },
+    "502": {
+      "family": "energygun",
+      "auto": true,
+      "_note": "Optical Beam System: energygun"
+    },
+    "503": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "LMG: pipegun"
+    },
+    "504": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Anti-Material Rifle: rifle"
+    },
+    "505": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "RPG: pipegun"
+    },
+    "506": {
+      "family": "lobber",
+      "auto": true,
+      "_note": "Smart Grenade Launcher: lobber"
+    },
+    "507": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Micro-Missile Array: pipegun"
+    },
+    "508": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Disposable Rocket: pipegun"
+    },
+    "509": {
+      "family": "sniper",
+      "auto": true,
+      "_note": "Heavy Sniper: sniper"
+    },
+    "510": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "HMG: pipegun"
+    },
+    "511": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Brainwave Amplifier: pipegun"
+    },
+    "512": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Polymorphic Arsenal: pipegun"
+    },
+    "513": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "MANPADS: pipegun"
+    },
+    "514": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Mind Piercer: pipegun"
+    },
+    "515": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Neural Disruptor: pipegun"
+    },
+    "516": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Coilgun: pipegun"
+    },
+    "517": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Anti-Material Rifle: rifle"
+    },
+    "518": {
+      "family": "energygun",
+      "auto": true,
+      "_note": "Railgun Prototype: energygun"
+    },
+    "519": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "EHI Headache Inducer: pipegun"
+    },
+    "520": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "EHI Crude Projector: pipegun"
+    },
+    "521": {
+      "family": "minigun",
+      "auto": true,
+      "_note": "Minigun: minigun"
+    },
+    "522": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Adaptive Combat AI: pipegun"
+    },
+    "523": {
+      "family": "pipegun",
+      "auto": true,
+      "_note": "Thought Projector: pipegun"
+    },
+    "524": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "EHI Memetic Rifle: rifle"
+    },
+    "525": {
+      "family": "smg",
+      "auto": true,
+      "_note": "Vector gun: smg"
+    },
+    "526": {
+      "family": "energygun",
+      "auto": true,
+      "_note": "Varlenia Beam Rifle: energygun"
+    },
+    "527": {
+      "family": "lobber",
+      "auto": true,
+      "_note": "Reality Distortion Cannon: lobber"
+    },
+    "528": {
+      "family": "rifle",
+      "auto": true,
+      "_note": "Smart Tracking Rifle: rifle"
+    },
+    "540": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Tin Claws: claws"
+    },
+    "541": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Dull Claws: claws"
+    },
+    "542": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Garden Shear Claws: claws"
+    },
+    "543": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Car Panel Claws: claws"
+    },
+    "544": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Razor Disc Claws: claws"
+    },
+    "545": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Seed Claw: claws"
+    },
+    "546": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Bagh Nakh: claws"
+    },
+    "547": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Bagh Naka: claws"
+    },
+    "548": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Katar: claws"
+    },
+    "549": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Iron Claw: claws"
+    },
+    "550": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Deer Horn Knives: claws"
+    },
+    "551": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Tekko-kagi: claws"
+    },
+    "552": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Venom Claws: claws"
+    },
+    "553": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Mithril Claw: claws"
+    },
+    "554": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Life Drain Claws: claws"
+    },
+    "555": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Neural Claws: claws"
+    },
+    "556": {
+      "family": "talons",
+      "auto": true,
+      "_note": "Frost Dragon Claws: talons"
+    },
+    "557": {
+      "family": "talons",
+      "auto": true,
+      "_note": "Dragon Claw: talons"
+    },
+    "558": {
+      "family": "claws",
+      "auto": true,
+      "_note": "Mind Ripper Claws: claws"
+    },
+    "559": {
+      "family": "talons",
+      "auto": true,
+      "_note": "Crane Talons: talons"
+    },
+    "560": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Psychoactive Talons: ehi"
+    },
+    "561": {
+      "family": "talons",
+      "auto": true,
+      "_note": "Divine Talons: talons"
+    },
+    "573": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Beginner's Hand Wraps: fist"
+    },
+    "574": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Makeshift Boxing Gloves: fist"
+    },
+    "575": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Shoddy Knuckles: fist"
+    },
+    "576": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Key Knuckles: fist"
+    },
+    "577": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Golf Tee Glove: fist"
+    },
+    "578": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Mirror Shard Fist: fist"
+    },
+    "579": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Glass Knuckles: fist"
+    },
+    "580": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Seed Glove: fist"
+    },
+    "581": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Cestus: fist"
+    },
+    "582": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Knuckle Dusters: fist"
+    },
+    "583": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Brass Knuckles: fist"
+    },
+    "584": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Phantom Tickle Gloves: fist"
+    },
+    "585": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Arm Bracers: gauntlet"
+    },
+    "586": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Iron Knuckles: gauntlet"
+    },
+    "587": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Metal Man: fist"
+    },
+    "588": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Flying Kicks: fist"
+    },
+    "589": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Adamantine Fists: gauntlet"
+    },
+    "590": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Shock Gauntlets: gauntlet"
+    },
+    "591": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Mithril Strike Gloves: fist"
+    },
+    "592": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Sonic Gauntlet: gauntlet"
+    },
+    "593": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Thunder Lizard Gauntlets: gauntlet"
+    },
+    "594": {
+      "family": "energyfist",
+      "auto": true,
+      "_note": "Lightning Elemental Fists: energyfist"
+    },
+    "595": {
+      "family": "energyfist",
+      "auto": true,
+      "_note": "Force Crush Gloves: energyfist"
+    },
+    "596": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Nightmare Gauntlets: gauntlet"
+    },
+    "597": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Arcane Shield Gauntlets: gauntlet"
+    },
+    "598": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Metamorphic Gauntlets: gauntlet"
+    },
+    "599": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Master's Gauntlets: gauntlet"
+    },
+    "600": {
+      "family": "gauntlet",
+      "auto": true,
+      "_note": "Telekinetic Gauntlets: gauntlet"
+    },
+    "601": {
+      "family": "energyfist",
+      "auto": true,
+      "_note": "Fox Spirit Fists: energyfist"
+    },
+    "602": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Mind Manipulator Gloves: fist"
+    },
+    "603": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Petrochem Injectors: ehi"
+    },
+    "604": {
+      "family": "fist",
+      "auto": true,
+      "_note": "Phasing Touch: fist"
+    },
+    "605": {
+      "family": "varlenia",
+      "auto": true,
+      "_note": "Varlenia Fist: varlenia"
+    },
+    "606": {
+      "family": "energyfist",
+      "auto": true,
+      "_note": "Molecular Manipulator Gloves: energyfist"
+    },
+    "607": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Apocalypse Fists: ehi"
+    },
+    "608": {
+      "family": "energyfist",
+      "auto": true,
+      "_note": "Omniadaptive Combat System: energyfist"
+    },
+    "620": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Loose-headed Spear: spearthrust"
+    },
+    "621": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Crude Spear: spearthrust"
+    },
+    "622": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Deadly Plunger: spearthrust"
+    },
+    "623": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Sharpened Pool Cue: spearthrust"
+    },
+    "624": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Broom Spear: spearthrust"
+    },
+    "625": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Antenna Rapier: spearthrust"
+    },
+    "626": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Sign Post: spearthrust"
+    },
+    "627": {
+      "family": "pike",
+      "auto": true,
+      "_note": "Javelin: pike"
+    },
+    "628": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Seed Spear: spearthrust"
+    },
+    "629": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Short Spear: spearthrust"
+    },
+    "630": {
+      "family": "pike",
+      "auto": true,
+      "_note": "Sumerian Spear: pike"
+    },
+    "631": {
+      "family": "pike",
+      "auto": true,
+      "_note": "Pilum: pike"
+    },
+    "632": {
+      "family": "pike",
+      "auto": true,
+      "_note": "Dory Spear: pike"
+    },
+    "633": {
+      "family": "pike",
+      "auto": true,
+      "_note": "Boarding Pike: pike"
+    },
+    "634": {
+      "family": "pike",
+      "auto": true,
+      "_note": "Long Spear: pike"
+    },
+    "635": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Iklwa: spearthrust"
+    },
+    "636": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Rifle Bayonet: spearthrust"
+    },
+    "637": {
+      "family": "polearm",
+      "auto": true,
+      "_note": "Naginata: polearm"
+    },
+    "638": {
+      "family": "polearm",
+      "auto": true,
+      "_note": "Halberd: polearm"
+    },
+    "639": {
+      "family": "polearm",
+      "auto": true,
+      "_note": "Poleaxe: polearm"
+    },
+    "640": {
+      "family": "polearm",
+      "auto": true,
+      "_note": "Glaive: polearm"
+    },
+    "641": {
+      "family": "polearm",
+      "auto": true,
+      "_note": "Halberd: polearm"
+    },
+    "642": {
+      "family": "polearm",
+      "auto": true,
+      "_note": "Fire Lance: polearm"
+    },
+    "643": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Mithril Spear: spearthrust"
+    },
+    "644": {
+      "family": "trident",
+      "auto": true,
+      "_note": "Tempest Trident: trident"
+    },
+    "645": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Dragon Spear: spearthrust"
+    },
+    "646": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Warding Spear: spearthrust"
+    },
+    "647": {
+      "family": "trident",
+      "auto": true,
+      "_note": "Leviathan Fang Spear: trident"
+    },
+    "648": {
+      "family": "trident",
+      "auto": true,
+      "_note": "Serpent Caller: trident"
+    },
+    "649": {
+      "family": "ehi",
+      "auto": true,
+      "_note": "EHI Combustion Lance: ehi"
+    },
+    "650": {
+      "family": "spearthrust",
+      "auto": true,
+      "_note": "Gravity Spear: spearthrust"
+    },
+    "651": {
+      "family": "varlenia",
+      "auto": true,
+      "_note": "Varlenia Returning Spear: varlenia"
+    },
+    "663": {
+      "family": "device",
+      "auto": true,
+      "_note": "Foam Projector: device"
+    },
+    "664": {
+      "family": "device",
+      "auto": true,
+      "_note": "Electro-Net Launcher: device"
+    },
+    "665": {
+      "family": "device",
+      "auto": true,
+      "_note": "Active Denial System: device"
+    }
+  }
+}

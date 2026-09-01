@@ -79,20 +79,6 @@
     ]
   },
   "unknownMap": "Unknown Map",
-  "healthProtection": {
-    "messages": [
-      "{actor} narrowly avoided death!",
-      "{actor} was saved by divine intervention!",
-      "{actor} clung to life with determination!",
-      "{actor} refused to give up!",
-      "{actor} survived through sheer willpower!",
-      "{actor} was protected by fate!"
-    ],
-    "reset": "Health protection reset for all actors!",
-    "available": "Available",
-    "used": "Used",
-    "status": "{actor}: Protection {status}"
-  },
   "popup": {
     "miss": "Miss",
     "evaded": "Evaded"

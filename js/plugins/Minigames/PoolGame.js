@@ -1232,6 +1232,10 @@
             super.initialize();
             this._table = new PoolTable();
             this._state = STATE.AIM;
+            // Who is racked up against the player when nobody is holding the
+            // second pad: a companion, a local off the map, or the player's own
+            // head. Read once, so the same person is at the table all frame.
+            this._standIn = window.MinigameOpponent?.pick() ?? null;
             this._isPlayerTurn = true;
             this._playerScore = 0;
             this._opponentScore = 0;
@@ -1363,7 +1367,10 @@
         }
 
         opponentName() {
-            return this.isSplitScreen() ? T('PoolGame.player2') : T('PoolGame.player2Cpu');
+            if (this.isSplitScreen()) return T('PoolGame.player2');
+            return window.MinigameOpponent
+                ? window.MinigameOpponent.nameOf(this._standIn, T('PoolGame.player2Cpu'))
+                : T('PoolGame.player2Cpu');
         }
 
         shooterName() {
@@ -1768,6 +1775,10 @@
                 else if (value === 2) window.MinigameFun.lost('Billiards');
                 else window.MinigameFun.draw('Billiards');
             }
+
+            // MinigameFun pays the party; a local who was talked into a frame
+            // of pool is paid their own leisure here.
+            if (!this.isSplitScreen()) window.MinigameOpponent?.payFun(this._standIn);
 
             const label = value === 1 ? T('PoolGame.victory') :
                 (value === 2 ? T('PoolGame.defeat') : T('PoolGame.draw'));

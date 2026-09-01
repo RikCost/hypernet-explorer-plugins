@@ -1604,7 +1604,7 @@ window.Game_SummonFollower = Game_SummonFollower;
         configureProxy(active);
         $gameParty.addActor(summonActorId);
 
-        // A summon never benefits from the party's 1-HP death protection.
+        // A summon never benefits from the party's one-shot 1-HP save.
         const B = bse();
         if (B && B.Helpers && B.Helpers.useHealthProtection) {
             B.Helpers.useHealthProtection(summonActorId);

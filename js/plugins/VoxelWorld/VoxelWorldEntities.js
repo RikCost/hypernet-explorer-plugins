@@ -78,10 +78,20 @@
     // the underground tags in order until one of them has anything in it.
     const CAVE_BIOME_TAGS = ['Cave', 'Cavern', 'Caves', 'Underdark', 'Mines',   // i18n-ignore  <Biome:> tag names
                              'Mineshaft', 'Catacombs', 'Crypt', 'Dungeon'];     // i18n-ignore  <Biome:> tag names
+    // ...and the roster of the SEWERS, which is a different place with
+    // different things in it. Enemies.json tags 173 creatures Sewer and they
+    // never had anywhere to be until the galleries under the towns existed.
+    const SEWER_BIOME_TAGS = ['Sewer', 'Sewers', 'Cistern'];                    // i18n-ignore  <Biome:> tag names
     // A passage is not a prairie: things are met round the next corner, not
     // half a kilometre off across open country.
     const CAVE_SPAWN_MIN  = 90;    // world units from the party
     const CAVE_SPAWN_MAX  = 330;
+    // How long the current spawn mode's level band is held before it is asked
+    // for again. The band moves with the party (Party Level) or with the ground
+    // under them (Realistic), neither of which changes in a second, and working
+    // it out walks the world map.
+    const SPAWN_BAND_TTL = 4000;
+
     // How far above the party's own level to start looking for a floor, and how
     // far from their level that floor may be before it is a different passage
     // on a different level and not worth spawning into.
@@ -244,6 +254,96 @@
             }
             this._byBiome = map;
             return map;
+        }
+
+        // ---------------------------------------------------------------------
+        // The spawn mode
+        // ---------------------------------------------------------------------
+        // What meets the party out here is decided by the SAME setting that
+        // decides it on the 2D map: Options -> Enemy Spawn, which the battle
+        // system reads as Biome, Party Level, Realistic (distance from spawn) or
+        // Chaos (BattleSystemEnhancedEncounters, section 4b). The 3D world used
+        // to ignore it outright and hand out the biome's whole roster flat,
+        // which is exactly one of the four modes and was not necessarily the one
+        // anybody had chosen - a party on Party Level walked into level 90
+        // fauna, and a party on Realistic met the same things a step from the
+        // square they started the game on as they did a continent away.
+        //
+        // The mode's own band and its own level weighting are asked for rather
+        // than reimplemented, so the two worlds cannot drift apart. Re-read on a
+        // timer rather than per spawn: getPlaceLevel walks the world map and the
+        // answer only moves as the party does.
+        _spawnBand() {
+            const now = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+            if (this._bandAt && now - this._bandAt < SPAWN_BAND_TTL) return this._band;
+            this._bandAt = now;
+            this._band = null;
+            const BSE = window.BattleSystemEnhanced;
+            const H = BSE && BSE.Helpers;
+            if (!H || !H.getSpawnMode || !H.getSpawnBand || !H.getModeRefLevel) return null;
+            try {
+                const mode = H.getSpawnMode();
+                const party = H.getPartyReferenceLevel ? H.getPartyReferenceLevel() : 1;
+                const ref = H.getModeRefLevel(mode, party);
+                // Biome mode pitches a share of its spawns at the party and the
+                // rest at whatever the place holds; the roll is the battle
+                // system's own, so the share is the same in both worlds.
+                let band = H.getSpawnBand(mode, ref);
+                if (mode === 'biome' && H.rollBiomeTether && H.rollBiomeTether() &&
+                    H.getBiomeTetherBand) {
+                    band = H.getBiomeTetherBand();
+                }
+                if (!band) return null;
+                this._band = { mode, ref, band };
+            } catch (e) { this._band = null; }
+            return this._band;
+        }
+
+        // One species out of a roster, chosen the way the current spawn mode
+        // would choose it: inside the mode's level band, weighted toward the
+        // level that band is aimed at. Falls back to the nearest levels when the
+        // biome has nobody in the band at all, exactly as the 2D filters do -
+        // a roster is never emptied, it is only re-aimed.
+        _pickByMode(ids) {
+            if (!ids || !ids.length) return null;
+            const sel = this._spawnBand();
+            if (!sel) return ids[(Math.random() * ids.length) | 0];
+            const band = sel.band;
+            const lo = Math.max(1, band.min || 1);
+            const hi = Math.max(lo, band.max || 100);
+            const centre = band.center || sel.ref || lo;
+
+            const levels = ids.map(id => enemyLevelOf($dataEnemies[id]) || 1);
+            let pool = ids.filter((id, i) => levels[i] >= lo && levels[i] <= hi);
+            if (!pool.length) {
+                // Nothing in the band. The nearest level to it wins, and
+                // everything sharing that level with it comes too.
+                let best = Infinity;
+                for (const l of levels) {
+                    const d = l < lo ? lo - l : l - hi;
+                    if (d < best) best = d;
+                }
+                pool = ids.filter((id, i) => {
+                    const l = levels[i];
+                    return (l < lo ? lo - l : l - hi) === best;
+                });
+            }
+            if (pool.length === 1) return pool[0];
+
+            const H = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+            if (!H || !H.levelAffinityWeight) return pool[(Math.random() * pool.length) | 0];
+            let total = 0;
+            const w = pool.map(id => {
+                const k = Math.max(0.0001, H.levelAffinityWeight(enemyLevelOf($dataEnemies[id]) || 1, centre));
+                total += k;
+                return k;
+            });
+            let r = Math.random() * total;
+            for (let i = 0; i < pool.length; i++) {
+                r -= w[i];
+                if (r <= 0) return pool[i];
+            }
+            return pool[pool.length - 1];
         }
 
         // Enemy ids for a tile biome: exact tag match first, then the longest
@@ -669,13 +769,40 @@
             return pool;
         }
 
+        // ...and the roster of the brick galleries under a town, which is not
+        // the roster of a limestone passage under a wood. Falls back to the
+        // caves where the database names nothing.
+        _sewerCandidates() {
+            if (this._roster) return this._roster;
+            if (this._sewerPool !== undefined) return this._sewerPool;
+            let pool = null;
+            for (const name of SEWER_BIOME_TAGS) {
+                const ids = this._candidatesFor(name);
+                if (ids && ids.length) { pool = ids; break; }
+            }
+            this._sewerPool = pool;
+            return pool;
+        }
+
+        // Which of the two the party is actually in. A sewer is a built gallery
+        // at a fixed shallow level under a town square; anything deeper, or
+        // anywhere else, is a cave.
+        _undergroundPool(x, z, y) {
+            const field = this._terrain && this._terrain.field;
+            if (field && field.sewerAt && field.sewerAt(x, z, y)) {
+                const s = this._sewerCandidates();
+                if (s && s.length) return s;
+            }
+            return this._caveCandidates();
+        }
+
         // A creature put down in the caves: close by (a passage is not a
         // prairie), on the floor of whatever passage is at that spot, and only
         // where there IS a passage - most of the rock down there is rock.
         _trySpawnCave(vanX, vanZ) {
-            const pool = this._caveCandidates();
-            if (!pool || !pool.length) return;
             const eyeY = this._underY || 0;
+            const pool = this._undergroundPool(vanX, vanZ, eyeY);
+            if (!pool || !pool.length) return;
             for (let attempt = 0; attempt < 8; attempt++) {
                 const ang  = Math.random() * Math.PI * 2;
                 const dist = CAVE_SPAWN_MIN + Math.random() * (CAVE_SPAWN_MAX - CAVE_SPAWN_MIN);
@@ -690,7 +817,8 @@
                 // Headroom: something has to fit in the passage it is put in.
                 const roof = this._terrain.roofY(x, z, gy + 1);
                 if (roof != null && roof - gy < CAVE_SPAWN_HEAD) continue;
-                const data = $dataEnemies[pool[(Math.random() * pool.length) | 0]];
+                const pick = this._pickByMode(pool);
+                const data = pick != null ? $dataEnemies[pick] : null;
                 if (!data) continue;
                 if (enemyWaterClass(data) === 'aquatic') continue;
                 const ts = WORLD_TILE_SIZE;
@@ -743,7 +871,8 @@
                     pool = (ids || []).filter(id => enemyWaterClass($dataEnemies[id]) !== 'aquatic');
                 }
                 if (!pool || !pool.length) continue;
-                const data = $dataEnemies[pool[(Math.random() * pool.length) | 0]];
+                const pick = this._pickByMode(pool);
+                const data = pick != null ? $dataEnemies[pick] : null;
                 if (!data) continue;
                 const gy = this._terrain.getTerrainHeight(x / ts, z / ts);
                 // Dry land: never the submerged coastal shelf. In the water the
@@ -861,6 +990,7 @@
                 if (window.PSXShader && window.PSXShader.applyToObject) {
                     window.PSXShader.applyToObject(root);
                 }
+                root.traverse(o => { if (o.isMesh) o.castShadow = true; });
                 // Its name and level, floating just over its head. The plate
                 // hangs off the model, which is scaled, so everything about it
                 // is divided back out of that scale to keep it in world units.
@@ -1704,6 +1834,19 @@
 
         // Which vehicle the party is aboard, so it is not drawn twice.
         setDriving(key) { this._driving = key || null; }
+
+        // The nearest vehicle standing within reach of a point, or null. What
+        // pressing E on foot asks before it decides there is nothing out here
+        // to get into (see the scene's _boardParked).
+        nearest(x, z, range) {
+            let best = null, bestD = range * range;
+            for (const [key, rec] of this._live) {
+                const dx = rec.x - x, dz = rec.z - z;
+                const d = dx * dx + dz * dz;
+                if (d < bestD) { best = { key, x: rec.x, z: rec.z }; bestD = d; }
+            }
+            return best;
+        }
 
         update(delta, atX, atZ, camYaw = 0) {
             for (const rec of this._live.values()) {

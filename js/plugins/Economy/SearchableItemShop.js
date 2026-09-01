@@ -2789,6 +2789,22 @@
         });
     });
 
+    // The local bazaar's shelf is derived from its coordinates, so anything
+    // that needs to know what stands on it (the stealing system, for one) can
+    // ask for the same selection the scene would build.
+    window.SearchableItemShop = window.SearchableItemShop || {};
+    window.SearchableItemShop.limitedSelection =
+        (seedString, maxSkills) => Catalogue.limitedSelection(seedString, maxSkills || 6);
+    window.SearchableItemShop.limitedSeedString = (mapId, x, y) => {
+        let historySeed = 19002001;
+        if (window.HistoryManager && typeof window.HistoryManager.getSeed === 'function') {
+            historySeed = window.HistoryManager.getSeed();
+        } else if ($gameSystem && $gameSystem._historySeed !== undefined) {
+            historySeed = $gameSystem._historySeed;
+        }
+        return `${mapId}-${x}-${y}-${historySeed}`;
+    };
+
     registerShopCommand("RetireDeliveredItems", () => {
         const delivered = DeliveryManager.retireDeliveredItems();
 

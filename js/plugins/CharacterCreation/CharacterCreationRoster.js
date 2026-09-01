@@ -431,27 +431,20 @@
   }
 
   // ==========================================================================
-  // Battle Test: auto-build a random, slightly under-levelled party
+  // Battle Test: auto-build a random, balanced party
   //
-  // Whenever a Battle Test is launched from the editor with exactly three test
-  // battlers, the test party is replaced with 3 members that have random
-  // classes, genders, equipment and traits (any other party size is left
-  // untouched, so a deliberately hand-built roster still runs as configured).
-  // Levels are derived from the troop's enemy <Level: N> notes and kept below
-  // the enemy median, so the party median level is always lower than the
-  // troop's (the enemies stay the tougher side of the test).
+  // Whenever a Battle Test is launched from the editor and the first character
+  // has no weapon equipped, the entire test party is randomized:
+  //   - Random sentient classes
+  //   - Random NPC sprites, markov names, and busts
+  //   - Random genders & reproduction types
+  //   - Random traits
+  //   - Balanced, level-appropriate weapons and armor per equip slot
+  //   - Starter & class skills synced to "Best" in Categorized Battle Skills
+  //
+  // If the first character is level 1, the test troop is also reinforced with
+  // 2 or 3 random enemies around the same level.
   // ==========================================================================
-
-  const BATTLE_TEST_TRIGGER_NAME = "test"; // matched case-insensitively
-  const BATTLE_TEST_PARTY_SIZE = 3; // the only test party size that gets randomized
-
-  // The actor ids the battle-test party is made of, but only when it holds
-  // exactly BATTLE_TEST_PARTY_SIZE members; null otherwise.
-  function battleTestPartyActorIds() {
-    if (typeof $gameParty === "undefined" || !$gameParty) return null;
-    const ids = ($gameParty._actors || []).slice();
-    return ids.length === BATTLE_TEST_PARTY_SIZE ? ids : null;
-  }
 
   // Median enemy level from <Level: N> notes in the current troop, or null.
   function getTroopMedianEnemyLevel() {
@@ -474,20 +467,51 @@
       : levels[mid];
   }
 
-  // True when Actor 1's database name is the battle-test trigger. Checked off
-  // $dataActors directly (not $gameActors) so it can run before createGameObjects,
-  // while the raw test troop data is still safe to rewrite in place.
-  function isBattleTestTriggerActor() {
-    const a1 = typeof $dataActors !== "undefined" && $dataActors[1];
-    return !!(a1 && a1.name && a1.name.trim().toLowerCase() === BATTLE_TEST_TRIGGER_NAME);
+  // True when the first battler in the battle test configuration is level 1.
+  function isFirstBattlerLevel1() {
+    const b0 = $dataSystem && $dataSystem.testBattlers && $dataSystem.testBattlers[0];
+    return !!(b0 && b0.level === 1);
   }
 
-  // <Level: N> off a single enemy's note, or null.
-  function enemyNoteLevel(enemyData) {
-    if (!enemyData || !enemyData.note) return null;
-    const m = enemyData.note.match(/<Level:\s*(\d+)>/i);
+  // True when the first battler in the battle test configuration is named "Archivist".
+  function isFirstBattlerNamedArchivist() {
+    const b0 = $dataSystem && $dataSystem.testBattlers && $dataSystem.testBattlers[0];
+    if (b0 && typeof $dataActors !== "undefined" && $dataActors) {
+      const a = $dataActors[b0.actorId];
+      if (a && a.name && a.name.trim().toLowerCase() === "archivist") return true;
+    }
+    const leader = typeof $gameParty !== "undefined" && $gameParty && $gameParty.members && $gameParty.members()[0];
+    if (leader && leader.name && leader.name().trim().toLowerCase() === "archivist") return true;
+    return false;
+  }
+
+  // True when the first battler in the battle test configuration has no weapon equipped.
+  function isFirstBattlerWeaponless() {
+    if (!$dataSystem || !Array.isArray($dataSystem.testBattlers) || $dataSystem.testBattlers.length === 0) {
+      return false;
+    }
+    const b0 = $dataSystem.testBattlers[0];
+    if (!b0) return false;
+    if (!b0.equips || !Array.isArray(b0.equips) || b0.equips.length === 0) return true;
+    const hasWeapon = b0.equips.some((id) => id > 0 && $dataWeapons && $dataWeapons[id]);
+    return !hasWeapon;
+  }
+
+  // True when the battle test party should be randomized:
+  // - Player 1 is named "Archivist"
+  // - Or first character has no weapon equipped
+  function shouldRandomizeBattleTestParty() {
+    return isFirstBattlerNamedArchivist() || isFirstBattlerWeaponless();
+  }
+
+  // <Level: N> off an item/enemy note, or null.
+  function itemNoteLevel(dataEntry) {
+    if (!dataEntry || !dataEntry.note) return null;
+    const m = dataEntry.note.match(/<Level:\s*(\d+)>/i);
     return m ? parseInt(m[1], 10) : null;
   }
+
+  const enemyNoteLevel = itemNoteLevel;
 
   function isBossEnemyData(enemyData) {
     return !!(enemyData && enemyData.note && /<Boss>/i.test(enemyData.note));
@@ -720,31 +744,99 @@
   window.CharacterCreationParty = window.CharacterCreationParty || {};
   window.CharacterCreationParty.fillPartyStartingEquipment = fillPartyStartingEquipment;
 
-  // Equip a random compatible armor in every non-weapon equip slot.
-  function equipRandomArmorsForActor(actor) {
-    const slots = actor.equipSlots(); // etypeId per slot
+  // Pick a balanced weapon matching the actor's class and target level.
+  function pickBalancedWeapon(actor, targetLevel, classId) {
+    const SE = window.StartingEquipment;
+    const compTypes =
+      SE && SE.getCompatibleWeaponTypes ? SE.getCompatibleWeaponTypes(classId) : [];
+
+    let pool = [];
+    for (let id = 1; id < $dataWeapons.length; id++) {
+      const w = $dataWeapons[id];
+      if (!w || !w.name || w.name.trim().startsWith("<--")) continue;
+      if (actor && !actor.canEquip(w)) continue;
+      if (compTypes.length > 0 && !compTypes.includes(w.wtypeId)) continue;
+      pool.push(w);
+    }
+    if (pool.length === 0) {
+      for (let id = 1; id < $dataWeapons.length; id++) {
+        const w = $dataWeapons[id];
+        if (!w || !w.name || w.name.trim().startsWith("<--")) continue;
+        if (actor && actor.canEquip(w)) pool.push(w);
+      }
+    }
+    if (pool.length === 0) return null;
+
+    for (let band = 3; band <= 40; band += 4) {
+      const candidates = pool.filter((w) => {
+        const lvl = itemNoteLevel(w);
+        return lvl != null && Math.abs(lvl - targetLevel) <= band;
+      });
+      if (candidates.length > 0) {
+        return candidates[Math.floor(Math.random() * candidates.length)];
+      }
+    }
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  // Pick a balanced armor matching the target slot etypeId and target level.
+  function pickBalancedArmor(actor, targetLevel, etypeId) {
+    const pool = [];
+    for (let id = 1; id < $dataArmors.length; id++) {
+      const a = $dataArmors[id];
+      if (!a || !a.name || a.name.trim().startsWith("<--")) continue;
+      if (a.etypeId !== etypeId) continue;
+      if (actor && !actor.canEquip(a)) continue;
+      pool.push(a);
+    }
+    if (pool.length === 0) return null;
+
+    for (let band = 3; band <= 40; band += 4) {
+      const candidates = pool.filter((a) => {
+        const lvl = itemNoteLevel(a);
+        return lvl != null && Math.abs(lvl - targetLevel) <= band;
+      });
+      if (candidates.length > 0) {
+        return candidates[Math.floor(Math.random() * candidates.length)];
+      }
+    }
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  // Equip balanced, level-appropriate weapons and armor across all equip slots.
+  function equipBalancedGearForActor(actor, targetLevel, classId) {
+    if (!actor) return;
+    if (typeof actor.initEquips === "function") {
+      actor.initEquips([]);
+    }
+    const slots = actor.equipSlots();
     for (let slotId = 0; slotId < slots.length; slotId++) {
-      if (slots[slotId] === 1) continue; // weapon slot - handled separately
-      const candidates = $dataArmors.filter(
-        (a) =>
-          a &&
-          a.name &&
-          !a.name.trim().startsWith("<--") &&
-          a.etypeId === slots[slotId] &&
-          actor.canEquip(a)
-      );
-      if (candidates.length === 0) continue;
-      const armor = candidates[Math.floor(Math.random() * candidates.length)];
-      $gameParty.gainItem(armor, 1);
-      try {
-        actor.changeEquip(slotId, armor);
-      } catch (e) {
-        /* incompatible roll - leave the slot empty */
+      const etypeId = slots[slotId];
+      if (etypeId === 1) {
+        const weapon = pickBalancedWeapon(actor, targetLevel, classId);
+        if (weapon) {
+          $gameParty.gainItem(weapon, 1);
+          try {
+            actor.changeEquip(slotId, weapon);
+          } catch (e) {
+            /* incompatible roll */
+          }
+        }
+      } else {
+        const armor = pickBalancedArmor(actor, targetLevel, etypeId);
+        if (armor) {
+          $gameParty.gainItem(armor, 1);
+          try {
+            actor.changeEquip(slotId, armor);
+          } catch (e) {
+            /* incompatible roll */
+          }
+        }
       }
     }
   }
 
-  // Randomize one actor: class, gender/reproduction, level, equipment, traits.
+  // Randomize one actor: class, gender/reproduction, level, equipment, traits, and sync skills to Best.
   function randomizeBattleTestActor(actor, memberIndex, level) {
     if (!actor) return;
 
@@ -754,14 +846,18 @@
     // Random class out of the sentient roster (1-62); the creature classes are
     // never dealt to a person.
     let classId = actor._classId;
-    const validClasses = window.CreatureClasses.sentientRoster();
+    const validClasses =
+      window.CreatureClasses && window.CreatureClasses.sentientRoster
+        ? window.CreatureClasses.sentientRoster()
+        : [];
     if (validClasses.length > 0) {
       classId = validClasses[Math.floor(Math.random() * validClasses.length)];
       actor.changeClass(classId, false);
     }
 
     // Level (set after the class change so exp matches the new class).
-    actor.changeLevel(Math.max(1, Math.min(99, level)), false);
+    const targetLevel = Math.max(1, Math.min(99, level));
+    actor.changeLevel(targetLevel, false);
 
     // Gender + matching reproduction type. Prefer the chosen sprite's gender so
     // identity matches the sprite the player sees, otherwise roll randomly.
@@ -787,68 +883,68 @@
       window.randomizeTraitsForActor(actor.actorId());
     }
 
-    // Equipment: a random weapon for the class + random armor per slot.
-    if (typeof equipRandomCompatibleWeapon === "function") {
-      equipRandomCompatibleWeapon(actor, classId);
-    }
-    equipRandomArmorsForActor(actor);
+    // Equipment: balanced, level-appropriate weapon(s) and armor across all slots.
+    equipBalancedGearForActor(actor, targetLevel, classId);
 
-    // Baseline skills so the actor can actually act in the test.
+    // Baseline starter skills + class learnings up to target level.
     if (Array.isArray(GLOBAL_STARTER_SKILLS)) {
       GLOBAL_STARTER_SKILLS.forEach((id) => {
         if ($dataSkills[id]) actor.learnSkill(id);
       });
     }
+    const curClass = actor.currentClass();
+    if (curClass && Array.isArray(curClass.learnings)) {
+      for (const learning of curClass.learnings) {
+        if (learning && learning.level <= targetLevel && $dataSkills[learning.skillId]) {
+          actor.learnSkill(learning.skillId);
+        }
+      }
+    }
+
+    // Sync carried skills with "Best" in CategorizedBattleSkills.
+    if (window.BattleLoadout && typeof window.BattleLoadout.best === "function") {
+      window.BattleLoadout.best(actor);
+    }
 
     actor.recoverAll();
   }
 
-  function setupRandomBattleTestParty(actorIds) {
+  function setupRandomBattleTestParty() {
     const enemyMedian = getTroopMedianEnemyLevel() || 10;
-    // Cap so every member is strictly below the enemy median (floored at 1),
-    // which keeps the party's median level under the troop's.
     const cap = Math.max(1, enemyMedian - 1);
     const baseLevel = Math.max(1, enemyMedian - 2);
-    // Whoever the editor put in the test party keeps their slot; only what
-    // they are made of is rerolled.
-    const ids =
-      actorIds && actorIds.length === BATTLE_TEST_PARTY_SIZE ? actorIds.slice() : [1, 2, 3];
 
-    // Rebuild the party as exactly those 3 members.
-    for (const id of $gameParty._actors.slice()) {
-      $gameParty.removeActor(id);
-    }
-    for (let i = 0; i < ids.length; i++) {
-      const actorId = ids[i];
-      $gameParty.addActor(actorId);
-      const level = Math.min(baseLevel + (i - 1), cap);
-      randomizeBattleTestActor($gameActors.actor(actorId), i, level);
+    const members = $gameParty.members();
+    for (let i = 0; i < members.length; i++) {
+      const actor = members[i];
+      if (!actor) continue;
+      const b = $dataSystem.testBattlers && $dataSystem.testBattlers[i];
+      let level = b && b.level > 1 ? b.level : Math.min(baseLevel + (i - 1), cap);
+      level = Math.max(1, Math.min(99, level));
+      randomizeBattleTestActor(actor, i, level);
     }
 
     if ($gamePlayer) $gamePlayer.refresh(); // reflect the new leader sprite
 
     console.log(
-      `[BattleTest] Built random party (enemy median lvl ${enemyMedian}, party cap lvl ${cap}).`
+      `[BattleTest] Built random party with ${members.length} members (enemy median lvl ${enemyMedian}).`
     );
   }
 
   const _DataManager_setupBattleTest = DataManager.setupBattleTest;
   DataManager.setupBattleTest = function () {
     try {
-      if (isBattleTestTriggerActor()) reinforceTestTroopMembers();
+      if (isFirstBattlerLevel1()) reinforceTestTroopMembers();
     } catch (e) {
       console.error("[BattleTest] Failed to reinforce test troop:", e);
     }
     _DataManager_setupBattleTest.call(this);
     try {
-      const ids = battleTestPartyActorIds();
-      if (ids) {
-        setupRandomBattleTestParty(ids);
+      if (shouldRandomizeBattleTestParty()) {
+        setupRandomBattleTestParty();
       } else {
         console.log(
-          "[BattleTest] Test party is not " +
-            BATTLE_TEST_PARTY_SIZE +
-            " members - left exactly as configured."
+          "[BattleTest] First character has a weapon equipped and is not Archivist - leaving party as configured."
         );
       }
     } catch (e) {

@@ -70,6 +70,16 @@ Imported.DialogueSystem = true;
 
     const PLUGIN_NAME = "DialogueSystem";
 
+    // Who is standing at this event right now. A <Shop> counter is named after
+    // the fixture ("Shop", "Bar") and worked in shifts by somebody else, so
+    // every line the player reads and every society lookup has to go through
+    // NPCSim rather than the raw event name.
+    function _npcNameForEvent(ev) {
+        if (!ev) return null;
+        const name = window.NPCSim?.npcNameForEvent?.(ev) ?? ev.event()?.name?.trim();
+        return name || null;
+    }
+
     // -------------------------------------------------------------------------
     // Bust display constants
     // -------------------------------------------------------------------------
@@ -77,7 +87,8 @@ Imported.DialogueSystem = true;
     const bustAspect       = 0.74;  // every portrait in img/busts is about 3:4
     const bustMaxHeight    = 615;   // the tallest a portrait is ever drawn
     const bustMinHeight    = 240;   // and the shortest, however low the box sits
-    const bustBoxGap       = 4;     // air between the portrait's feet and the box
+    const bustBoxGap       = 0;     // portrait meets the textbox seamlessly without gap
+    const bustOverlap      = 2;     // slight overlap behind textbox border to prevent subpixel seams
     const bustTopMargin    = 6;     // air above its head
     const bustXOffset_16_9 = 245;   // side margin used when there is no box to align to
     const fadeInDuration   = 12;
@@ -118,7 +129,7 @@ Imported.DialogueSystem = true;
     function messageBoxLeft()  { return Graphics.width / 2 - messageBoxHalfWidth(); }
 
     function getBustHeight() {
-        const room = messageBoxTop() - bustBoxGap - bustTopMargin;
+        const room = messageBoxTop() + bustOverlap - bustTopMargin;
         return Math.round(Math.max(bustMinHeight, Math.min(bustMaxHeight, room)));
     }
     function getBustWidth()  { return Math.round(getBustHeight() * bustAspect); }
@@ -318,7 +329,7 @@ Imported.DialogueSystem = true;
         // when there is no box below it, the real bottom of the screen less
         // whatever the item quick bar is holding down there (see
         // bottomBarReserve and Window_Message.updatePlacement below).
-        getBustY() { return messageBoxTop() - bustBoxGap; }
+        getBustY() { return messageBoxTop() + bustOverlap; }
 
         setupBustPosition(sprite) { sprite.y = this.getBustY(); }
 
@@ -400,7 +411,7 @@ Imported.DialogueSystem = true;
             if (window.NPCSim?.getBustForNPC) {
                 try {
                     const evId    = $gameMap?._interpreter?._eventId;
-                    const npcName = evId ? $gameMap.event(evId)?.event()?.name : null;
+                    const npcName = evId ? _npcNameForEvent($gameMap.event(evId)) : null;
                     if (npcName) {
                         const b = window.BustPath.resolve(window.NPCSim.getBustForNPC(npcName));
                         if (b) return `busts/${b}`;
@@ -474,34 +485,14 @@ Imported.DialogueSystem = true;
         getCharacterDisplayName(eventId) {
             if (eventId) {
                 const gameEvent = $gameMap.event(eventId);
-                if (gameEvent?.event()?.name) {
-                    const name = gameEvent.event().name.trim();
-                    if (window.NPCSocietyRegistry && window.NPCSocietyConfig) {
-                        const profile = window.NPCSocietyRegistry.getProfile(name);
-                        if (profile) {
-                            const m         = gameEvent.event().note?.match(/NPC-(\d+)/);
-                            const classId   = m ? Number(m[1]) : null;
-                            const className = classId ? (window.NPCSocietyConfig.CLASS_NAMES[classId] || "") : "";
-                            if (className) return `${name}, ${className}`;
-                        }
-                    }
-                    return name;
+                const evName = _npcNameForEvent(gameEvent);
+                if (evName) {
+                    return evName;
                 }
             }
             const charInfo = this.getCurrentEventCharacterInfo();
             if (charInfo?.characterName) {
                 const displayName = this.convertCamelCaseToReadable(charInfo.characterName.split('.')[0]);
-                const nameKey     = displayName.trim();
-                if (window.NPCSocietyRegistry && window.NPCSocietyConfig) {
-                    const profile = window.NPCSocietyRegistry.getProfile(nameKey);
-                    if (profile) {
-                        const ev        = $gameMap.events().find(e => e?.event()?.name?.trim() === nameKey);
-                        const m         = ev?.event()?.note?.match(/NPC-(\d+)/);
-                        const classId   = m ? Number(m[1]) : null;
-                        const className = classId ? (window.NPCSocietyConfig.CLASS_NAMES[classId] || "") : "";
-                        if (className) return `${nameKey}, ${className}`;
-                    }
-                }
                 return displayName;
             }
             return "";
@@ -562,17 +553,6 @@ Imported.DialogueSystem = true;
 
             if (this.nameWindow) {
                 let displayName = characterName || this.convertCamelCaseToReadable(imageName);
-                const nameKey   = displayName.trim();
-                if (window.NPCSocietyRegistry && window.NPCSocietyConfig) {
-                    const profile = window.NPCSocietyRegistry.getProfile(nameKey);
-                    if (profile) {
-                        const ev        = $gameMap.events().find(e => e?.event()?.name?.trim() === nameKey);
-                        const m         = ev?.event()?.note?.match(/NPC-(\d+)/);
-                        const classId   = m ? Number(m[1]) : null;
-                        const className = classId ? (window.NPCSocietyConfig.CLASS_NAMES[classId] || "") : "";
-                        if (className) displayName = `${nameKey}, ${className}`;
-                    }
-                }
                 this.nameWindow.setCharacterName(displayName);
                 this.nameWindow.showName();
                 this.nameIsVisible = true;
@@ -1320,9 +1300,13 @@ Imported.DialogueSystem = true;
     // bank instead, which is also where a personality with no written lines
     // falls back to.
 
+    // How often talking to somebody is answered with the plain rumour rather
+    // than a conversation. Everything else they could say is longer.
+    const RUMOR_CHANCE = 0.25;
+
     function rumorPersonalityKey(eventId) {
         if (!eventId || typeof $gameMap === 'undefined') return null;
-        const npcName = $gameMap.event(eventId)?.event()?.name;
+        const npcName = _npcNameForEvent($gameMap.event(eventId));
         if (!npcName) return null;
         const profile = window.NPCSocietyRegistry?.getProfile?.(npcName);
         if (!profile || profile.personalityIndex == null) return null;
@@ -1535,8 +1519,11 @@ Imported.DialogueSystem = true;
 
         const actor   = $gameParty.leader();
         const actorId = actor && actor.actorId();
-        // Nobody opens a conversation with a beast: it has no answer to give.
-        if (H._isNonSentientActor && H._isNonSentientActor(actor)) return null;
+        // A person DOES speak to the animal at the head of the party, in their
+        // own words, the way anybody talks to a dog. What changes is the
+        // answer: the party has no sentence to give back, only the noise its
+        // class makes (see the playerLine below).
+        const beastLeader = !!(H._isNonSentientActor && H._isNonSentientActor(actor));
 
         const interactions = H._socialLines().interactions || [];
         if (!interactions.length) return null;
@@ -1566,9 +1553,15 @@ Imported.DialogueSystem = true;
         npcLine = vary(npcLine);
 
         const warm       = def.tone !== 'negative';
-        const playerLine = fillPlayer(H._rand(warm ? def.responseGood : def.responseBad))
+        let playerLine   = fillPlayer(H._rand(warm ? def.responseGood : def.responseBad))
                         || fillPlayer(H._rand(def.responseGood));
         if (!playerLine) return null;
+        // The beast's half of it. The line above is what a person would have
+        // said back; what actually comes out is that line's worth of noise, in
+        // the voice of the class the leader is played as.
+        if (beastLeader) {
+            playerLine = EM.growlFor(playerLine, actor && actor.name()) || playerLine;
+        }
 
         // Being spoken to first moves the ledger less than being courted: the
         // NPC already knows how they feel, the answer only nudges it.
@@ -1609,6 +1602,79 @@ Imported.DialogueSystem = true;
         return reg.ensureProfile(npcName, H?._extractClassId ? H._extractClassId(ev) : null) || null;
     }
 
+    // A full conversation, not a greeting: the same tone-weighted script two
+    // NPCs play out when they meet in the street (NPCConversation's positive /
+    // neutral / negative / political-debate banks), staged here with the party
+    // leader standing in for one of the two speakers. The leader's half is
+    // voiced by their own society profile when they have one, so an argument
+    // about the banks or an election reads as a real back and forth rather
+    // than a one-line pleasantry. The NPC closes on whatever is actually on
+    // their mind, straight out of ThoughtProvider, which is where the politics,
+    // the world web and their own cravings get a word in.
+    function buildTopicalExchange(ev, npcName, profile) {
+        const NC = window.NPCConversation;
+        if (!NC || !NC.buildScript || !NC.resolveLine) return null;
+        const EM = window.NPCEmpathize;
+        const H  = EM && EM._helpers;
+
+        const actor   = $gameParty.leader();
+        const actorId = actor && actor.actorId();
+        // A beast at the head of the party has no half of a debate to hold.
+        if (!actor || (H?._isNonSentientActor && H._isNonSentientActor(actor))) return null;
+
+        const leaderName    = actor.name();
+        const leaderProfile = window.NPCSocietyRegistry?.getProfile?.(leaderName) || null;
+        const script        = NC.buildScript(leaderProfile, profile, leaderName, npcName);
+        const lines         = script && script.lines;
+        if (!Array.isArray(lines) || !lines.length) return null;
+
+        const persLeader = NC._personalityNameOf?.(leaderProfile);
+        const persNpc    = NC._personalityNameOf?.(profile);
+        const steps      = [];
+        for (const entry of lines) {
+            if (!Array.isArray(entry)) continue;
+            const [who, raw] = entry;
+            let text = NC.resolveLine(raw, leaderName, npcName);
+            text = NC.applyVoice ? NC.applyVoice(text, who === 0 ? persLeader : persNpc) : text;
+            if (!text) continue;
+            if (who === 0) {
+                steps.push(playerStep(actor, text));
+                EM?.recordNPCLine?.(npcName, text, 'player');
+            } else {
+                steps.push(npcStep(ev, npcName, text));
+                EM?.recordNPCLine?.(npcName, text, 'npc');
+            }
+        }
+        if (!steps.length) return null;
+
+        // Half the time they end on the thing they were chewing on anyway.
+        if (Math.random() < 0.5) {
+            const thought = NC.ThoughtProvider?.pickThought?.(profile);
+            if (thought) {
+                steps.push(npcStep(ev, npcName, NC.vary ? NC.vary(thought) : thought));
+                EM?.recordNPCLine?.(npcName, thought, 'npc');
+            }
+        }
+
+        // The same relationship swing the conversation manager applies when two
+        // NPCs finish a chat of this kind, aimed at the leader instead.
+        const swing = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+        let delta = script.kind === 'positive' ? swing(3, 8)
+                  : script.kind === 'negative' ? -swing(2, 7)
+                  : script.kind === 'debate'   ? (script.agreement ? swing(3, 8) : -swing(2, 7))
+                  : 1;
+        if (profile && actorId != null && H?._addNpcOpinion) {
+            H._addNpcOpinion(profile, actorId, delta);
+            if (profile.social !== undefined) profile.social = Math.min(100, profile.social + 20);
+            (profile.eventLog ??= []).push({
+                tag: 'conversation_' + script.kind, desc: `${script.kind} (${delta >= 0 ? '+' : ''}${delta})`, // i18n-ignore: event-log record id
+                timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+            });
+        }
+
+        return steps;
+    }
+
     // The third thing that can happen: no social move at all, just the rumour
     // bank, spoken over the NPC's own bust like anything else they say. This is
     // also the whole of what a beast or an unregistered event has to offer.
@@ -1619,7 +1685,7 @@ Imported.DialogueSystem = true;
         const EM = window.NPCEmpathize;
         // A non-sentient creature has no words, only a noise as long as the line
         // it would have spoken.
-        if (npcName && EM?.isNonSentientNPC?.(npcName)) line = EM.growlFor(line) || line;
+        if (npcName && EM?.isNonSentientNPC?.(npcName)) line = EM.growlFor(line, npcName) || line;
         if (npcName) EM?.recordNPCLine?.(npcName, line, 'npc');
         return [npcStep(ev, npcName, line)];
     }
@@ -1658,7 +1724,7 @@ Imported.DialogueSystem = true;
         const ev   = evId ? $gameMap.event(evId) : null;
         if (ev) ev.turnTowardPlayer();
 
-        const npcName = ev?.event()?.name || null;
+        const npcName = _npcNameForEvent(ev);
         const EM      = window.NPCEmpathize;
         const profile = ensureNpcProfile(ev, npcName);
         const sentient = !!(profile && profile.personalityIndex != null && !EM?.isNonSentientNPC?.(npcName));
@@ -1667,19 +1733,29 @@ Imported.DialogueSystem = true;
         if (ev && bm) {
             // A beast or an unregistered event (a cat, a signpost, a body
             // double) has no Socialize catalogue behind it and only ever has
-            // the rumour to give.
-            const builders = [() => buildRumorExchange(ev, npcName)];
-            if (sentient && EM) {
-                builders.push(() => buildNpcOpeningExchange(ev, npcName, profile));
-                builders.push(() => buildSocialExchange(ev, npcName, profile));
+            // the rumour to give. For everybody else the plain rumour is the
+            // exception, one talk in four; the rest of the time the exchange is
+            // a proper conversation, the multi-beat scripts two NPCs trade,
+            // with the greeting-sized social beats behind them as the fallback.
+            let builders;
+            if (!sentient || !EM || Math.random() < RUMOR_CHANCE) {
+                builders = [() => buildRumorExchange(ev, npcName)];
+                if (sentient && EM) {
+                    builders.push(() => buildNpcOpeningExchange(ev, npcName, profile));
+                    builders.push(() => buildSocialExchange(ev, npcName, profile));
+                }
+            } else {
+                const beats = [
+                    () => buildNpcOpeningExchange(ev, npcName, profile),
+                    () => buildSocialExchange(ev, npcName, profile),
+                ];
+                if (Math.random() < 0.5) beats.reverse();
+                builders = [() => buildTopicalExchange(ev, npcName, profile), ...beats,
+                            () => buildRumorExchange(ev, npcName)];
             }
             // A builder that has nothing written to work with returns null
             // before it moves anything, so falling through to the next one
             // costs nothing.
-            for (let i = builders.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [builders[i], builders[j]] = [builders[j], builders[i]];
-            }
             for (const build of builders) {
                 const steps = build();
                 if (steps && startNPCExchange(steps)) {
@@ -1692,7 +1768,7 @@ Imported.DialogueSystem = true;
         // Nowhere to stage a bust: the bare line, so the NPC is never mute.
         let line = pickRumor(rumorPersonalityKey(evId));
         if (!line) return;
-        if (npcName && EM?.isNonSentientNPC?.(npcName)) line = EM.growlFor(line) || line;
+        if (npcName && EM?.isNonSentientNPC?.(npcName)) line = EM.growlFor(line, npcName) || line;
         if (npcName) EM?.recordNPCLine?.(npcName, line);
 
         $gameMessage.setBackground(0);

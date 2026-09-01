@@ -81,6 +81,68 @@
     const CHIP_LIFE  = 0.75;
     const CHIP_COUNT = 7;
 
+    // -------------------------------------------------------------------------
+    // The three quick bars
+    // -------------------------------------------------------------------------
+    // One strip along the bottom of the screen, three things it can be showing.
+    // TAB (L2 on a pad) walks between them, and what is in hand is whatever the
+    // lit cell of the bar that is up holds:
+    //
+    //   blocks   the weapon and everything dug out of the world (the default)
+    //   items    the party's own quick-use favourites, the map bar's nine slots
+    //   spells   the leader's carried battle loadout, cast out into the world
+    //
+    // The bars are not three inventories: each is a view onto something the game
+    // already keeps (window.ItemHotbar, window.BattleLoadout), so a favourite
+    // starred in the backpack is on the bar out here without anything being
+    // copied anywhere.
+    const BAR_MODES = ['blocks', 'items', 'spells'];  // i18n-ignore  mode ids
+    // Nine cells, the same nine the item bar and the battle loadout both carry,
+    // so the number keys mean the same thing whichever bar is up.
+    const SPELL_SLOTS = 9;
+
+    // -------------------------------------------------------------------------
+    // Casting into the world
+    // -------------------------------------------------------------------------
+    // A spell fired out here is not a battle action. There is nobody taking a
+    // turn, no damage is dealt to anybody, and nothing has hit points: what a
+    // bolt does when it lands is open a fight with whatever it landed on, and
+    // take a bite out of the ground.
+    //
+    // How big a bite is the skill's OWN damage formula, evaluated with the
+    // caster on both sides of it: a cantrip scuffs the wall, a meteor opens a
+    // crater. A spell that heals never touches the ground - it was not aimed at
+    // the world in the first place.
+    const SPELL_RANGE_STEP    = 120;   // world units per step of <Range:> on a skill
+    const SPELL_RANGE_DEFAULT = 420;   // how far a spell with nothing said about it goes
+    const SPELL_RANGE_MAX     = 1600;
+    const SPELL_SPEED         = 520;   // world units a second the bolt travels
+    const SPELL_COOLDOWN      = 0.45;  // seconds between casts, so one press is one bolt
+    // What the crater comes to. The formula's value is rooted before it is used:
+    // damage runs to the thousands late on, and a crater the size of a village
+    // is not what "a big spell" should mean.
+    const BLAST_MIN_R  = 1.2;          // in cubes
+    const BLAST_MAX_R  = 7;
+    const BLAST_SCALE  = 0.55;
+    // How far past the crater a creature still counts as caught in it.
+    const BLAST_CATCH  = 2.2;
+
+    // The colour a bolt burns, by the element the skill is of. Read off the
+    // database's own element list rather than a table of names, so a world with
+    // its own elements still lights something.
+    const ELEMENT_COLOURS = [
+        0xffe6a8, 0xf2f2f2, 0xff7a3c, 0x8fd8ff, 0xffd24a, 0x9be36a,
+        0xd0e8ff, 0xc59bff, 0xff6a9c, 0x9affe0
+    ];
+
+    // Whether a skill is meant to mend rather than break. HP and MP recovery
+    // are the two the database says so about; everything else that carries a
+    // formula is taken at its word.
+    const isHealingSkill = (skill) => {
+        const d = skill && skill.damage;
+        return !!d && (d.type === 3 || d.type === 4);
+    };
+
     const matName = m => {
         const def = MATERIALS[m];
         return def ? T('VoxelWorld.material.' + def.key) : '';
@@ -329,6 +391,230 @@
     }
 
     // =========================================================================
+    // SpellCaster, the spell bar and the bolt it fires
+    // =========================================================================
+    // The leader's carried loadout, aimed down the crosshair. A cast puts a
+    // bolt in the air; the bolt flies until it hits something solid or runs out
+    // of range, and then it bursts: the skill's own battle animation goes off
+    // at that point (through the world's Effekseer context, see VoxelWorldFx's
+    // SpellFx), the ground gives, and anything standing in the blast turns
+    // round and fights.
+    //
+    // The scene owns the two things this cannot know about, handed in as hooks:
+    //   onBurst(x, y, z, radius, damage)   who was caught in it
+    //   onAnimation(id, x, y, z)           play the skill's animation there
+    class SpellCaster {
+        constructor(scene, terrain, hooks) {
+            this._scene   = scene;
+            this._terrain = terrain;
+            this._hooks   = hooks || {};
+            this._bolts   = [];
+            this._cool    = 0;
+            this._sel     = 0;   // which of the nine carried spells is in hand
+
+            this._group = new THREE.Group();
+            this._group.frustumCulled = false;
+            scene.add(this._group);
+
+            // The bolt itself, and the ring that says where it would land. Both
+            // are built once and moved: a spell is fired often enough that
+            // building geometry per cast would be felt.
+            this._boltGeo = new THREE.SphereGeometry(2.4, 10, 8);
+            this._ringGeo = new THREE.TorusGeometry(6, 0.9, 6, 20);
+            this._ringMat = new THREE.MeshBasicMaterial({
+                color: 0xbfe4ff, transparent: true, opacity: 0.55, depthTest: false
+            });
+            this._ring = new THREE.Mesh(this._ringGeo, this._ringMat);
+            this._ring.visible = false;
+            this._ring.renderOrder = 900;
+            this._group.add(this._ring);
+        }
+
+        // --- what the leader carries -----------------------------------------
+        // The nine of the battle loadout, in carry order, with the gaps left in
+        // so a cell never moves under the player's thumb between one look and
+        // the next.
+        static leader() {
+            return (typeof $gameParty !== 'undefined' && $gameParty)
+                ? $gameParty.leader() : null;
+        }
+        static spells() {
+            const actor = SpellCaster.leader();
+            const out = new Array(SPELL_SLOTS).fill(null);
+            if (!actor || !window.BattleLoadout || !window.BattleLoadout.ids) return out;
+            const ids = window.BattleLoadout.ids(actor) || [];
+            for (let i = 0; i < SPELL_SLOTS && i < ids.length; i++) {
+                out[i] = $dataSkills[ids[i]] || null;
+            }
+            return out;
+        }
+
+        get selected() { return this._sel; }
+        select(i) {
+            if (i < 0 || i >= SPELL_SLOTS) return false;
+            this._sel = i;
+            return true;
+        }
+        cycle(dir) {
+            const step = dir < 0 ? -1 : 1;
+            this._sel = ((this._sel + step) % SPELL_SLOTS + SPELL_SLOTS) % SPELL_SLOTS;
+        }
+        held() { return SpellCaster.spells()[this._sel] || null; }
+
+        // What the quick bar draws for the spell view.
+        readout() {
+            const actor = SpellCaster.leader();
+            return SpellCaster.spells().map((skill, i) => {
+                if (!skill) return null;
+                return {
+                    spell: true,
+                    on: i === this._sel,
+                    id: skill.id,
+                    name: skill.name,
+                    iconIndex: skill.iconIndex || 0,
+                    enabled: !!(actor && actor.canPaySkillCost && actor.canPaySkillCost(skill))
+                };
+            });
+        }
+
+        // --- firing one ------------------------------------------------------
+        // How far this spell carries. A skill says so with <Range: n> the way a
+        // weapon does; anything else reaches as far as a spell reaches.
+        static rangeOf(skill) {
+            const m = skill && skill.note && skill.note.match(/<Range:\s*(\d+)\s*>/i);
+            const steps = m ? parseInt(m[1], 10) : 0;
+            if (!steps) return SPELL_RANGE_DEFAULT;
+            return Math.min(SPELL_RANGE_MAX, steps * SPELL_RANGE_STEP);
+        }
+
+        // What the skill's own formula comes to, with the caster on both sides
+        // of it. Not damage dealt to anybody: the number the crater is sized on.
+        static forceOf(skill) {
+            const actor = SpellCaster.leader();
+            if (!actor || typeof Game_Action === 'undefined') return 0;
+            try {
+                const action = new Game_Action(actor);
+                action.setSkill(skill.id);
+                return Math.abs(action.evalDamageFormula(actor)) || 0;
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        static colourOf(skill) {
+            const id = (skill && skill.damage && skill.damage.elementId) || 0;
+            if (id <= 0) return ELEMENT_COLOURS[0];
+            return ELEMENT_COLOURS[id % ELEMENT_COLOURS.length];
+        }
+
+        // True when the bolt left the hand. Everything that would stop it -
+        // nothing carried in that cell, no magic to pay with, a cast still
+        // cooling - is answered here rather than by the caller.
+        cast(origin, dir) {
+            const skill = this.held();
+            if (!skill || this._cool > 0) return false;
+            const actor = SpellCaster.leader();
+            if (!actor || !actor.canPaySkillCost || !actor.canPaySkillCost(skill)) {
+                if (typeof SoundManager !== 'undefined') SoundManager.playBuzzer();
+                return false;
+            }
+            actor.paySkillCost(skill);
+            this._cool = SPELL_COOLDOWN;
+
+            const colour = SpellCaster.colourOf(skill);
+            const mesh = new THREE.Mesh(this._boltGeo, new THREE.MeshBasicMaterial({
+                color: colour, transparent: true, opacity: 0.9, depthWrite: false
+            }));
+            mesh.position.copy(origin);
+            mesh.frustumCulled = false;
+            this._group.add(mesh);
+            this._bolts.push({
+                mesh, skill,
+                dir: dir.clone().normalize(),
+                pos: origin.clone(),
+                gone: 0,
+                range: SpellCaster.rangeOf(skill)
+            });
+            if (skill.id && typeof AudioManager !== 'undefined') {
+                try { AudioManager.playStaticSe({ name: 'Magic1', volume: 70, pitch: 100, pan: 0 }); }
+                catch (e) { /* no such SE in this build */ }
+            }
+            return true;
+        }
+
+        // The ring that says where the spell in hand would land, drawn at the
+        // first thing the crosshair is on or at the end of its reach.
+        aim(origin, dir, showing) {
+            const skill = showing ? this.held() : null;
+            if (!skill) { this._ring.visible = false; return; }
+            const range = SpellCaster.rangeOf(skill);
+            const hit = this._terrain.field.raycast(
+                origin.x, origin.y, origin.z, dir.x, dir.y, dir.z, range);
+            const d = hit ? Math.max(8, hit.dist || range) : range;
+            this._ring.position.copy(dir).multiplyScalar(d).add(origin);
+            this._ring.lookAt(origin);
+            this._ring.visible = true;
+            this._ringMat.color.setHex(SpellCaster.colourOf(skill));
+        }
+
+        update(dt) {
+            if (this._cool > 0) this._cool -= dt;
+            for (let i = this._bolts.length - 1; i >= 0; i--) {
+                const b = this._bolts[i];
+                const stepLen = Math.min(SPELL_SPEED * dt, b.range - b.gone);
+                // Walked in one raycast rather than one position test: at this
+                // speed a bolt covers several cubes a frame, and a wall it flew
+                // through is a wall it did not hit.
+                const hit = this._terrain.field.raycast(
+                    b.pos.x, b.pos.y, b.pos.z, b.dir.x, b.dir.y, b.dir.z, stepLen + 1);
+                b.pos.addScaledVector(b.dir, stepLen);
+                b.gone += stepLen;
+                b.mesh.position.copy(b.pos);
+                if (hit || b.gone >= b.range - 0.01) {
+                    this._burst(b);
+                    this._group.remove(b.mesh);
+                    b.mesh.material.dispose();
+                    this._bolts.splice(i, 1);
+                }
+            }
+        }
+
+        // Where it landed. The animation goes off first, because that is what
+        // the player is looking at; the ground and whatever was standing on it
+        // follow in the same frame.
+        _burst(bolt) {
+            const { skill, pos } = bolt;
+            const anim = skill.animationId;
+            if (this._hooks.onAnimation && anim > 0) {
+                this._hooks.onAnimation(anim, pos.x, pos.y, pos.z);
+            }
+            const force = SpellCaster.forceOf(skill);
+            // A spell that mends leaves the world exactly as it found it.
+            const radius = isHealingSkill(skill) ? 0 : Math.max(BLAST_MIN_R,
+                Math.min(BLAST_MAX_R, 1 + Math.sqrt(Math.max(0, force)) * BLAST_SCALE));
+            if (radius > 0 && this._terrain.field.carveSphere) {
+                this._terrain.field.carveSphere(pos.x, pos.y, pos.z, radius * VOX.SIZE);
+            }
+            if (this._hooks.onBurst) {
+                this._hooks.onBurst(pos.x, pos.y, pos.z,
+                    Math.max(radius, BLAST_MIN_R) * VOX.SIZE * BLAST_CATCH, force, skill);
+            }
+        }
+
+        dispose() {
+            for (const b of this._bolts) {
+                this._group.remove(b.mesh);
+                b.mesh.material.dispose();
+            }
+            this._bolts = [];
+            this._scene.remove(this._group);
+            this._boltGeo.dispose();
+            this._ringGeo.dispose();
+            this._ringMat.dispose();
+        }
+    }
+
+    // =========================================================================
     // VoxelTool
     // =========================================================================
     class VoxelTool {
@@ -374,6 +660,21 @@
                 this._ghost.visible = false;
             }
         }
+
+        // --- which of the three bars is up ------------------------------------
+        // The mode lives on the tool because the tool is what the scene already
+        // asks about the thing in the party's hands. Blocks is the default and
+        // the one every other part of the world was written against: while any
+        // other bar is up, the pick neither digs nor builds.
+        get barMode()     { return BAR_MODES[this._barMode || 0]; }
+        get barModeIndex(){ return this._barMode || 0; }
+        cycleBarMode(dir) {
+            const step = dir < 0 ? -1 : 1;
+            const n = BAR_MODES.length;
+            this._barMode = (((this._barMode || 0) + step) % n + n) % n;
+            return this.barMode;
+        }
+        get onBlocks() { return (this._barMode || 0) === 0; }
 
         // What is in hand comes off the bar now, not off a fixed list of
         // placeable materials: you build with what you dug up.
@@ -683,5 +984,8 @@
     VoxelTool.hash = voxelHash3;
 
     // Handed to the rest of the suite.
-    Object.assign(VW, { VoxelTool, ChipFx, BlockBar, matName, matColour, BAR_SLOTS, SLOT_MAX });
+    Object.assign(VW, {
+        VoxelTool, ChipFx, BlockBar, SpellCaster, matName, matColour,
+        isHealingSkill, BAR_MODES, BAR_SLOTS, SLOT_MAX, SPELL_SLOTS
+    });
 })();

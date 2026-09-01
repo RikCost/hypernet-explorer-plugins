@@ -928,10 +928,12 @@
             // about it, and a goblin world still has stray dogs in it.
             //
             // options.exterior (default true, permissive) gates the `animal`
-            // half of the pool: a stray dog belongs on the street, not the
-            // landing of somebody's staircase. The `creature` half (Mimic,
-            // Ghost, Zombie...) is unaffected, those are as much at home
-            // behind a door as anywhere else.
+            // half of the pool: a COW belongs on the street, not the landing of
+            // somebody's staircase. The house pets are exempt , a dog, a cat, a
+            // rabbit and the things people keep in a tank say `indoors: true`
+            // on their own animalGrowth block and are dealt behind a door like
+            // anybody else. The `creature` half (Mimic, Ghost, Zombie...) is
+            // unaffected, those are as much at home indoors as out.
             //
             // options.half asks for one half alone, "creature" or "animal",
             // which is how a monster world deals its even split (pickNpcKey).
@@ -940,18 +942,50 @@
                 const exterior = (options && options.exterior !== undefined) ? !!options.exterior : true;
                 const half = (options && options.half) || "both";
                 const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
-                const slot = "creatureAll:" + magic + ":" + (exterior ? "ext" : "int") + ":" + half;
+                // A wild animal is met where its kind lives: every `animal:true`
+                // entry lists its own biomes (animalGrowth.biomes) and is only
+                // dealt in one of them, so a crab turns up on a beach and a goat
+                // in the highlands. The biome is therefore part of the cache key.
+                const biome = this.currentBiomeName() || "";
+                const slot = "creatureAll:" + magic + ":" + (exterior ? "ext" : "int") +
+                    ":" + half + ":" + biome;
                 if (!poolCache[slot]) {
                     const data = db();
                     poolCache[slot] = Object.keys(data).filter(k => {
                         const e = data[k];
                         if (!e || e.npc !== true || e.vip === true) return false;
                         if (half !== "animal" && e.creature === true) return this.allowedInMagic(k, e);
-                        if (half !== "creature" && e.animal === true && exterior) return this.allowedInMagic(k, e);
+                        if (half !== "creature" && e.animal === true &&
+                            (exterior || e.animalGrowth?.indoors === true) &&
+                            this.animalFitsBiome(e, biome)) return this.allowedInMagic(k, e);
                         return false;
                     });
                 }
                 return poolCache[slot];
+            },
+
+            // Where the party is standing, as a biome id. The procedural map
+            // speaks first, then the map's own <Biome:> note, and anywhere with
+            // neither (the world map, an authored interior) answers null, which
+            // every caller reads as "no gate".
+            currentBiomeName() {
+                const proc = window.$gameSystem && $gameSystem._procGenData;
+                const procMapId = window.WorldMapReturn ? window.WorldMapReturn.procMapId : PROC_MAP_ID;
+                if (proc && proc.currentBiome && window.$gameMap && $gameMap.mapId() === procMapId) {
+                    return proc.currentBiome;
+                }
+                const meta = window.$dataMap && $dataMap.meta && $dataMap.meta.Biome;
+                if (typeof meta === "string" && meta.trim()) return meta.trim();
+                return (proc && proc.currentBiome) || null;
+            },
+
+            // A sheet with no list of its own, and anywhere with no biome to
+            // read, is left open: the gate narrows the wardrobe, never empties it.
+            animalFitsBiome(entry, biome) {
+                const list = entry && entry.animalGrowth && entry.animalGrowth.biomes;
+                if (!Array.isArray(list) || !list.length) return true;
+                if (!biome) return true;
+                return list.indexOf(biome) >= 0;
             },
 
             // Is this Varlenian ground, i.e. may a Varlenian face be dealt here?

@@ -1,7 +1,7 @@
 {
   "noThree": "THREE.JS IS NOT LOADED - BOWLING UNAVAILABLE",
   "player1": "Player 1",
-  "cpuThinking": "CPU STUDIES THE PIN DECK...",
+  "cpuThinking": "{opponent} STUDIES THE PIN DECK...",
   "victory": "VICTORY!",
   "defeat": "DEFEAT",
   "draw": "DRAW",
@@ -9,5 +9,7 @@
   "frame": "FRAME {frame}/10  {bowler}",
   "aimPrompt": "{bowler}: LINING UP",
   "powerPrompt": "{bowler}: POWER",
-  "hookPrompt": "{bowler}: HOOK"
+  "hookPrompt": "{bowler}: HOOK",
+  "player2": "Player 2",
+  "cpu": "CPU"
 }

@@ -2385,7 +2385,8 @@
 
   //=============================================================================
   // Battle Hotbar , Daggerfall-style quickbar of the acting member's first
-  // nine synced (carried) skills. Numbers 1-9 cast instantly; the bar itself
+  // nine synced (carried) skills. Numbers 1-9 arm a slot while held and cast
+  // it on release; the bar itself
   // can take keyboard/gamepad focus away from the actor command window with
   // Left/Right or L1/R1 (pageup/pagedown), since that vertical list never uses
   // horizontal input of its own (Window_ActorCommand.maxCols() is 1, so
@@ -2491,9 +2492,12 @@
   // The bar is centred on the whole screen, not just the (off-center) log
   // column, and held well clear of the log above it (see HOTBAR_LOG_GAP).
   function _updateHotbarPosition(actor, skills) {
+    // A held number key names its slot the same way bar focus does, without
+    // taking direction input off the command list.
+    const armed = _hotbarKeyArmed !== null;
     _hotbarBar.render(_hotbarEntries(actor, skills), {
-      selected: _hotbarIndex,
-      active: _hotbarActive
+      selected: armed ? _hotbarKeyArmed : _hotbarIndex,
+      active: _hotbarActive || armed
     });
 
     // Dim the command list while the bar holds direction focus, so it never
@@ -2513,6 +2517,39 @@
     _Scene_Battle_update_hotbar.call(this);
     this.updateBattleHotbar();
   };
+
+  // Which number key currently holds the bar (null for none), and which of
+  // them are still down but already spent by a later press.
+  let _hotbarKeyArmed = null;
+  let _hotbarKeySpent = [];
+
+  function _clearHotbarKeys() {
+    _hotbarKeyArmed = null;
+    _hotbarKeySpent = [];
+  }
+
+  // Returns true once a held key has been released and its skill cast.
+  function _updateHotbarKeyHold(actor, skills) {
+    for (let i = 0; i < HOTBAR_SLOTS; i++) {
+      if (!skills[i] || !Input.isTriggered(String(i + 1))) continue;
+      // Whatever was armed before is now just a key waiting to be let go.
+      if (_hotbarKeyArmed !== null && _hotbarKeyArmed !== i) {
+        _hotbarKeySpent.push(_hotbarKeyArmed);
+      }
+      _hotbarKeyArmed = i;
+    }
+    _hotbarKeySpent = _hotbarKeySpent.filter(i => Input.isPressed(String(i + 1)));
+    if (_hotbarKeyArmed === null) return false;
+    if (!skills[_hotbarKeyArmed]) {
+      _clearHotbarKeys();
+      return false;
+    }
+    if (Input.isPressed(String(_hotbarKeyArmed + 1))) return false;
+    const skill = skills[_hotbarKeyArmed];
+    _clearHotbarKeys();
+    _hotbarUseSkill(actor, skill);
+    return true;
+  }
 
   Scene_Battle.prototype.updateBattleHotbar = function () {
     // The card battle layer (RoguelikeCardSystem.js) plays skills as a hand
@@ -2546,6 +2583,7 @@
     }
     if (actor !== _hotbarActor) {
       _hotbarActor = actor;
+      _clearHotbarKeys();
       _hotbarActive = false;
       _hotbarIndex = 0;
     }
@@ -2555,13 +2593,12 @@
       return;
     }
 
-    // Instant-cast hotkeys work whether or not the bar itself has focus.
-    for (let i = 0; i < HOTBAR_SLOTS; i++) {
-      if (skills[i] && Input.isTriggered(String(i + 1))) {
-        _hotbarUseSkill(actor, skills[i]);
-        return;
-      }
-    }
+    // Number keys arm rather than cast: holding one only names its skill on
+    // the line under the row, and the cast happens when that key is let go.
+    // Pressing a second number while the first is still down re-arms onto the
+    // new one, and the keys underneath it are spent, so releasing them later
+    // does nothing.
+    if (_updateHotbarKeyHold(actor, skills)) return;
 
     if (_hotbarActive) {
       if (_hotbarJustActivated) {
@@ -2589,6 +2626,7 @@
   const _Scene_Battle_terminate_hotbar = Scene_Battle.prototype.terminate;
   Scene_Battle.prototype.terminate = function () {
     _hotbarActive = false;
+    _clearHotbarKeys();
     _hotbarActor = null;
     _hideHotbar();
     _Scene_Battle_terminate_hotbar.call(this);

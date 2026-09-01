@@ -82,26 +82,81 @@
   // rollIdentity). Everywhere else they are the exception that makes a street
   // feel alive, one face in twelve, and the halves are dealt flat.
   const CREATURE_CHANCE_MONSTER = 1.0;
-  const CREATURE_CHANCE_NORMAL  = 0.08;
-  // The monster world's even split between the two halves of the wardrobe.
-  const MONSTER_CREATURE_HALF = 0.5;
-  // Of those, how many are a second archetype crossed into the first. A hybrid
-  // is a curiosity in an ordinary world and an everyday sight in a monster one.
-  const HYBRID_CHANCE_MONSTER = 0.25;
-  const HYBRID_CHANCE_NORMAL  = 0.05;
-  // And how many are dealt one of their own creature classes rather than one
-  // of the civilised ones their archetype also supports. It is not a flat draw
-  // over the two rosters: an archetype offers up to 62 civilised classes
-  // against a handful of creature ones, so a flat draw would make nearly every
-  // creature a talking one. A stray dog is a dog. In a monster world the split
-  // is even, because there a talking beast is half the population.
-  const NONSENTIENT_CHANCE_MONSTER = 0.50;
+  // Out in the country a creature is an ordinary sight: a quarter of whoever
+  // is about is one. Inside a town it is not , people live in towns, and a
+  // street where every fourth passer-by is a beast reads as a monster world
+  // rather than as a market square , so a settlement drops it to one in twenty.
+  // "A settlement" is both kinds: a procedural city or village square, and any
+  // map belonging to a hand-made MapGroup, which is what an authored town is.
+  const CREATURE_CHANCE_SETTLEMENT = 0.05;
+  const CREATURE_CHANCE_WILD       = 0.25;
+  const CREATURE_CHANCE_NORMAL     = CREATURE_CHANCE_WILD;
+  // A zombie world has almost nobody left to meet. What still moves is the
+  // dead (dealt by NPCSystem's own re-skin pass over the slots) and the
+  // wildlife that inherited the place, so most of what is NOT a corpse is an
+  // animal or a creature rather than a person. The town/country split does not
+  // apply: an emptied town is as overrun as the fields around it.
+  const CREATURE_CHANCE_ZOMBIE     = 0.60;
+  // How a monster world splits the two halves of the wardrobe. It is a world of
+  // MONSTERS, not a world of livestock: seven in ten of its crowd is a creature
+  // sheet and three in ten an animal one.
+  const MONSTER_CREATURE_HALF = 0.7;
+  // A zombie world tips the other way: what took the place over is WILDLIFE,
+  // so two thirds of it is an animal sheet and the rest is a creature.
+  const ZOMBIE_CREATURE_HALF = 0.35;
+  // Of those, how many are crossed with a HUMANOID half. This is the one cross
+  // the wardrobe deals, and it is the whole of what makes a creature a person:
+  // a Humanoid slot is a mind, a mouth and a pair of hands, and the thing that
+  // has one holds a civilised trade instead of the class its own sheet names
+  // (see rollClassId). It mirrors character creation, where a creature is only
+  // offered the civilised roster once it is half Humanoid. A curiosity in an
+  // ordinary world, half the crowd in a monster one.
+  const HYBRID_CHANCE_MONSTER = 0.50;
+  const HYBRID_CHANCE_NORMAL  = 0.25;
+  // And practically never in a zombie world: the Humanoid half is what makes a
+  // creature a person, and there is under one person in a hundred left.
+  const HYBRID_CHANCE_ZOMBIE  = 0.01;
+  // The half that is crossed in. Not drawn from the wardrobe: a beast with a
+  // person in it is the only cross there is.
+  const HYBRID_ARCHETYPE = "Humanoid";
+  // Highest civilised class id. A creature crossed with a Humanoid is dealt one
+  // of 1..62 flat, since what it may be is no longer read off its own sheet.
+  const SENTIENT_CLASS_MAX_FALLBACK = 62;
+  // And how many of the REST , the ones with no Humanoid in them , are dealt
+  // one of their own creature classes rather than one of the civilised ones
+  // their sheet also lists. It is not a flat draw over the two rosters: a sheet
+  // offers a handful of creature classes against up to 62 civilised ones, so a
+  // flat draw would make nearly every creature a talking one. A stray dog is a
+  // dog. In a monster world the split is even, because there a talking beast is
+  // half the population.
+  // A monster world's creatures are PEOPLE, mostly: four in five of them holds
+  // a trade, a creed and a conversation, and the remaining fifth is the thing
+  // it looks like. That is what makes it a world rather than a bestiary. Its
+  // animals are unaffected, an animal is an animal in every world.
+  const NONSENTIENT_CHANCE_MONSTER = 0.20;
   const NONSENTIENT_CHANCE_NORMAL  = 0.95;
+  // Nothing that survived the end of the world kept a trade.
+  const NONSENTIENT_CHANCE_ZOMBIE  = 0.99;
 
   // Everything from Feral (63) upward is a creature class. Kept in step with
   // CreatureClasses.sentientMax(), which owns the number; this is the fallback
   // for the load-order window before CharacterCreationShared has run.
+  //
+  // The eight ids 63-70 (Feral, Mimic, Monster, Mana Cyborg, Ghost, Zombie,
+  // Mutant, Drone) are non-sentient BY CONSTRUCTION and never answer otherwise,
+  // whatever sentientMax() happens to say: they are the roster the creature
+  // half of the wardrobe is dealt from, and the whole NPC suite hangs its
+  // "is this a person" question off the answer.
   const NONSENTIENT_CLASS_MIN = 63;
+  const NONSENTIENT_CLASS_MAX = 70;
+
+  // What an ANIMAL is, always: whatever its own NPCs.json entry says, and never
+  // a person. Every `animal: true` entry lists exactly one class and it is a
+  // creature class , Feral for the living and Zombie for the risen ones (the
+  // DogZombie and CrabZombie sheets) , so the sheet is read rather than a class
+  // forced onto it. FERAL_CLASS_ID is the answer for a sheet whose entry lists
+  // nothing at all, which no shipped sheet does.
+  const FERAL_CLASS_ID = 63;
 
   const DEFAULT_ARCHETYPE = "Humanoid";
 
@@ -122,12 +177,32 @@
     return !!(WM && typeof WM.isMonsterWorld === "function" && WM.isMonsterWorld());
   }
 
+  // The other population mode that rewrites every share below: the dead got up
+  // and the wildlife moved in (WorldManager.populationMode "zombie").
+  function isZombieWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isZombieWorld === "function" && WM.isZombieWorld());
+  }
+
   function hybridChance() {
-    return isMonsterWorld() ? HYBRID_CHANCE_MONSTER : HYBRID_CHANCE_NORMAL;
+    if (isMonsterWorld()) return HYBRID_CHANCE_MONSTER;
+    if (isZombieWorld()) return HYBRID_CHANCE_ZOMBIE;
+    return HYBRID_CHANCE_NORMAL;
   }
 
   function nonSentientChance() {
-    return isMonsterWorld() ? NONSENTIENT_CHANCE_MONSTER : NONSENTIENT_CHANCE_NORMAL;
+    if (isMonsterWorld()) return NONSENTIENT_CHANCE_MONSTER;
+    if (isZombieWorld()) return NONSENTIENT_CHANCE_ZOMBIE;
+    return NONSENTIENT_CHANCE_NORMAL;
+  }
+
+  // Which half of the wardrobe a world deals from, and how often. Null in an
+  // ordinary world, where the whole wardrobe is drawn flat and a stray dog is
+  // simply the commonest thing in it.
+  function creatureHalfShare() {
+    if (isMonsterWorld()) return MONSTER_CREATURE_HALF;
+    if (isZombieWorld()) return ZOMBIE_CREATURE_HALF;
+    return null;
   }
 
   // ---------------------------------------------------------------------------
@@ -215,7 +290,11 @@
   function wardrobeSlot(exterior) {
     const magic = (window.MagicNature && window.MagicNature.level)
       ? window.MagicNature.level() : "normal";
-    return (isMonsterWorld() ? "monster" : "normal") + ":" + magic + ":" + (exterior ? "ext" : "int");
+    // The biome is part of the key: the animal half of the wardrobe is gated on
+    // it (animalFitsHere), so a cache built on a beach must not answer for the
+    // highlands the party walks into next.
+    return (isMonsterWorld() ? "monster" : "normal") + ":" + magic + ":" +
+      (exterior ? "ext" : "int") + ":" + (currentBiomeName() || "");
   }
 
   // The catalogue half: every `creature` / `animal` entry the world allows.
@@ -235,8 +314,49 @@
       const e = data[k];
       if (!e || e.npc !== true) return false;
       if (e.creature === true) return true;
-      return e.animal === true && exterior;
+      return e.animal === true && (exterior || isIndoorAnimal(k)) && animalFitsHere(k);
     });
+  }
+
+  // Which country a wild animal belongs in. Every `animal: true` entry lists
+  // the biomes its kind is found in (`animalGrowth.biomes`), so a crab is met
+  // on a beach and a goat in the highlands rather than either turning up
+  // wherever the wardrobe happened to deal. An animal met this way belongs to
+  // nobody: the owned ones stand on a farm and are placed by AnimalGrowthSystem.
+  //
+  // A sheet with no list, and anywhere with no biome to read (the world map, an
+  // authored map with no note), is left open: the gate narrows the wardrobe, it
+  // never empties it.
+  function currentBiomeName() {
+    const proc = (typeof $gameSystem !== "undefined" && $gameSystem)
+      ? $gameSystem._procGenData : null;
+    const procMapId = window.WorldMapReturn ? window.WorldMapReturn.procMapId : 636;
+    if (proc && proc.currentBiome && typeof $gameMap !== "undefined" && $gameMap &&
+        $gameMap.mapId() === procMapId) return proc.currentBiome;
+    const meta = (typeof $dataMap !== "undefined" && $dataMap && $dataMap.meta)
+      ? $dataMap.meta.Biome : null;
+    if (typeof meta === "string" && meta.trim()) return meta.trim();
+    return (proc && proc.currentBiome) || null;
+  }
+
+  function animalFitsHere(spriteKey) {
+    const entry = npcData()[spriteKey];
+    const list = entry && entry.animalGrowth && entry.animalGrowth.biomes;
+    if (!Array.isArray(list) || !list.length) return true;
+    const biome = currentBiomeName();
+    if (!biome) return true;
+    return list.indexOf(biome) >= 0;
+  }
+
+  // A house pet. A dog, a cat, a rabbit and the two things people keep in a
+  // tank belong indoors as much as out, and say so on their own wardrobe entry
+  // (`animalGrowth.indoors` in js/db/WorldGen/NPCs.json). The livestock does
+  // not: a cow on the landing of somebody's staircase is the bug the exterior
+  // gate exists to stop.
+  function isIndoorAnimal(spriteKey) {
+    const entry = spriteKey ? npcData()[spriteKey] : null;
+    return !!(entry && entry.animal === true && entry.animalGrowth &&
+      entry.animalGrowth.indoors === true);
   }
 
   function creatureWardrobe(exterior = true) {
@@ -324,7 +444,30 @@
   // ---------------------------------------------------------------------------
   function isNonSentientClassId(classId) {
     const id = Number(classId) || 0;
+    // The 63-70 block is non-sentient outright, so a load-order window or a
+    // future roster change can never quietly hand a beast a person's rights.
+    if (id >= NONSENTIENT_CLASS_MIN && id <= NONSENTIENT_CLASS_MAX) return true;
     return id > sentientMax();
+  }
+
+  // Whether this sheet is one of the `animal: true` half of the catalogue,
+  // which is the one thing that makes rollClassId answer Feral outright.
+  function isAnimalSheet(spriteKey) {
+    return sheetHalf(spriteKey) === "animal";
+  }
+
+  // The player's own creature characters are NOT stripped of the things a
+  // person owns: a beast the player built and plays is theirs, money, pack and
+  // all, and only the world's own beasts are held to the rule. Anybody in the
+  // party now, or who has ever been in it, answers true here.
+  function isPlayerCharacterName(name) {
+    if (!name) return false;
+    if (typeof $gameParty !== "undefined" && $gameParty &&
+        ($gameParty.members() || []).some((m) => m && m.name() === name)) return true;
+    const past = (typeof $gameSystem !== "undefined" && $gameSystem)
+      ? $gameSystem._npcPastPartyMembers : null;
+    if (!Array.isArray(past)) return false;
+    return past.some((p) => p === name || (p && p.name === name));
   }
 
   function isCreatureProfile(profile) {
@@ -415,8 +558,37 @@
   // ---------------------------------------------------------------------------
   // Minting
   // ---------------------------------------------------------------------------
+  // Which procedural biomes are somebody's town. Every city, burg and village
+  // variant, plus the two that ARE housing; everything else is country.
+  const SETTLEMENT_BIOMES = new Set([
+    "City", "CityDesert", "CityIce",                                   // i18n-ignore: Biomes.json ids
+    "Burg", "BurgDesert", "BurgIce",
+    "Village", "VillageIce", "VillageMountain", "VillageDesert",
+    "VillageRiver", "VillageSea",
+    "Houses", "HousesInside", "Villa",
+  ]);
+
+  // Is the party standing in a town? A procedural square answers with its own
+  // biome; anywhere else, belonging to a hand-made MapGroup is what makes a map
+  // part of a settlement (a procedural "Proc:x,y" group is not one of those ,
+  // it is the synthetic settlement every wilderness square gets, so it would
+  // otherwise make the whole world a town).
+  function isSettlementHere() {
+    const biome = currentBiomeName();
+    if (biome && SETTLEMENT_BIOMES.has(biome)) return true;
+    const NS = window.NPCSystem;
+    if (!NS || typeof NS.findMapGroupByMap !== "function") return false;
+    if (typeof $gameMap === "undefined" || !$gameMap) return false;
+    const group = NS.findMapGroupByMap($gameMap.mapId());
+    if (!group) return false;
+    // "Proc:x,y" is the wilderness's own synthetic settlement, not a town.
+    return !String(group).startsWith("Proc:"); // i18n-ignore: settlement key prefix
+  }
+
   function creatureChance() {
-    return isMonsterWorld() ? CREATURE_CHANCE_MONSTER : CREATURE_CHANCE_NORMAL;
+    if (isMonsterWorld()) return CREATURE_CHANCE_MONSTER;
+    if (isZombieWorld()) return CREATURE_CHANCE_ZOMBIE;
+    return isSettlementHere() ? CREATURE_CHANCE_SETTLEMENT : CREATURE_CHANCE_WILD;
   }
 
   // Deals one creature identity off `rng` (anything with next()/nextInt()).
@@ -437,38 +609,63 @@
     //    is rare enough that a flat draw over the whole wardrobe is what makes
     //    a stray dog the commonest one, which is the point.
     let pool = wardrobe;
-    if (isMonsterWorld()) {
-      const half = rng.next() < MONSTER_CREATURE_HALF ? "creature" : "animal";
+    const share = creatureHalfShare();
+    if (share !== null) {
+      const half = rng.next() < share ? "creature" : "animal";
       const side = wardrobe.filter((e) => e.half === half);
       if (side.length) pool = side;
     }
     const worn = pool[rng.nextInt(0, pool.length)];
     const first = worn.archetype;
 
-    // 2. The second half, on the world's hybrid share. Drawn from the
-    //    archetypes the wardrobe itself covers, so a cross is always between
-    //    two things this world has bodies for.
-    let second = null;
-    if (rng.next() < hybridChance()) {
-      const pool = archetypePool(exterior);
-      if (pool.length > 1) {
-        for (let tries = 0; tries < 8 && !second; tries++) {
-          const pick = pool[rng.nextInt(0, pool.length)];
-          if (pick !== first) second = pick;
-        }
-      }
+    // 2. The Humanoid half, on the world's hybrid share. Only the `creature`
+    //    side of the wardrobe is ever crossed: an animal is an animal (see
+    //    rollClassId), and a hen with a person in it is not a thing this world
+    //    has. A sheet that is ALREADY Humanoid is left as it is rather than
+    //    crossed with itself.
+    //    Which slot the Humanoid half lands in is dealt too, so the pairing
+    //    reads both ways round ("Beast / Humanoid", "Humanoid / Insectoid")
+    //    exactly as a hand-built hybrid does.
+    let keys = [first];
+    let humanoid = false;
+    if (worn.half === "creature" && first !== HYBRID_ARCHETYPE &&
+        archetypes()[HYBRID_ARCHETYPE] && rng.next() < hybridChance()) {
+      humanoid = true;
+      keys = rng.next() < 0.5 ? [first, HYBRID_ARCHETYPE] : [HYBRID_ARCHETYPE, first];
     }
-    const keys = second ? [first, second] : [first];
 
     return {
       archetypes: keys,
       archetype: keys.join(" / "),
       spriteKey: worn.spriteKey,
+      // Whether a person was crossed into this body, which is what decides
+      // whether it holds a trade or is simply the thing it looks like.
+      hybridHumanoid: humanoid,
       // A catalogue sheet carries its own faces; a Monsters/ sheet is one
       // character wide and has none.
       bustIndex: worn.busts > 1 ? rng.nextInt(0, worn.busts) : 0,
-      classId: rollClassId(worn.spriteKey, keys, rng),
+      classId: humanoid
+        ? rollHumanoidClassId(rng)
+        : rollClassId(worn.spriteKey, keys, rng),
     };
+  }
+
+  // The class a creature with a Humanoid half holds: any of the civilised
+  // roster, flat, rather than one off its own sheet. Half of it is a person and
+  // a person may be anything, which is exactly the rule character creation
+  // plays by when it opens the civilised list to a hybrid. Ids with no class
+  // behind them are dropped, so a trimmed database narrows the draw instead of
+  // handing back a hole.
+  function rollHumanoidClassId(rng) {
+    const max = (window.CreatureClasses && window.CreatureClasses.sentientMax)
+      ? window.CreatureClasses.sentientMax() : SENTIENT_CLASS_MAX_FALLBACK;
+    const pool = [];
+    for (let id = 1; id <= max; id++) {
+      if (typeof $dataClasses === "undefined" || !$dataClasses ||
+          ($dataClasses[id] && $dataClasses[id].name)) pool.push(id);
+    }
+    if (!pool.length) return SENTIENT_FALLBACK_CLASS_ID;
+    return pool[rng.nextInt(0, pool.length)];
   }
 
   // A class off the SHEET's own roster, the `classes` array of its NPCs.json
@@ -486,6 +683,25 @@
   function rollClassId(spriteKey, keys, rng) {
     const entry = npcData()[spriteKey];
     const own = Array.isArray(entry && entry.classes) ? entry.classes : [];
+    // An ANIMAL is not rolled for. A sheet out of the `animal: true` half is a
+    // dog, a hen or a horse: it is Feral, always, and the roster is only read
+    // to keep the handful of animal sheets that are something else outright (a
+    // risen dog is a Zombie, not a Feral one) on the class their own entry
+    // names. Nothing on that half is ever dealt a civilised class.
+    if (isAnimalSheet(spriteKey)) {
+      // Its own roster, stripped of anything civilised. There are no talking
+      // dogs however an entry is edited, and a risen dog stays a Zombie rather
+      // than being flattened into a Feral one.
+      const beastly = own.filter((id) => isNonSentientClassId(id));
+      return beastly.length ? beastly[rng.nextInt(0, beastly.length)] : FERAL_CLASS_ID;
+    }
+    // A Humanoid half in the mix, and the sheet's own roster stops being the
+    // authority: half of this is a person, and a person holds any civilised
+    // trade. Same rule as rollIdentity, restated here for the callers that
+    // build the archetype pair themselves.
+    if ((keys || []).includes(HYBRID_ARCHETYPE) && isCreatureSheet(spriteKey)) {
+      return rollHumanoidClassId(rng);
+    }
     let creature = own.filter((id) => isNonSentientClassId(id));
     let sentient = own.filter((id) => !isNonSentientClassId(id));
     const CC = window.CreatureClasses;
@@ -624,11 +840,17 @@
 
   window.NPCCreature = {
     CREATURE_CHANCE_MONSTER, CREATURE_CHANCE_NORMAL,
+    CREATURE_CHANCE_SETTLEMENT, CREATURE_CHANCE_WILD, CREATURE_CHANCE_ZOMBIE,
+    MONSTER_CREATURE_HALF, ZOMBIE_CREATURE_HALF, creatureHalfShare, isZombieWorld,
+    SETTLEMENT_BIOMES, isSettlementHere,
+    NONSENTIENT_CLASS_MIN, NONSENTIENT_CLASS_MAX, FERAL_CLASS_ID,
     creatureChance, hybridChance, nonSentientChance,
     rollIdentity, rollClassId,
+    HYBRID_ARCHETYPE, rollHumanoidClassId,
     isCreatureProfile, isNonSentientClassId, isNonSentientProfile, isNonSentientActor,
-    isNonSentientByName,
-    sheetHalf, isCreatureSheet, sentientClassFor,
+    isNonSentientByName, isPlayerCharacterName,
+    sheetHalf, isCreatureSheet, isAnimalSheet, isIndoorAnimal, animalFitsHere,
+    currentBiomeName, sentientClassFor,
     archetypeKeysOf, archetypeLabel,
     creatureWardrobe, spritesForArchetypes, spritePathFor, archetypePool,
     enemyForArchetypes, modelForArchetypes,

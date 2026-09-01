@@ -267,20 +267,30 @@
     evaluate(profile, hour) {
       if (!profile) return null;
       const rng      = this._interruptRng(profile, hour);
-      const sleepy   = (profile.sleep ?? 100) < 20 || hour >= 22 || hour < 6;
+      const workHour = this._inWorkHours(profile, hour);
+      const shopHour = this._inShopShift(profile, hour);
+      if (workHour) return "work";
+      if (shopHour) return "shopwork";
+
+      const isNightWorker = this._isNightWorker(profile);
+      let sleepy = false;
+      if (isNightWorker) {
+        // Night worker reversed schedule: sleep/rest at home during the day (e.g. 8:00 to 16:00)
+        sleepy = (profile.sleep ?? 100) < 20 || (hour >= 8 && hour < 16);
+      } else {
+        sleepy = (profile.sleep ?? 100) < 20 || hour >= 22 || hour < 6;
+      }
       const hungry   = (profile.hunger ?? 100) < 30;
       const grimy    = (profile.hygiene ?? 100) < 30;
-      const workHour = this._inWorkHours(profile, hour);
-      // Approaching 2012, desperation spreads: the morality bar for turning to
-      // crime rises and the urge fires far more often (peaks at 2012).
-      const tension  = eraTension();
-      const criminal = (profile.moralityScore ?? 0) < (-30 + tension * 40) &&
-                       rng.next() < (0.02 + tension * 0.10);
 
       if (sleepy)   return "sleep";
       if (hungry)   return "hunger";
       if (grimy)    return "hygiene";
-      if (workHour) return "work";
+
+      const tension  = eraTension();
+      const criminal = (profile.moralityScore ?? 0) < (-30 + tension * 40) &&
+                       rng.next() < (0.02 + tension * 0.10);
+
       if (this._needsMoney(profile, rng))   return "money";
       if (criminal) return "crime";
       if (this._wantsSafety(profile, rng))  return "safety";
@@ -294,6 +304,20 @@
     _inWorkHours(profile, hour) {
       if (!profile.currentJobId || profile.workShift == null) return false;
       return Math.floor(hour / SHIFT_HOURS) === profile.workShift;
+    },
+
+    _inShopShift(profile, hour) {
+      const assign = $gameSystem?._npcShopAssignments?.[profile?._eventName];
+      if (!assign) return false;
+      return Math.floor(hour / SHIFT_HOURS) === assign.shift;
+    },
+
+    _isNightWorker(profile) {
+      if (!profile) return false;
+      if (profile.currentJobId && (profile.workShift === 0 || profile.workShift === 2)) return true;
+      const assign = $gameSystem?._npcShopAssignments?.[profile?._eventName];
+      if (assign && (assign.shift === 0 || assign.shift === 2)) return true;
+      return false;
     },
 
     // A non-sentient creature (NPCCreature) wants none of the things money is
@@ -457,22 +481,32 @@
       const rng       = new MiniRng(nameHash(`${name}_routine_${day}`) ^ worldSeed);
       const bias      = this._personalityBias(profile);
 
-      // Personal anchors wobble by up to ±1h, and the wobble itself is
-      // re-rolled every day, so the same NPC's "Tuesday" never looks
-      // identical to their "Wednesday".
-      const wakeHour  = this._clamp(6 + rng.int(-1, 1), 4, 8);
-      const bedHour   = this._clamp(22 + rng.int(-1, 2), 21, 26) % 24;
-      const breakfast = this._clamp(wakeHour + rng.int(0, 1), 5, 9);
-      const lunch     = this._clamp(12 + rng.int(-1, 1), 11, 14);
-      const dinner    = this._clamp(19 + rng.int(-1, 1), 17, 21);
+      const isNightWorker = (profile?.currentJobId && (profile.workShift === 0 || profile.workShift === 2)) ||
+                            ($gameSystem?._npcShopAssignments?.[name]?.shift === 0 || $gameSystem?._npcShopAssignments?.[name]?.shift === 2);
+
+      let wakeHour, bedHour, breakfast, lunch, dinner;
+      if (isNightWorker) {
+        // Night worker reversed anchors: sleep during off-work day hours (8-16)
+        wakeHour  = this._clamp(16 + rng.int(-1, 1), 14, 18);
+        bedHour   = this._clamp(8 + rng.int(-1, 1), 7, 10);
+        breakfast = this._clamp(wakeHour + rng.int(0, 1), 15, 19);
+        lunch     = (wakeHour + 5) % 24;
+        dinner    = (wakeHour + 10) % 24;
+      } else {
+        wakeHour  = this._clamp(6 + rng.int(-1, 1), 4, 8);
+        bedHour   = this._clamp(22 + rng.int(-1, 2), 21, 26) % 24;
+        breakfast = this._clamp(wakeHour + rng.int(0, 1), 5, 9);
+        lunch     = this._clamp(12 + rng.int(-1, 1), 11, 14);
+        dinner    = this._clamp(19 + rng.int(-1, 1), 17, 21);
+      }
 
       const routine = new Array(24);
       for (let h = 0; h < 24; h++) {
-        if (this._isSleepHour(h, wakeHour, bedHour))           { routine[h] = "sleep";   continue; }
-        if (h === breakfast || h === lunch || h === dinner)    { routine[h] = "hunger";  continue; }
-        if (h === wakeHour)                                    { routine[h] = "hygiene"; continue; }
-        if (this._inShopShift(profile, h))                     { routine[h] = "shopwork"; continue; }
-        if (this._inWorkHours(profile, h))                     { routine[h] = "work";    continue; }
+        if (this._inShopShift(profile, h))                  { routine[h] = "shopwork"; continue; }
+        if (this._inWorkHours(profile, h))                  { routine[h] = "work";     continue; }
+        if (this._isSleepHour(h, wakeHour, bedHour))        { routine[h] = "sleep";    continue; }
+        if (h === breakfast || h === lunch || h === dinner) { routine[h] = "hunger";   continue; }
+        if (h === wakeHour)                                 { routine[h] = "hygiene";  continue; }
         routine[h] = this._pickFreeTimeActivity(rng, profile, bias);
       }
       return routine;
@@ -540,6 +574,18 @@
       // out: ErisTrial pins the Defence Lawyer job onto the world's five
       // advocates, and the roster must never reassign them out of it.
       if (profile._erisLawyerJobLocked) return;
+
+      // A beast holds no trade. 0 is "jobless" rather than null, so nothing
+      // comes back later to deal it a shift it has no hands for. The player's
+      // own creature characters are not held to this (NPCCreature).
+      const NC = window.NPCCreature;
+      if (NC?.isNonSentientProfile?.(profile) &&
+          !NC.isPlayerCharacterName(profile._eventName)) {
+        profile.currentJobId = 0;
+        profile.workMapId = null;
+        profile.workShift = null;
+        return;
+      }
 
       const groupName = profile._homeGroupName;
       if (!groupName) {
@@ -1718,8 +1764,16 @@
       if (profile._eventName) EventBus.emit("npc:thought", { name: profile._eventName, thought });
     },
 
-    generate(profile) {
+    // `prompted` is somebody having just spoken to this NPC, whether the
+    // player or another NPC. A beast thinks nothing anybody could write down
+    // and does not muse to itself on the weather, so the ambient cadence in
+    // SECTION 12 passes it by entirely; it only ever has something to think
+    // because something addressed it. Everybody else thinks either way.
+    generate(profile, prompted) {
       if (!profile) return;
+      const NC = window.NPCCreature;
+      if (!prompted && NC?.isNonSentientProfile?.(profile) &&
+          !NC.isPlayerCharacterName(profile._eventName)) return;
       const thought = window.NPCConversation?.ThoughtProvider?.pickThought?.(profile) ?? "...";
       this._push(profile, thought);
     },
@@ -1918,10 +1972,10 @@
   // ============================================================================
   // Upgrades (or downgrades) the NPC's home pool tier as their money changes.
 
+  // The villas pool belongs to the patron vaults now, so it is no longer a
+  // wealth tier: money moves an NPC from a house straight into a high-rise.
   const WEALTH_THRESHOLDS = [
-    { pool: "huts",        max: 3000   },
-    { pool: "houses",      max: 15000  },
-    { pool: "villas",      max: 60000  },
+    { pool: "houses",      max: 60000  },
     { pool: "skyscrapers", max: Infinity },
   ];
 
@@ -1943,13 +1997,55 @@
     return !!window.ProceduralHouseSystem?.isBuildingPublic?.(b);
   }
 
-  // Only houses/huts/villas/abandoned shells and residential walk-ups are
-  // addresses. Skyscrapers are public and inns/shops are commercial, so neither
-  // is ever handed out as somebody's home.
+  // Only houses/abandoned shells, residential walk-ups, and skyscrapers (for wealthy NPCs)
+  // are addresses. Inns and shops are commercial, so neither is ever handed out as somebody's home.
   function _isResidentialBuilding(b) {
     const PHS = window.ProceduralHouseSystem;
     if (PHS?.isResidentialBuilding) return PHS.isResidentialBuilding(b);
     return !!b && !_isPublicBuilding(b);
+  }
+
+  function _isSentientForHomeOwnership(profile, name) {
+    const NC = window.NPCCreature;
+    if (!NC) return true;
+    if (NC.isNonSentientProfile?.(profile) || NC.isNonSentientNPC?.(name)) {
+      if (NC.isPlayerCharacterName?.(name) || (typeof $gameParty !== 'undefined' && $gameParty?.members?.()?.some(a => a.name() === name))) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  }
+
+  function _findPartnerName(name, profile) {
+    if (!name) return null;
+    const lifePartner = window.NPCLifeSim?.getRecord?.(name)?.partner;
+    if (lifePartner && !lifePartner.external && lifePartner.name) {
+      return lifePartner.name;
+    }
+    if (profile?.relationships) {
+      for (const [otherName, rel] of Object.entries(profile.relationships)) {
+        if (rel && (rel.partner || rel.married || (rel.opinion != null && rel.opinion >= 75))) {
+          return otherName;
+        }
+      }
+    }
+    return null;
+  }
+
+  function _isWealthyForSkyscraper(profile) {
+    if (!profile) return false;
+    const tier = profile.wealthTierBase ?? 0;
+    const money = profile.money ?? 0;
+    return tier >= 2 || money >= 60000 || profile.homePoolType === 'skyscrapers';
+  }
+
+  function _isSkyscraperBuilding(b) {
+    if (!b) return false;
+    const PHS = window.ProceduralHouseSystem;
+    if (PHS?.isSkyscraperBuilding) return PHS.isSkyscraperBuilding(b);
+    const pool = b.baseFloorPool || b.poolName || '';
+    return /skyscraper/i.test(pool) || /skyfloor/i.test(pool);
   }
 
   // Buildings are keyed by town + entrance tile rather than by event id: doors
@@ -2013,12 +2109,45 @@
     return occupants.length % floors;
   }
 
+  function _getBuildingMapName(building, groupName) {
+    if (!building) return '';
+    const mapId = building.mapId;
+    if (mapId === 636) {
+      const gName = groupName || building.groupName;
+      const grp = gName ? $gameSystem?._npcMapGroups?.[gName] : null;
+      if (grp?.displayName) return grp.displayName;
+      if (grp?.biome) {
+        const isPlace = !['Normal', 'Road'].includes(grp.biome);
+        return isPlace ? (window.BiomeNames?.display?.(grp.biome) || grp.biome) : 'Frontier Settlement';
+      }
+      return window.MapManager?.getMapName?.(636) || 'Frontier Settlement';
+    }
+    if (mapId) {
+      return window.MapManager?.getMapName?.(mapId) || ($dataMapInfos?.[mapId]?.name) || `Map ${mapId}`;
+    }
+    return '';
+  }
+
+  function _getHomeDescription(profile) {
+    if (!profile) return '';
+    if (profile.isHomeless) return 'Homeless';
+    const b = profile.homeBuilding;
+    if (!b) return '';
+    const mapName = b.mapName || _getBuildingMapName(b, profile._homeGroupName || b.groupName);
+    const coords = (b.x != null && b.y != null) ? `Door (${b.x}, ${b.y})` : '';
+    const floorNum = (b.floorIndex != null ? b.floorIndex : 0) + 1;
+    const floorStr = `Floor ${floorNum}`;
+    return [mapName, coords, floorStr].filter(Boolean).join(' · ');
+  }
+
   // Resolves the homeBuilding's procedural house template map via
   // ProceduralHouseSystem and caches it in profile.homeMapId.
   function _resolveHomeBuildingMap(profile) {
     const b = profile.homeBuilding;
     const PHS = window.ProceduralHouseSystem;
-    if (!b || !PHS?._selectHouse) return;
+    if (!b) return;
+    b.mapName = _getBuildingMapName(b, profile._homeGroupName || b.groupName);
+    if (!PHS?._selectHouse) return;
     // In a multi-floor block each floor is a different interior template, so
     // resolve the NPC's own floor rather than the ground floor.
     let mapId = PHS.floorInteriorMapId
@@ -2034,15 +2163,13 @@
   }
 
   // Deterministically assigns a building from the group's residentialBuildings
-  // cache to the NPC. Assignment is permanent, it is set once (when the NPC
-  // is first encountered on their home group's map) and never changes, so NPCs
-  // always return to the same door regardless of wealth tier shifts.
-  //
-  // Local and Shop NPCs get their group locked on first assignment via
-  // profile._homeGroupName, so later encounters on other groups' maps don't
-  // accidentally reassign them to foreign buildings.
+  // cache to the NPC.
   function _assignHomeBuilding(profile, name) {
     if (!$gameSystem) return;
+    if (!_isSentientForHomeOwnership(profile, name)) {
+      profile.homeBuilding = null;
+      return;
+    }
 
     // If the NPC already has a stored home group (Local/Shop NPCs keep theirs
     // after wandering to other groups), use that; otherwise resolve from the
@@ -2056,75 +2183,95 @@
 
     const groups = $gameSystem._npcMapGroups;
     const all    = groups?.[groupName]?.residentialBuildings;
-    if (!all?.length) return;
+    if (!all?.length) {
+      profile.isHomeless = true;
+      return;
+    }
 
-    // Public (skyscraper) and commercial (inn/shop) entrances are never anybody's
-    // address, even though they sit in the residentialBuildings scan.
     const buildings = all.filter(_isResidentialBuilding);
-    if (!buildings.length) return;
+    if (!buildings.length) {
+      profile.isHomeless = true;
+      return;
+    }
 
-    // Buildings are drawn from all pool types, wealth tier no longer gates
-    // which door an NPC lives behind. Instead every building is eligible and
-    // the deterministic seed distributes NPCs evenly across the area.
+    // Housing tier check: only wealthy NPCs can be assigned to skyscrapers
+    const isWealthy = _isWealthyForSkyscraper(profile);
+    const eligibleBuildings = buildings.filter(b => isWealthy ? true : !_isSkyscraperBuilding(b));
+    const targetPool = eligibleBuildings.length ? eligibleBuildings : buildings;
+
     const ws   = window.NPCShared ? window.NPCShared.worldSeed() : 19002001;
     const seed = nameHash(name + '_home') ^ ws;
     const rng  = new MiniRng(seed);
-    for (let attempt = 0; attempt < buildings.length; attempt++) {
-      const idx       = Math.floor(rng.next() * buildings.length);
-      const candidate = buildings[idx];
+    for (let attempt = 0; attempt < targetPool.length; attempt++) {
+      const idx       = Math.floor(rng.next() * targetPool.length);
+      const candidate = targetPool[idx];
       if (!candidate.key) candidate.key = _makeBuildingKey(candidate, groupName);
       if (_getBuildingOccupants(candidate).length < candidate.capacity) {
         _moveInResident(profile, name, candidate, groupName);
         return;
       }
     }
-    // All buildings at capacity, assign to the least-crowded one.
-    const fallback = buildings.reduce((best, b) =>
-      _getBuildingOccupants(b).length < _getBuildingOccupants(best).length ? b : best
-    , buildings[0]);
-    if (!fallback.key) fallback.key = _makeBuildingKey(fallback, groupName);
-    _moveInResident(profile, name, fallback, groupName);
+    // If all buildings in pool are at capacity, check if any vacant building remains
+    const vacant = targetPool.filter(b => _getBuildingOccupants(b).length < (b.capacity || 1));
+    if (vacant.length > 0) {
+      const pick = vacant[0];
+      if (!pick.key) pick.key = _makeBuildingKey(pick, groupName);
+      _moveInResident(profile, name, pick, groupName);
+    } else {
+      // Truly at capacity: NPC is homeless
+      profile.isHomeless = true;
+      profile.homeBuilding = null;
+    }
   }
 
   // Moves an NPC into a specific building/floor, vacating whatever placeholder
-  // residence they held before (procedural citizens start out notionally living
-  // wherever they were first seen standing, until a real door is found).
-  function _moveInResident(profile, name, building, groupName) {
+  // residence they held before. If the NPC has a partner, cohabitates them on the same floor.
+  function _moveInResident(profile, name, building, groupName, forcedFloorIndex = null) {
+    if (!profile) return;
     if (profile.homeBuilding?._placeholder) {
       _unregisterBuildingOccupant(profile.homeBuilding, name);
     }
-    const home = { ...building, groupName, floorIndex: _pickFloorIndex(building) };
+    const floorIndex = (forcedFloorIndex !== null) ? forcedFloorIndex : _pickFloorIndex(building);
+    const home = { ...building, groupName, floorIndex };
     delete home._placeholder;
     profile.homeBuilding   = home;
     profile.homeSeed       = home.seed;
     profile._homeGroupName = groupName;
+    profile.isHomeless     = false;
     _registerBuildingOccupant(home, name);
     _resolveHomeBuildingMap(profile);
+
+    // Cohabitate partner if exists in society
+    const partnerName = _findPartnerName(name, profile);
+    if (partnerName && $gameSystem?._npcSociety?.[partnerName]) {
+      const pProf = $gameSystem._npcSociety[partnerName];
+      const pHome = pProf.homeBuilding;
+      if (!pHome || pHome._placeholder || pHome.seed !== home.seed || pHome.floorIndex !== floorIndex) {
+        if (pHome) _unregisterBuildingOccupant(pHome, partnerName);
+        const partnerHome = { ...home };
+        pProf.homeBuilding   = partnerHome;
+        pProf.homeSeed       = partnerHome.seed;
+        pProf._homeGroupName = groupName;
+        pProf.isHomeless     = false;
+        _registerBuildingOccupant(partnerHome, partnerName);
+        _resolveHomeBuildingMap(pProf);
+      }
+    }
   }
 
-  // Everyone who counts as living in this town: the authored roster plus every
-  // simulated profile anchored to it (procedural settlements have no authored
-  // NPC pool at all, their citizens exist only in the society table).
+  // Everyone who counts as living in this town (sentient only)
   function _townResidentCandidates(groupName) {
     const names = new Set(window.NPCSystem?.getNPCNamesByGroup?.(groupName) || []);
     for (const [name, p] of Object.entries($gameSystem?._npcSociety || {})) {
       if (p && p._homeGroupName === groupName) names.add(name);
     }
-    // Sorted so the seeded draw below is reproducible regardless of insertion order.
-    return [...names].sort();
+    return [...names].filter(n => {
+      const p = $gameSystem?._npcSociety?.[n];
+      return _isSentientForHomeOwnership(p, n);
+    }).sort();
   }
 
   // Makes sure the building the player just walked into is somebody's home.
-  //
-  // Doors on the procedural map are terrain tiles, not events, so they are never
-  // picked up by the map scanner that fills residentialBuildings, and no NPC is
-  // ever assigned to them up front. Registering the building on entry and
-  // deterministically moving townspeople in closes that gap: the same residents
-  // are then found behind that same door on every later visit, and at night they
-  // are actually inside it (see replacePlayerEventsWithNPCs).
-  //
-  // Skyscrapers are skipped, they are public and have no residents by design.
-  // Returns the resident names for the building.
   function ensureBuildingResidents(building, groupName) {
     if (!building || !groupName || !$gameSystem) return [];
     if (!_isResidentialBuilding(building)) return [];
@@ -2134,21 +2281,19 @@
     const capacity   = Math.max(1, registered.capacity || 1);
     if (existing.length >= capacity) return existing;
 
-    // Prefer NPCs who have no home yet, then those still in a placeholder
-    // residence. Anyone already settled behind a real door keeps it.
+    const isSky = _isSkyscraperBuilding(registered);
     const society = $gameSystem._npcSociety || {};
     const pool = _townResidentCandidates(groupName).filter(n => {
       if (existing.includes(n)) return false;
       const p = society[n];
-      if (!p) return false;
-      return !p.homeBuilding || p.homeBuilding._placeholder === true;
+      if (!p || !_isSentientForHomeOwnership(p, n)) return false;
+      if (isSky && !_isWealthyForSkyscraper(p)) return false;
+      return !p.homeBuilding || p.homeBuilding._placeholder === true || p.isHomeless;
     });
     if (!pool.length) return existing;
 
     const ws  = window.NPCShared ? window.NPCShared.worldSeed() : 19002001;
     const rng = new MiniRng(((registered.seed >>> 0) ^ ws ^ nameHash(groupName)) >>> 0);
-    // At least one household, up to the building's capacity (one per floor for
-    // a multi-floor block, so a walk-up can have a neighbour on every landing).
     const target = 1 + Math.floor(rng.next() * capacity);
     const want   = Math.min(target, capacity, pool.length + existing.length) - existing.length;
 
@@ -2159,26 +2304,12 @@
     return _getBuildingOccupants(registered).slice();
   }
 
-  // Hands out the front doors of ONE map to a named set of NPCs, instead of
-  // letting them draw from anywhere in their town's (often map-spanning) pool.
-  //
-  // Omega City (map 631) is the game's largest settlement and the one map that
-  // populates itself wholesale, fifty citizens in a single pass, so its own
-  // houses have to be the addresses those fifty live behind rather than a door
-  // in some unrelated corner of the OmegaTower group. See
-  // SpawnManager.randomizeOmegaCityMap (NPCSystem.js).
-  //
-  // Only NPCs who have no address yet, hold a placeholder one, or are already
-  // citizens of this town are moved: someone who genuinely lives in another
-  // town and is only passing through keeps their real home. Returns how many
-  // were housed.
+  // Hands out the front doors of ONE map to a named set of NPCs
   function assignHomesOnMap(mapId, groupName, names) {
     if (!$gameSystem || !mapId || !groupName || !names?.length) return 0;
     const all = $gameSystem._npcMapGroups?.[groupName]?.residentialBuildings;
     if (!all?.length) return 0;
 
-    // Public (skyscraper) and commercial (inn/shop) entrances are never anybody's
-    // address, even though they sit in the residentialBuildings scan.
     const buildings = all.filter(b => b && b.mapId === mapId && _isResidentialBuilding(b));
     if (!buildings.length) return 0;
     for (const b of buildings) {
@@ -2192,34 +2323,35 @@
 
     for (const name of names) {
       const profile = society[name];
-      if (!profile) continue;
+      if (!profile || !_isSentientForHomeOwnership(profile, name)) continue;
       const home = profile.homeBuilding;
       const settled = home && !home._placeholder;
-      // Already behind one of this map's own doors, nothing to do.
       if (settled && home.mapId === mapId) continue;
-      // A settled resident of a different town is only visiting.
       if (settled && profile._homeGroupName && profile._homeGroupName !== groupName) continue;
+
+      const isSky = _isSkyscraperBuilding(home);
+      const eligible = buildings.filter(b => _isWealthyForSkyscraper(profile) ? true : !_isSkyscraperBuilding(b));
+      const pool = eligible.length ? eligible : buildings;
 
       const rng = new MiniRng((nameHash(name + '_cityhome') ^ ws) >>> 0);
       let chosen = null;
-      for (let attempt = 0; attempt < buildings.length; attempt++) {
-        const candidate = buildings[Math.floor(rng.next() * buildings.length)];
+      for (let attempt = 0; attempt < pool.length; attempt++) {
+        const candidate = pool[Math.floor(rng.next() * pool.length)];
         if (_getBuildingOccupants(candidate).length < Math.max(1, candidate.capacity || 1)) {
           chosen = candidate;
           break;
         }
       }
-      // Every door on the map is full, take the least-crowded one.
-      if (!chosen) chosen = buildings.reduce((best, b) =>
-        _getBuildingOccupants(b).length < _getBuildingOccupants(best).length ? b : best
-      , buildings[0]);
+      if (!chosen) chosen = pool.find(b => _getBuildingOccupants(b).length < Math.max(1, b.capacity || 1));
 
-      // _moveInResident only vacates placeholder addresses, an NPC moving in
-      // from a real door elsewhere in this same town has to be checked out of it
-      // by hand or they stay on both occupancy lists.
-      if (settled) _unregisterBuildingOccupant(home, name);
-      _moveInResident(profile, name, chosen, groupName);
-      housed++;
+      if (chosen) {
+        if (settled) _unregisterBuildingOccupant(home, name);
+        _moveInResident(profile, name, chosen, groupName);
+        housed++;
+      } else {
+        profile.isHomeless = true;
+        profile.homeBuilding = null;
+      }
     }
     return housed;
   }
@@ -2244,13 +2376,8 @@
     }
     entry.key = key;
     entry.groupName = groupName;
-    // Stamp the caller's own descriptor too: NPCSystem hands the live
-    // ProceduralHouseSystem descriptor straight back to getBuildingResidents,
-    // which would otherwise compute a group-less key and find nobody home.
     building.key = key;
     building.groupName = groupName;
-    // A walk-up discovered through its door knows its real floor count; the
-    // cached scan entry may predate that (or have been seeded as a placeholder).
     if (building.type === 'enterMultiBuilding') {
       entry.totalFloors = _buildingFloorCount(building);
       entry.capacity = Math.max(entry.capacity || 0, entry.totalFloors);
@@ -2260,20 +2387,25 @@
   }
 
   // Residents of a building, optionally narrowed to one floor. Used by the
-  // spawner to decide who should be inside when the player walks in at night.
+  // spawner to decide who should be inside when the player walks in at night or day.
   function getBuildingResidents(building, floorIndex = null, groupName = null) {
     if (!building) return [];
     if (!building.key && groupName) building.key = _makeBuildingKey(building, groupName);
     const names = _getBuildingOccupants(building);
-    if (floorIndex === null || _buildingFloorCount(building) <= 1) return names.slice();
     const society = $gameSystem?._npcSociety || {};
-    return names.filter(n => (society[n]?.homeBuilding?.floorIndex ?? 0) === floorIndex);
+    if (floorIndex === null || _buildingFloorCount(building) <= 1) {
+      return names.filter(n => _isSentientForHomeOwnership(society[n], n));
+    }
+    return names.filter(n => {
+      if (!_isSentientForHomeOwnership(society[n], n)) return false;
+      return (society[n]?.homeBuilding?.floorIndex ?? 0) === floorIndex;
+    });
   }
 
   const WealthManager = {
     maybeUpgrade(profile) {
       const money = profile.money || 0;
-      let targetPool = "huts";
+      let targetPool = "houses";
       for (const tier of WEALTH_THRESHOLDS) {
         if (money <= tier.max) { targetPool = tier.pool; break; }
       }
@@ -2291,7 +2423,7 @@
   // ============================================================================
   // Adds simulation fields to profiles generated before this plugin existed.
 
-  const HOME_POOL_BY_WEALTH = ["huts", "huts", "houses", "villas", "skyscrapers"];
+  const HOME_POOL_BY_WEALTH = ["houses", "houses", "houses", "skyscrapers", "skyscrapers"];
 
   // Starting purse, in gold (100 gold = 1 euro).
   //
@@ -2301,7 +2433,7 @@
   // the destitute to the elite, and a per-name roll keeps two neighbours of the
   // same standing from carrying identical amounts. The result lands inside the
   // WEALTH_THRESHOLDS bands above, so an NPC's money still says something about
-  // which home pool they belong to (huts under 30 euros, skyscrapers over 600).
+  // which home pool they belong to (houses under 600 euros, high-rises above).
   const MONEY_PER_LEVEL   = 120;
   const MONEY_LEVEL_BASE  = 150;
   const MONEY_TIER_MULT   = [0.35, 0.7, 1.4, 3.5, 9];
@@ -3584,13 +3716,52 @@
 
     // Home-building registry (SECTION 11a-i), used by NPCSystem when the player
     // walks into a generated building: ensureBuildingResidents assigns the town's
-    // NPCs to it (no-op for public skyscrapers), getBuildingResidents reads them
-    // back per floor.
+    // NPCs to it, getBuildingResidents reads them back per floor.
     ensureBuildingResidents,
     getBuildingResidents,
     // Gives a named set of NPCs the doors of one specific map as their address,
     // used by Omega City's fifty-citizen spawn pass (SECTION 11a-i).
     assignHomesOnMap,
+    isNPCAtHome(name, profile, hour) {
+      if (!profile && name && $gameSystem?._npcSociety) profile = $gameSystem._npcSociety[name];
+      if (!profile) return false;
+      if (profile.isHomeless || !profile.homeBuilding) return false;
+
+      if (hour == null) hour = $gameVariables?.value(23) ?? 12;
+      const isNight = hour >= 20 || hour < 6;
+
+      // 1. Is the NPC working right now?
+      const inWork = ScheduleManager._inWorkHours(profile, hour);
+      const inShop = ScheduleManager._inShopShift(profile, hour);
+      if (inWork || inShop) return false;
+
+      // 2. Is the NPC a night worker?
+      const isNightWorker = ScheduleManager._isNightWorker(profile);
+      if (isNightWorker) {
+        // Night workers are at home resting during day off-hours (e.g. 8:00 to 16:00)
+        if (hour >= 8 && hour < 16) return true;
+        if (isNight) return false; // At night they are on duty or out
+      } else {
+        // Normal schedule: at night guaranteed to be at home
+        if (isNight) return true;
+      }
+
+      // 3. During regular daytime, check their schedule activity
+      const activity = ScheduleManager.evaluate(profile, hour);
+      if (activity === "sleep" || activity === "home" || activity === "hygiene" || activity === "comfort") {
+        return true;
+      }
+      // Leisure / food: moderate probability based on deterministic seed
+      if (activity === "leisure" || activity === "hunger") {
+        const ws = window.NPCShared ? window.NPCShared.worldSeed() : 19002001;
+        const seed = (nameHash(name + '_homeDay_' + Math.floor(hour)) ^ ws) >>> 0;
+        return (seed % 100) < 65;
+      }
+
+      return false;
+    },
+    getBuildingMapName: _getBuildingMapName,
+    getHomeDescription: _getHomeDescription,
   };
 
   window.NPCSim = NPCSim;

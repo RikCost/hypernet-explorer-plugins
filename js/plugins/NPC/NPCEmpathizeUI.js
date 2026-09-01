@@ -25,6 +25,7 @@
     _computePartyPredisposition, _medianScore, _generatePartyThoughts,
     _extractContacts, _countRecentInteractions, _lastInteractionDay,
     _joinChance, _joinLevelOk, _travellingPartyCount, _hasSelfSwitchAPage,
+    _animalJoinChance, _wisMod,
     _diseaseVialItems, _diseaseVialId, _infectChance,
     _socialLines, _rand, _vary, _addNpcOpinion, _personalitySocialMult,
     _hygienePenalty, _hygieneReadout,
@@ -94,6 +95,13 @@
     // sheet does) is portrayed by that body whether or not the society sim
     // flagged the profile as a creature: an animal standing in the street has
     // never had a bust to show and now has a model that was chosen for it.
+    // A `creature: true` sheet was drawn with a face of its own and that face
+    // is what the panel shows: the wardrobe's own bust beats the stock model,
+    // the same way a person's does. Only the ANIMAL half (a hen, a horse, a
+    // dog, none of which has ever had a portrait) and the bestiary sheets of a
+    // monster world fall through to a body built in three dimensions.
+    if (NC.sheetHalf?.(profile.spriteKey) === 'creature' &&
+        (window.WorldGen?.NPCs?.[profile.spriteKey]?.busts || []).length) return null;
     const named = NC.modelKeyForSprite ? NC.modelKeyForSprite(profile.spriteKey) : null;
     if (!named && (!profile.isCreature || !keys.length)) return null;
     return { keys, spriteKey: profile.spriteKey, seed: _hashName(name || ''), name };
@@ -159,6 +167,81 @@
     if (window.ActorModel3D?.modelAvailable?.(path) === false) return null;
     const info = { kind: 'glb', path, actorId: actor ? actor.actorId() : 0 };
     return { info, id: window.ActorModel3D?.keyFor?.(info) || `glb:${path}` };
+  }
+
+  // ── The livestock panel ─────────────────────────────────────────────────
+  // AnimalGrowth's own copy, read through its i18n file rather than the
+  // Empathize one: the words belong to the system that owns the numbers.
+  function _TA(key, params) {
+    const full = 'AnimalGrowth.panel.' + key;
+    if (window.T && window.T.has && window.T.has(full)) return window.T(full, params);
+    return key;
+  }
+
+  // A key at the top of AnimalGrowth.json rather than inside its panel block.
+  function _TAroot(key, params) {
+    const full = 'AnimalGrowth.' + key;
+    if (window.T && window.T.has && window.T.has(full)) return window.T(full, params);
+    return key;
+  }
+
+  function _TAn(key, count, params) {
+    const full = 'AnimalGrowth.panel.' + key;
+    if (window.T && window.T.n) return window.T.n(full, count, params);
+    return String(count);
+  }
+
+  // One labelled bar. `pct` is 0-100 and `tone` picks the fill colour, so a
+  // hungry animal's meter reads as a warning rather than as a statistic.
+  function _animalBar(label, pct, note, tone) {
+    const v = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+    return `<div class="npc-animal-row">
+        <div class="npc-animal-label">${_escapeHtml(label)}</div>
+        <div class="npc-animal-track"><div class="npc-animal-fill ${tone || ''}" style="width:${v}%"></div></div>
+        <div class="npc-animal-note">${_escapeHtml(note != null ? note : v + '%')}</div>
+      </div>`;
+  }
+
+  // The block the left column shows for an animal: what it is, how old, how
+  // far from grown, how well fed, and where every one of its produce cycles
+  // stands. Empty string for anybody who is not livestock.
+  function _animalPanelHTML(status) {
+    if (!status) return '';
+    const rows = [];
+    rows.push(`<div class="npc-animal-head">${_escapeHtml(_TA('title'))} , ${_escapeHtml(status.breed)} (${_escapeHtml(status.stageName)})</div>`);
+    rows.push(`<div class="npc-animal-line">${_escapeHtml(_TA('age'))}: ${_escapeHtml(status.ageLabel)}</div>`);
+    // Whose it is. A farm's stock answers to the farmer of that world square;
+    // an animal met anywhere else belongs to nobody.
+    rows.push(`<div class="npc-animal-line">${_escapeHtml(_TAroot('owner'))}: ` +
+      `${_escapeHtml(status.owner || _TAroot('wildAnimal'))}</div>`);
+
+    if (status.hasBaby) {
+      const note = status.growthPct >= 100
+        ? _TA('grownAlready')
+        : _TAn('daysToAdult', status.daysToAdult);
+      rows.push(_animalBar(_TA('growth'), status.growthPct, note));
+    }
+
+    rows.push(_animalBar(
+      status.hungry ? _TA('hungry') : _TA('nutrition'),
+      status.nutritionPct, null, status.hungry ? 'is-low' : ''));
+
+    if (!status.produces.length) {
+      rows.push(`<div class="npc-animal-line">${_escapeHtml(_TA('producesNothing'))}</div>`);
+    } else {
+      for (const p of status.produces) {
+        const yieldText = _TA('yield', { min: p.yieldMin, max: p.yieldMax, days: p.intervalDays });
+        const note = status.stage !== 'adult'
+          ? _TA('notYetAdult')
+          : p.ready ? _TA('ready') : _TAn('readyIn', p.daysLeft);
+        rows.push(_animalBar(p.name, p.pct, note, p.ready ? 'is-ready' : ''));
+        rows.push(`<div class="npc-animal-sub">${_escapeHtml(yieldText)}</div>`);
+      }
+    }
+    if (status.companyValue) {
+      rows.push(`<div class="npc-animal-line">${_escapeHtml(_TA('company'))}: +${status.companyValue}</div>`);
+    }
+    return `<div class="npc-animal-panel">${rows.join('')}</div>`;
   }
 
   // Every box in the panel that is allowed to scroll, in the order they should
@@ -237,13 +320,13 @@
   }
 
   const NEED_ICONS = {
-    sleep: 11, hunger: 259, hygiene: 67, work: 4, shopwork: 4, money: 314,
+    sleep: 11, home: 11, hunger: 259, hygiene: 67, work: 4, shopwork: 4, money: 314,
     crime: 174, safety: 128, comfort: 226, social: 246, leisure: 80,
   };
 
   function _needLabels(T) {
     return {
-      sleep: T.resting, hunger: T.hungry, hygiene: T.freshening, work: T.working, shopwork: T.working,
+      sleep: T.atHome || T.resting || 'At Home', home: T.atHome || 'At Home', hunger: T.hungry, hygiene: T.freshening, work: T.working, shopwork: T.working,
       money: T.earning, crime: T.scheming, safety: T.wary, comfort: T.relaxing,
       social: T.socializing, leisure: T.leisure, traveling: T.traveling,
     };
@@ -271,6 +354,36 @@
     profile.routine[hourNow] = 'traveling';
   }
 
+  function _homeAddressLabel(profile, T) {
+    if (!profile) return '';
+    if (profile.isHomeless) return T?.homelessLbl || 'Homeless';
+    const b = profile.homeBuilding;
+    if (!b) return '';
+
+    let mapName = b.mapName;
+    if (!mapName && window.NPCSim?.getBuildingMapName) {
+      mapName = window.NPCSim.getBuildingMapName(b, profile._homeGroupName || b.groupName);
+    }
+    if (!mapName && b.mapId === 636) {
+      const gName = profile._homeGroupName || b.groupName;
+      const grp = gName ? $gameSystem?._npcMapGroups?.[gName] : null;
+      mapName = grp?.displayName || window.MapManager?.getMapName?.(636) || T?.frontier || 'Settlement';
+    } else if (!mapName && b.mapId) {
+      mapName = window.MapManager?.getMapName?.(b.mapId) || ($dataMapInfos?.[b.mapId]?.name) || `Map ${b.mapId}`;
+    }
+
+    const coords = (b.x != null && b.y != null) ? `(${b.x}, ${b.y})` : '';
+    const floorNum = (b.floorIndex != null ? b.floorIndex : 0) + 1;
+    const floorLabel = `${T?.floorLbl || 'Floor'} ${floorNum}`;
+
+    const parts = [];
+    if (mapName) parts.push(mapName);
+    if (coords) parts.push(`Door ${coords}`);
+    if (floorLabel) parts.push(floorLabel);
+
+    return parts.join(' · ');
+  }
+
   // "work"/"shopwork" routine slots get an enriched label with the job name
   // and/or workplace map name when that information is available.
   function _activityLabel(activity, profile, T, needLabels) {
@@ -285,6 +398,12 @@
       const assign = $gameSystem?._npcShopAssignments?.[profile?._eventName];
       // <ShopName: Ticketman> on the shop event overrides the generic title.
       if (assign) return T.workAsShopkeeper(assign.shopName || T.shopkeeperTitle, assign.mapName);
+    }
+    if (activity === 'sleep' || activity === 'home') {
+      if (profile && profile.homeBuilding && !profile.isHomeless) {
+        const addr = _homeAddressLabel(profile, T);
+        return addr ? `${T.atHome || 'At Home'} (${addr})` : (T.atHome || 'At Home');
+      }
     }
     return needLabels[activity] || activity;
   }
@@ -1349,10 +1468,34 @@
       // Gift leaves the board and these two take its place at the front of it.
       // Petting can only ever go well; the tray is dark when the pack is
       // carrying nothing an animal would put in its mouth.
+      // Collect stands at the head of the board, but only when the animal
+      // actually has something ready: an empty Collect is a promise the hen
+      // cannot keep. Every `animal: true` sheet answers here, not only one the
+      // player bought (see _animalStatus / AnimalGrowthSystem.recordForAnimal).
+      const animal = this._animalStatus?.();
       this._chatActions.unshift(
         { id: 'pet',  label: T.beastLabelPet },
         { id: 'feed', label: T.beastLabelFeed, disabled: !_feedItemsInPack().length },
       );
+      if (animal && animal.hasReady) {
+        this._chatActions.unshift({ id: 'collect', label: _TAroot('actionCollect') });
+      }
+      // Asking it to come along. A wild animal is simply asked; somebody's
+      // animal has to be talked away from them, which reads as a different
+      // thing and is a different (much longer) set of odds. It replaces the
+      // ordinary Join, which recruits a person into a party slot: an animal
+      // walks WITH the party, it does not hold a slot in it.
+      if (animal) {
+        this._chatActions = this._chatActions.filter(a => a.id !== 'join');
+        if (!this._justJoined) {
+          const odds = _animalJoinChance(animal, this._focusActor?.(), opinion);
+          this._chatActions.push({
+            id: 'animalJoin',
+            label: `${animal.owned ? _TAroot('actionConvince') : _TAroot('actionJoinPet')} (~${odds}%)`,
+            disabled: _travellingPartyCount() >= 3,
+          });
+        }
+      }
     }
 
     // Somebody else's party member, standing here because that playthrough was
@@ -1428,8 +1571,11 @@
       _creatureSubject(actorMode ? actorObj : null, profile, displayName),
       actorMode ? actorObj : null)
       || _presetModelSpec(actorMode ? actorObj : null, preset);
+    // Livestock reads its own block under the vitals: what it is, how old, how
+    // far from grown, how well fed and where every produce cycle stands.
+    const animalStatus = this._animalStatus ? this._animalStatus() : null;
     const leftHTML = this._buildLeftPanelHTML(
-      bustPath, profile, predispositions, T, leftIdent, attractions, modelSpec);
+      bustPath, profile, predispositions, T, leftIdent, attractions, modelSpec, animalStatus);
 
     const showingChatUI = this._activeTab === 'chat';
 
@@ -1654,7 +1800,7 @@
     return html;
   }
 
-  Scene_NPCEmpathize.prototype._buildLeftPanelHTML = function (bustPath, profile, predispositions, T, ident, attractions, modelSpec) {
+  Scene_NPCEmpathize.prototype._buildLeftPanelHTML = function (bustPath, profile, predispositions, T, ident, attractions, modelSpec, animalStatus) {
     let hpmpHTML = '';
     if (profile?.mhp !== undefined || profile?.mmp !== undefined) {
       const mhp    = profile.mhp ?? 0;
@@ -1833,6 +1979,7 @@
       <div class="npc-vitals-footer">
         ${topInfoHTML}
         ${vitalsHTML}${needHTML}${hostileHTML}${lastMetHTML}
+        ${_animalPanelHTML(animalStatus)}
       </div>`;
   };
 
@@ -2475,6 +2622,12 @@
       const genderLabel = _presetGenderLabel(genderVal, T);
       if (genderLabel)  identHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span style="opacity:0.85">${_escapeHtml(T.genderLbl)}:</span>&nbsp;<span>${_escapeHtml(genderLabel)}</span></div>`;
       if (wealthLabel)  identHTML += `<div class="npc-ident-row">${_iconSpan(314, 17)}<span>${_escapeHtml(wealthLabel)}</span></div>`;
+      const homeAddr = _homeAddressLabel(profile, T);
+      if (homeAddr) {
+        identHTML += `<div class="npc-ident-row">${_iconSpan(190, 17)}<span style="opacity:0.85">${_escapeHtml(T.residenceLbl || 'Residence')}:</span>&nbsp;<span>${_escapeHtml(homeAddr)}</span></div>`;
+      } else if (profile?.isHomeless) {
+        identHTML += `<div class="npc-ident-row">${_iconSpan(190, 17)}<span style="opacity:0.85">${_escapeHtml(T.residenceLbl || 'Residence')}:</span>&nbsp;<span style="color:var(--text-cost-bad)">${_escapeHtml(T.homelessLbl || 'Homeless')}</span></div>`;
+      }
       if (ideologyName) identHTML += `<div class="npc-ident-row">${_iconSpan(186, 17)}${_wikiLink('ideology', ideology ? ideology.id : '', ideologyName)}</div>`;
       if (faction)      identHTML += `<div class="npc-ident-row">${_iconSpan(faction.iconIndex || 187, 17)}${_wikiLink('faction', _factionDisplayName(faction))}</div>`;
       identHTML += `<div class="npc-ident-row">${_iconSpan(175, 17)}<span style="color:${moralColor}">${_escapeHtml(moralEntry.label)}</span><span style="opacity:0.75">&nbsp;— ${morality}</span></div>`;

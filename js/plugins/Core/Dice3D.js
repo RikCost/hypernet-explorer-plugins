@@ -300,50 +300,57 @@
                     color: #e5c158;
                     font-weight: bold;
                 }
-                .dice3d-main-row {
+                /* The scoreboard: what was rolled over what it had to reach. */
+                .dice3d-score {
                     display: flex;
-                    align-items: center;
+                    align-items: flex-start;
                     justify-content: center;
-                    gap: 16px;
-                    margin: 4px 0;
+                    gap: 14px;
+                    margin: 6px 0 2px;
                 }
-                .dice3d-calc {
+                .dice3d-score-cell {
                     display: flex;
-                    align-items: baseline;
-                    gap: 6px;
-                    font-size: 1.45rem;
-                    font-weight: bold;
+                    flex-direction: column;
+                    align-items: center;
+                    min-width: 84px;
                 }
-                .dice3d-raw {
-                    color: #f5f5f5;
-                    font-size: 1.6rem;
-                }
-                .dice3d-mod {
-                    color: #81c784;
-                    font-size: 1.15rem;
-                }
-                .dice3d-mod.neg {
-                    color: #ef9a9a;
-                }
-                .dice3d-eq {
-                    color: #d4af37;
-                    font-size: 1.1rem;
-                    opacity: 0.8;
-                }
-                .dice3d-total {
-                    font-size: 2.1rem;
+                .dice3d-score-num {
+                    font-size: 2.6rem;
+                    line-height: 1.05;
                     font-weight: 900;
                     color: #ffffff;
-                    text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+                    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
                     transition: all 0.25s ease;
                 }
-                .dice3d-total.summed {
-                    transform: scale(1.18);
+                .dice3d-score-num.need { color: #e5c158; }
+                .dice3d-score-num.summed {
+                    transform: scale(1.14);
                     color: #ffd700;
-                    text-shadow: 0 0 16px rgba(255, 215, 0, 0.8);
+                    text-shadow: 0 0 18px rgba(255, 215, 0, 0.85);
                 }
-                .dice3d-total.crit-success { color: #ffd700; }
-                .dice3d-total.crit-fail { color: #ff4d4d; }
+                .dice3d-score-num.crit-success { color: #ffd700; }
+                .dice3d-score-num.crit-fail { color: #ff4d4d; }
+                .dice3d-score-label {
+                    font-size: 0.66rem;
+                    letter-spacing: 2px;
+                    text-transform: uppercase;
+                    color: #b0bec5;
+                    margin-top: 2px;
+                }
+                .dice3d-slash {
+                    font-size: 2rem;
+                    font-weight: 300;
+                    color: rgba(212, 175, 55, 0.75);
+                    line-height: 1.3;
+                }
+                .dice3d-breakdown {
+                    font-size: 0.9rem;
+                    letter-spacing: 0.6px;
+                    color: #dcd2bb;
+                    text-align: center;
+                }
+                .dice3d-breakdown .mod { color: #81c784; }
+                .dice3d-breakdown .mod.neg { color: #ef9a9a; }
                 .dice3d-status {
                     font-size: 0.92rem;
                     font-weight: bold;
@@ -500,16 +507,19 @@
                 <div class="dice3d-header">
                     <span class="dice3d-title" id="dice3d-title"></span>
                 </div>
-                <div class="dice3d-main-row">
-                    <div class="dice3d-calc" id="dice3d-calc">
-                        <span class="dice3d-raw" id="dice3d-raw"></span>
-                        <span class="dice3d-mod" id="dice3d-mod"></span>
-                        <span class="dice3d-eq">=</span>
-                        <span class="dice3d-total" id="dice3d-num"></span>
+                <div class="dice3d-score">
+                    <div class="dice3d-score-cell">
+                        <span class="dice3d-score-num" id="dice3d-num"></span>
+                        <span class="dice3d-score-label" id="dice3d-label-rolled"></span>
                     </div>
-                    <div class="dice3d-status" id="dice3d-status"></div>
+                    <span class="dice3d-slash">/</span>
+                    <div class="dice3d-score-cell">
+                        <span class="dice3d-score-num need" id="dice3d-need"></span>
+                        <span class="dice3d-score-label" id="dice3d-label-need"></span>
+                    </div>
                 </div>
-                <div class="dice3d-footer" id="dice3d-detail"></div>
+                <div class="dice3d-breakdown" id="dice3d-detail"></div>
+                <div class="dice3d-status" id="dice3d-status"></div>
             `;
             container.appendChild(banner);
             document.body.appendChild(container);
@@ -853,28 +863,37 @@
                 this._banner.className = '';
 
                 const titleEl = document.getElementById('dice3d-title');
-                const rawEl = document.getElementById('dice3d-raw');
-                const modEl = document.getElementById('dice3d-mod');
                 const numEl = document.getElementById('dice3d-num');
+                const needEl = document.getElementById('dice3d-need');
+                const rolledLabelEl = document.getElementById('dice3d-label-rolled');
+                const needLabelEl = document.getElementById('dice3d-label-need');
                 const statusEl = document.getElementById('dice3d-status');
                 const detailEl = document.getElementById('dice3d-detail');
 
+                const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
+                const modClass = modifier < 0 ? 'mod neg' : 'mod';
+
                 if (titleEl) titleEl.textContent = actionName.toUpperCase();
-                if (rawEl) rawEl.textContent = String(rawRoll);
-                if (modEl) {
-                    const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
-                    modEl.textContent = `${modStr} ${statName || ''}`.trim();
-                    modEl.className = 'dice3d-mod' + (modifier < 0 ? ' neg' : '');
-                }
+                if (rolledLabelEl) rolledLabelEl.textContent = DT('card.rolledLabel');
+                if (needLabelEl) needLabelEl.textContent = DT('card.neededLabel');
+                if (needEl) needEl.textContent = dc !== null ? String(dc) : DT('card.anyTarget');
                 if (numEl) {
+                    // Until the modifier is added in, the scoreboard shows the
+                    // bare die: the player watches the number climb to the total.
                     numEl.textContent = String(rawRoll);
-                    numEl.className = 'dice3d-total' + (nat20 ? ' crit-success' : nat1 ? ' crit-fail' : '');
+                    numEl.className = 'dice3d-score-num' + (nat20 ? ' crit-success' : nat1 ? ' crit-fail' : '');
                 }
                 if (statusEl) {
                     statusEl.className = 'dice3d-status';
                 }
                 if (detailEl) {
-                    detailEl.textContent = dc !== null ? DT('card.target', { dc }) : DT('card.noTarget');
+                    detailEl.innerHTML = modifier === 0
+                        ? DT('card.breakdownFlat', { roll: rawRoll })
+                        : DT('card.breakdown', {
+                            roll: rawRoll,
+                            mod: `<span class="${modClass}">${modStr}</span>`,
+                            stat: statName || ''
+                        });
                 }
 
                 const startX = (Math.random() > 0.5 ? 1 : -1) * (4.2 + Math.random() * 1.0);
@@ -887,7 +906,11 @@
                 const startRotZ = Math.random() * Math.PI * 6;
 
                 const startTime = performance.now();
-                const quick = !!options.quick;
+                // A check thrown mid battle must not stall the turn: unless the
+                // caller says otherwise, a die in battle keeps the quick pacing
+                // and closes itself as soon as the total has been read.
+                const inBattle = (typeof $gameParty !== 'undefined' && $gameParty && $gameParty.inBattle && $gameParty.inBattle());
+                const quick = options.quick !== undefined ? !!options.quick : !!inBattle;
                 // Unhurried cinematic pacing by default; quick pacing auto-closes
                 // fast once the total is read, for checks thrown mid-action (a
                 // battle should not stall on a die once the number is known).
@@ -964,20 +987,10 @@
                         // Phase 2: Visual summing sequence after landing assessment pause
                         if (activeHoldTime >= pauseBeforeSum && !summed) {
                             summed = true;
-                            const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
-                            const statPart = statName ? ` (${statName})` : '';
 
                             if (numEl) {
                                 numEl.textContent = String(total);
                                 numEl.classList.add('summed');
-                            }
-                            if (detailEl) {
-                                const sum = DT('card.sum', {
-                                    roll: rawRoll, mod: modStr, stat: statPart, total
-                                });
-                                detailEl.textContent = dc !== null
-                                    ? DT('card.sumTarget', { dc, sum })
-                                    : sum;
                             }
                             if (statusEl) {
                                 if (nat20) {

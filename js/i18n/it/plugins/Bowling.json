@@ -1,7 +1,7 @@
 {
   "noThree": "THREE.JS NON CARICATO - BOWLING NON DISPONIBILE",
   "player1": "Giocatore 1",
-  "cpuThinking": "LA CPU STUDIA I BIRILLI...",
+  "cpuThinking": "{opponent} STUDIA I BIRILLI...",
   "victory": "VITTORIA!",
   "defeat": "SCONFITTA",
   "draw": "PAREGGIO",
@@ -9,5 +9,7 @@
   "frame": "FRAME {frame}/10  {bowler}",
   "aimPrompt": "{bowler}: PRENDE LA MIRA",
   "powerPrompt": "{bowler}: POTENZA",
-  "hookPrompt": "{bowler}: EFFETTO"
+  "hookPrompt": "{bowler}: EFFETTO",
+  "player2": "Giocatore 2",
+  "cpu": "CPU"
 }

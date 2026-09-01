@@ -94,9 +94,16 @@
         DataManager.saveGlobalInfo();
     }
 
+    // Playtest builds ignore the slot lock entirely: any slot may be written,
+    // whichever party wrote it, so testing never gets stuck on a buzzer.
+    function isPlaytest() {
+        return typeof Utils !== "undefined" && Utils.isOptionValid("test");
+    }
+
     function canSaveTo(index) {
         if (index === 0) return true; // shared world autosave, manually writable
         if (isQuickSlot(index)) return true; // a quicksave is always overwritable
+        if (isPlaytest()) return true;
         const bound = $gameSystem.savefileId();
         if (bound > 0) return index === bound;
         // Unbound playthrough (e.g. sandbox): may only claim an empty slot.
@@ -485,7 +492,7 @@
     }
 
     // Extends the savefile info with full party details (name, class, level,
-    // sprite, bust) so the save/load screen can show more than tiny sprites.
+    // sprite, bust) and coordinates so the save/load screen can show worldmap segment.
     const _DataManager_makeSavefileInfo_party = DataManager.makeSavefileInfo;
     DataManager.makeSavefileInfo = function () {
         const info = _DataManager_makeSavefileInfo_party.call(this);
@@ -501,6 +508,13 @@
             mmp: actor.mmp,
             bust: resolveBustForActor(actor)
         }));
+        const loc = window.WorldMapTransfer && typeof window.WorldMapTransfer.locate === "function"
+            ? window.WorldMapTransfer.locate() : null;
+        const wx = loc ? loc.worldX : (window.$gameVariables ? ($gameVariables.value(43) || 0) : 0);
+        const wy = loc ? loc.worldY : (window.$gameVariables ? ($gameVariables.value(44) || 0) : 0);
+        info.worldX = wx;
+        info.worldY = wy;
+        info.location = loc || { worldX: wx, worldY: wy };
         return info;
     };
 
@@ -523,7 +537,7 @@
         }
 
         static _getActionButtons() {
-            return Array.from(this.container.querySelectorAll('.action-btn.focusable'));
+            return Array.from(this.container.querySelectorAll('.inspect-btn.focusable'));
         }
 
         static update() {
@@ -754,7 +768,7 @@
     // Save mode additionally puts the playthrough's own slot right below the
     // autosave; the other parties are shown underneath it as read-only entries
     // (they can be inspected, loaded or deleted, but never written to).
-    // The three quicksave slots close the list: all of them in save mode (any
+    // The three quicksave slots head the list: all of them in save mode (any
     // may be written over), only the written ones in load mode.
     Scene_File.prototype.visibleSlotIds = function () {
         const withFiles = [];
@@ -772,9 +786,9 @@
             for (const i of withFiles) {
                 if (i !== ownSlot) ids.push(i);
             }
-            return [...ids, ...quick];
+            return [...quick, ...ids];
         }
-        return [0, ...withFiles, ...quick];
+        return [...quick, 0, ...withFiles];
     };
 
     Scene_File.prototype.buildSaveList = function () {
@@ -792,7 +806,7 @@
                     ? ownSlot
                     : (this._visibleSlots[0] || 0);
             } else {
-                this._selectedIndex = this._visibleSlots[1] !== undefined ? this._visibleSlots[1] : 0;
+                this._selectedIndex = this._visibleSlots[0] !== undefined ? this._visibleSlots[0] : 0;
             }
         }
         for (const i of this._visibleSlots) {
@@ -804,7 +818,7 @@
             const locked = this.mode() === "save" && !canSaveTo(i);
 
             if (i === 0) {
-                slotName =T('SaveSystem.autosave');
+                slotName = T('SaveSystem.autosave');
                 summaryText = info ? info.playtime : (T('SaveSystem.none'));
             } else if (isQuickSlot(i)) {
                 // "QUICKSAVE 2 - Party of Ariel": the F5 rotation, named the
@@ -825,18 +839,23 @@
                     slotName += " - " + T('SaveSystem.partyOf', { name: escapeHtml(leader) });
                 }
                 if (i === bound) {
-                    slotName +=T('SaveSystem.current');
+                    slotName += T('SaveSystem.current');
                 }
                 summaryText = info ? info.playtime : (T('SaveSystem.new'));
                 if (locked) {
-                    summaryText +=T('SaveSystem.readOnly');
+                    summaryText += T('SaveSystem.readOnly');
                 }
             }
 
+            const membersHTML = info ? buildPartyMembersHTML(info) : "";
+
             listHTML += `
                 <div class="save-item focusable${locked ? " locked" : ""}" data-id="${i}" onclick="SceneManager._scene.selectSavefileByClick(${i})">
-                    <span class="save-id">${slotName}</span>
-                    <span class="save-summary">${summaryText}</span>
+                    <div class="save-item-header">
+                        <span class="save-id">${slotName}</span>
+                        <span class="save-summary">${summaryText}</span>
+                    </div>
+                    ${membersHTML}
                 </div>
             `;
         }
@@ -854,25 +873,8 @@
         return info.partyInfo[0].name || "";
     }
 
-    function gaugeHTML(kind, value, max) {
-        const rate = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
-        return `<div class="save-member-gauge"><div class="save-member-gauge-fill ${kind}" style="width:${(rate * 100).toFixed(1)}%"></div></div>`;
-    }
-
-    function memberStatHTML(kind, label, value, max) {
-        if (typeof value !== "number") return "";
-        return `
-            <div class="save-member-stat">
-                <span class="save-member-stat-label ${kind}">${label}</span>
-                ${gaugeHTML(kind, value, max || 0)}
-                <span class="save-member-stat-value">${value} / ${max || 0}</span>
-            </div>
-        `;
-    }
-
-    // Right page party roster: sprite, name, class, level and current HP/MP of
-    // every member recorded in the savefile. Savefiles written before the
-    // roster carried those numbers fall back to the plain sprite row.
+    // Party roster: sprite, name, class, level and HP/MP (no bars) of
+    // every member recorded in the savefile.
     function buildPartyMembersHTML(info) {
         const party = Array.isArray(info.partyInfo) ? info.partyInfo : [];
         if (party.length) {
@@ -880,6 +882,8 @@
                 const meta = [];
                 if (member.level) meta.push(T('SaveSystem.levelShort', { n: member.level }));
                 if (member.className) meta.push(escapeHtml(member.className));
+                const hpText = typeof member.hp === "number" ? `${member.hp} / ${member.mhp || member.hp}` : "";
+                const mpText = typeof member.mp === "number" ? `${member.mp} / ${member.mmp || member.mp}` : "";
                 return `
                     <div class="save-member">
                         <canvas class="char-sprite-canvas" width="48" height="48" data-name="${escapeHtml(member.characterName || "")}" data-index="${member.characterIndex || 0}"></canvas>
@@ -888,8 +892,10 @@
                                 <span class="save-member-name">${escapeHtml(member.name || "")}</span>
                                 <span class="save-member-meta">${meta.join(" · ")}</span>
                             </div>
-                            ${memberStatHTML("hp", T('SaveSystem.hpShort'), member.hp, member.mhp)}
-                            ${memberStatHTML("mp", T('SaveSystem.mpShort'), member.mp, member.mmp)}
+                            <div class="save-member-stats-row">
+                                ${hpText ? `<span class="save-member-stat-item"><span class="save-member-stat-label hp">${T('SaveSystem.hpShort')}</span> <span class="save-member-stat-value">${hpText}</span></span>` : ""}
+                                ${mpText ? `<span class="save-member-stat-item"><span class="save-member-stat-label mp">${T('SaveSystem.mpShort')}</span> <span class="save-member-stat-value">${mpText}</span></span>` : ""}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -897,34 +903,246 @@
             return `<div class="party-members-list">${rows}</div>`;
         }
         const chars = Array.isArray(info.characters) ? info.characters : [];
-        const sprites = chars.map(char =>
-            `<canvas class="char-sprite-canvas" width="48" height="48" data-name="${escapeHtml(char[0] || "")}" data-index="${char[1] || 0}"></canvas>`
-        ).join("");
-        return `<div class="party-characters">${sprites}</div>`;
+        if (chars.length) {
+            const sprites = chars.map(char =>
+                `<canvas class="char-sprite-canvas" width="48" height="48" data-name="${escapeHtml(char[0] || "")}" data-index="${char[1] || 0}"></canvas>`
+            ).join("");
+            return `<div class="party-characters">${sprites}</div>`;
+        }
+        return "";
     }
 
-    // World folder summary shown on the right page (see Core/WorldManager.js)
+    //=========================================================================
+    // Destiny: 21 December 2012
+    //=========================================================================
+    // Nibiru is due on 21 December 2012. Switch 200 is the world where it was
+    // turned aside, switch 199 the world where it landed: until one of them is
+    // thrown the right page counts the days down to it.
+    const DESTINY = { year: 2012, month: 11, day: 21 }; // month is 0-based
+    const SWITCH_DESTINY_AVERTED = 200;
+    const SWITCH_DESTINY_HIT = 199;
+
+    // Whole days between the current in-game date and 21 December 2012:
+    // negative before it, positive after. Null when the clock cannot be read.
+    function daysToDestiny() {
+        const TDS = window.TimeDateSystem;
+        if (!TDS || typeof TDS.getCurrentDateObj !== "function" || typeof TDS.getCryoDayStamp !== "function") {
+            return null;
+        }
+        const now = TDS.getCurrentDateObj();
+        const today = TDS.getCryoDayStamp(now.getFullYear(), now.getMonth(), now.getDate());
+        return today - TDS.getCryoDayStamp(DESTINY.year, DESTINY.month, DESTINY.day);
+    }
+
+    function destinyLineHTML() {
+        const sw = window.$gameSwitches;
+        if (sw && sw.value(SWITCH_DESTINY_AVERTED)) {
+            return `<div class="detail-row"><span class="detail-label">${T('SaveSystem.destinyAverted')}</span></div>`;
+        }
+        const delta = daysToDestiny();
+        if (delta === null) return "";
+        if (delta < 0) {
+            return `<div class="detail-row">
+                        <span class="detail-label">${T('SaveSystem.daysUntilDestiny')}</span>
+                        <span>${-delta}</span>
+                    </div>`;
+        }
+        if (sw && sw.value(SWITCH_DESTINY_HIT)) {
+            return `<div class="detail-row">
+                        <span class="detail-label">${T('SaveSystem.daysAfterDestiny')}</span>
+                        <span>${delta}</span>
+                    </div>`;
+        }
+        return "";
+    }
+
+    window.SaveSystem = window.SaveSystem || {};
+    window.SaveSystem.daysToDestiny = daysToDestiny;
+    window.SaveSystem.destinyLineHTML = destinyLineHTML;
+
+    // "21 December 2012", in the month names the rest of the game prints.
+    function formatWorldDate(date) {
+        const months = T.list('TimeDate.months');
+        const name = months[date.getMonth()] || String(date.getMonth() + 1);
+        return `${date.getDate()} ${name} ${date.getFullYear()}`;
+    }
+
+    // "January 2001": the month a world was created to open on.
+    function formatStartDate(year, month) {
+        const months = T.list('TimeDate.months');
+        const name = months[(Number(month) || 1) - 1] || "";
+        return name ? `${name} ${year}` : String(year);
+    }
+
+    // World folder summary shown on the right page (see Core/WorldManager.js):
+    // what the world is, when it began, what day it stands on now and how far
+    // that day is from the one Nibiru is due on.
     function buildWorldInfoHTML(useTranslation) {
         const WM = window.WorldManager;
         if (!WM || !WM.activeWorldName) return "";
         const gen = WM.getField("artifacts", "generated") || {};
         const artifactCount = (gen.items || []).length + (gen.weapons || []).length + (gen.armors || []).length;
-        let dateStr = "";
-        if (window.TimeDateSystem && window.TimeDateSystem.getDateTimeFromMinutes) {
-            dateStr = window.TimeDateSystem.getDateTimeFromMinutes(WM.worldClockMinutes()).fullDate;
-        }
+
+        const info = (typeof WM.worldInfo === "function" ? WM.worldInfo() : null) || {};
+        const TDS = window.TimeDateSystem;
+        const dateHTML = (TDS && typeof TDS.getCurrentDateObj === "function")
+            ? `<div class="detail-row">
+                   <span class="detail-label">${T('SaveSystem.worldDate')}</span>
+                   <span>${escapeHtml(formatWorldDate(TDS.getCurrentDateObj()))}</span>
+               </div>`
+            : "";
+
+        // The two axes a world is made on, named as the creation form names
+        // them (see UI/WorldManagerUI.js).
+        const mode = typeof WM.populationMode === "function" ? WM.populationMode() : "normal";
+        const magic = typeof WM.magicalLevel === "function" ? WM.magicalLevel() : "normal";
+        const startYear = info.startYear;
+
         return `
             <div class="save-07">
                 <h4 class="save-08">
                     ${T('SaveSystem.world')}: ${escapeHtml(WM.activeWorldName)}
                 </h4>
+                ${dateHTML}
                 <div class="detail-row">
-                    <span class="detail-label">${T('SaveSystem.worldDate')}</span>
-                    <span>${escapeHtml(dateStr) || "?"}</span>
+                    <span class="detail-label">${T('SaveSystem.worldType')}</span>
+                    <span>${escapeHtml(T(`WorldManagerUI.populationModes.${mode}`))}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">${T('SaveSystem.generatedArtifacts')}</span>
+                    <span class="detail-label">${T('SaveSystem.worldMagic')}</span>
+                    <span>${escapeHtml(T(`WorldManagerUI.magicalLevels.${magic}`))}</span>
+                </div>
+                ${startYear ? `
+                <div class="detail-row">
+                    <span class="detail-label">${T('SaveSystem.worldStarted')}</span>
+                    <span>${escapeHtml(formatStartDate(startYear, info.startMonth))}</span>
+                </div>` : ""}
+                <div class="detail-row">
+                    <span class="detail-label">${T('SaveSystem.artifacts')}</span>
                     <span>${artifactCount}</span>
+                </div>
+                ${destinyLineHTML()}
+            </div>
+        `;
+    }
+
+    // Resolves saved world coordinates (worldX, worldY) for any savefile slot
+    function getSaveSlotCoordinates(slotId) {
+        // 1. Check DataManager.savefileInfo
+        const info = DataManager.savefileInfo(slotId);
+        if (info) {
+            if (typeof info.worldX === "number" && typeof info.worldY === "number") {
+                return { worldX: info.worldX, worldY: info.worldY, leaderName: savefileLeaderName(info) };
+            }
+            if (info.location && typeof info.location.worldX === "number") {
+                return { worldX: info.location.worldX, worldY: info.location.worldY, leaderName: savefileLeaderName(info) };
+            }
+        }
+        // 2. Check WorldManager parties (party.json / VisitingParties)
+        const WM = window.WorldManager;
+        const parties = (WM && typeof WM.getField === "function" && WM.getField("party", "parties")) ||
+            (window.$gameSystem && $gameSystem._partyPresence) || {};
+        const partyData = parties[slotId] || parties[String(slotId)];
+        if (partyData && partyData.location && typeof partyData.location.worldX === "number") {
+            return {
+                worldX: partyData.location.worldX,
+                worldY: partyData.location.worldY,
+                leaderName: partyData.leaderName || (info ? savefileLeaderName(info) : "")
+            };
+        }
+        // 3. If bound to active playthrough or slot is current or autosave
+        const bound = (window.$gameSystem && typeof $gameSystem.savefileId === "function") ? $gameSystem.savefileId() : 0;
+        if ((slotId === bound || slotId === 0) && window.$gameVariables) {
+            const wx = (window.$gameMap && $gameMap.mapId() === 315)
+                ? (window.$gamePlayer ? $gamePlayer.x : 0)
+                : ($gameVariables.value(43) || 0);
+            const wy = (window.$gameMap && $gameMap.mapId() === 315)
+                ? (window.$gamePlayer ? $gamePlayer.y : 0)
+                : ($gameVariables.value(44) || 0);
+            return { worldX: wx, worldY: wy, leaderName: info ? savefileLeaderName(info) : "" };
+        }
+        // 4. Default fallback (sector 6-3: 64, 160)
+        return { worldX: 64, worldY: 160, leaderName: info ? savefileLeaderName(info) : "" };
+    }
+
+    // Builds the World Map Segment HTML with selected party pin and adjacent party pins
+    function buildWorldMapSegmentHTML(selectedSlotId, visibleSlots) {
+        const coords = getSaveSlotCoordinates(selectedSlotId);
+        const worldX = coords.worldX;
+        const worldY = coords.worldY;
+        const leaderName = coords.leaderName;
+
+        const col = Math.max(1, Math.min(8, Math.floor(worldX / 32) + 1));
+        const row = Math.max(1, Math.min(8, Math.floor(worldY / 32) + 1));
+
+        const localX = Math.max(0, Math.min(31, worldX % 32));
+        const localY = Math.max(0, Math.min(31, worldY % 32));
+        const pinX = ((localX + 0.5) / 32) * 100;
+        const pinY = ((localY + 0.5) / 32) * 100;
+
+        // Find adjacent parties in the same segment
+        const adjacentPins = [];
+        const slots = visibleSlots || [];
+        const seenSlots = new Set([selectedSlotId]);
+
+        for (const sId of slots) {
+            if (seenSlots.has(sId)) continue;
+            seenSlots.add(sId);
+            const sInfo = DataManager.savefileInfo(sId);
+            if (!sInfo && sId !== 0) continue;
+
+            const sCoords = getSaveSlotCoordinates(sId);
+            if (!sCoords) continue;
+            const sCol = Math.max(1, Math.min(8, Math.floor(sCoords.worldX / 32) + 1));
+            const sRow = Math.max(1, Math.min(8, Math.floor(sCoords.worldY / 32) + 1));
+
+            if (sCol === col && sRow === row) {
+                const sLocX = Math.max(0, Math.min(31, sCoords.worldX % 32));
+                const sLocY = Math.max(0, Math.min(31, sCoords.worldY % 32));
+                const sPinX = ((sLocX + 0.5) / 32) * 100;
+                const sPinY = ((sLocY + 0.5) / 32) * 100;
+                const name = sCoords.leaderName ? `Party of ${sCoords.leaderName}` : (sId === 0 ? "Autosave" : `Slot ${sId}`);
+                adjacentPins.push({
+                    slotId: sId,
+                    name,
+                    pinX: sPinX,
+                    pinY: sPinY
+                });
+            }
+        }
+
+        const adjacentHTML = adjacentPins.map(adj => `
+            <div class="save-map-pin adjacent-party-pin" style="left:${adj.pinX.toFixed(1)}%; top:${adj.pinY.toFixed(1)}%;" title="Adjacent: ${escapeHtml(adj.name)}">
+                <div class="save-pin-dot adjacent"></div>
+                <div class="save-pin-label adjacent">${escapeHtml(adj.name)}</div>
+            </div>
+        `).join("");
+
+        const selectedLabel = leaderName ? `Party of ${leaderName}` : (selectedSlotId === 0 ? "Autosave" : `Slot ${selectedSlotId}`);
+
+        return `
+            <div class="save-map-section">
+                <div class="save-map-meta-bar">
+                    <div class="save-map-meta-item">
+                        <span class="detail-label">Coordinates:</span>
+                        <span class="save-coords-badge">X: ${worldX} | Y: ${worldY}</span>
+                    </div>
+                    <div class="save-map-meta-item">
+                        <span class="detail-label">Sector:</span>
+                        <span class="save-sector-badge">Row ${row} · Col ${col}</span>
+                    </div>
+                </div>
+
+                <div class="save-map-segment-frame">
+                    <img class="save-map-segment-img" src="img/worldmap/row-${row}-column-${col}.jpg" onerror="this.onerror=null; this.src='img/worldmap/row-6-column-3.jpg';" />
+                    
+                    <div class="save-map-pin selected-party-pin" style="left:${pinX.toFixed(1)}%; top:${pinY.toFixed(1)}%;">
+                        <div class="save-pin-pulse"></div>
+                        <div class="save-pin-dot"></div>
+                        <div class="save-pin-label">${escapeHtml(selectedLabel)}</div>
+                    </div>
+
+                    ${adjacentHTML}
                 </div>
             </div>
         `;
@@ -935,6 +1153,7 @@
 
         const useTranslation = ConfigManager.language === "it";
         const worldHTML = buildWorldInfoHTML(useTranslation);
+        const mapSegmentHTML = buildWorldMapSegmentHTML(this._selectedIndex, this._visibleSlots);
 
         // Update selected class on left list
         const items = this._dndContainer.querySelectorAll('.save-item');
@@ -953,10 +1172,6 @@
         let rightPageHTML = "";
 
         if (info) {
-            const charsHTML = buildPartyMembersHTML(info);
-
-            const dateStr = new Date(info.timestamp).toLocaleString(T('SaveSystem.dateLocale'));
-
             const showSave = this.mode() === "save" && canSaveTo(this._selectedIndex);
             const showLoad = true; // any existing savefile can be loaded
             // Another party of this world: visible and loadable, never writable.
@@ -970,35 +1185,21 @@
                     <div>
                         ${worldHTML}
                         <h3 class="detail-title">${info.title || T('SaveSystem.adventureLog')}</h3>
-                        <div class="save-11">
-                            <div class="detail-row">
-                                <span class="detail-label">${T('SaveSystem.playTime')}</span>
-                                <span>${info.playtime}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">${T('SaveSystem.recordedOn')}</span>
-                                <span>${dateStr}</span>
-                            </div>
-                        </div>
-                        
-                        <h4 class="save-12">
-                            ${T('SaveSystem.partyMembers')}
-                        </h4>
-                        ${charsHTML}
+                        ${mapSegmentHTML}
                     </div>
 
                     ${lockedNote}
 
                     <div class="save-13" style="margin-top:${lockedNote ?"6px" : "auto"}; padding-top: 10px; flex-wrap: wrap;">
                         ${showSave ? `
-                        <button class="action-btn focusable save-14" onclick="SceneManager._scene.executeSaveGame(${this._selectedIndex})">
+                        <button class="inspect-btn focusable save-14" onclick="SceneManager._scene.executeSaveGame(${this._selectedIndex})">
                             ${T('SaveSystem.save')}
                         </button>` : ""}
                         ${showLoad ? `
-                        <button class="action-btn focusable save-15" onclick="SceneManager._scene.loadSavefile(${this._selectedIndex})">
+                        <button class="inspect-btn inspect-btn--secondary focusable save-15" onclick="SceneManager._scene.loadSavefile(${this._selectedIndex})">
                             ${T('SaveSystem.load')}
                         </button>` : ""}
-                        <button class="action-btn focusable save-16" onclick="SceneManager._scene.deleteSavefile(${this._selectedIndex})">
+                        <button class="inspect-btn inspect-btn--danger focusable save-16" onclick="SceneManager._scene.deleteSavefile(${this._selectedIndex})">
                             ${T('SaveSystem.delete')}
                         </button>
                     </div>
@@ -1014,7 +1215,7 @@
             if (isSave && canSaveTo(this._selectedIndex)) {
                 saveBtnHTML = `
                     <div class="save-17">
-                        <button class="action-btn focusable save-18" onclick="SceneManager._scene.executePrimaryAction(${this._selectedIndex})">
+                        <button class="inspect-btn focusable save-18" onclick="SceneManager._scene.executePrimaryAction(${this._selectedIndex})">
                             ${T('SaveSystem.save')}
                         </button>
                     </div>
@@ -1023,7 +1224,10 @@
 
             rightPageHTML = `
                 <div class="save-details-card save-19">
-                    <div class="save-20">${worldHTML}</div>
+                    <div class="save-20">
+                        ${worldHTML}
+                        ${mapSegmentHTML}
+                    </div>
                     <div class="save-21">
                         "${emptyText}"
                     </div>
@@ -1041,7 +1245,7 @@
             // dropped a fresh button under a resting pointer and yanked focus
             // out of the list into the action row (PointerSteering, defined in
             // Core/AnalogStickInput.js).
-            detailsContainer.querySelectorAll('.action-btn.focusable').forEach((btn, i) => {
+            detailsContainer.querySelectorAll('.inspect-btn.focusable').forEach((btn, i) => {
                 btn.addEventListener('mouseenter', () => {
                     if (window.PointerSteering && !window.PointerSteering.isSteering()) return;
                     UIFileInputManager._focusMode = 'actions';

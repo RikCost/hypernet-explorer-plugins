@@ -1766,6 +1766,14 @@
       {
         "name": "Crack",
         "density": 0.3
+      },
+      {
+        "name": "Mushroom",
+        "density": 0.35
+      },
+      {
+        "name": "Torch",
+        "density": 0.12
       }
     ]
   },
@@ -1851,6 +1859,14 @@
       {
         "name": "SeaPlant",
         "density": 0.3
+      },
+      {
+        "name": "Mushroom",
+        "density": 0.35
+      },
+      {
+        "name": "Torch",
+        "density": 0.12
       }
     ]
   },
@@ -1948,6 +1964,14 @@
       {
         "name": "Crystal",
         "density": 0.3
+      },
+      {
+        "name": "MushroomIce",
+        "density": 0.35
+      },
+      {
+        "name": "Torch",
+        "density": 0.12
       }
     ]
   },
@@ -4951,6 +4975,14 @@
       {
         "name": "Vine",
         "density": 0.07
+      },
+      {
+        "name": "Mushroom",
+        "density": 0.35
+      },
+      {
+        "name": "Torch",
+        "density": 0.12
       }
     ]
   },
@@ -13956,6 +13988,10 @@
       {
         "name": "Stalagmite",
         "density": 0.36
+      },
+      {
+        "name": "Torch",
+        "density": 0.12
       }
     ]
   },
@@ -16850,6 +16886,14 @@
       {
         "name": "IcePool",
         "density": 0.18
+      },
+      {
+        "name": "MushroomIce",
+        "density": 0.35
+      },
+      {
+        "name": "Torch",
+        "density": 0.12
       }
     ]
   },
@@ -17179,6 +17223,14 @@
       {
         "name": "Glass",
         "density": 0.18
+      },
+      {
+        "name": "Mushroom",
+        "density": 0.35
+      },
+      {
+        "name": "Torch",
+        "density": 0.12
       }
     ]
   },
@@ -18200,6 +18252,14 @@
       {
         "name": "Bones",
         "density": 0.18
+      },
+      {
+        "name": "Mushroom",
+        "density": 0.35
+      },
+      {
+        "name": "Torch",
+        "density": 0.12
       }
     ]
   },

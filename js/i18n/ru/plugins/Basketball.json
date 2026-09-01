@@ -2,10 +2,10 @@
   "noThree": "three.js не загружен, баскетбол недоступен.",
   "player": "Игрок",
   "cpu": "Комп.",
-  "cpuLiningUp": "Компьютер прицеливается...",
+  "cpuLiningUp": "{opponent} прицеливается...",
   "itsGood": "ЕСТЬ!",
   "swish": "ЧИСТЫЙ БРОСОК!",
   "score": "ОЧКО!",
   "miss": "МИМО",
-  "finalScore": "Игрок: {player}  Комп.: {cpu}"
+  "finalScore": "Игрок: {player}  {opponent}: {opponentScore}"
 }

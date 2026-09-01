@@ -1604,6 +1604,10 @@
             this._world = new BowlWorld();
             this._playerFrames = emptyCard();
             this._cpuFrames = emptyCard();
+            // Who is on the next lane when nobody is holding the second pad:
+            // a companion, a local off the map, or the player's own head. Read
+            // once, so the same person bowls all ten frames.
+            this._standIn = window.MinigameOpponent?.pick() ?? null;
             this._frame = 0;
             this._isPlayerTurn = true;
             this._standing = Array(10).fill(true);
@@ -1726,7 +1730,10 @@
         }
 
         opponentName() {
-            return this.isSplitScreen() ? "PLAYER 2" : "CPU";
+            if (this.isSplitScreen()) return T('Bowling.player2');
+            return window.MinigameOpponent
+                ? window.MinigameOpponent.nameOf(this._standIn, T('Bowling.cpu'))
+                : T('Bowling.cpu');
         }
 
         // Input source for whoever is currently bowling.
@@ -1826,7 +1833,7 @@
             if (this.isCpuTurn()) {
                 this._state = STATE.CPU;
                 this._timer = 50;
-                this._status.setText(T('Bowling.cpuThinking'));
+                this._status.setText(T('Bowling.cpuThinking', { opponent: this.opponentName() }));
                 this.updateHeldBallPose();
                 this._alley.setAimGuide(0, 0, false);
                 return;
@@ -1979,6 +1986,10 @@
                 else if (value === 2) window.MinigameFun.lost('Tenpin Bowling');
                 else window.MinigameFun.draw('Tenpin Bowling');
             }
+
+            // MinigameFun pays the party; a local who was talked into ten
+            // frames is paid their own leisure here.
+            if (!this.isSplitScreen()) window.MinigameOpponent?.payFun(this._standIn);
 
             this._state = STATE.GAMEOVER;
             this._alley.setCameraMode(CAM_RESULT);

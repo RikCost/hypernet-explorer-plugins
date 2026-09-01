@@ -136,5 +136,9 @@
     "Ottobre",
     "Novembre",
     "Dicembre"
-  ]
+  ],
+  "opponent": {
+    "subconscious": "Subconscio",
+    "funShared": "{name} ha apprezzato la partita"
+  }
 }

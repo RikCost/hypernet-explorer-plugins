@@ -1896,6 +1896,45 @@
   }
 
   /**
+   * SHADOW PEN (layer 4)
+   *
+   * RPG Maker draws the little half-tile shadow itself: paint a wall in the
+   * editor and it stamps the shadow byte 5 - the two LEFT quadrants, bits
+   * 1 (top-left) and 4 (bottom-left) - on the tile immediately EAST of the
+   * wall, unless that tile is a wall as well. Nothing in the runtime redoes
+   * that (Tilemap only READS the byte), so a map we build ourselves has no
+   * shadows at all unless we stamp them the same way.
+   *
+   * The rule is measured off the shipped maps rather than remembered: of the
+   * 30246 shadow-5 tiles in data/, 27336 sit east of a wall tile that is not
+   * itself a wall, and both halves of what the engine calls a wall cast it -
+   * the A4 wall TOP (the ceiling/ledge kind) as well as the A3/A4 wall SIDE.
+   * Existing bytes are never touched, so shadows a prefab was painted with in
+   * the editor stay exactly as its author left them.
+   */
+  function applyAutoShadows(mapData, width, height) {
+    if (!mapData || width <= 0 || height <= 0) return;
+    if (typeof Tilemap === "undefined" || !Tilemap.isWallTile) return;
+    const shadowEnd = width * height * 5;
+    if (mapData.length < shadowEnd) {
+      for (let i = mapData.length; i < shadowEnd; i++) mapData[i] = 0;
+    }
+    // A wall on either tile layer casts: the generators put their walls on
+    // layer 0, authored prefabs often carry theirs on layer 1.
+    const isWallAt = (x, y) =>
+      Tilemap.isWallTile(mapData[calculateIndex(x, y, 0, width, height)] || 0) ||
+      Tilemap.isWallTile(mapData[calculateIndex(x, y, 1, width, height)] || 0);
+    for (let y = 0; y < height; y++) {
+      for (let x = 1; x < width; x++) {
+        const idx = calculateIndex(x, y, 4, width, height);
+        if (mapData[idx]) continue;
+        if (!isWallAt(x - 1, y) || isWallAt(x, y)) continue;
+        mapData[idx] = 5;
+      }
+    }
+  }
+
+  /**
    * Reconcile cave walls and ceilings to guarantee visual integrity:
    * 1. Prunes small isolated/orphaned ceiling fragments (< 6 contiguous tiles) that do not connect to borders.
    * 2. Removes any orphaned CaveWall tiles (walls without a Ceiling or valid CaveWall above them).
@@ -2006,6 +2045,41 @@
       }
     }
 
+    // Pass 2b: Normalise the gap under every south-facing ceiling edge.
+    // A wall face is drawn on the tiles under a ceiling edge, so a gap too
+    // narrow to hold a full face plus one walkable row used to be given a
+    // SHORTER face than the gap beside it (two wall heights in one chamber),
+    // or none at all, leaving a ceiling tile with bare floor under its south
+    // edge. Widen the gap instead by eating the ceiling row above it, so every
+    // face below can be drawn at the one height. The top rows are left alone:
+    // they are the sealed map border and must never be opened.
+    const isCeilAt = (cx, cy) => isCeiling(mapData[calculateIndex(cx, cy, 0, width, height)]);
+    for (let pass = 0; pass < 6; pass++) {
+      let changed = false;
+      for (let x = 0; x < width; x++) {
+        for (let y = wallHeight + 1; y < height - 1; y++) {
+          if (!isCeilAt(x, y) || isCeilAt(x, y + 1)) continue;
+          let gap = 0;
+          for (let k = y + 1; k < height && !isCeilAt(x, k); k++) gap++;
+          if (gap >= wallHeight + 1) continue;
+          mapData[calculateIndex(x, y, 0, width, height)] = caveFloorTile;
+          changed = true;
+        }
+      }
+      // Eating one column at a time leaves one-tile fins of ceiling standing
+      // between two open spaces, and the autotile has to corner around a strip
+      // a single tile wide - the ugliest shape the blend can draw, and never
+      // readable as rock. Anything that thin goes with the rest.
+      for (let y = 0; y < height; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          if (!isCeilAt(x, y) || isCeilAt(x - 1, y) || isCeilAt(x + 1, y)) continue;
+          mapData[calculateIndex(x, y, 0, width, height)] = caveFloorTile;
+          changed = true;
+        }
+      }
+      if (!changed) break;
+    }
+
     // Pass 3: Draw CaveWalls below each CaveCeiling (South-facing edges)
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
@@ -2022,22 +2096,14 @@
                 gap++;
               }
 
-              // Determine wall height so passages and rooms stay open
-              let hWall = wallHeight;
-              if (y + 1 + gap < height) {
-                // There is ceiling below this gap
-                if (gap <= 1) {
-                  hWall = 0; // Keep floor in 1-tile passage so player is never blocked
-                } else if (gap === 2) {
-                  hWall = 1; // 1 wall, 1 floor
-                } else {
-                  hWall = Math.min(wallHeight, gap - 2); // Keep at least 2 floor tiles in wider passages
-                  if (hWall < 1 && gap >= 2) hWall = 1;
-                }
-              } else {
-                // Gap extends to bottom boundary
-                hWall = Math.min(wallHeight, Math.max(0, gap - 1));
-              }
+              // Pass 2b already widened every gap it was allowed to touch, so
+              // the face is drawn at the one height wherever it fits with a
+              // walkable row left under it. Only the untouchable border rows
+              // can still come up short, and there the face is clamped rather
+              // than blocking the passage.
+              const hWall = gap >= wallHeight + 1
+                ? wallHeight
+                : Math.max(0, gap - 1);
 
               for (let dy = 1; dy <= hWall; dy++) {
                 const wy = y + dy;
@@ -4507,6 +4573,44 @@
     }
   }
 
+  // The world map's region plane (one country id per square), run-length
+  // encoded so the whole 256x256 grid costs about fifteen kilobytes in the
+  // snapshot. Anything that needs the nation standing on a coordinate while the
+  // party is somewhere else reads this instead of parsing the 1.3MB Map315.json.
+  function buildWorldRegionRLE() {
+    if (typeof $dataMap === "undefined" || !$dataMap || !$dataMap.data) return null;
+    if (typeof $gameMap === "undefined" || !$gameMap || $gameMap.mapId() !== WORLD_MAP_ID) return null;
+    const w = $dataMap.width;
+    const h = $dataMap.height;
+    const base = 5 * w * h;
+    const rle = [];
+    let cur = -1;
+    let run = 0;
+    for (let i = 0; i < w * h; i++) {
+      const v = $dataMap.data[base + i] || 0;
+      if (v === cur) { run++; continue; }
+      if (cur >= 0) rle.push(cur, run);
+      cur = v;
+      run = 1;
+    }
+    if (cur >= 0) rle.push(cur, run);
+    return { width: w, height: h, rle };
+  }
+
+  // Expand a snapshot's region block back into one id per square.
+  function expandWorldRegionRLE(regions) {
+    if (!regions || !Array.isArray(regions.rle) || !regions.width || !regions.height) return null;
+    const layer = new Uint16Array(regions.width * regions.height);
+    let i = 0;
+    for (let p = 0; p < regions.rle.length; p += 2) {
+      const value = regions.rle[p] || 0;
+      const count = regions.rle[p + 1] || 0;
+      if (value) for (let k = 0; k < count; k++) layer[i + k] = value;
+      i += count;
+    }
+    return { layer, width: regions.width, height: regions.height };
+  }
+
   function exportBiomesMapToFile(cache, riverCoordMap, bridgeCoordMap, underBiomeMap) {
     try {
       const Roads = window.ProcGenRoads;
@@ -4552,6 +4656,8 @@
         // dress and generates differently from the same square entered off the
         // live world map.
         underBiomes: underBiomeMap || {},
+        // The country region plane, run-length encoded. See buildWorldRegionRLE.
+        regions: buildWorldRegionRLE(),
       };
 
       const fs = require("fs");
@@ -4719,6 +4825,7 @@
     generateCaveWithCellularAutomata,
     generateCaveWithVoronoi,
     smoothCaveCeilingMask,
+    applyAutoShadows,
     reconcileCaveWallsAndCeilings,
     cleanupOrphanedWallsAndCeilings,
     generateMountainBiomeTerrain,
@@ -4746,6 +4853,7 @@
     getWorldMapEvents,
     loadBiomesMapFromFile,
     exportBiomesMapToFile,
+    expandWorldRegionRLE,
     WORLD_MAP_ID,
     WORLD_TILESET_ID,
     PROC_MAP_ID,

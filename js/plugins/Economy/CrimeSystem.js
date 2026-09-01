@@ -372,12 +372,72 @@
     // variable and the chase is mirrored onto it, 6 while it is on and 0 the
     // rest of the time. It is off, and it is not a second source of truth.
     const LEGACY_CHASE_VALUE = 6;
+    function isNightTime() {
+        if (typeof $gameWeather !== 'undefined' && $gameWeather) {
+            const mode = $gameWeather.sunlightMode;
+            if (mode === 'night') return true;
+            if (mode === 'day') return false;
+            if ($gameWeather.currentHour !== undefined) {
+                const h = $gameWeather.currentHour;
+                return h >= 20 || h < 6;
+            }
+        }
+        if (typeof $gameVariables !== 'undefined' && $gameVariables) {
+            const dateStr = $gameVariables.value(113);
+            if (dateStr && typeof dateStr === 'string') {
+                const timePart = dateStr.split(' ')[3];
+                if (timePart) {
+                    const h = parseInt(timePart.split(':')[0], 10);
+                    if (!isNaN(h)) return h >= 20 || h < 6;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Darkness/Night advantage: applies at night on exterior maps and in maps tagged <Dark>,
+    // but does NOT apply in interior maps (<Interior>) unless explicitly tagged <Dark>.
+    function isDarkOrNightCrimeEnvironment() {
+        if ($dataMap && $dataMap.note) {
+            const note = $dataMap.note;
+            if (/<Dark>/i.test(note)) return true;
+            if (/<Interior>/i.test(note)) return false;
+        }
+        if (typeof window.isProceduralInteriorMap === "function" && window.isProceduralInteriorMap()) {
+            return true;
+        }
+        if (window.DungeonFloors && typeof window.DungeonFloors.currentFloor === "function" && window.DungeonFloors.currentFloor() < 0) {
+            return true;
+        }
+        if ($gameVariables && typeof $gameVariables.value(1) === "number" && $gameVariables.value(1) < 0) {
+            return true;
+        }
+        if ($gameMap && $gameMap.mapId() === 636) {
+            const data = $gameSystem && $gameSystem._procGenData;
+            if (data) {
+                if (data._dungeonSession && data._dungeonSession.type === "tower") return true;
+                if (data.biomeLayerStack && data.biomeLayerStack.length > 0) return true;
+                const b = (data.currentBiome || "").toLowerCase();
+                if (b.includes("cave") || b.includes("dungeon") || b.includes("crypt") || b.includes("sewer") || b.includes("cellar") || b.includes("vault")) {
+                    return true;
+                }
+                if (typeof window.isInteriorBiome === "function" && window.isInteriorBiome(data.currentBiome)) {
+                    return false;
+                }
+            }
+        }
+        return isNightTime();
+    }
+
     // What a crime is worth in heat: jaywalking 4, petty theft 9, murder 52,
     // genocide 86. Bounties run 15 to 500,000, so it is read on a log scale.
+    // In dark/night conditions (exterior night or <Dark>), heat generated from crimes is reduced by 40% (0.6x multiplier).
     function heatForBounty(bounty) {
         const worth = Math.max(0, Number(bounty) || 0);
         if (worth <= 0) return 0;
-        return Math.min(HEAT_MAX, Math.round(20 * Math.log10(1 + worth / 25)));
+        const baseHeat = Math.min(HEAT_MAX, Math.round(20 * Math.log10(1 + worth / 25)));
+        const nightMultiplier = isDarkOrNightCrimeEnvironment() ? 0.6 : 1.0;
+        return Math.max(1, Math.round(baseHeat * nightMultiplier));
     }
 
     // An officer is whoever answers to the police common events, or is simply
@@ -726,7 +786,7 @@
         }
 
         static isWanted() {
-            return this.getHeat() >= HEAT_CHASE;
+            return this.getHeat() >= this.heatChaseThreshold();
         }
 
         // The heat as the menu prints it.
@@ -734,8 +794,9 @@
             return Math.round((this.getHeat() / HEAT_MAX) * 100);
         }
 
+        // In dark/night conditions, officers are less aggressive and require higher heat (65) to actively chase
         static heatChaseThreshold() {
-            return HEAT_CHASE;
+            return isDarkOrNightCrimeEnvironment() ? 65 : HEAT_CHASE;
         }
 
         // ==================================================================
@@ -804,10 +865,12 @@
             return this.notoriety().index >= this.NOTORIETY_TIERS.indexOf('wanted');
         }
 
-        // Called on the map tick. Three rules, in order: a manhunt with nothing
-        // to charge the party with is called off, an officer close enough to
+        // ------------------------------------------------------------------
+        // Wanted heat, spotting and decay
+        // ------------------------------------------------------------------
+        // Called on map updates. Having an officer lay eyes on and
         // recognise a party who is ALREADY being hunted pins it at full, and
-        // otherwise the trail cools with the clock.
+        // otherwise the trail cools with the clock (faster in dark/night conditions).
         static updateHeat() {
             if (!$gameVariables) return;
             const now = this.worldMinute();
@@ -844,14 +907,16 @@
             }
             const minutes = now - since;
             if (minutes <= 0) return;
-            const shed = Math.floor(minutes * HEAT_DECAY_PER_MINUTE);
+            // Trails cool 50% faster in dark/night conditions
+            const decayRate = isDarkOrNightCrimeEnvironment() ? (HEAT_DECAY_PER_MINUTE * 1.5) : HEAT_DECAY_PER_MINUTE;
+            const shed = Math.floor(minutes * decayRate);
             if (shed < 1) return;
             // Spend only the minutes that paid for a whole point. At this rate
             // a point costs a couple of minutes, so moving the anchor to `now`
             // would throw the remainder away on every tick and the trail would
             // never actually cool; carrying it is what makes an hour of waiting
             // worth an hour however often this is called.
-            $gameSystem._crimeHeatMinute = since + shed / HEAT_DECAY_PER_MINUTE;
+            $gameSystem._crimeHeatMinute = since + shed / decayRate;
             this.setHeat(heat - shed);
         }
 
@@ -868,25 +933,25 @@
             if (!$gameMap || !$gamePlayer || !SceneManager._scene) return null;
             const scene = SceneManager._scene;
             if (!(scene instanceof Scene_Map)) return null;
-            // Nobody is being watched while the screen is black. Sleeping,
-            // waiting and cryo all run their clock advance from inside
-            // Scene_Map (TimeDateSystem), so without this an officer who
-            // happened to be standing outside the inn would re-pin the heat
-            // every second of the night and the party would wake as wanted as
-            // they went to bed, which is the opposite of what resting is for.
-            if (scene._sleepSequenceState || scene._sleepAdvance || scene._cryoSequenceState) return null;
+            // Nobody is being watched while the screen is black or waiting
+            if (scene._sleepSequenceState || scene._sleepAdvance || scene._waitAdvance || scene._cryoSequenceState || (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp._isWaitingFastForward)) return null;
             const px = $gamePlayer.x;
             const py = $gamePlayer.y;
+            // In dark/night conditions, visibility is reduced: shorter spot range (3 tiles) and narrower cone (75°)
+            const isDarkOrNight = isDarkOrNightCrimeEnvironment();
+            const spotRange = isDarkOrNight ? 3 : HEAT_SPOT_RANGE;
+            const spotCone = isDarkOrNight ? 75 : HEAT_SPOT_CONE;
+
             for (const ev of $gameMap.events()) {
                 if (!ev || ev._erased) continue;
                 const dx = Math.abs($gameMap.deltaX(ev.x, px));
                 const dy = Math.abs($gameMap.deltaY(ev.y, py));
-                if (dx > HEAT_SPOT_RANGE || dy > HEAT_SPOT_RANGE) continue;
+                if (dx > spotRange || dy > spotRange) continue;
                 const distance = dx + dy;
-                if (distance > HEAT_SPOT_RANGE) continue;
+                if (distance > spotRange) continue;
                 if (!isOfficerEvent(ev)) continue;
                 if (distance > HEAT_SPOT_TOUCH) {
-                    if (!inSightCone(ev, px, py, HEAT_SPOT_CONE)) continue;
+                    if (!inSightCone(ev, px, py, spotCone)) continue;
                     if (!hasSightLine(ev.x, ev.y, px, py)) continue;
                 }
                 return ev;

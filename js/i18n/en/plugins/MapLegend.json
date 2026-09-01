@@ -23,7 +23,19 @@
     "quests": "Quests",
     "zoom": "Zoom in and out",
     "interact": "Interact with or dismantle an object",
-    "returnToWorld": "Return to the world map"
+    "returnToWorld": "Return to the world map",
+    "moveMouse": "Move the mouse",
+    "holdLeftClick": "Hold Left Click",
+    "voxWalk": "Walk through the 3D world",
+    "voxLook": "Look around",
+    "voxJump": "Jump (again at a wall to kick off it)",
+    "voxRun": "Run",
+    "voxDig": "Break the block you are looking at",
+    "voxPlace": "Put a block back down",
+    "voxBar": "Change quick bar: blocks, items, spells",
+    "voxSlot": "Take a cell of the quick bar in hand",
+    "voxInteract": "Interact: talk, loot, chests, get in a vehicle",
+    "voxMap": "Change the map view"
   },
   "areas": {
     "tutorialVillage": {

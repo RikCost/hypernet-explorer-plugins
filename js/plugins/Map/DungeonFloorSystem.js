@@ -1,14 +1,16 @@
 
 /*:
  * @target MZ
- * @plugindesc v1.6.2 Creates a 100-floor dungeon system with robust map validation for stair placement.
+ * @plugindesc v1.7.0 Creates a 100-floor dungeon system with robust map validation for stair placement.
  * @author Omni-Lex
  * @url https://nocoldiz.itch.io/hypernet-explorer
  * @help DungeonFloorSystem.js
  *
  * ######This plugin creates a dungeon system with 100 floors and a town level.
- * Floors are organized into 10 levels (A through J), each with 9 regular floors
- * and 1 elevator floor at the end of each level.
+ * Every floor is dealt from ONE pool: the maps sitting in the dungeon folders,
+ * map 166 first among them. There are no per-level A to J pools any more, so
+ * any floor map can turn up at any depth. Only the elevator halls are fixed,
+ * one on every tenth floor.
  *
  * --- New in v1.6.2: Staircase Map Validation ---
  * The plugin now validates maps to ensure they can be used for dungeon floors.
@@ -218,48 +220,17 @@
   }
 
   window.DungeonFloorSystemParams = {
-    levelAMaps: [
-      9, [12, 139], 13, 14, [15, 140, 348, 406, 546, 543], [16, 429], 17, 18,
-      [19, 332, 697, 698], [20, 344, 407], [21, 334, 336, 335], [22, 446],
-      [23, 346], [24, 71], 26, 27, 29, [99, 329, 330], [31, 164, 425, 426],
-      [34, 328], [32, 345, 428], [30, 316], 421
+    // Every floor of the tower is dealt from ONE pool: the maps sitting
+    // directly in the dungeon folder (map 166). A map added to that folder is
+    // a floor, no list to edit. The groups below only say which maps belong to
+    // the SAME floor: a floor spread over several rooms, keyed by the room the
+    // pool deals. Ids that are not in the folder are ignored.
+    floorGroups: [
+      [12, 139], [15, 140, 348, 406, 546, 543], [16, 429], [19, 332, 697, 698],
+      [20, 344, 407], [21, 334, 336, 335], [22, 446], [23, 346], [24, 71],
+      [99, 329, 330], [31, 164, 425, 426], [34, 328], [32, 345, 428],
+      [30, 316], [693, 693, 695], [63, 622, 623, 629, 624, 626, 627, 628]
     ],
-    levelBMaps: [
-      25, 28, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-      51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, [693, 693, 695]
-    ],
-    levelCMaps: [
-      62, [63, 622, 623, 629, 624, 626, 627, 628], 64, 66, 67, 68, 69, 70, 72,
-      73, 74, 75, 77, 78, 79, 80, 81, 82, 83, 84
-    ],
-    levelDMaps: [
-      2, 5, 6, 8, 11, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98,
-      100, 126, 127, 129, 130, 131, 132
-    ],
-    levelEMaps: [
-      176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189,
-      190, 191, 192, 193, 194, 195
-    ],
-    levelFMaps: [
-      196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
-      210, 211, 212, 213, 214, 215
-    ],
-    levelGMaps: [
-      216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
-      230, 231, 232, 233, 234, 235
-    ],
-    levelHMaps: [
-      236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
-      250, 251, 252, 253, 254, 255, 256
-    ],
-    levelIMaps: [
-      257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270,
-      271, 272, 273, 274, 275, 276
-    ],
-    levelJMaps: [
-      277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290,
-      291, 292, 293, 294, 295, 296, 297, 298
-    ],    
     elevatorMaps: [112,113,114,115,116,117,118,119],
     demoMode: String(parameters.demoMode) === "true",
     demoMaxFloor: 10,
@@ -269,10 +240,12 @@
     // (interiors reached from that floor) and the whole multi-map group it
     // belongs to.
     demoExcludedMaps: [33, 733, 732, 735, 736, 737, 29, 691],
-    // MapInfos folder holding the Level A floors. The demo draws from every
-    // map in it, so a floor added to the folder is dealt without editing the
-    // hand-listed pool above.
-    levelAFolderId: 166,
+    // MapInfos folder holding every dungeon floor. The whole tower, demo and
+    // full run alike, draws from the maps sitting in it.
+    dungeonFolderId: 166,
+    // The floors still sitting in the old per-level folders count as part of
+    // the same single pool, so nothing is lost until they are moved under 166.
+    dungeonFolderIds: [166, 167, 168, 169, 170, 171, 172, 173, 174, 175],
     townMapId: parseInt(parameters.townMapId || 1),
     arenaMapId: parseInt(parameters.arenaMapId || 2),
     arenaMapX: parseInt(parameters.arenaMapX || 5),
@@ -466,33 +439,43 @@ Game_System.prototype.findRegion14Tiles = function (mapData) {
     return excluded;
   };
 
-  // The maps the demo may deal to floors 2 to 9: every Level A floor except the
-  // excluded ones. An excluded map is never put into the pool, so no later step
-  // can hand it out. Entries keep their multi-room groups.
-  Game_System.prototype.demoFloorPool = function () {
-    const excluded = this.demoExcludedMapIds();
-    const allows = (entry) =>
-      !(Array.isArray(entry) ? entry : [entry]).some((id) => excluded.has(id));
+  // The one pool every floor is dealt from: the maps sitting directly in the
+  // dungeon folder, each expanded into its room group when it has one. There
+  // are no per-level pools any more, so a map is as likely on floor 3 as on
+  // floor 97. Elevator halls and the boss floor are never in it.
+  Game_System.prototype.dungeonMapPool = function () {
+    const infos = window.$dataMapInfos;
+    if (!Array.isArray(infos)) return [];
+
+    const groupFor = new Map();
+    for (const group of params.floorGroups) {
+      if (Array.isArray(group) && group.length) groupFor.set(group[0], group);
+    }
+    const reserved = new Set([
+      ...params.elevatorMaps,
+      params.bossFloorMapId,
+      params.townMapId,
+      101,
+    ]);
 
     const pool = [];
-    const listed = new Set();
-    for (const entry of params.levelAMaps) {
-      for (const id of Array.isArray(entry) ? entry : [entry]) listed.add(id);
-      if (allows(entry)) pool.push(entry);
-    }
-
-    // Any other map sitting directly in the Level A folder counts as a floor
-    // too, so a map added to the folder is dealt without editing the list.
-    const infos = window.$dataMapInfos;
-    if (Array.isArray(infos)) {
-      for (let id = 0; id < infos.length; id++) {
-        const info = infos[id];
-        if (info && info.parentId === params.levelAFolderId && !listed.has(id)) {
-          if (allows(id)) pool.push(id);
-        }
-      }
+    for (let id = 0; id < infos.length; id++) {
+      const info = infos[id];
+      if (!info || params.dungeonFolderIds.indexOf(info.parentId) < 0) continue;
+      if (reserved.has(id)) continue;
+      pool.push(groupFor.has(id) ? [...groupFor.get(id)] : id);
     }
     return this.validateMapPool(pool);
+  };
+
+  // The demo draws from the same single pool, minus the excluded maps. An
+  // excluded map is never put into the pool, so no later step can hand it out.
+  Game_System.prototype.demoFloorPool = function () {
+    const excluded = this.demoExcludedMapIds();
+    return this.dungeonMapPool().filter(
+      (entry) =>
+        !(Array.isArray(entry) ? entry : [entry]).some((id) => excluded.has(id))
+    );
   };
 
   // True when a stored demo layout still holds maps the exclusions now forbid,
@@ -558,16 +541,16 @@ Game_System.prototype.findRegion14Tiles = function (mapData) {
         // Floor 1: map 101
         this._dungeonFloors[1] = 101;
 
-        // Floor 2 to (final - 1): Level A, minus the excluded maps
+        // Floor 2 to (final - 1): the single pool, minus the excluded maps
         const lastFloor = params.demoMaxFloor;
-        const levelAPool = this.demoFloorPool();
+        const demoPool = this.demoFloorPool();
         const uniqueNeeded = lastFloor - 2;
         for (let floor = 2; floor < lastFloor; floor++) {
-            if (levelAPool.length > 0) {
-                const index = Math.floor(this._seededRandom() * levelAPool.length);
-                this._dungeonFloors[floor] = levelAPool[index];
-                if (levelAPool.length >= uniqueNeeded) {
-                    levelAPool.splice(index, 1); // Remove to avoid duplicates if enough maps
+            if (demoPool.length > 0) {
+                const index = Math.floor(this._seededRandom() * demoPool.length);
+                this._dungeonFloors[floor] = demoPool[index];
+                if (demoPool.length >= uniqueNeeded) {
+                    demoPool.splice(index, 1); // Remove to avoid duplicates if enough maps
                 }
             }
         }
@@ -585,28 +568,24 @@ Game_System.prototype.findRegion14Tiles = function (mapData) {
         $gameVariables.setValue(params.maxFloorVariable, 0);
         return;
     }
-    const levelMaps = [
-      params.levelAMaps,
-      params.levelBMaps,
-      params.levelCMaps,
-      params.levelDMaps,
-      params.levelEMaps,
-      params.levelFMaps,
-      params.levelGMaps,
-      params.levelHMaps,
-      params.levelIMaps,
-      params.levelJMaps,
-    ];
-
-    // --- VALIDATION LOGIC ---
-    const validatedLevelMaps = levelMaps.map(levelMapPool =>
-        this.validateMapPool(levelMapPool)
-    );
-    // --- END VALIDATION ---
-
+    // One pool for the whole tower. Floors are dealt from a bag that is
+    // reshuffled whenever it runs dry, so no floor repeats until every map has
+    // been used once.
+    const pool = this.dungeonMapPool();
+    if (pool.length === 0) {
+      console.warn("DungeonFloorSystem: no valid dungeon floors with Region 13 in folder " + params.dungeonFolderId);
+    }
+    let bag = [];
+    const dealFloor = () => {
+      if (pool.length === 0) return null;
+      if (bag.length === 0) bag = [...pool];
+      const index = Math.floor(this._seededRandom() * bag.length);
+      return bag.splice(index, 1)[0];
+    };
 
     this._dungeonFloors[100] = params.bossFloorMapId;
 
+    // Elevator halls keep their fixed maps on every tenth floor.
     const elevatorFloors = [10, 20, 30, 40, 50, 60, 70, 80, 90];
     const elevatorMaps = [...params.elevatorMaps];
 
@@ -614,40 +593,22 @@ Game_System.prototype.findRegion14Tiles = function (mapData) {
 
     for (let i = 0; i < elevatorFloors.length; i++) {
       const floor = elevatorFloors[i];
-      if (i < elevatorMaps.length) {
-        this._dungeonFloors[floor] = elevatorMaps[i];
-      } else {
-        const randomIndex = Math.floor(
-          this._seededRandom() * validatedLevelMaps[0].length
-        );
-        this._dungeonFloors[floor] = validatedLevelMaps[0][randomIndex];
-      }
+      // There are fewer hall maps than tenth floors, so the list wraps: every
+      // tenth floor is a lift hall, never an ordinary room without doors.
+      this._dungeonFloors[floor] = elevatorMaps.length
+        ? elevatorMaps[i % elevatorMaps.length]
+        : this._dungeonFloors[floor];
     }
 
-    for (let level = 0; level < 10; level++) {
-      const startFloor = level * 10 + 1;
-      const endFloor = startFloor + 8;
-      const levelMapPool = [...validatedLevelMaps[level]]; // Use validated maps
-      const noDuplicates = levelMapPool.length >= 9;
-
-      for (let floor = startFloor; floor <= endFloor; floor++) {
-        if (floor === 1) {
-          this._dungeonFloors[floor] = 101;
-          continue;
-        }
-        if (levelMapPool.length === 0) {
-            console.warn(`DungeonFloorSystem: No valid maps with Region ID 13 available for Level ${String.fromCharCode(65 + level)} (Floors ${startFloor}-${endFloor}).`);
-            continue;
-        };
-
-        let index = Math.floor(this._seededRandom() * levelMapPool.length);
-        const mapId = levelMapPool[index];
-        this._dungeonFloors[floor] = mapId;
-
-        if (noDuplicates) {
-          levelMapPool.splice(index, 1);
-        }
+    for (let floor = 1; floor <= 99; floor++) {
+      if (floor === 1) {
+        this._dungeonFloors[floor] = 101;
+        continue;
       }
+      if (elevatorFloors.indexOf(floor) >= 0) continue;
+      const entry = dealFloor();
+      if (entry === null) continue;
+      this._dungeonFloors[floor] = entry;
     }
 
     this.initializeStairLocations();
@@ -1230,8 +1191,9 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
   }
 
   // Which structure a floor is. Read off the procedural catalogue, which is the
-  // only list of them, so a structure added there is dealt down here too. A
-  // patron's vault belongs to one hatch in one world square and is never dealt.
+  // only list of them, so a structure added there is dealt down here too. The
+  // vault is the exception: it is the rarest find out in the world and stays a
+  // find, never a floor the tower simply hands over.
   function towerStructureKeys() {
     const D = window.ProcGenDungeon;
     const all = (D && typeof D.structures === "function") ? D.structures() : [];
@@ -1743,6 +1705,57 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
 
   // The named façade. Everything outside this plugin that has to know how deep
   // the world has been, or what a creature down here weighs, asks through it.
+  // ---------------------------------------------------------------------------
+  // What lives on an authored floor. A floor of the upper tower is a rung, and
+  // the rung says which levels stand on it, whichever map was dealt to it:
+  //
+  //   floors 1-10   ->  enemy levels 1-20      floors 51-60  ->  60-70
+  //   floors 11-20  ->  20-30                  floors 61-70  ->  70-80
+  //   floors 21-30  ->  30-40                  floors 71-80  ->  80-90
+  //   floors 31-40  ->  40-50                  floors 81-90  ->  90-100
+  //   floors 41-50  ->  50-60                  floors 91-99  ->  100 and up
+  //
+  // and floor 100, the throne at the top, holds the one thing built for it.
+  // The party's own level, how far from home the map lies and the enemy spawn
+  // option in the menu all have no say inside the tower: the floor decides.
+  // ---------------------------------------------------------------------------
+  const THRONE_BAND = { min: 140, max: 160 };
+
+  function upperFloorEnemyBand(floor) {
+    if (!Number.isFinite(floor) || floor < 1 || floor > 100) return null;
+    if (floor === 100) return { min: THRONE_BAND.min, max: THRONE_BAND.max };
+    if (floor >= 91) return { min: 100, max: Infinity };
+    if (floor <= 10) return { min: 1, max: 20 };
+    const decade = Math.ceil(floor / 10);
+    return { min: decade * 10, max: decade * 10 + 10 };
+  }
+
+  // The authored floor the party is standing on, 0 when they are not on one.
+  // The floor variable can go stale, so it is only believed when the map the
+  // party is on really is one of that floor's rooms; otherwise the layout is
+  // searched for the map.
+  function currentAuthoredFloor() {
+    if (typeof $gameMap === "undefined" || !$gameMap) return 0;
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return 0;
+    if (currentTowerFloor()) return 0; // the lower tower answers its own rules
+    const mapId = $gameMap.mapId();
+    if (!isDungeonMap(mapId) && mapId !== ACCURSED_MARKET_MAP_ID) return 0;
+    if (onElevatorFloor()) return 0;
+
+    const floors = $gameSystem._dungeonFloors || [];
+    const holds = (floor) => {
+      const entry = floors[floor];
+      if (!entry) return false;
+      return Array.isArray(entry) ? entry.indexOf(mapId) >= 0 : entry === mapId;
+    };
+    const current = $gameVariables.value(params.currentFloorVariable);
+    if (holds(current)) return current;
+    for (let floor = 1; floor <= 100; floor++) {
+      if (holds(floor)) return floor;
+    }
+    return 0;
+  }
+
   window.DungeonFloors = {
     deepestFloor: TOWER.DEEPEST,
     isLowerFloor,
@@ -1758,6 +1771,12 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
     floorLevel: towerEnemyLevel,
     // The party is on a floor the lift is the only way off of.
     insideTower,
+    // The authored floor the party is on (upper tower), and the enemy levels
+    // that floor holds. The encounter system reads these instead of the spawn
+    // mode whenever they answer.
+    currentAuthoredFloor,
+    floorEnemyBand: upperFloorEnemyBand,
+    currentEnemyBand() { return upperFloorEnemyBand(currentAuthoredFloor()); },
     // The tower denies the free first-turn escape from battle.
     escapeIsContested,
     // Takes a "leave this place" request and answers it with the elevator.
@@ -2056,29 +2075,19 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
   function isDungeonMap(mapId) {
     if (!mapId || mapId <= 0) return false;
 
-    // Check if map is in any of the dungeon floor lists
-    const allDungeonMaps = [
-      ...params.levelAMaps,
-      ...params.levelBMaps,
-      ...params.levelCMaps,
-      ...params.levelDMaps,
-      ...params.levelEMaps,
-      ...params.levelFMaps,
-      ...params.levelGMaps,
-      ...params.levelHMaps,
-      ...params.levelIMaps,
-      ...params.levelJMaps,
-      ...params.elevatorMaps
-    ];
-
-    // Flatten array in case of nested arrays and check if mapId is included
-    for (const entry of allDungeonMaps) {
-      if (Array.isArray(entry)) {
-        if (entry.includes(mapId)) return true;
-      } else if (entry === mapId) {
-        return true;
+    // Any map in the dungeon folder, or hanging off one of its floors, plus
+    // the elevator halls.
+    const infos = window.$dataMapInfos;
+    if (Array.isArray(infos)) {
+      let id = mapId;
+      let guard = 0;
+      while (infos[id] && guard++ < 100) {
+        if (params.dungeonFolderIds.indexOf(infos[id].parentId) >= 0) return true;
+        id = infos[id].parentId;
+        if (!id) break;
       }
     }
+    if (params.elevatorMaps.indexOf(mapId) >= 0) return true;
 
     // Also check boss floor
     if (mapId === params.bossFloorMapId) return true;

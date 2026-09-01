@@ -33,7 +33,7 @@
  * @text Permanent Minimap
  * @desc Keep the minimap active across maps, scenes, and transfers by default
  * @type boolean
- * @default true
+ * @default false
  *
  * @param opacity
  * @text Map Opacity
@@ -120,7 +120,7 @@
     const mapWidth = Number(parameters['mapWidth']) || 240;
     const mapHeight = Number(parameters['mapHeight']) || 180;
     const renderScale = Math.max(1, Math.min(4, Number(parameters['renderScale']) || 2));
-    const permanentMinimap = parameters['permanentMinimap'] !== 'false';
+    const permanentMinimap = parameters['permanentMinimap'] === 'true';
     const MINIMAP_SCALE = renderScale;
     const paramOpacity = Number(parameters['opacity']) || 180;
     const playerColor = parameters['playerColor'] || '#FF0000';
@@ -1093,7 +1093,7 @@
     // ------------------------------------------------------------------------
 
     function toggleMapState() {
-        // New Cycle: 1 (Zoomed Mini) -> 2 (Default Mini) -> 3 (Full Map) -> 1 ...
+        // Cycle: 1 (Zoomed Mini) -> 2 (Default Mini) -> 3 (Full Map) -> 0 (Hidden) -> 1 ...
         if (currentMapState === 1) {
             currentMapState = 2; // Go to Default Minimap
         } else if (currentMapState === 2) {
@@ -1101,7 +1101,7 @@
             resetZoom();
             fullscreenBitmap = null; // Clear cache to reload tiles
         } else if (currentMapState === 3) {
-            currentMapState = 1; // Go back to Zoomed Minimap
+            currentMapState = 0; // Hide the map entirely
             fullscreenBitmap = null;
             focusTileHint = null; // manual cycling follows the party again
         } else {
@@ -2262,14 +2262,10 @@
         // Minimap permanence logic: check if the map explicitly disables minimap (<NoMinimap>)
         const noMinimap = !!($dataMap && $dataMap.note && /<NoMinimap>/i.test($dataMap.note));
 
-        // Retrieve persistent minimap state (default to state 1: Zoomed Minimap)
-        let savedState = 1;
+        // Retrieve persistent minimap state (default to state 0: hidden)
+        let savedState = permanentMinimap ? 1 : 0;
         if ($gameSystem && typeof $gameSystem._minimapState === 'number') {
             savedState = $gameSystem._minimapState;
-        } else if (!permanentMinimap) {
-            const isProcInterior = mapId === 636 && window.ProceduralInteriors &&
-                window.ProceduralInteriors.isCurrent && window.ProceduralInteriors.isCurrent();
-            savedState = (mapId === 315 || (mapId === 636 && !isProcInterior)) ? 1 : 0;
         }
 
         // Revert Fullscreen (state 3) back to Minimap (state 1) on scene transfer

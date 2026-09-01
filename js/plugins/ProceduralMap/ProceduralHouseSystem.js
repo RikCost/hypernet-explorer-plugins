@@ -100,6 +100,8 @@
       // passes through it. Everything else is residential and gets occupants.
       isBuildingPublic(building) { return isBuildingPublic(building); },
       isPublicPool(poolName) { return isPublicPool(poolName); },
+      isSkyscraperBuilding(building) { return isSkyscraperBuilding(building); },
+      isSkyscraperPool(poolName) { return isSkyscraperPool(poolName); },
       isResidentialBuilding(building) { return isResidentialBuilding(building); },
       isPublicInteriorMap(mapId) { return isPublicInteriorMap(mapId); },
       normalizePoolName(poolName) { return normalizePoolName(poolName); },
@@ -148,7 +150,7 @@
       // between every cell, so they enter through enterTileDoorAt and tell the
       // seed which cell it is through setSeedSaltProvider. interiorMapIdFor
       // answers "what is behind this door" without opening it.
-      enterTileDoorAt(poolName, x, y) { return enterTileDoorAt(poolName, x, y); },
+      enterTileDoorAt(poolName, x, y, forcedHouseId, forceOpen) { return enterTileDoorAt(poolName, x, y, forcedHouseId, forceOpen); },
       interiorMapIdFor(poolName, x, y, mapId) { return interiorMapIdFor(poolName, x, y, mapId); },
       // ── Doors that name their own trade (tileset 303) ──────────────────────
       // Which interiors a trade door may open onto, and which one THIS door
@@ -164,9 +166,8 @@
   const parameters = PluginManager.parameters(pluginName);
   
   const parentMapConfig = {
-    "houses": 1132,
+    "houses": [1132, 1134],
     "skyscrapers": 1133,
-    "huts": 1134,
     "villas": 1135,
     "floors": 1136,
     "skyfloors": 1137,
@@ -177,8 +178,7 @@
   
   const housePoolsJSON = {
     "abandoned": [1395, 1396, 1397],
-    "houses": [638, 640, 641, 642, 643, 644, 648, 649, 651, 653, 653, 656],
-    "huts": [646, 665, 669, 670, 673],
+    "houses": [638, 640, 641, 642, 643, 644, 646, 648, 649, 651, 653, 653, 656, 665, 669, 670, 673],
     "skyscrapers": [649, 671, 672],
     "villas": [644, 647, 650, 652, 655, 657, 658, 661, 662, 666, 668],
     "skyfloors": [1143, 1144, 1145, 1146, 1147, 1148, 1149, 1150, 1151],
@@ -204,8 +204,13 @@
 
   function generateAutomaticHousePools() {
     const pools = {};
+    // A pool may name more than one parent map: the old "huts" parent (1134)
+    // was folded into "houses", so both sets of child maps are one pool now.
     for (const [poolName, parentId] of Object.entries(parentMapConfig)) {
-      pools[poolName] = getChildMapsOfParent(parentId);
+      const parentIds = Array.isArray(parentId) ? parentId : [parentId];
+      const maps = new Set();
+      parentIds.forEach(id => getChildMapsOfParent(id).forEach(m => maps.add(m)));
+      pools[poolName] = Array.from(maps).sort((a, b) => a - b);
     }
     return pools;
   }
@@ -401,7 +406,7 @@
     const excludedPools = ['skyfloors', 'floors'];
     
     // Normalize poolName and handle singular/plural mapping
-    let targetPoolName = poolName ? poolName.trim() : "";
+    let targetPoolName = normalizePoolName(poolName);
     if (targetPoolName !== "") {
       if (housePools[targetPoolName]) {
         return [...housePools[targetPoolName]];
@@ -477,8 +482,8 @@
   }
 
   // ── Building identity: residential vs. public ───────────────────────────────
-  // Every building the player can walk into is either a HOME (a house, hut,
-  // villa, abandoned shell, inn, shop, or a low-rise with residential floors),
+  // Every building the player can walk into is either a HOME (a house,
+  // patron villa, abandoned shell, inn, shop, or a low-rise with residential floors),
   // which belongs to specific NPCs of the surrounding town, or a PUBLIC space
   // (a skyscraper and its upper floors), which belongs to nobody and is instead
   // frequented by the whole town at any hour. NPCSystem branches on this.
@@ -490,13 +495,16 @@
   // procedural towns.
   const PUBLIC_PARENT_IDS = [1133, 1137];
   const PUBLIC_POOLS = new Set(["skyscrapers", "skyfloors"]);
+  const SKYSCRAPER_POOLS = new Set(["skyscrapers", "skyfloors"]);
 
   // Pool names are authored inconsistently across map events ("skyscraper",
   // "skyscrapers", "house", ""), so normalize the same way getHouseList does.
   function normalizePoolName(poolName) {
     const n = String(poolName || "").trim().toLowerCase();
     if (!n) return "";
-    if (n === "house") return "houses";
+    // The huts pool was merged into houses: any leftover authored "hut"/"huts"
+    // pool name resolves to the house pool.
+    if (n === "house" || n === "hut" || n === "huts") return "houses";
     return n.endsWith("s") ? n : n + "s";
   }
 
@@ -504,10 +512,24 @@
     return PUBLIC_POOLS.has(normalizePoolName(poolName));
   }
 
+  function isSkyscraperPool(poolName) {
+    return SKYSCRAPER_POOLS.has(normalizePoolName(poolName));
+  }
+
+  function isSkyscraperBuilding(building) {
+    if (!building) return false;
+    const base = buildingBasePool(building);
+    if (isSkyscraperPool(base)) return true;
+    if (building.interiorMapId && $dataMapInfos && $dataMapInfos[building.interiorMapId]) {
+      return PUBLIC_PARENT_IDS.includes($dataMapInfos[building.interiorMapId].parentId);
+    }
+    return false;
+  }
+
   // Only private homes can be locked. The night lockpick/bash prompt (and the
-  // lockDoors block) applies to the houses, villas and huts pools; every other
+  // lockDoors block) applies to the houses pool; every other
   // pool (shops, inns, skyscrapers, abandoned, floors, ...) is always visitable.
-  const LOCKABLE_POOLS = new Set(["houses", "villas", "huts"]);
+  const LOCKABLE_POOLS = new Set(["houses"]);
 
   function isLockablePool(poolName) {
     return LOCKABLE_POOLS.has(normalizePoolName(poolName));
@@ -530,14 +552,11 @@
 
   function isBuildingPublic(building) {
     if (!building) return false;
-    if (building.type === "enterMultiBuilding") {
-      // enterMultiBuilding defaults an empty base pool to "skyscrapers", so an
-      // untagged multi-floor entrance is a skyscraper too.
-      if (isPublicPool(building.baseFloorPool || "skyscrapers")) return true;
-    } else if (isPublicPool(building.poolName)) {
-      return true;
-    }
-    return isPublicInteriorMap(building.interiorMapId);
+    if (COMMERCIAL_POOLS.has(buildingBasePool(building))) return true;
+    const interior = building.interiorMapId;
+    if (interior && $dataMapInfos && $dataMapInfos[interior] &&
+        COMMERCIAL_PARENT_IDS.includes($dataMapInfos[interior].parentId)) return true;
+    return false;
   }
 
   // Inns and shops are commercial: they are staffed (see NPCSystem's <Shop>
@@ -551,11 +570,10 @@
       : normalizePoolName(building.poolName);
   }
 
-  // True for the buildings that townspeople are actually assigned to live in:
-  // houses, huts, villas, abandoned shells and residential walk-ups.
+  // True for buildings that can house residents: houses, abandoned shells,
+  // residential walk-ups, and skyscrapers (which house wealthy citizens on their floors).
   function isResidentialBuilding(building) {
     if (!building) return false;
-    if (isBuildingPublic(building)) return false;
     if (COMMERCIAL_POOLS.has(buildingBasePool(building))) return false;
     const interior = building.interiorMapId;
     if (interior && $dataMapInfos && $dataMapInfos[interior] &&
@@ -1246,22 +1264,13 @@
     return min + Math.floor(seededRandom(seed) * (max - min + 1));
   }
 
-  // DoorHouse picks its interior pool from the surrounding chunk's biome: proper
-  // settlements (City/Village/Burg, incl. their Desert/Ice/... variants) use the
-  // normal townhouse pool, while any other biome (a lone farmstead, a hamlet on
-  // a Plains/Forest/... tile, ...) gets a rural home instead, seeded from the
-  // door tile so the same door always resolves to the same pool.
-  function isSettlementBiomeName(name) {
-    const n = (name || "").toLowerCase();
-    return n.includes("city") || n.includes("village") || n.includes("burg");
-  }
-
-  function residentialPoolForDoor(useFacing) {
-    const biomeName = ($gameSystem._procGenData && $gameSystem._procGenData.currentBiome) || "";
-    if (isSettlementBiomeName(biomeName)) return "houses";
-    const c = getEventCoordinates(useFacing);
-    const seed = (createSeed($gameMap.mapId(), c.x, c.y) ^ 0x48565A) >>> 0;
-    return seededRandom(seed) < 0.5 ? "huts" : "villas";
+  // Every DoorHouse opens onto the one residential pool, whatever the biome
+  // around it: the old huts pool was folded into houses, so a lone farmstead
+  // and a townhouse draw from the same interiors. The villas pool is not a
+  // residential pool at all any more: it belongs to the patron vault hatches,
+  // and no procedural door and no NPC home ever selects it.
+  function residentialPoolForDoor() {
+    return "houses";
   }
 
   // Descend through a DoorDungeon tile into a procedural, coordinate-seeded
@@ -1300,9 +1309,8 @@
   function runInteractFeature(name) {
     switch (name) {
       case "DoorHouse": {
-        const pool = residentialPoolForDoor(true);
-        // Huts are always single-floor; only houses/villas roll a 2nd floor.
-        if (pool !== "huts" && seededFloorCount(true, 1, 2, 0x484F) >= 2) {
+        const pool = residentialPoolForDoor();
+        if (seededFloorCount(true, 1, 2, 0x484F) >= 2) {
           enterMultiBuilding(pool, "floors", 1, true);
         } else {
           visitHouse(pool, true);
@@ -1360,17 +1368,23 @@
   // seed, the return point, the lock and the lockpick prompt all read the door
   // tile rather than wherever the party happens to be standing. Returns true
   // only when the entry was actually taken.
-  function enterTileDoorAt(poolName, x, y) {
+  // forcedHouseId pins the interior instead of rolling one off the door tile
+  // (PatreonRewards' hatch, which owes its patron ONE villa, the same one on
+  // every visit and in every world), and forceOpen skips the lock entirely.
+  // A pinned interior is always the single floor it names: rolling a second one
+  // on top of it would put the party in a stairwell the pin never asked for.
+  function enterTileDoorAt(poolName, x, y, forcedHouseId = null, forceOpen = false) {
     if (!interactFeatureReady(true)) return false;
     const pool = normalizePoolName(poolName) || "houses";
     _callerEventId = 0;
     return withDoorTile({ x, y }, () => {
-      // Huts, shops and inns are always one floor; a house or a villa rolls a
+      // Shops, inns and pinned villas are always one floor; a house rolls a
       // second one off its own tile, exactly like a DoorHouse feature does.
-      if ((pool === "houses" || pool === "villas") && seededFloorCount(true, 1, 2, 0x484F) >= 2) {
+      if (!forcedHouseId && pool === "houses" &&
+          seededFloorCount(true, 1, 2, 0x484F) >= 2) {
         enterMultiBuilding(pool, "floors", 1, true);
       } else {
-        visitHouse(pool, true);
+        visitHouse(pool, true, forcedHouseId, forceOpen);
       }
       return true;
     });
@@ -1424,7 +1438,7 @@
   // Shared door gate for every entrance (houses, multi-floor buildings, shops,
   // inns, ...). The door-open animation and the transfer are both deferred to
   // `doEntry` so nothing happens until the door actually opens:
-  //   - non-lockable pool   -> always open (only houses/villas/huts can lock).
+  //   - non-lockable pool   -> always open (only houses can lock).
   //   - "unlocked" in the door event's Note -> always open.
   //   - lockDoors param ON  -> fully blocked ("Get out of my house!").
   //   - daytime / forced    -> open animation, then doEntry.

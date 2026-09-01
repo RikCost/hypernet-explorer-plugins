@@ -1460,6 +1460,13 @@
             // this map goes through, so it reflects the truly finished square.
             prefabbedMapData.add(mapData);
             pg._prefabbedSig = mapDataFingerprint(mapData, biomeName, worldCoords);
+            // Shadows last, over the finished square: the shadow pen keys off
+            // the walls, and the prefab pass above is the last thing that can
+            // still move one. Authored shadows a prefab brought with it are
+            // left alone (see applyAutoShadows).
+            if (Utils2 && Utils2.applyAutoShadows) {
+              Utils2.applyAutoShadows(mapData, PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
+            }
             // A stitched window (WorldMapReturn's ProcStitch) composes this
             // square together with its neighbours and lays THAT on $dataMap, so
             // putting the single square back here would wipe the other eight.

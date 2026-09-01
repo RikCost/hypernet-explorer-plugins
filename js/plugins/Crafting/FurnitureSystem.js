@@ -2298,8 +2298,8 @@
     }
 
     // ── House catalog (buyable 1-floor templates from ProceduralHouseSystem) ───
-    const HOUSE_TAB_POOLS = ['houses', 'huts', 'inns', 'shops'];
-    const HOUSE_DOOR_TYPE = { houses: 'DoorHouse', huts: 'DoorHouse', inns: 'DoorInn', shops: 'DoorShop' };
+    const HOUSE_TAB_POOLS = ['houses', 'inns', 'shops'];
+    const HOUSE_DOOR_TYPE = { houses: 'DoorHouse', inns: 'DoorInn', shops: 'DoorShop' };
     // Real Doors-category furniture pieces (img/furniture/Doors/), reused as
     // the actual sprite for each door type instead of a placeholder block.
     const HOUSE_DOOR_IMAGE_ID = {
