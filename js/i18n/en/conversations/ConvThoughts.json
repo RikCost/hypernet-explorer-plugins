@@ -1,263 +1,292 @@
 {
   "need": {
     "sleep": [
-      "I really need to rest...",
-      "I can barely keep my eyes open.",
-      "Home is calling me.",
-      "Just a few more steps and then I'll sleep."
+      "I {really need to rest|could sleep standing up|am running on nothing}...",
+      "I can {barely keep my eyes open|hardly see straight|feel my eyes closing}.",
+      "{Home|My own bed|A quiet room} is calling me.",
+      "Just a few more {steps|streets|minutes} and then I {sleep|lie down|stop}.",
+      "{Bed|Sleep|Rest} first. {Everything else|The rest of it|All the rest} can {wait|keep|hold}.",
+      "I have been {awake|up|on my feet} since {before dawn|first light|the small hours}."
     ],
     "hunger": [
-      "My stomach is growling...",
-      "I could really eat something right now.",
-      "Is there a vending machine nearby?",
-      "I need to find food."
+      "My stomach is {growling|complaining|making a scene}...",
+      "I could {really eat something|eat a whole loaf|manage a hot meal} right now.",
+      "Is there {a vending machine|a stall|somewhere to eat} nearby?",
+      "I need to {find food|eat something|get a meal in me}.",
+      "{Bread|Soup|Anything warm} would do. {Anything|Truly anything|Even the cheap stuff}.",
+      "I keep {smelling|thinking about|imagining} {bread|frying oil|something on a fire}."
     ],
     "work": [
-      "Time for another shift.",
-      "At least the pay is steady.",
-      "I should get to work.",
-      "Another day, another coin."
+      "Time for {another shift|the day's work|the grind}.",
+      "At least the {pay|money|wage} is {steady|honest|reliable}.",
+      "I should {get to work|be at my post|start already}.",
+      "{Another day, another coin|Same work, same wage|The work does itself, does it}.",
+      "{Duty|The work|My shift} first. {It always is|As always|That is the arrangement}.",
+      "The {ledger|counter|bench} will not {mind itself|do the work|keep}."
     ],
     "leisure": [
-      "Nice day for a stroll.",
-      "Maybe I'll check out the arcade.",
-      "I wonder what's happening around here.",
-      "I have some free time, what should I do?"
+      "{Nice|Fine|Good enough} day for {a stroll|a wander|doing nothing}.",
+      "Maybe I'll {check out the arcade|sit by the water|see who is about}.",
+      "I wonder what's {happening|going on|about} {around here|in town|today}.",
+      "I have some {free time|hours to myself|slack in the day}. {What now|What should I do|Where to}?",
+      "Nobody {needs|wants|expects} me for {an hour|a while|the rest of the afternoon}.",
+      "{Wine|A walk|A song} and {an hour|the evening|nothing at all} to fill."
     ],
     "crime": [
-      "Nobody's watching...",
-      "Just this once.",
-      "I need the money more than they do.",
-      "If I'm quick, no one will notice."
+      "{Nobody's watching|No eyes on me|The street is empty}...",
+      "Just {this once|the one time|tonight}.",
+      "I need the {money|coin|thing} more than they do.",
+      "If I'm {quick|careful|clever}, {no one will notice|it never happened|nobody is any the wiser}.",
+      "{One|A single|Just one} {mistake|slip|careless second} and I am {finished|in the cells|marked}.",
+      "{Take it|Do it|Go} and {do not run|walk normally|keep your hands still}."
     ],
     "hygiene": [
-      "I really need to wash up.",
-      "I feel grimy, where's the nearest sink?",
-      "A trip to the WC wouldn't hurt.",
-      "I should clean myself up a bit."
+      "I {really need to wash up|need a wash|cannot stand myself}.",
+      "I feel {grimy|filthy|like a ditch}. Where's the {nearest sink|nearest pump|WC}?",
+      "A {trip to the WC|proper wash|bucket of clean water} wouldn't hurt.",
+      "I should {clean myself up|make myself presentable|scrub this off} {a bit|properly|before anyone sees}.",
+      "{Soap|Hot water|A clean shirt}. {That is all I ask|Is that so much|Just that}."
     ],
     "money": [
-      "I'm running low on funds.",
-      "I should figure out how to make some money.",
-      "Things are getting expensive...",
-      "I need to top up my wallet."
+      "I'm {running low on funds|down to coppers|nearly out}.",
+      "I should {figure out how to make some money|find work|sell something}.",
+      "{Things|Everything|Bread and rent} are getting {expensive|dearer|worse}...",
+      "I need to {top up my wallet|earn|find a few coins}.",
+      "{Rent|The bill|What I owe} comes {either way|regardless|whether I have it or not}.",
+      "I have {counted|checked|been through} this purse {three times|twice today|again}."
     ],
     "safety": [
-      "I should keep a low profile for a while.",
-      "Better stash this somewhere safe.",
-      "I don't want any trouble right now.",
-      "Best to lay low until things cool down."
+      "I should {keep a low profile|stay out of sight|be careful} {for a while|a few days|until this passes}.",
+      "Better {stash this somewhere safe|hide this|get this out of my hands}.",
+      "I don't want {any trouble|a fight|questions} right now.",
+      "{Best to lay low|Stay in|Keep my head down} until {things cool down|it blows over|they lose interest}.",
+      "{Someone|Somebody|Someone with a badge} has been {watching|asking|looking} {this street|for me|around}."
     ],
     "comfort": [
-      "I could use a nicer place to stay.",
-      "Maybe it's time to upgrade my living situation.",
-      "A proper bed would be nice for once.",
-      "I've saved enough, why not treat myself?"
+      "I could use a {nicer place to stay|room with a window|roof that holds}.",
+      "Maybe it's time to {upgrade my living situation|move somewhere better|stop living like this}.",
+      "A {proper bed|warm room|dry floor} would be {nice for once|a change|worth every coin}.",
+      "I've {saved enough|earned it|scraped it together}. {Why not treat myself|Why not|I deserve one comfort}.",
+      "{Warmth|A soft chair|One good blanket} is not {too much to want|a luxury|asking much}."
     ],
     "social": [
-      "I should go meet some new people.",
-      "It's been a while since I had a good conversation.",
-      "I wonder who's around today.",
-      "Maybe I'll run into someone interesting."
+      "I should {go meet some new people|find company|talk to somebody}.",
+      "It's been a while since I {had a good conversation|heard a friendly voice|spoke to anyone}.",
+      "I wonder {who's around|who is in town|who I might run into} today.",
+      "Maybe I'll {run into someone interesting|find a familiar face|be talked at for an hour}.",
+      "{A friend|Company|Someone|Anyone at all} would {do me good|help|be welcome}."
     ],
     "null": [
-      "..."
+      "...",
+      "{Hm|Mm|...}.",
+      "{...|Hmph.|Well.}"
     ]
   },
   "crimeIntent": [
-    "That {item} would look better in my pocket...",
-    "I really want that {item}.",
-    "Nobody would miss one {item}, right?",
-    "If I'm quick, that {item} is mine.",
-    "Just one {item}. They'll never notice."
+    "That {item} would look {better in my pocket|well on me|at home with me}...",
+    "I {really want|have wanted|cannot stop looking at} that {item}.",
+    "Nobody would {miss|notice|count} one {item}, {right|surely|would they}?",
+    "If I'm {quick|careful|clever}, that {item} is {mine|coming with me|gone}.",
+    "Just one {item}. {They'll never notice|Who counts these|Nobody counts these}.",
+    "{One {item}|That {item}|A single {item}} and I {walk out normally|leave|am gone}.",
+    "{They|The owner|Whoever owns this} has {plenty|a shelf of them|more than enough} {item}s."
   ],
   "crimeSuccess": [
-    "Got the {item}. Walk natural. Walk natural.",
-    "One {item}, free of charge.",
-    "That was almost too easy.",
-    "This {item} is mine now."
+    "Got the {item}. {Walk natural. Walk natural|Do not run|Do not look back}.",
+    "One {item}, {free of charge|on the house|for nothing}.",
+    "That was {almost too easy|hardly a challenge|quicker than I thought}.",
+    "This {item} is {mine now|coming home with me|paid for in nerve}.",
+    "{Hands still|Face flat|Breathe normally}. {Just keep walking|Keep going|Nearly at the corner}."
   ],
   "crimeCaught": [
-    "They saw me take the {item}...",
-    "I shouldn't have grabbed that {item}.",
-    "Great. Now there's a price on my head.",
-    "Lay low. Lay low. Lay low."
+    "They {saw me take|caught me with|watched me lift} the {item}...",
+    "I {shouldn't have grabbed|should never have touched|had to reach for} that {item}.",
+    "{Great|Wonderful|Perfect}. Now there's {a price on my head|a bounty|my name on a list}.",
+    "{Lay low|Keep walking|Say nothing}. {Lay low|Say nothing|Deny it all}.",
+    "{One {item}|A single {item}|That stupid {item}} and I have {ruined the month|earned a cell|thrown it away}."
   ],
   "itemBuy": {
     "cheap": [
-      "A fine little {item}, and barely cost a thing.",
-      "This {item} will do nicely.",
-      "Can't go wrong with a cheap {item}.",
-      "Happy with my {item}.",
-      "Just what I needed, a {item}."
+      "A {fine|neat|serviceable} little {item}, and {barely cost a thing|cheap as bread|nearly free}.",
+      "This {item} will {do nicely|serve|see me through}.",
+      "Can't go wrong with a {cheap|honest|plain} {item}.",
+      "{Happy|Pleased|Content} with my {item}.",
+      "Just what I needed, a {item}.",
+      "A {item} for that price? {Someone was not paying attention|I will take two|Sold}."
     ],
     "pricey": [
-      "This {item} cost me, but it's worth it.",
-      "A {item} like this doesn't come cheap.",
-      "I splurged on a {item}. No regrets.",
-      "Quality {item}. You get what you pay for.",
-      "An expensive {item}, but I deserve it."
+      "This {item} {cost me|hurt the purse|took a week's wage}, but it's worth it.",
+      "A {item} like this doesn't {come cheap|grow on trees|turn up twice}.",
+      "I {splurged|went too far|emptied the purse} on a {item}. {No regrets|Not one regret|Do not ask}.",
+      "{Quality|Real craft|Proper work}, this {item}. You get what you pay for.",
+      "An {expensive|dear|frankly ruinous} {item}, but I {deserve it|wanted it|will enjoy it}.",
+      "{One good {item}|A {item} like this} beats {five bad ones|a shelf of rubbish|any bargain}."
     ]
   },
   "itemBrowse": {
     "cheap": [
-      "This {item} is cheap enough to tempt me.",
-      "A {item}, hm. Maybe another day.",
-      "Not bad, this {item}.",
-      "I could use a {item} like that.",
-      "That {item} catches my eye."
+      "This {item} is {cheap enough to tempt me|priced to move|hard to argue with}.",
+      "A {item}, {hm|hmm|well}. {Maybe another day|Not today|Perhaps later}.",
+      "{Not bad|Decent enough|Better than it looks}, this {item}.",
+      "I {could use|would find a use for|keep meaning to buy} a {item} like that.",
+      "That {item} {catches my eye|keeps drawing me back|is well made for the money}."
     ],
     "pricey": [
-      "That {item} is far too dear for me.",
-      "A {item} at that price? Highway robbery.",
-      "I can only admire a {item} like that.",
-      "Lovely {item}, shame about the price.",
-      "Who can afford a {item} these days?"
+      "That {item} is {far too dear|beyond me|out of reach} for me.",
+      "A {item} at that price? {Highway robbery|Daylight theft|They must be joking}.",
+      "I can only {admire|look at|dream about} a {item} like that.",
+      "{Lovely|Beautiful|Fine} {item}, {shame about the price|pity about the tag|and priced for someone else}.",
+      "Who can {afford|justify|pay for} a {item} {these days|at that price|in this economy}?"
     ]
   },
   "itemDisposition": {
     "greedy": [
-      "I want more.",
-      "Mine, all mine.",
-      "Never enough."
+      "I want {more|another|all of them}.",
+      "{Mine, all mine|Mine now|And it stays mine}.",
+      "{Never|It is never|Nothing is ever} enough.",
+      "One is {a start|never the last|the first of several}."
     ],
     "frugal": [
-      "Still, I should save my coin.",
-      "Do I really need it?",
-      "A penny saved..."
+      "Still, I should {save my coin|put something by|not have spent that}.",
+      "Do I {really need it|need it at all|need this}?",
+      "{A penny saved|A coin kept|Every coin counts}...",
+      "That is {a week of bread|two nights of rent|money I will want later}."
     ],
     "vain": [
-      "I'll be the envy of the street.",
-      "Looks matter.",
-      "Only the finest for me."
+      "I'll be the {envy of the street|talk of the market|best-dressed thing here}.",
+      "{Looks matter|Appearances count|People notice}.",
+      "Only the {finest|best|very best} for me.",
+      "Let them {look|stare|talk}."
     ],
     "generous": [
-      "Perhaps I'll gift it to someone.",
-      "Sharing is its own reward.",
-      "Someone could use this."
+      "Perhaps I'll {gift it to someone|pass it on|give it away}.",
+      "{Sharing is its own reward|Better shared|It is no use to me alone}.",
+      "{Someone|Somebody|A friend} could {use this|do with this|be glad of this}.",
+      "I know {exactly who|just the person|whose face this would light up}."
     ]
   },
   "familiar": [
-    "I wonder if I'll see that traveller again.",
-    "That person has been around a lot lately.",
-    "I almost feel like I know them.",
-    "Strange how we keep crossing paths.",
-    "I trust them more than most strangers."
+    "I wonder if I'll see that {traveller|wanderer|stranger} again.",
+    "That {person|one|face} has been {around a lot lately|about all week|hard to miss}.",
+    "I almost {feel like I know them|count them a friend|forget they are a stranger}.",
+    "{Strange|Funny|Odd} how we {keep crossing paths|keep meeting|end up in the same streets}.",
+    "I {trust|like|mind} them {more than most strangers|better than most|well enough}.",
+    "One of these days I should {ask their name|say something|stop staring and speak}."
   ],
   "capability": {
     "cooking_station": [
-      "That meal hit the spot.",
-      "Cooking for myself beats buying out.",
-      "I should do that more often."
+      "That meal {hit the spot|was worth the trouble|sat well}.",
+      "Cooking for myself {beats buying out|costs half as much|tastes better anyway}.",
+      "I should {do that more often|cook more|keep this up}."
     ],
     "container": [
-      "Finders keepers.",
-      "You'd be surprised what people leave lying around.",
-      "A little extra never hurts."
+      "{Finders keepers|Finders keepers, I say|Nobody claimed it}.",
+      "You'd be surprised what people {leave lying around|forget|never come back for}.",
+      "A little {extra|something|luck} never hurts."
     ],
     "rentable_room": [
-      "A real bed for once, wonderful.",
-      "Worth every coin for a good night's sleep.",
-      "I needed that rest."
+      "A {real bed|proper mattress|dry room} for once, {wonderful|at last|thank goodness}.",
+      "Worth {every coin|the price|the rent} for a {good night's sleep|full night|quiet night}.",
+      "I {needed that rest|slept like a stone|had forgotten what sleep was}."
     ],
     "apiary": [
-      "The hives are doing well this season.",
-      "Honey always sells.",
-      "Bees are good business."
+      "The hives are {doing well|thriving|heavy} this season.",
+      "Honey {always sells|never sits long|pays the winter}.",
+      "Bees are {good business|patient workers|better company than most}."
     ],
     "bank": [
-      "That should tide me over.",
-      "Better safe than sorry, into the vault it goes.",
-      "Banks. Can't live with them, can't live without them."
+      "That should {tide me over|hold me a month|cover the rent}.",
+      "{Better safe than sorry|Out of reach of thieves|Where nobody can lift it}, into the vault it goes.",
+      "Banks. {Can't live with them, can't live without them|All smiles and small print|They keep the coin, I keep the worry}."
     ],
     "real_estate_office": [
-      "Property really does pay for itself.",
-      "Another month, another rent cheque.",
-      "Owning land was the smartest thing I ever did."
+      "Property {really does pay for itself|pays while I sleep|was the one clever thing I did}.",
+      "Another {month|quarter|season}, another {rent cheque|payment|handful of coin}.",
+      "{Owning land|Buying that place|Signing that deed} was the {smartest thing I ever did|best day's work of my life|one bet that paid}."
     ],
     "stock_exchange": [
-      "Easy come, easy go.",
-      "The market giveth and the market taketh away.",
-      "I'll make it back next time."
+      "{Easy come, easy go|Up one day, down the next|That is the game}.",
+      "The market {giveth and the market taketh away|has no memory|owes nobody anything}.",
+      "I'll make it back {next time|next quarter|eventually}."
     ],
     "fast_travel_terminal": [
-      "Nothing like seeing somewhere new.",
-      "Travel clears the head.",
-      "Wonder what's out there today."
+      "Nothing like {seeing somewhere new|a change of sky|arriving somewhere}.",
+      "Travel {clears the head|shakes the dust off|is the only cure}.",
+      "Wonder what's {out there|down that road|waiting} today."
     ],
     "furniture_builder": [
-      "A few new touches and this place feels like home.",
-      "Nice things make a house a home.",
-      "That looks better already."
+      "A few new touches and this place {feels like home|is almost liveable|stops feeling borrowed}.",
+      "{Nice things|Small comforts|A good chair} make a house a home.",
+      "That looks {better already|much better|nearly right}."
     ]
   },
   "craving": {
     "nicotine": [
-      "I could murder a cigarette right now.",
-      "Just one, then I'll stop for the day.",
-      "Anyone got a light? Anyone at all?",
-      "My hands have started doing that thing again.",
-      "There was a pack in this coat. There was definitely a pack in this coat."
+      "I could {murder|kill for|do terrible things for} a cigarette right now.",
+      "Just one, then I'll {stop for the day|quit|leave it alone}.",
+      "Anyone got a light? {Anyone at all|Anybody|Please}?",
+      "My hands have started {doing that thing again|shaking|reaching for a pocket that is empty}.",
+      "There was a pack in this coat. There was {definitely|absolutely|certainly} a pack in this coat."
     ],
     "alcohol": [
-      "It is nearly late enough to call it a drink.",
-      "One glass. To settle. That is all.",
-      "Is that bar still open at this hour?",
-      "My mouth has gone dry in a way water will not fix.",
-      "I keep hearing bottles that are not there."
+      "It is {nearly|almost|very nearly} late enough to call it a drink.",
+      "One glass. {To settle|To steady the hands|To take the edge off}. That is all.",
+      "Is that {bar|tavern|place on the corner} still open at this hour?",
+      "My mouth has gone dry in a way {water will not fix|water does not touch|nothing honest will fix}.",
+      "I keep {hearing bottles|hearing glass|smelling the cellar} that {are not there|is not there|nobody else notices}."
     ],
     "caffeine": [
-      "I need a coffee before I am legally a person.",
-      "The headache is starting behind my eyes again.",
-      "Where does a man get a decent espresso around here?",
-      "I have read the same sign four times now.",
-      "Everything is too slow and it is my own fault."
+      "I need a coffee before I am {legally a person|fit for company|able to speak}.",
+      "The headache is {starting behind my eyes|creeping in|arriving on schedule} again.",
+      "Where does {a person|one|anybody} get a {decent|drinkable|proper} {espresso|coffee|cup} around here?",
+      "I have read the same {sign|line|page} {four times|three times|far too many times} now.",
+      "Everything is too slow and it is {my own fault|entirely my own fault|nobody's fault but mine}."
     ],
     "narcotic": [
-      "It is wearing off. I can feel exactly where it stops.",
-      "I said I would wait until tonight. It is not tonight.",
-      "The edges of everything have come back.",
-      "Just enough to be level. Not to be high.",
-      "I know a place. I do not want to know a place."
+      "It is {wearing off|thinning out|leaving}. I can feel {exactly where it stops|the edge of it|where it ends}.",
+      "I said I would wait until {tonight|dark|later}. It is not {tonight|dark|later}.",
+      "The {edges|corners|hard parts} of everything have {come back|returned|sharpened again}.",
+      "Just enough to be {level|steady|normal}. Not to be {high|anywhere|gone}.",
+      "I know a place. I {do not want to know a place|wish I did not|should not know a place}."
     ],
     "gambling": [
-      "One more slip. The odds are finally right.",
-      "I am owed a win. Mathematically, I am owed one.",
-      "The shop closes at four and I have not put anything on.",
-      "I could feel it turning yesterday. I could feel it.",
-      "Only what is in this pocket. Nothing more than that."
+      "One more {slip|hand|throw}. The odds are {finally right|due|turning}.",
+      "I am owed a win. {Mathematically, I am owed one|By any reckoning|The numbers say so}.",
+      "The shop closes at {four|six|dusk} and I have not {put anything on|placed a thing|had a bet}.",
+      "I could feel it {turning|coming|about to break} yesterday. I could {feel it|feel it in my teeth|swear to it}.",
+      "Only what is in {this pocket|this purse|my hand}. {Nothing more than that|Not a coin more|And then I stop}."
     ]
   },
   "withdrawal": {
     "nicotine": [
-      "I cannot hear anything over wanting a cigarette.",
-      "I would take one off the pavement at this point.",
-      "Nothing anybody says to me today is going in.",
-      "My whole head is a lit match with nothing to light."
+      "I cannot hear anything over {wanting a cigarette|the wanting|my own craving}.",
+      "I would take one {off the pavement|out of an ashtray|from a stranger's fingers} at this point.",
+      "Nothing anybody says to me today is {going in|reaching me|landing}.",
+      "My whole head is {a lit match with nothing to light|a struck match|smoke and no fire}."
     ],
     "alcohol": [
-      "The shaking has started and it does not stop on its own.",
-      "I am not right. I have not been right since this morning.",
-      "Do not talk to me until I have had something.",
-      "The room keeps arriving a second after I do."
+      "The shaking has {started|set in|begun} and it does not {stop on its own|stop|pass}.",
+      "I am not right. I have not been right since {this morning|dawn|yesterday}.",
+      "Do not {talk to me|come near me|ask me anything} until I have had something.",
+      "The room keeps {arriving a second after I do|sliding|catching up late}."
     ],
     "caffeine": [
-      "There is a nail going in behind my eye and it will not stop.",
-      "I am no use to anyone. None at all.",
-      "I have been awake for hours and asleep the whole time.",
-      "Somebody put a coffee in my hand before I say something."
+      "There is a {nail|spike|hot wire} going in behind my eye and it will not stop.",
+      "I am {no use to anyone|useless|good for nothing}. {None at all|Not today|Not a bit}.",
+      "I have been awake for hours and {asleep the whole time|absent the whole time|not once here}.",
+      "Somebody {put a coffee in my hand|bring me something|find me a cup} before I say something."
     ],
     "narcotic": [
-      "Every bone I own has an opinion about this.",
-      "I am cold and it is not cold out.",
-      "I will do almost anything at this point and I know it.",
-      "The clock has stopped moving. I have checked it four times."
+      "Every bone I own {has an opinion about this|is complaining|aches on its own schedule}.",
+      "I am {cold|freezing|shivering} and it is not {cold out|cold|a cold day}.",
+      "I will do {almost anything|things I will regret|whatever it takes} at this point and I {know it|am aware of it|can hear myself}.",
+      "The clock has {stopped moving|frozen|given up}. I have checked it {four times|twice this minute|too often}."
     ],
     "gambling": [
-      "I cannot sit still and I cannot say why out loud.",
-      "I have counted the money in my pocket eleven times.",
-      "There is a race running right now without me in it.",
-      "I am going to the shop. I have already decided. I decided hours ago."
+      "I cannot {sit still|settle|stay in this chair} and I cannot say why {out loud|to anyone|even to myself}.",
+      "I have counted the money in my pocket {eleven times|a dozen times|more times than I will admit}.",
+      "There is a {race|game|hand} running right now without me in it.",
+      "I am going to the shop. I {have already decided|decided long ago|decided hours ago}."
     ]
   }
 }

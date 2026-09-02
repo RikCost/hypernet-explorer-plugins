@@ -1573,6 +1573,62 @@
             }
         }
 
+        // ── Blood on a broken part ───────────────────────────────────────────
+        // A part that was broken rather than cut stays on the model, so the only
+        // sign of it is the wound itself: the part's own materials are cloned
+        // (never the shared originals) and stained toward this battler's blood
+        // colour, which BloodSplatterFX reads off the enemy's archetype notes.
+        _bloodColor() {
+            const b = this.battler;
+            if (b && typeof b.getBloodColor === 'function') {
+                try { return b.getBloodColor(); } catch (e) { /* fall through */ }
+            }
+            return '#8a0303';
+        }
+
+        applyPartBlood(parts) {
+            if (!parts || !this._partMeshMap) return;
+            // Same cheap signature trick applyCascade uses: nothing is repainted
+            // while the set of bloodied parts has not moved.
+            let sig = 0, i = 0;
+            for (const k in parts) {
+                i++;
+                const p = parts[k];
+                if (p && !p.destroyed && (p.broken || p.ruined || p.currentHp <= 0)) {
+                    sig = (sig * 31 + i) | 0;
+                }
+            }
+            if (sig === this._bloodSig) return;
+            this._bloodSig = sig;
+            if (!this._bloodied) this._bloodied = new Set();
+            const THREE = window.THREE;
+            if (!THREE) return;
+            const blood = new THREE.Color(this._bloodColor());
+            for (const key in parts) {
+                const p = parts[key];
+                if (!p || p.destroyed) continue;
+                if (!(p.broken || p.ruined || p.currentHp <= 0)) continue;
+                const mesh = this._partMeshMap[key];
+                if (!mesh || this._bloodied.has(mesh)) continue;
+                this._bloodied.add(mesh);
+                this._settleFlash(mesh);
+                this._settleAimHighlight(mesh);
+                mesh.traverse(o => {
+                    if (!o.material) return;
+                    const src = Array.isArray(o.material) ? o.material : [o.material];
+                    const stained = src.map(m => {
+                        const c = m.clone();
+                        if (c.color) c.color.lerp(blood, 0.55);
+                        if (c.userData) { c.userData._psx = false; c.userData._pxa = false; }
+                        const rs = window.RetroShader ? window.RetroShader.active() : window.PSXShader;
+                        if (rs) rs.applyToMaterial(c);
+                        return c;
+                    });
+                    o.material = Array.isArray(o.material) ? stained : stained[0];
+                });
+            }
+        }
+
         // Flag "root/whole-body" cascade rules: a rule whose hide list covers
         // (almost) the entire model is a structural rule (e.g. CORE/BODY/TORSO
         // gone -> hide everything). Losing a root part must NEVER delete the rest
@@ -1739,7 +1795,7 @@
             // Death always overrides so a kill is never stuck frozen (#97).
             if (this.currentAnimation !== 'death' && this._isAnimFrozenByState()) {
                 const parts = (this.battler && this.battler._bodyParts) ? this.battler._bodyParts : null;
-                if (parts) { this.applyCascade(parts); if (this.onCascade) this.onCascade(parts); }
+                if (parts) { this.applyCascade(parts); this.applyPartBlood(parts); if (this.onCascade) this.onCascade(parts); }
                 this.updateFlash(deltaTime);
                 this.updateAimHighlight(deltaTime);
                 this.updateDestroyFade(deltaTime);
@@ -1764,6 +1820,7 @@
             const parts = (this.battler && this.battler._bodyParts) ? this.battler._bodyParts : null;
             if (parts) {
                 this.applyCascade(parts);
+                this.applyPartBlood(parts);
                 if (this.onCascade) this.onCascade(parts);
             }
             this.updateFlash(deltaTime);

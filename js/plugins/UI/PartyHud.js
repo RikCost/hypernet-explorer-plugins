@@ -364,6 +364,27 @@
     // The live class-gimmick chips (Wrestler pins, Boxer combo, chi, decoys,
     // souls, ...). The class logic stays in BattleSystemPassiveSkills; the HUD
     // only stands the answers up in a row.
+    // Battle test only: the card names whatever the actor is holding, every
+    // weapon of a dual wielder included, so a test troop can be read at a
+    // glance without opening the equip menu. Never shown in a real game.
+    const isBattleTest = () =>
+        typeof DataManager !== 'undefined' &&
+        typeof DataManager.isBattleTest === 'function' &&
+        DataManager.isBattleTest();
+
+    const battleTestGear = (actor) => {
+        if (!actor || !isBattleTest() || typeof actor.equips !== 'function') return '';
+        const names = [];
+        for (const item of actor.equips()) {
+            if (!item || !item.name) continue;
+            const isWeapon = DataManager.isWeapon && DataManager.isWeapon(item);
+            const isShield = DataManager.isArmor && DataManager.isArmor(item) && item.etypeId === 2;
+            if (isWeapon || isShield) names.push(dbName(item.name));
+        }
+        if (!names.length) return '';
+        return T('PartyHud.gear.held', { list: names.join(T('PartyHud.gear.separator')) });
+    };
+
     const classChipsFor = (actor) => {
         const get = window.BattleSystemPassiveSkills?.getBattleChips;
         if (typeof get !== 'function') return [];
@@ -866,6 +887,8 @@
             // see who is driving and who is asleep in the back.
             let label = actor.name();
             if (actor.level) label += ' L.' + actor.level;
+            const gear = battleTestGear(actor);
+            if (gear) label += ' ' + gear;
             if (!battle && window.VehicleCrew?.isDriver?.(actor)) {
                 label += ' ' + T('VehicleCrew.drivingTag');
             }

@@ -3,94 +3,94 @@
     "name": "<-- 1-10 -->"
   },
   "2": {
-    "name": "Abandoned Novice"
-  },
-  "3": {
     "name": "Ancient Skeleton"
   },
-  "4": {
+  "3": {
     "name": "Anxiety Elemental"
   },
-  "5": {
+  "4": {
     "name": "Apprentice Pyromancer"
   },
-  "6": {
+  "5": {
     "name": "Apprentice's Remains"
   },
-  "7": {
+  "6": {
     "name": "Arctic Fox"
   },
-  "8": {
+  "7": {
     "name": "Armored Remains"
   },
-  "9": {
+  "8": {
     "name": "Baby Bunny"
   },
-  "10": {
+  "9": {
     "name": "Backwards Bird"
   },
-  "11": {
+  "10": {
     "name": "Bi Human"
   },
-  "12": {
+  "11": {
     "name": "Bioluminescent Caveworm"
   },
-  "13": {
-    "name": "Blood Initiate"
+  "12": {
+    "name": "Blood Mimic"
   },
-  "14": {
+  "13": {
     "name": "Blood Mosquito"
   },
-  "15": {
+  "14": {
     "name": "Blue Jay"
   },
-  "16": {
+  "15": {
     "name": "Bog Hatchling"
   },
-  "17": {
+  "16": {
     "name": "Bone Warrior"
   },
-  "18": {
+  "17": {
     "name": "Boneyard Hunter"
   },
-  "19": {
+  "18": {
     "name": "Bubble Squid"
   },
-  "20": {
+  "19": {
     "name": "Bubble Squid Second"
   },
-  "21": {
+  "20": {
     "name": "Buzzing Bumblebee"
   },
-  "22": {
+  "21": {
     "name": "Caffeinated Squirrel"
   },
-  "23": {
+  "22": {
     "name": "Catfish"
   },
-  "24": {
+  "23": {
     "name": "Catican"
   },
-  "25": {
+  "24": {
     "name": "Catizard"
   },
-  "26": {
+  "25": {
     "name": "Cautious Opossum "
   },
-  "27": {
+  "26": {
     "name": "Cotton Fox"
   },
-  "28": {
+  "27": {
     "name": "Crawling Hand"
   },
-  "29": {
+  "28": {
     "name": "Crypt Sentinel"
   },
-  "30": {
+  "29": {
     "name": "Cultist Acolyte"
   },
-  "31": {
+  "30": {
     "name": "Curious Rabbit"
+  },
+  "31": {
+    "name": "Data Drone"
   },
   "32": {
     "name": "Decaying Corpse"
@@ -117,85 +117,85 @@
     "name": "Electromagnetic Ghoul"
   },
   "40": {
-    "name": "Ember Imp"
-  },
-  "41": {
     "name": "Expired Ooze"
   },
-  "42": {
+  "41": {
     "name": "Eyeball Slug"
   },
-  "43": {
+  "42": {
     "name": "Fallen Warrior"
   },
-  "44": {
-    "name": "Fear Siphon"
-  },
-  "45": {
+  "43": {
     "name": "Feral Alley Cat"
   },
-  "46": {
+  "44": {
     "name": "Festering Corpse"
   },
-  "47": {
+  "45": {
     "name": "Fidget Sprite"
   },
-  "48": {
+  "46": {
     "name": "Field Mouse"
   },
-  "49": {
+  "47": {
     "name": "Finger Worm"
   },
-  "50": {
+  "48": {
+    "name": "Flame Frake"
+  },
+  "49": {
     "name": "Flamingo Sentinel"
   },
-  "51": {
+  "50": {
     "name": "Flower Pixie"
   },
-  "52": {
+  "51": {
     "name": "Forest Poacher"
   },
-  "53": {
+  "52": {
     "name": "Forest Rat"
   },
-  "54": {
+  "53": {
     "name": "Forgotten Acolyte"
   },
-  "55": {
+  "54": {
     "name": "Free Lobster"
   },
-  "56": {
+  "55": {
     "name": "Frost Raccoon"
   },
-  "57": {
+  "56": {
     "name": "Frost-Touched Thrall"
   },
-  "58": {
+  "57": {
     "name": "Frozen Bat"
   },
-  "59": {
+  "58": {
     "name": "Garden Frog"
   },
-  "60": {
+  "59": {
     "name": "Ghost Wisp"
+  },
+  "60": {
+    "name": "Giant Jellyfish"
   },
   "61": {
     "name": "Giggling Skull"
   },
   "62": {
-    "name": "Glitter Goblin"
-  },
-  "63": {
     "name": "Golden Seahorse"
   },
-  "64": {
+  "63": {
     "name": "Grasshopper"
   },
-  "65": {
+  "64": {
     "name": "Graveyard Haunt"
   },
-  "66": {
+  "65": {
     "name": "Graveyard Shambler"
+  },
+  "66": {
+    "name": "Gun Burger"
   },
   "67": {
     "name": "Hobgoblin Archer"
@@ -207,4029 +207,3963 @@
     "name": "Hobgoblin Runt"
   },
   "70": {
-    "name": "Hobgoblin Scout"
-  },
-  "71": {
-    "name": "Hobgoblin Shaman"
-  },
-  "72": {
     "name": "Hobgoblin Warrior"
   },
-  "73": {
+  "71": {
     "name": "Ice Lemming"
   },
-  "74": {
+  "72": {
     "name": "Ice Wolf Pup"
   },
-  "75": {
+  "73": {
     "name": "Inside-Out Critter"
   },
-  "76": {
+  "74": {
     "name": "Karaoke Banshee"
   },
-  "77": {
+  "75": {
     "name": "Kazoo Imp"
   },
-  "78": {
+  "76": {
     "name": "Ladybug"
   },
-  "79": {
+  "77": {
     "name": "Lazy Cat"
   },
-  "80": {
+  "78": {
     "name": "Lingering Spirit"
   },
-  "81": {
-    "name": "Lizard Sniper"
-  },
-  "82": {
+  "79": {
     "name": "Lost Memory"
   },
-  "83": {
+  "80": {
     "name": "Maggot Slail"
   },
-  "84": {
+  "81": {
     "name": "Marsh Skulk"
   },
-  "85": {
+  "82": {
     "name": "Meme Ghost"
   },
-  "86": {
+  "83": {
     "name": "Mine Slave"
   },
-  "87": {
+  "84": {
     "name": "Minor Shade"
   },
-  "88": {
+  "85": {
     "name": "Mischievous Sprite"
   },
-  "89": {
+  "86": {
     "name": "Mole"
   },
-  "90": {
+  "87": {
     "name": "Mr. Inadequate"
   },
-  "91": {
+  "88": {
     "name": "Novice Boxer"
   },
-  "92": {
+  "89": {
     "name": "Orc Captain"
   },
-  "93": {
+  "90": {
     "name": "Origami Crane"
   },
-  "94": {
+  "91": {
     "name": "Parrotfish Grazer"
   },
-  "95": {
-    "name": "Permafrost Beetle"
-  },
-  "96": {
-    "name": "Phantom Marionette"
-  },
-  "97": {
+  "92": {
     "name": "Pillow Guardian"
   },
-  "98": {
+  "93": {
     "name": "Pit Fighter"
   },
-  "99": {
+  "94": {
     "name": "Plague Carrier"
   },
-  "100": {
-    "name": "Pocket-Dimension Imp"
-  },
-  "101": {
+  "95": {
     "name": "Pregnant Seahorse"
   },
-  "102": {
+  "96": {
     "name": "Quacking Duck"
   },
-  "103": {
+  "97": {
     "name": "Rabid Hyena"
   },
-  "104": {
+  "98": {
     "name": "Reanimated Guard"
   },
-  "105": {
+  "99": {
     "name": "Reef Guppy"
   },
-  "106": {
+  "100": {
     "name": "Rotting Skeleton"
   },
-  "107": {
+  "101": {
     "name": "Rubber Familiar"
   },
-  "108": {
+  "102": {
     "name": "Rubber Reality Blob"
   },
-  "109": {
+  "103": {
     "name": "Sardine School"
   },
-  "110": {
-    "name": "Seal Pup"
-  },
-  "111": {
-    "name": "Sewer Rat"
-  },
-  "112": {
-    "name": "Skin Balloon"
-  },
-  "113": {
-    "name": "Skunk"
-  },
-  "114": {
-    "name": "Sky Bard"
-  },
-  "115": {
-    "name": "Slow Turtle"
-  },
-  "116": {
-    "name": "Snow Werewolf"
-  },
-  "117": {
-    "name": "Spore Wanderer"
-  },
-  "118": {
-    "name": "Squeaky Turnip Fiend"
-  },
-  "119": {
-    "name": "Squirrel"
-  },
-  "120": {
-    "name": "Stone Shifter"
-  },
-  "121": {
-    "name": "Surveillance Drone"
-  },
-  "122": {
-    "name": "Sushi Snail"
-  },
-  "123": {
-    "name": "Swamp Rat"
-  },
-  "124": {
-    "name": "Swamp Witch Novice"
-  },
-  "125": {
-    "name": "Tax Collector"
-  },
-  "126": {
-    "name": "Taxidoggo"
-  },
-  "127": {
-    "name": "Thirsty Camel"
-  },
-  "128": {
-    "name": "Tide Crab"
-  },
-  "129": {
-    "name": "Tiny Chick"
-  },
-  "130": {
-    "name": "Tomb Guardian"
-  },
-  "131": {
-    "name": "Tongue Leech"
-  },
-  "132": {
-    "name": "Tooth Ratkin"
-  },
-  "133": {
-    "name": "Totemic Sprout"
-  },
-  "134": {
-    "name": "Tourist Skeleton"
-  },
-  "135": {
-    "name": "Tundra Crow"
-  },
-  "136": {
-    "name": "Undead Archer"
-  },
-  "137": {
-    "name": "Vegetal Vampire"
-  },
-  "138": {
-    "name": "Wandering Eyeball"
-  },
-  "139": {
-    "name": "Wasteland Beaver"
-  },
-  "140": {
-    "name": "Weeping Mask"
-  },
-  "141": {
-    "name": "Young Fake Hydra"
-  },
-  "142": {
-    "name": "Young Ogre"
-  },
-  "143": {
-    "name": "Zombie Villager"
-  },
-  "154": {
-    "name": "<-- 11-20 -->"
-  },
-  "155": {
-    "name": "Abyssal Serpent"
-  },
-  "156": {
-    "name": "Acid Ant"
-  },
-  "157": {
-    "name": "Amateur Pugilist"
-  },
-  "158": {
-    "name": "Armored Beaver"
-  },
-  "159": {
-    "name": "Armored Purcupine"
-  },
-  "160": {
-    "name": "Assault Mech"
-  },
-  "161": {
-    "name": "Azure Slime"
-  },
-  "162": {
-    "name": "Baby Doll Head"
-  },
-  "163": {
-    "name": "Bandit Archer"
-  },
-  "164": {
-    "name": "Bandit Assassin"
-  },
-  "165": {
-    "name": "Bandit Bard"
-  },
-  "166": {
-    "name": "Bandit Chief"
-  },
-  "167": {
-    "name": "Bandit Cleric"
-  },
-  "168": {
-    "name": "Bandit Crossbowman"
-  },
-  "169": {
-    "name": "Bandit Grunt"
-  },
-  "170": {
-    "name": "Bandit Mage"
-  },
-  "171": {
-    "name": "Bandit Pyromancer"
-  },
-  "172": {
-    "name": "Bandit Rogue"
-  },
-  "173": {
-    "name": "Bandit Scout"
-  },
-  "174": {
-    "name": "Barkhide Bruiser"
-  },
-  "175": {
-    "name": "Bell Goblin"
-  },
-  "176": {
-    "name": "Black Panther"
-  },
-  "177": {
-    "name": "Blizzard Owl"
-  },
-  "178": {
-    "name": "Bloated Whale"
-  },
-  "179": {
-    "name": "Blood Mimic"
-  },
-  "180": {
-    "name": "Bloodaxe Raider"
-  },
-  "181": {
-    "name": "Bog Leech"
-  },
-  "182": {
-    "name": "Bone Sentinel"
-  },
-  "183": {
-    "name": "Boxing Elemental"
-  },
-  "184": {
-    "name": "Brain Swarmer"
-  },
-  "185": {
-    "name": "Brown Bear"
-  },
-  "186": {
-    "name": "Bull Wyvern"
-  },
-  "187": {
-    "name": "Cave Gnome"
-  },
-  "188": {
-    "name": "Chicchan Serpent Shaman"
-  },
-  "189": {
-    "name": "Compressed air"
-  },
-  "190": {
-    "name": "Cone Mimic"
-  },
-  "191": {
-    "name": "Coral Guardian"
-  },
-  "192": {
-    "name": "Creeping Shade"
-  },
-  "193": {
-    "name": "Crimson Jelly"
-  },
-  "194": {
-    "name": "Crimson Sucker"
-  },
-  "195": {
-    "name": "Crushing Boa"
-  },
-  "196": {
-    "name": "Cryo Drone"
-  },
-  "197": {
-    "name": "Crystalline Skulker"
-  },
-  "198": {
-    "name": "Data Drone"
-  },
-  "199": {
-    "name": "Death Axolotl"
-  },
-  "200": {
-    "name": "Death's Head"
-  },
-  "201": {
-    "name": "Desert Scorpion"
-  },
-  "202": {
-    "name": "Dire Pig"
-  },
-  "203": {
-    "name": "Dire Rabbit"
-  },
-  "204": {
-    "name": "Discord Demon"
-  },
-  "205": {
-    "name": "Dodger Imp"
-  },
-  "206": {
-    "name": "Gun Burger"
-  },
-  "207": {
-    "name": "Dream Weaver"
-  },
-  "208": {
-    "name": "Drowned Revenant"
-  },
-  "209": {
-    "name": "Dryad Protector"
-  },
-  "210": {
-    "name": "Echo Maw"
-  },
-  "211": {
-    "name": "Elven Bladesinger"
-  },
-  "212": {
-    "name": "Elven Flame Weaver"
-  },
-  "213": {
-    "name": "Elven Frost Mage"
-  },
-  "214": {
-    "name": "Elven Geomancer"
-  },
-  "215": {
-    "name": "Elven High Mage"
-  },
-  "216": {
-    "name": "Elven Mystic"
-  },
-  "217": {
-    "name": "Elven Ranger Captain"
-  },
-  "218": {
-    "name": "Elven Royal Guard"
-  },
-  "219": {
-    "name": "Elven Scout"
-  },
-  "220": {
-    "name": "Elven Sharpshooter"
-  },
-  "221": {
-    "name": "Elven Swordmaster"
-  },
-  "222": {
-    "name": "Ember Caster"
-  },
-  "223": {
-    "name": "Ember Fiend"
-  },
-  "224": {
-    "name": "Ember Sprite"
-  },
-  "225": {
-    "name": "Emerald Ooze"
-  },
-  "226": {
-    "name": "Eyeless Bat"
-  },
-  "227": {
-    "name": "Feral Hyena Pack"
-  },
-  "228": {
-    "name": "Flame Frake"
-  },
-  "229": {
-    "name": "Flame Turret"
-  },
-  "230": {
-    "name": "Fluxling Furret"
-  },
-  "231": {
-    "name": "Flying pig"
-  },
-  "232": {
-    "name": "Forest Stag"
-  },
-  "233": {
-    "name": "Forest Treant"
-  },
-  "234": {
-    "name": "Forest Witch"
-  },
-  "235": {
-    "name": "Frost Apprentice"
-  },
-  "236": {
-    "name": "Frost Deciever"
-  },
-  "237": {
-    "name": "Frost Elemental"
-  },
-  "238": {
-    "name": "Frost Spider"
-  },
-  "239": {
-    "name": "Frost Succubus"
-  },
-  "240": {
-    "name": "Frost Sylph"
-  },
-  "241": {
-    "name": "Frost Weaver"
-  },
-  "242": {
-    "name": "Furyhowl Barbarian"
-  },
-  "243": {
-    "name": "Giant Jellyfish"
-  },
-  "244": {
-    "name": "Giant Penguin"
-  },
-  "245": {
-    "name": "Giant Rat"
-  },
-  "246": {
-    "name": "Giant Scorpion"
-  },
-  "247": {
-    "name": "Giant Spider"
-  },
-  "248": {
-    "name": "Giant Vulture"
-  },
-  "249": {
-    "name": "Glacier Crab"
-  },
-  "250": {
-    "name": "Glimmer Shrimp"
-  },
-  "251": {
-    "name": "Gnome Herbalist"
-  },
-  "252": {
-    "name": "Gnome Miner"
-  },
-  "253": {
-    "name": "Gnome Peasant"
-  },
-  "254": {
-    "name": "Gnome Scout"
-  },
-  "255": {
-    "name": "Gnome Tinkerer"
-  },
-  "256": {
-    "name": "Gnome Trickster"
-  },
-  "257": {
-    "name": "Goblin Cavalry"
-  },
-  "258": {
-    "name": "Goblin Chieftain"
-  },
-  "259": {
-    "name": "Goblin Elite Guard"
-  },
-  "260": {
-    "name": "Goblin Grunt"
-  },
-  "261": {
-    "name": "Goblin Marksman"
-  },
-  "262": {
-    "name": "Goblin Mounted Archer"
-  },
-  "263": {
-    "name": "Goblin Necromancer"
-  },
-  "264": {
-    "name": "Goblin Scout"
-  },
-  "265": {
-    "name": "Goblin Shaman"
-  },
-  "266": {
-    "name": "Goblin War Chief"
-  },
-  "267": {
-    "name": "Goblin Warrior"
-  },
-  "268": {
-    "name": "Goblin Witch Doctor"
-  },
-  "269": {
-    "name": "Golden Mimic"
-  },
-  "270": {
-    "name": "Golden Pudding"
-  },
-  "271": {
-    "name": "Grass Slime"
-  },
-  "272": {
-    "name": "Gravel Imp"
-  },
-  "273": {
-    "name": "Gray Wolf"
-  },
-  "274": {
-    "name": "Green Slime"
-  },
-  "275": {
-    "name": "Griphon"
-  },
-  "276": {
-    "name": "Hair Ball"
-  },
-  "277": {
-    "name": "Halo Acolyte"
-  },
-  "278": {
-    "name": "Hand Crawler"
-  },
-  "279": {
-    "name": "Haunted Mannequin"
-  },
-  "280": {
-    "name": "Haunting Scarecrow"
-  },
-  "281": {
-    "name": "Holographic Decoy"
-  },
-  "282": {
-    "name": "Horned Bear"
-  },
-  "283": {
-    "name": "Ice Kangaroo"
-  },
-  "284": {
-    "name": "Ink Blot Child"
-  },
-  "285": {
-    "name": "Insect Swarm"
-  },
-  "286": {
-    "name": "Junkrat"
-  },
-  "287": {
-    "name": "Kangaroo"
-  },
-  "288": {
-    "name": "Komodo Dragon"
-  },
-  "289": {
-    "name": "Luminous Deacon"
-  },
-  "290": {
-    "name": "Magma Ant"
-  },
-  "291": {
-    "name": "Maleficent Ape"
-  },
-  "292": {
-    "name": "Maned Terror Wolf"
-  },
-  "293": {
-    "name": "Mannequin"
-  },
-  "294": {
-    "name": "Marsh Wraith"
-  },
-  "295": {
-    "name": "Mind Leech"
-  },
-  "296": {
-    "name": "Mire Spider"
-  },
-  "297": {
-    "name": "Mirror Fiend"
-  },
-  "298": {
-    "name": "Monitor Lizard"
-  },
-  "299": {
-    "name": "Monstrous Badger"
-  },
-  "300": {
-    "name": "Mud Slime"
-  },
-  "301": {
-    "name": "Murkwallow Ghoul"
-  },
-  "302": {
-    "name": "Mutant Bug"
-  },
-  "303": {
-    "name": "Night Raccoon"
-  },
-  "304": {
-    "name": "Nightmare Weaver"
-  },
-  "305": {
-    "name": "Novice Illusionist"
-  },
-  "306": {
-    "name": "Novice Paladin"
-  },
-  "307": {
-    "name": "Obsidian Visionary"
-  },
-  "308": {
-    "name": "Ochre Jelly Swarm"
-  },
-  "309": {
-    "name": "Ogre Brute"
-  },
-  "310": {
-    "name": "Ogre Crusher"
-  },
-  "311": {
-    "name": "Ogre Fire Shaman"
-  },
-  "312": {
-    "name": "Ogre Mystic"
-  },
-  "313": {
-    "name": "Orc Bruiser"
-  },
-  "314": {
-    "name": "Organ Grinder Monkey"
-  },
-  "315": {
-    "name": "Overworked Villager"
-  },
-  "316": {
-    "name": "Pastoral Sheep"
-  },
-  "317": {
-    "name": "Pink Slime"
-  },
-  "318": {
-    "name": "Plaguebro Rattus"
-  },
-  "319": {
-    "name": "Pocket Watch Scarab"
-  },
-  "320": {
-    "name": "Primal Kangaroo"
-  },
-  "321": {
-    "name": "Professional Boxer"
-  },
-  "322": {
-    "name": "Quagmire Creeper"
-  },
-  "323": {
-    "name": "Rabid Jackrabbit"
-  },
-  "324": {
-    "name": "Rat King"
-  },
-  "325": {
-    "name": "Rattling Remains"
-  },
-  "326": {
-    "name": "Razorback Boar"
-  },
-  "327": {
-    "name": "Reaganite"
-  },
-  "328": {
-    "name": "Red Fox"
-  },
-  "329": {
-    "name": "Reef Shark"
-  },
-  "330": {
-    "name": "Reflective Tiger"
-  },
-  "331": {
-    "name": "Rib Cage Crab"
-  },
-  "332": {
-    "name": "Saber Cat"
-  },
-  "333": {
-    "name": "Sand Slime"
-  },
-  "334": {
-    "name": "Savage Berserker"
-  },
-  "335": {
+  "104": {
     "name": "Security Bot"
   },
-  "336": {
-    "name": "Seraphic Emissary"
+  "105": {
+    "name": "Skin Balloon"
   },
-  "337": {
-    "name": "Shadow Crawler"
+  "106": {
+    "name": "Skunk"
   },
-  "338": {
-    "name": "Shadow Stalker"
+  "107": {
+    "name": "Sky Bard"
   },
-  "339": {
-    "name": "Umbral Lurker"
+  "108": {
+    "name": "Slow Turtle"
   },
-  "340": {
-    "name": "Shadow Wraith"
+  "109": {
+    "name": "Snow Werewolf"
   },
-  "341": {
-    "name": "Shock Slime"
+  "110": {
+    "name": "Spore Wanderer"
   },
-  "342": {
-    "name": "Siren Apprentice"
+  "111": {
+    "name": "Squeaky Turnip Fiend"
   },
-  "343": {
-    "name": "Slime Knight"
+  "112": {
+    "name": "Squirrel"
   },
-  "344": {
-    "name": "Soul Harvester"
+  "113": {
+    "name": "Stone Shifter"
   },
-  "345": {
-    "name": "Soul Merchant"
+  "114": {
+    "name": "Surveillance Drone"
   },
-  "346": {
-    "name": "Space Zebra"
+  "115": {
+    "name": "Sushi Snail"
   },
-  "347": {
-    "name": "Spectral Wardstone"
+  "116": {
+    "name": "Swamp Rat"
   },
-  "348": {
-    "name": "Spined Lizard"
+  "117": {
+    "name": "Swamp Witch Novice"
   },
-  "349": {
-    "name": "Spiny Sprinter"
+  "118": {
+    "name": "Tax Collector"
   },
-  "350": {
-    "name": "Stealthy Operative"
+  "119": {
+    "name": "Taxidoggo"
   },
-  "351": {
-    "name": "Stone Guardian"
+  "120": {
+    "name": "Thirsty Camel"
   },
-  "352": {
-    "name": "Storm Banshee"
+  "121": {
+    "name": "Tide Crab"
   },
-  "353": {
-    "name": "Storm Caller"
+  "122": {
+    "name": "Tiny Chick"
   },
-  "354": {
-    "name": "Street Brawler"
+  "123": {
+    "name": "Tooth Ratkin"
   },
-  "355": {
-    "name": "Street Punk"
+  "124": {
+    "name": "Totemic Sprout"
   },
-  "356": {
-    "name": "Swamp Crocodile"
+  "125": {
+    "name": "Tourist Skeleton"
   },
-  "357": {
-    "name": "Tarantula"
+  "126": {
+    "name": "Tundra Crow"
   },
-  "358": {
-    "name": "The Surgeon"
+  "127": {
+    "name": "Undead Archer"
   },
-  "359": {
-    "name": "Thor"
+  "128": {
+    "name": "Vegetal Vampire"
   },
-  "360": {
-    "name": "Thunder Sprite"
+  "129": {
+    "name": "Wandering Eyeball"
   },
-  "361": {
-    "name": "Tide Sorcerer"
+  "130": {
+    "name": "Wasteland Beaver"
   },
-  "362": {
-    "name": "Timberwood Shaman"
+  "131": {
+    "name": "Young Fake Hydra"
   },
-  "363": {
-    "name": "Tomekeeper of the Sunstone"
+  "132": {
+    "name": "Young Ogre"
   },
-  "364": {
-    "name": "Tooth Fairy"
+  "133": {
+    "name": "Zombie Villager"
   },
-  "365": {
-    "name": "Totem Guardian"
+  "134": {
+    "name": "<-- 11-20 -->"
   },
-  "366": {
-    "name": "Totem Initiate"
+  "135": {
+    "name": "Abandoned Novice"
   },
-  "367": {
-    "name": "Toxic Anemone"
+  "136": {
+    "name": "Abyssal Serpent"
   },
-  "368": {
-    "name": "Toxic Sludge"
+  "137": {
+    "name": "Acid Ant"
   },
-  "369": {
-    "name": "Toxic Sprayer"
+  "138": {
+    "name": "Amateur Pugilist"
   },
-  "370": {
-    "name": "Trashling"
+  "139": {
+    "name": "Armored Beaver"
   },
-  "371": {
-    "name": "Tree Monkey"
+  "140": {
+    "name": "Armored Purcupine"
   },
-  "372": {
-    "name": "Trickster Imp"
+  "141": {
+    "name": "Assault Mech"
   },
-  "373": {
-    "name": "Trident Hunter"
+  "142": {
+    "name": "Azure Slime"
   },
-  "374": {
-    "name": "Tundra Mammoth Calf"
+  "143": {
+    "name": "Baby Doll Head"
   },
-  "375": {
-    "name": "Tunneling Mole"
+  "144": {
+    "name": "Bandit Archer"
   },
-  "376": {
-    "name": "Twilight Satyr"
+  "145": {
+    "name": "Bandit Assassin"
   },
-  "377": {
-    "name": "Twisted Marionette"
+  "146": {
+    "name": "Bandit Bard"
   },
-  "378": {
-    "name": "Umber Moth Swarm"
+  "147": {
+    "name": "Bandit Chief"
   },
-  "379": {
-    "name": "Umbral Basilisk"
+  "148": {
+    "name": "Bandit Cleric"
   },
-  "380": {
-    "name": "Vampire Bat"
+  "149": {
+    "name": "Bandit Crossbowman"
   },
-  "381": {
-    "name": "Venom Devil"
+  "150": {
+    "name": "Bandit Grunt"
   },
-  "382": {
-    "name": "Venomous Snake"
+  "151": {
+    "name": "Bandit Mage"
   },
-  "383": {
-    "name": "Void Desolator"
+  "152": {
+    "name": "Bandit Pyromancer"
   },
-  "384": {
-    "name": "Void Gel"
+  "153": {
+    "name": "Bandit Rogue"
   },
-  "385": {
-    "name": "Wandering Archer"
+  "154": {
+    "name": "Bandit Scout"
   },
-  "386": {
-    "name": "Water Nymph"
+  "155": {
+    "name": "Barkhide Bruiser"
   },
-  "387": {
-    "name": "Webweaver"
-  },
-  "388": {
-    "name": "Whisper Wisp"
-  },
-  "389": {
-    "name": "Wild Boar"
-  },
-  "390": {
-    "name": "Wild Rabbit"
-  },
-  "391": {
-    "name": "Wild ripper"
-  },
-  "392": {
-    "name": "Wildcat"
-  },
-  "393": {
-    "name": "Will-O-’-Wisp Lamp"
-  },
-  "394": {
-    "name": "Wise Owl"
-  },
-  "395": {
-    "name": "Wooden Flower"
-  },
-  "396": {
-    "name": "Xibalba Glyphweaver "
-  },
-  "397": {
-    "name": "Young Yeti"
-  },
-  "398": {
-    "name": "Zephyr Wizard"
-  },
-  "399": {
-    "name": "Zombie Whale"
-  },
-  "410": {
-    "name": "<-- 21-30 -->"
-  },
-  "411": {
-    "name": "Abyssal Crab"
-  },
-  "412": {
-    "name": "Abyssal Fiend"
-  },
-  "413": {
-    "name": "Abyssal Hallucigenia"
-  },
-  "414": {
-    "name": "Abyssal Horror"
-  },
-  "415": {
-    "name": "Abyssal Hunter"
-  },
-  "416": {
-    "name": "Abyssal Hydromancer"
-  },
-  "417": {
-    "name": "Abyssal Tentacler"
-  },
-  "418": {
-    "name": "Accursed Stonefish"
-  },
-  "419": {
-    "name": "Acid Bombardier"
-  },
-  "420": {
-    "name": "Acidic Tidecaller"
-  },
-  "421": {
-    "name": "Air Elemental"
-  },
-  "422": {
-    "name": "Aiwass Messenger"
-  },
-  "423": {
-    "name": "Akira Tanaka"
-  },
-  "424": {
-    "name": "Alpha Dire Wolf"
-  },
-  "425": {
-    "name": "Alpha Warg"
-  },
-  "426": {
-    "name": "Ancient Dragon"
-  },
-  "427": {
-    "name": "Anguish Phantom"
-  },
-  "428": {
-    "name": "Animated Arsenal"
-  },
-  "429": {
-    "name": "Animated Gravestalker"
-  },
-  "430": {
-    "name": "Annunaki Overlord"
-  },
-  "431": {
-    "name": "Aquatic Elemental"
-  },
-  "432": {
-    "name": "Aquatic Mantis"
-  },
-  "433": {
-    "name": "Arcane Archmage"
-  },
-  "434": {
-    "name": "Armored Rhinoceros"
-  },
-  "435": {
-    "name": "Assassin Wasp"
-  },
-  "436": {
-    "name": "Barbed Manticore"
-  },
-  "437": {
-    "name": "Basilisk"
-  },
-  "438": {
+  "156": {
     "name": "Battle Mech"
   },
-  "439": {
-    "name": "Blank Emergence"
+  "157": {
+    "name": "Bell Goblin"
   },
-  "440": {
-    "name": "Blick"
+  "158": {
+    "name": "Black Panther"
   },
-  "441": {
-    "name": "Blinding Sadist"
+  "159": {
+    "name": "Blizzard Owl"
   },
-  "442": {
-    "name": "Blood Countess"
+  "160": {
+    "name": "Bloated Whale"
   },
-  "443": {
-    "name": "Blood Leech Colossus"
+  "161": {
+    "name": "Blood Initiate"
   },
-  "444": {
-    "name": "Blood Widow"
+  "162": {
+    "name": "Bloodaxe Raider"
   },
-  "445": {
-    "name": "Bloodbell Cow"
+  "163": {
+    "name": "Bog Leech"
   },
-  "446": {
-    "name": "Bloodthirsty Crusader"
-  },
-  "447": {
-    "name": "Bog Behemoth"
-  },
-  "448": {
-    "name": "Bog Elemental"
-  },
-  "449": {
+  "164": {
     "name": "Bog Mutant"
   },
-  "450": {
-    "name": "Bogscale Hunter"
+  "165": {
+    "name": "Bone Sentinel"
   },
-  "451": {
-    "name": "Bone Commander"
+  "166": {
+    "name": "Brown Bear"
   },
-  "452": {
-    "name": "Bonechewer Devourer"
+  "167": {
+    "name": "Cave Gnome"
   },
-  "453": {
-    "name": "Brine Wisp"
+  "168": {
+    "name": "Chicchan Serpent Shaman"
   },
-  "454": {
-    "name": "Bubba"
-  },
-  "455": {
-    "name": "Bureaucratic Nightmare"
-  },
-  "456": {
-    "name": "Celestial Tyrannosaurus"
-  },
-  "457": {
-    "name": "Chainbound Fury"
-  },
-  "458": {
-    "name": "Champion Contender"
-  },
-  "459": {
-    "name": "Choronzon"
-  },
-  "460": {
-    "name": "Chromatic Manticore"
-  },
-  "461": {
-    "name": "Chupacabra Fiend"
-  },
-  "462": {
-    "name": "Cinder Weaver"
-  },
-  "463": {
-    "name": "Cindermaw Hound"
-  },
-  "464": {
-    "name": "Cinderthroat Varanus"
-  },
-  "465": {
-    "name": "Cloud Giant"
-  },
-  "466": {
-    "name": "Cobalt-footed Rex"
-  },
-  "467": {
+  "169": {
     "name": "Combat Drone"
   },
-  "468": {
-    "name": "Consecrated Guardian"
+  "170": {
+    "name": "Compressed air"
   },
-  "469": {
-    "name": "Majestic Enchantress "
+  "171": {
+    "name": "Coral Guardian"
   },
-  "470": {
-    "name": "Coral Enchantress"
-  },
-  "471": {
-    "name": "Coralic Warcaster"
-  },
-  "472": {
-    "name": "Corpsecarver Knight"
-  },
-  "473": {
+  "172": {
     "name": "Corrupted Bioslave"
   },
-  "474": {
-    "name": "Corrupted Knight"
+  "173": {
+    "name": "Creeping Shade"
   },
-  "475": {
-    "name": "Crimson Analizer"
+  "174": {
+    "name": "Crimson Jelly"
   },
-  "476": {
-    "name": "Crimson Fish"
+  "175": {
+    "name": "Crimson Sucker"
   },
-  "477": {
-    "name": "Crimson Harbinger"
+  "176": {
+    "name": "Crushing Boa"
   },
-  "478": {
-    "name": "Crimson Harvester"
+  "177": {
+    "name": "Cryo Drone"
   },
-  "479": {
-    "name": "Crimson Patriarch"
+  "178": {
+    "name": "Crystalline Skulker"
   },
-  "480": {
-    "name": "Crumbling Colossus"
-  },
-  "481": {
-    "name": "Cryptborn Shrieker"
-  },
-  "482": {
-    "name": "Crystal Hoarder"
-  },
-  "483": {
-    "name": "Crystal Siren"
-  },
-  "484": {
-    "name": "Crystalback Sceloporus"
-  },
-  "485": {
-    "name": "CrystalCarapace Sentinel"
-  },
-  "486": {
-    "name": "Cursed Candle"
-  },
-  "487": {
+  "179": {
     "name": "Cybernetic Tank"
   },
-  "488": {
-    "name": "Dark Mage"
+  "180": {
+    "name": "Death Axolotl"
   },
-  "489": {
-    "name": "Deep Frost Eel"
+  "181": {
+    "name": "Death's Head"
   },
-  "490": {
-    "name": "Deep One Hybrid"
+  "182": {
+    "name": "Desert Scorpion"
   },
-  "491": {
-    "name": "Deer Sprite"
+  "183": {
+    "name": "Dire Pig"
   },
-  "492": {
-    "name": "Desert Commander"
+  "184": {
+    "name": "Dire Rabbit"
   },
-  "493": {
-    "name": "Devoted Templar"
+  "185": {
+    "name": "Discord Demon"
   },
-  "494": {
-    "name": "Diego 'Jaguar' Rodriguez"
+  "186": {
+    "name": "Dodger Imp"
   },
-  "495": {
-    "name": "Disco Revenant"
+  "187": {
+    "name": "Dream Weaver"
   },
-  "496": {
-    "name": "Divine Arbiter"
+  "188": {
+    "name": "Drowned Revenant"
   },
-  "497": {
-    "name": "Dominant Taskmaster"
+  "189": {
+    "name": "Dryad Protector"
   },
-  "498": {
-    "name": "Dread Knight"
-  },
-  "499": {
-    "name": "Dream Serpent High Priest"
-  },
-  "500": {
-    "name": "Oneiric Phantom"
-  },
-  "501": {
-    "name": "Dune Fang"
-  },
-  "502": {
-    "name": "Dust Devil Bird"
-  },
-  "503": {
+  "190": {
     "name": "Earth Elemental"
   },
-  "504": {
-    "name": "Elderwood Guardian"
+  "191": {
+    "name": "Echo Maw"
   },
-  "505": {
-    "name": "Electro Arachnid"
+  "192": {
+    "name": "Elven Bladesinger"
   },
-  "506": {
-    "name": "Elena 'Shadow' Rodriguez"
+  "193": {
+    "name": "Elven Flame Weaver"
   },
-  "507": {
-    "name": "Elite Boxing Champion"
+  "194": {
+    "name": "Elven Frost Mage"
   },
-  "508": {
-    "name": "Em"
+  "195": {
+    "name": "Elven Geomancer"
   },
-  "509": {
-    "name": "Ember Centipede"
+  "196": {
+    "name": "Elven High Mage"
   },
-  "510": {
-    "name": "Emerald Stalker"
+  "197": {
+    "name": "Elven Mystic"
   },
-  "511": {
-    "name": "Emperor Deathstalker"
+  "198": {
+    "name": "Elven Ranger Captain"
   },
-  "512": {
-    "name": "Engorged Tick Swarm"
+  "199": {
+    "name": "Elven Royal Guard"
   },
-  "513": {
-    "name": "Essence Leech"
+  "200": {
+    "name": "Elven Scout"
   },
-  "514": {
-    "name": "Eternal Intern"
+  "201": {
+    "name": "Elven Sharpshooter"
   },
-  "515": {
-    "name": "Ethereal Devourer"
+  "202": {
+    "name": "Elven Swordmaster"
   },
-  "516": {
-    "name": "Fenclaw Brute"
+  "203": {
+    "name": "Ember Caster"
   },
-  "517": {
-    "name": "Fey Enchantress"
+  "204": {
+    "name": "Ember Fiend"
   },
-  "518": {
-    "name": "Fiery Sleep Demon"
+  "205": {
+    "name": "Ember Imp"
   },
-  "519": {
-    "name": "Filth Fiend"
+  "206": {
+    "name": "Ember Sprite"
   },
-  "520": {
-    "name": "Fire Centipede"
+  "207": {
+    "name": "Emerald Ooze"
   },
-  "521": {
+  "208": {
+    "name": "Eyeless Bat"
+  },
+  "209": {
+    "name": "Fear Siphon"
+  },
+  "210": {
+    "name": "Feral Hyena Pack"
+  },
+  "211": {
     "name": "Fire Dragonling"
   },
-  "522": {
-    "name": "Flame Elemental"
+  "212": {
+    "name": "Flame Turret"
   },
-  "523": {
-    "name": "Flame-Touched Hellhound"
+  "213": {
+    "name": "Fluxling Furret"
   },
-  "524": {
-    "name": "Flatwood Sentinel"
+  "214": {
+    "name": "Flying pig"
   },
-  "525": {
-    "name": "Flower Behemoth"
+  "215": {
+    "name": "Forest Stag"
   },
-  "526": {
-    "name": "Flying Pig"
+  "216": {
+    "name": "Frost Apprentice"
   },
-  "527": {
-    "name": "Forest Archer"
+  "217": {
+    "name": "Frost Deciever"
   },
-  "528": {
-    "name": "Forest Centaur"
+  "218": {
+    "name": "Frost Elemental"
   },
-  "529": {
-    "name": "Forest's Vengeance"
+  "219": {
+    "name": "Frost Spider"
   },
-  "530": {
-    "name": "Fossil Sentinel"
+  "220": {
+    "name": "Frost Succubus"
   },
-  "531": {
-    "name": "Frog Monk"
+  "221": {
+    "name": "Frost Sylph"
   },
-  "532": {
-    "name": "Frost Colossus"
+  "222": {
+    "name": "Furyhowl Barbarian"
   },
-  "533": {
-    "name": "Frost Dragon"
-  },
-  "534": {
-    "name": "Frost Enchantress"
-  },
-  "535": {
-    "name": "Frost Scarab"
-  },
-  "536": {
-    "name": "Frost Slime"
-  },
-  "537": {
-    "name": "Rime Spinner"
-  },
-  "538": {
-    "name": "Frostback Ursid"
-  },
-  "539": {
-    "name": "Fungal Snapjaw"
-  },
-  "540": {
+  "223": {
     "name": "Gatorghast Horror"
   },
-  "541": {
-    "name": "Giant Slithering Snail"
+  "224": {
+    "name": "Giant Penguin"
   },
-  "542": {
-    "name": "Gilded Zapback"
+  "225": {
+    "name": "Giant Rat"
   },
-  "543": {
-    "name": "Glacier Serpent"
+  "226": {
+    "name": "Giant Scorpion"
   },
-  "544": {
-    "name": "Gloomwurm"
+  "227": {
+    "name": "Giant Spider"
   },
-  "545": {
-    "name": "Gnome Alchemist"
+  "228": {
+    "name": "Giant Vulture"
   },
-  "546": {
-    "name": "Gnome Artificer"
+  "229": {
+    "name": "Glacier Crab"
   },
-  "547": {
-    "name": "Gnome Bombardier"
+  "230": {
+    "name": "Glimmer Shrimp"
   },
-  "548": {
-    "name": "Gnome Engineer"
+  "231": {
+    "name": "Glitter Goblin"
   },
-  "549": {
-    "name": "Gnome Shaman"
+  "232": {
+    "name": "Gnome Herbalist"
   },
-  "550": {
-    "name": "Gnome Warlock"
+  "233": {
+    "name": "Gnome Miner"
   },
-  "551": {
-    "name": "Goblin King"
+  "234": {
+    "name": "Gnome Peasant"
   },
-  "552": {
-    "name": "Goblin Master Sniper"
+  "235": {
+    "name": "Gnome Scout"
   },
-  "553": {
-    "name": "Goblin Shadow Sorcerer"
+  "236": {
+    "name": "Gnome Tinkerer"
   },
-  "554": {
-    "name": "Golden Lion"
+  "237": {
+    "name": "Gnome Trickster"
   },
-  "555": {
-    "name": "Gorgon Queen"
+  "238": {
+    "name": "Golden Mimic"
   },
-  "556": {
-    "name": "Grasping Shadow"
+  "239": {
+    "name": "Golden Pudding"
   },
-  "557": {
-    "name": "Gravebound Revenant"
+  "240": {
+    "name": "Grass Slime"
   },
-  "558": {
-    "name": "Grotesque Slime"
+  "241": {
+    "name": "Gravel Imp"
   },
-  "559": {
-    "name": "Guardian Vindicator"
+  "242": {
+    "name": "Gray Wolf"
   },
-  "560": {
-    "name": "Guttural Maggotus"
+  "243": {
+    "name": "Green Slime"
   },
-  "561": {
-    "name": "Hammerhead Enforcer"
+  "244": {
+    "name": "Griphon"
   },
-  "562": {
-    "name": "Harpy Banshee"
+  "245": {
+    "name": "Hair Ball"
   },
-  "563": {
-    "name": "Hecate the Plague Mistress"
+  "246": {
+    "name": "Halo Acolyte"
   },
-  "564": {
-    "name": "Hellthorn Dryad"
+  "247": {
+    "name": "Hand Crawler"
   },
-  "565": {
-    "name": "Hivemind Termite"
+  "248": {
+    "name": "Haunted Mannequin"
   },
-  "566": {
-    "name": "Hollow Goat"
+  "249": {
+    "name": "Haunting Scarecrow"
   },
-  "567": {
+  "250": {
+    "name": "Holographic Decoy"
+  },
+  "251": {
+    "name": "Horned Bear"
+  },
+  "252": {
     "name": "Hydrokinetic Engine"
   },
-  "568": {
-    "name": "Hyperdimensional Grimorie"
-  },
-  "569": {
+  "253": {
     "name": "Ice Dragonling"
   },
-  "570": {
-    "name": "Infernal Cerberus"
+  "254": {
+    "name": "Ice Kangaroo"
   },
-  "571": {
-    "name": "Infernal Devastator"
+  "255": {
+    "name": "Ink Blot Child"
   },
-  "572": {
-    "name": "Infernal Monarch"
+  "256": {
+    "name": "Insect Swarm"
   },
-  "573": {
-    "name": "Infernal Prodigy"
+  "257": {
+    "name": "Junkrat"
   },
-  "574": {
-    "name": "Infernal Warmonger"
+  "258": {
+    "name": "Kangaroo"
   },
-  "575": {
-    "name": "Interdimensional Tourist"
+  "259": {
+    "name": "Komodo Dragon"
   },
-  "576": {
-    "name": "Iron Horse"
+  "260": {
+    "name": "Lizard Sniper"
   },
-  "577": {
-    "name": "Ironhoof Charger"
+  "261": {
+    "name": "Luminous Deacon"
   },
-  "578": {
-    "name": "Jungle Constrictor"
-  },
-  "579": {
-    "name": "Jungle Predator"
-  },
-  "580": {
-    "name": "Jungle Stalker"
-  },
-  "581": {
-    "name": "Juvenile Ice Wyrm"
-  },
-  "582": {
-    "name": "Kraken Leviathan"
-  },
-  "583": {
-    "name": "Kraken Spawn"
-  },
-  "584": {
-    "name": "Labyrinth Guardian"
-  },
-  "585": {
-    "name": "Lake Lurker Serpent"
-  },
-  "586": {
-    "name": "Landfill Leviathan"
-  },
-  "587": {
-    "name": "Lilith the Corruptor"
-  },
-  "588": {
-    "name": "Living Armor"
-  },
-  "589": {
-    "name": "Living Monolith"
-  },
-  "590": {
-    "name": "Luck Elemental"
-  },
-  "591": {
-    "name": "Luminous Angler"
-  },
-  "592": {
-    "name": "Luminous Defender"
-  },
-  "593": {
+  "262": {
     "name": "Luminous Jellyfish"
   },
-  "594": {
-    "name": "Luminous Locust King"
+  "263": {
+    "name": "Magma Ant"
   },
-  "595": {
-    "name": "Maelstrom Sovereign"
+  "264": {
+    "name": "Maleficent Ape"
   },
-  "596": {
-    "name": "Magma Centipede"
+  "265": {
+    "name": "Maned Terror Wolf"
   },
-  "597": {
-    "name": "Magma Titan"
+  "266": {
+    "name": "Mannequin"
   },
-  "598": {
-    "name": "Marsh Murkweb"
+  "267": {
+    "name": "Marsh Wraith"
   },
-  "599": {
-    "name": "Marshjaw Heloderma"
-  },
-  "600": {
-    "name": "Marshjaw Stalker"
-  },
-  "601": {
-    "name": "Master Chen"
-  },
-  "602": {
+  "268": {
     "name": "Mechanical Golem"
   },
-  "603": {
-    "name": "Merchant's Nightmare"
-  },
-  "604": {
-    "name": "Mercury Dragon"
-  },
-  "605": {
-    "name": "Mi-go Brain Harvester"
-  },
-  "606": {
-    "name": "Mianni"
-  },
-  "607": {
-    "name": "Miasma Lantern"
-  },
-  "608": {
-    "name": "Midnight Hunter"
-  },
-  "609": {
+  "269": {
     "name": "Military Cyborg"
   },
-  "610": {
+  "270": {
     "name": "Mimic shaped box"
   },
-  "611": {
-    "name": "Mind Manipulator"
+  "271": {
+    "name": "Mind Leech"
   },
-  "612": {
-    "name": "Mind Sculptor"
+  "272": {
+    "name": "Mire Spider"
   },
-  "613": {
-    "name": "Molten Dragon"
+  "273": {
+    "name": "Mirror Fiend"
   },
-  "614": {
-    "name": "Molten Juggernaut"
+  "274": {
+    "name": "Monitor Lizard"
   },
-  "615": {
-    "name": "Molten Slag"
+  "275": {
+    "name": "Monstrous Badger"
   },
-  "616": {
-    "name": "Moonlit Wendigo"
+  "276": {
+    "name": "Mud Slime"
   },
-  "617": {
-    "name": "Morgana the Bloodweaver"
+  "277": {
+    "name": "Murkwallow Ghoul"
   },
-  "618": {
-    "name": "Moss Viper"
+  "278": {
+    "name": "Mutant Bug"
   },
-  "619": {
-    "name": "Mossscale Amphibolurus"
-  },
-  "620": {
-    "name": "Mothshade Stalker"
-  },
-  "621": {
-    "name": "Motivational Fungoid"
-  },
-  "622": {
-    "name": "Mountain Crusher"
-  },
-  "623": {
-    "name": "Mountain Eagle"
-  },
-  "624": {
-    "name": "Mountain Ogre"
-  },
-  "625": {
-    "name": "Multi-Headed Hydra"
-  },
-  "626": {
-    "name": "Mutated Goblin"
-  },
-  "627": {
-    "name": "Mystic Prodigy"
-  },
-  "628": {
-    "name": "Necrotic Champion"
-  },
-  "629": {
-    "name": "Nephilim Remnant"
-  },
-  "630": {
-    "name": "Nervous System"
-  },
-  "631": {
+  "279": {
     "name": "Neural Interface"
   },
-  "632": {
-    "name": "Nightmare Bacteria"
+  "280": {
+    "name": "Night Raccoon"
   },
-  "633": {
-    "name": "Nightmare Shark"
+  "281": {
+    "name": "Novice Illusionist"
   },
-  "634": {
-    "name": "Normal pig"
+  "282": {
+    "name": "Novice Paladin"
   },
-  "635": {
-    "name": "Novice Shaolin Acolyte"
+  "283": {
+    "name": "Obsidian Visionary"
   },
-  "636": {
-    "name": "Obsidian Burrower"
+  "284": {
+    "name": "Ochre Jelly Swarm"
   },
-  "637": {
-    "name": "Ocean Warlock"
+  "285": {
+    "name": "Ogre Brute"
   },
-  "638": {
-    "name": "Ogre Archmage"
+  "286": {
+    "name": "Ogre Crusher"
   },
-  "639": {
-    "name": "Ogre Champion"
+  "287": {
+    "name": "Ogre Fire Shaman"
   },
-  "640": {
-    "name": "Ogre Elemental Adept"
+  "288": {
+    "name": "Ogre Mystic"
   },
-  "641": {
-    "name": "Ogre Warlord"
+  "289": {
+    "name": "Orc Bruiser"
   },
-  "642": {
-    "name": "Ominous Raven Murder"
+  "290": {
+    "name": "Organ Grinder Monkey"
   },
-  "643": {
-    "name": "Pain Enthusiast"
+  "291": {
+    "name": "Overworked Villager"
   },
-  "644": {
-    "name": "Palette Phantom"
+  "292": {
+    "name": "Pastoral Sheep"
   },
-  "645": {
-    "name": "Panda"
+  "293": {
+    "name": "Permafrost Beetle"
   },
-  "646": {
-    "name": "Paralytic Slug"
+  "294": {
+    "name": "Phantom Marionette"
   },
-  "647": {
-    "name": "Parrot"
-  },
-  "648": {
-    "name": "Peregrine Falcon"
-  },
-  "649": {
-    "name": "Permafrost Conjurer"
-  },
-  "650": {
-    "name": "Permafrost Dragon"
-  },
-  "651": {
-    "name": "Petrifying Gorgon"
-  },
-  "652": {
-    "name": "Phantom Archer"
-  },
-  "653": {
-    "name": "Philosophical Zombie"
-  },
-  "654": {
+  "295": {
     "name": "Photon Defender"
   },
-  "655": {
-    "name": "Plasma Juggernaut"
+  "296": {
+    "name": "Pink Slime"
   },
-  "656": {
-    "name": "Platinum Mimic"
+  "297": {
+    "name": "Plaguebro Rattus"
   },
-  "657": {
-    "name": "Poison Pooka"
+  "298": {
+    "name": "Pocket Watch Scarab"
   },
-  "658": {
-    "name": "Polar Bear"
+  "299": {
+    "name": "Pocket-Dimension Imp"
   },
-  "659": {
-    "name": "Primal Sloth"
+  "300": {
+    "name": "Primal Kangaroo"
   },
-  "660": {
-    "name": "Prismatic Polychromus"
+  "301": {
+    "name": "Professional Boxer"
   },
-  "661": {
-    "name": "Psionic Fenbeast"
+  "302": {
+    "name": "Quagmire Creeper"
   },
-  "662": {
-    "name": "Pumpkin Slime"
+  "303": {
+    "name": "Rabid Jackrabbit"
   },
-  "663": {
-    "name": "Quantum Fluctuation"
+  "304": {
+    "name": "Rat King"
   },
-  "664": {
-    "name": "Quantum Supersoldier"
+  "305": {
+    "name": "Rattling Remains"
   },
-  "665": {
-    "name": "Quetzalcoatl Channeler"
+  "306": {
+    "name": "Razorback Boar"
   },
-  "666": {
-    "name": "Radiant Archpriest"
+  "307": {
+    "name": "Red Fox"
   },
-  "667": {
-    "name": "Radiant Justicar"
+  "308": {
+    "name": "Reef Shark"
   },
-  "668": {
-    "name": "Radiant Unicorn"
+  "309": {
+    "name": "Reflective Tiger"
   },
-  "669": {
-    "name": "Rainbow Slime"
+  "310": {
+    "name": "Rib Cage Crab"
   },
-  "670": {
-    "name": "Rancorous Bull"
-  },
-  "671": {
-    "name": "Rashid Al-Sayf"
-  },
-  "672": {
-    "name": "Ravenna the Shadowbinder"
-  },
-  "673": {
-    "name": "Reality Bender"
-  },
-  "674": {
-    "name": "Recursive Paradox"
-  },
-  "675": {
-    "name": "Rhinobeetle"
-  },
-  "676": {
-    "name": "Ritual Sentinel"
-  },
-  "677": {
+  "311": {
     "name": "Rogue Sentinel"
   },
-  "678": {
+  "312": {
     "name": "Rotating Sawblade"
   },
-  "679": {
-    "name": "Rotvulture"
+  "313": {
+    "name": "Saber Cat"
   },
-  "680": {
-    "name": "Rotwood Entangler"
-  },
-  "681": {
-    "name": "Royal Champion"
-  },
-  "682": {
-    "name": "Royal Knight"
-  },
-  "683": {
-    "name": "Rubbler"
-  },
-  "684": {
-    "name": "Rummaging Opossum"
-  },
-  "685": {
-    "name": "Sacred Kraken"
-  },
-  "686": {
-    "name": "Sacred Phoenix"
-  },
-  "687": {
-    "name": "Sand Cobra"
-  },
-  "688": {
+  "314": {
     "name": "Sand Golem"
   },
-  "689": {
-    "name": "Sandstrider Varanus"
+  "315": {
+    "name": "Sand Slime"
   },
-  "690": {
-    "name": "Scarecrow Sentinel"
+  "316": {
+    "name": "Savage Berserker"
   },
-  "691": {
-    "name": "Scorched Tyrant"
-  },
-  "692": {
-    "name": "Scrapforged"
-  },
-  "693": {
+  "317": {
     "name": "Sculptor's Sorrow"
   },
-  "694": {
-    "name": "Sea Turtle"
+  "318": {
+    "name": "Seal Pup"
   },
-  "695": {
-    "name": "Seafoam Enchantress"
-  },
-  "696": {
+  "319": {
     "name": "Security Sentinel"
   },
-  "697": {
-    "name": "Seeing Slime"
+  "320": {
+    "name": "Sewer Rat"
   },
-  "698": {
-    "name": "Seismic Tunneler"
+  "321": {
+    "name": "Shadow Crawler"
   },
-  "699": {
-    "name": "Selene the Void Witch"
+  "322": {
+    "name": "Shadow Stalker"
   },
-  "700": {
-    "name": "Sentient Meme"
+  "323": {
+    "name": "Shock Slime"
   },
-  "701": {
-    "name": "Shadow Bat"
+  "324": {
+    "name": "Siren Apprentice"
   },
-  "702": {
-    "name": "Shadow Blade"
-  },
-  "703": {
-    "name": "Shadow Blade"
-  },
-  "704": {
-    "name": "Shadow Thief"
-  },
-  "705": {
-    "name": "Shadow Tortoise"
-  },
-  "706": {
-    "name": "Shoggoth"
-  },
-  "707": {
-    "name": "Silken Enchantress"
-  },
-  "708": {
-    "name": "Siren Enchantress"
-  },
-  "709": {
-    "name": "Siren Sniper"
-  },
-  "710": {
+  "325": {
     "name": "Skull Keeper"
   },
-  "711": {
+  "326": {
     "name": "Skullcrusher Brute"
   },
-  "712": {
-    "name": "Skulmire Slime"
+  "327": {
+    "name": "Slime Knight"
   },
-  "713": {
-    "name": "Soldier Ant Colony"
+  "328": {
+    "name": "Soul Harvester"
   },
-  "714": {
-    "name": "Somnolent Apparition"
+  "329": {
+    "name": "Soul Merchant"
   },
-  "715": {
-    "name": "Sonic Molten Drakebat"
+  "330": {
+    "name": "Space Zebra"
   },
-  "716": {
-    "name": "Sorrow Specter"
+  "331": {
+    "name": "Spectral Wardstone"
   },
-  "717": {
-    "name": "Spectral Songbird"
+  "332": {
+    "name": "Spined Lizard"
   },
-  "718": {
-    "name": "Spectral Wisp"
+  "333": {
+    "name": "Spiny Sprinter"
   },
-  "719": {
-    "name": "Spikey Porcupine"
+  "334": {
+    "name": "Stealthy Operative"
   },
-  "720": {
-    "name": "Spinescale Pogona"
+  "335": {
+    "name": "Stone Guardian"
   },
-  "721": {
-    "name": "Spineshade"
+  "336": {
+    "name": "Storm Banshee"
   },
-  "722": {
-    "name": "Sporeburst Myconid"
+  "337": {
+    "name": "Street Brawler"
   },
-  "723": {
-    "name": "Star Caller"
+  "338": {
+    "name": "Street Punk"
   },
-  "724": {
-    "name": "Storm Behemoth"
+  "339": {
+    "name": "Swamp Crocodile"
   },
-  "725": {
-    "name": "Storm Dragonling"
+  "340": {
+    "name": "Tarantula"
   },
-  "726": {
-    "name": "Stringbound Abomination"
+  "341": {
+    "name": "The Surgeon"
   },
-  "727": {
-    "name": "Striped Tiger"
+  "342": {
+    "name": "Thor"
   },
-  "728": {
-    "name": "Summer Court Archon"
+  "343": {
+    "name": "Thunder Sprite"
   },
-  "729": {
-    "name": "Swamp Gas Elemental"
+  "344": {
+    "name": "Timberwood Shaman"
   },
-  "730": {
-    "name": "Swamp Leech Queen"
+  "345": {
+    "name": "Tomb Guardian"
   },
-  "731": {
-    "name": "Swamp Scorpion"
+  "346": {
+    "name": "Tomekeeper of the Sunstone"
   },
-  "732": {
-    "name": "Swordfish Sovereign"
+  "347": {
+    "name": "Tongue Leech"
   },
-  "733": {
-    "name": "Sylvan Barkstalker"
+  "348": {
+    "name": "Tooth Fairy"
   },
-  "734": {
-    "name": "Talking Door"
+  "349": {
+    "name": "Totem Guardian"
   },
-  "735": {
-    "name": "Terra Golem"
+  "350": {
+    "name": "Totem Initiate"
   },
-  "736": {
-    "name": "The Blood Countess"
+  "351": {
+    "name": "Toxic Anemone"
   },
-  "737": {
-    "name": "The Cremator"
+  "352": {
+    "name": "Toxic Sludge"
   },
-  "738": {
-    "name": "The Frozen Lady"
+  "353": {
+    "name": "Toxic Sprayer"
   },
-  "739": {
-    "name": "The Phantom"
+  "354": {
+    "name": "Trashling"
   },
-  "740": {
-    "name": "The Puppeteer"
-  },
-  "741": {
-    "name": "The Scarlet Judge"
-  },
-  "742": {
-    "name": "The Taxidermist"
-  },
-  "743": {
-    "name": "The Viper"
-  },
-  "744": {
-    "name": "Thought Weaver"
-  },
-  "745": {
-    "name": "Thunder Blob"
-  },
-  "746": {
-    "name": "Thunder Dragonling"
-  },
-  "747": {
-    "name": "Tide Sculptor"
-  },
-  "748": {
-    "name": "Timeworn Owlbear"
-  },
-  "749": {
-    "name": "Titan Anaconda"
-  },
-  "750": {
-    "name": "Tonno Dimensionale"
-  },
-  "751": {
-    "name": "Totem Adept"
-  },
-  "752": {
-    "name": "Toxic Amalgam"
-  },
-  "753": {
-    "name": "Toxic Ghost"
-  },
-  "754": {
+  "355": {
     "name": "Treasure Golem"
   },
-  "755": {
-    "name": "Tsunami Guardian"
+  "356": {
+    "name": "Tree Monkey"
   },
-  "756": {
-    "name": "Umbra Panthera"
+  "357": {
+    "name": "Trickster Imp"
   },
-  "757": {
-    "name": "Vampire Lord"
+  "358": {
+    "name": "Trident Hunter"
   },
-  "758": {
-    "name": "Veiled Phantasm"
+  "359": {
+    "name": "Tundra Mammoth Calf"
   },
-  "759": {
-    "name": "Venom Lord"
+  "360": {
+    "name": "Tunneling Mole"
   },
-  "760": {
-    "name": "Venomfang Archer"
+  "361": {
+    "name": "Twilight Satyr"
   },
-  "761": {
-    "name": "Venomous Dragonfly"
+  "362": {
+    "name": "Twisted Marionette"
   },
-  "762": {
-    "name": "Viktor 'Iron Fist' Volkov"
+  "363": {
+    "name": "Umber Moth Swarm"
   },
-  "763": {
-    "name": "Void Manipulator"
+  "364": {
+    "name": "Umbral Lurker"
   },
-  "764": {
-    "name": "Void Parasite Plant"
+  "365": {
+    "name": "Vampire Bat"
   },
-  "765": {
-    "name": "Void Sorcerer"
+  "366": {
+    "name": "Venomous Snake"
   },
-  "766": {
-    "name": "Volcanic Shark"
+  "367": {
+    "name": "Wandering Archer"
   },
-  "767": {
-    "name": "Volcanic Wyvern"
+  "368": {
+    "name": "Water Nymph"
   },
-  "768": {
-    "name": "Warborn Chieftain"
+  "369": {
+    "name": "Webweaver"
   },
-  "769": {
-    "name": "Whispering Wraith"
+  "370": {
+    "name": "Weeping Mask"
   },
-  "770": {
-    "name": "Wind Leviathan"
+  "371": {
+    "name": "Whisper Wisp"
   },
-  "771": {
-    "name": "Winter Court Knight"
+  "372": {
+    "name": "Wild Boar"
   },
-  "772": {
-    "name": "Winter's Harbinger"
+  "373": {
+    "name": "Wild Rabbit"
   },
-  "773": {
-    "name": "Winter's Herald"
+  "374": {
+    "name": "Wild ripper"
   },
-  "774": {
-    "name": "Wrath Dolphin"
+  "375": {
+    "name": "Wildcat"
   },
-  "775": {
-    "name": "Yog-Sothoth Spawn"
+  "376": {
+    "name": "Will-O-’-Wisp Lamp"
   },
-  "776": {
+  "377": {
+    "name": "Wise Owl"
+  },
+  "378": {
+    "name": "Wooden Flower"
+  },
+  "379": {
+    "name": "Xibalba Glyphweaver "
+  },
+  "380": {
     "name": "Young Magma Drake"
   },
-  "777": {
-    "name": "Zephyr Djinn"
+  "381": {
+    "name": "Young Yeti"
   },
-  "788": {
-    "name": "<-- 31-40 -->"
+  "382": {
+    "name": "Zephyr Wizard"
   },
-  "789": {
-    "name": "Abyssal Devourer"
+  "383": {
+    "name": "<-- 21-30 -->"
   },
-  "790": {
-    "name": "Deepmaw Horror"
+  "384": {
+    "name": "Abyssal Crab"
   },
-  "791": {
-    "name": "Abyssal Leviathan"
+  "385": {
+    "name": "Abyssal Fiend"
   },
-  "792": {
-    "name": "Abyssal Pixie"
+  "386": {
+    "name": "Abyssal Hallucigenia"
   },
-  "793": {
-    "name": "Abyssal Sea Dragon"
+  "387": {
+    "name": "Abyssal Horror"
   },
-  "794": {
-    "name": "Advertisement Badger"
+  "388": {
+    "name": "Abyssal Hunter"
   },
-  "795": {
-    "name": "Ancient Lich"
+  "389": {
+    "name": "Abyssal Tentacler"
   },
-  "796": {
-    "name": "Arctic Wolf"
+  "390": {
+    "name": "Accursed Stonefish"
   },
-  "797": {
-    "name": "Astral Sentinel"
+  "391": {
+    "name": "Acid Bombardier"
   },
-  "798": {
-    "name": "Azathoth Fragment"
+  "392": {
+    "name": "Acidic Tidecaller"
   },
-  "799": {
-    "name": "Babalon Priestess"
+  "393": {
+    "name": "Air Elemental"
   },
-  "800": {
-    "name": "Bald Eagle"
+  "394": {
+    "name": "Akira Tanaka"
   },
-  "801": {
-    "name": "Beast 666"
+  "395": {
+    "name": "Anguish Phantom"
   },
-  "802": {
-    "name": "Behemoth Gorilla"
+  "396": {
+    "name": "Animated Arsenal"
   },
-  "803": {
-    "name": "Blight Sylph"
+  "397": {
+    "name": "Animated Gravestalker"
   },
-  "804": {
-    "name": "Bloodlord Supreme"
+  "398": {
+    "name": "Aquatic Elemental"
   },
-  "805": {
-    "name": "Bog Golem"
+  "399": {
+    "name": "Aquatic Mantis"
   },
-  "806": {
-    "name": "Brimstone Behemutt"
+  "400": {
+    "name": "Armored Rhinoceros"
   },
-  "807": {
-    "name": "Carrion Stalker"
+  "401": {
+    "name": "Assassin Wasp"
   },
-  "808": {
-    "name": "Caustic Slime"
+  "402": {
+    "name": "Blank Emergence"
   },
-  "809": {
-    "name": "Celestial Arbiter"
+  "403": {
+    "name": "Blick"
   },
-  "810": {
-    "name": "Celestial Avatar"
+  "404": {
+    "name": "Blinding Sadist"
   },
-  "811": {
-    "name": "Cerberus Sentinel"
+  "405": {
+    "name": "Blood Countess"
   },
-  "812": {
-    "name": "Chromatic Tick"
+  "406": {
+    "name": "Blood Widow"
   },
-  "813": {
-    "name": "Chronos, Time Titan"
+  "407": {
+    "name": "Bloodbell Cow"
   },
-  "814": {
-    "name": "Chronovore"
+  "408": {
+    "name": "Bloodthirsty Crusader"
   },
-  "815": {
-    "name": "Cognitive Bacteria"
+  "409": {
+    "name": "Bog Elemental"
   },
-  "816": {
-    "name": "Corporate Ninja"
+  "410": {
+    "name": "Bogscale Hunter"
   },
-  "817": {
-    "name": "Crag Behemoth"
+  "411": {
+    "name": "Bonechewer Devourer"
   },
-  "818": {
-    "name": "Crimson Tyrant"
+  "412": {
+    "name": "Brine Wisp"
   },
-  "819": {
-    "name": "Crystalline Shardbeast"
+  "413": {
+    "name": "Bubba"
   },
-  "820": {
-    "name": "Cursed Grimorie"
+  "414": {
+    "name": "Bureaucratic Nightmare"
   },
-  "821": {
-    "name": "Deep One Monarch"
+  "415": {
+    "name": "Chainbound Fury"
   },
-  "822": {
-    "name": "Demon Bear"
+  "416": {
+    "name": "Champion Contender"
   },
-  "823": {
+  "417": {
+    "name": "Chromatic Manticore"
+  },
+  "418": {
+    "name": "Chupacabra Fiend"
+  },
+  "419": {
+    "name": "Cinder Weaver"
+  },
+  "420": {
+    "name": "Cindermaw Hound"
+  },
+  "421": {
+    "name": "Cinderthroat Varanus"
+  },
+  "422": {
+    "name": "Cloud Giant"
+  },
+  "423": {
+    "name": "Cobalt-footed Rex"
+  },
+  "424": {
+    "name": "Consecrated Guardian"
+  },
+  "425": {
+    "name": "Coral Enchantress"
+  },
+  "426": {
+    "name": "Corpsecarver Knight"
+  },
+  "427": {
+    "name": "Corrupted Knight"
+  },
+  "428": {
+    "name": "Crimson Analizer"
+  },
+  "429": {
+    "name": "Crimson Fish"
+  },
+  "430": {
+    "name": "Crimson Harvester"
+  },
+  "431": {
+    "name": "Crystal Hoarder"
+  },
+  "432": {
+    "name": "Crystal Siren"
+  },
+  "433": {
+    "name": "Crystalback Sceloporus"
+  },
+  "434": {
+    "name": "CrystalCarapace Sentinel"
+  },
+  "435": {
+    "name": "Cursed Candle"
+  },
+  "436": {
+    "name": "Dark Mage"
+  },
+  "437": {
+    "name": "Deep Frost Eel"
+  },
+  "438": {
+    "name": "Deep One Hybrid"
+  },
+  "439": {
+    "name": "Deer Sprite"
+  },
+  "440": {
+    "name": "Desert Commander"
+  },
+  "441": {
+    "name": "Devoted Templar"
+  },
+  "442": {
+    "name": "Diego 'Jaguar' Rodriguez"
+  },
+  "443": {
+    "name": "Divine Arbiter"
+  },
+  "444": {
+    "name": "Dominant Taskmaster"
+  },
+  "445": {
+    "name": "Dream Serpent High Priest"
+  },
+  "446": {
     "name": "Dumpster Head"
   },
-  "824": {
-    "name": "Earth Sentinel"
+  "447": {
+    "name": "Dune Fang"
   },
-  "825": {
-    "name": "Elder Thing"
+  "448": {
+    "name": "Dust Devil Bird"
   },
-  "826": {
+  "449": {
+    "name": "Elderwood Guardian"
+  },
+  "450": {
+    "name": "Electro Arachnid"
+  },
+  "451": {
+    "name": "Elena 'Shadow' Rodriguez"
+  },
+  "452": {
+    "name": "Em"
+  },
+  "453": {
+    "name": "Ember Centipede"
+  },
+  "454": {
     "name": "Ember Warder"
   },
-  "827": {
-    "name": "Entropy Wyrm"
+  "455": {
+    "name": "Emerald Stalker"
   },
-  "828": {
-    "name": "Esmeralda the Dream Weaver"
+  "456": {
+    "name": "Engorged Tick Swarm"
   },
-  "829": {
-    "name": "Ethereal Tactician"
+  "457": {
+    "name": "Essence Leech"
   },
-  "830": {
-    "name": "Fae Queen"
+  "458": {
+    "name": "Eternal Intern"
   },
-  "831": {
-    "name": "Forest Sovereign"
+  "459": {
+    "name": "Ethereal Devourer"
   },
-  "832": {
-    "name": "Frost Archmagus"
+  "460": {
+    "name": "Fenclaw Brute"
   },
-  "833": {
-    "name": "Frost Knight"
+  "461": {
+    "name": "Fey Enchantress"
   },
-  "834": {
-    "name": "Frost Monarch"
+  "462": {
+    "name": "Fiery Sleep Demon"
   },
-  "835": {
-    "name": "Gale Sentinel"
+  "463": {
+    "name": "Filth Fiend"
   },
-  "836": {
-    "name": "Geode Hydra"
+  "464": {
+    "name": "Fire Centipede"
   },
-  "837": {
-    "name": "Ghost Tiger"
+  "465": {
+    "name": "Flame Elemental"
   },
-  "838": {
-    "name": "Gilded Guardian"
+  "466": {
+    "name": "Flame-Touched Hellhound"
   },
-  "839": {
-    "name": "Glacial Titan"
+  "467": {
+    "name": "Flatwood Sentinel"
   },
-  "840": {
-    "name": "Glitch Entity"
+  "468": {
+    "name": "Flying Pig"
   },
-  "841": {
-    "name": "Goblin head"
+  "469": {
+    "name": "Forest Archer"
   },
-  "842": {
-    "name": "Goblin Mosh Lord"
+  "470": {
+    "name": "Forest Centaur"
   },
-  "843": {
-    "name": "Grave Monarch"
+  "471": {
+    "name": "Forest's Vengeance"
   },
-  "844": {
-    "name": "Grey Zeta Reticulan"
+  "472": {
+    "name": "Fossil Sentinel"
   },
-  "845": {
-    "name": "Hellfire Mammoth"
+  "473": {
+    "name": "Frog Monk"
   },
-  "846": {
-    "name": "Infernal Annihilator"
+  "474": {
+    "name": "Frost Scarab"
   },
-  "847": {
-    "name": "Infernal Warhound"
+  "475": {
+    "name": "Frost Slime"
   },
-  "848": {
-    "name": "Inferno Pooka"
+  "476": {
+    "name": "Giant Slithering Snail"
   },
-  "849": {
-    "name": "Iron Sentinel"
+  "477": {
+    "name": "Gilded Zapback"
   },
-  "850": {
-    "name": "King Slime"
+  "478": {
+    "name": "Glacier Serpent"
   },
-  "851": {
-    "name": "Kodiak Bear"
+  "479": {
+    "name": "Gloomwurm"
   },
-  "852": {
-    "name": "Laughing Mire Idol"
+  "480": {
+    "name": "Gnome Alchemist"
   },
-  "853": {
-    "name": "Living Theorem"
+  "481": {
+    "name": "Gnome Artificer"
   },
-  "854": {
-    "name": "Mad Boar"
+  "482": {
+    "name": "Gnome Bombardier"
   },
-  "855": {
-    "name": "Maelstrom Leviathan"
+  "483": {
+    "name": "Gnome Engineer"
   },
-  "856": {
-    "name": "Magma Overlord"
+  "484": {
+    "name": "Gnome Shaman"
   },
-  "857": {
-    "name": "Majestic Griffon"
+  "485": {
+    "name": "Goblin Grunt"
   },
-  "858": {
-    "name": "Megalodon"
+  "486": {
+    "name": "Goblin Mounted Archer"
   },
-  "859": {
+  "487": {
+    "name": "Goblin Scout"
+  },
+  "488": {
+    "name": "Golden Lion"
+  },
+  "489": {
+    "name": "Grasping Shadow"
+  },
+  "490": {
+    "name": "Gravebound Revenant"
+  },
+  "491": {
+    "name": "Grotesque Slime"
+  },
+  "492": {
+    "name": "Guardian Vindicator"
+  },
+  "493": {
+    "name": "Guttural Maggotus"
+  },
+  "494": {
+    "name": "Hammerhead Enforcer"
+  },
+  "495": {
+    "name": "Harpy Banshee"
+  },
+  "496": {
+    "name": "Hellthorn Dryad"
+  },
+  "497": {
+    "name": "Hivemind Termite"
+  },
+  "498": {
+    "name": "Hollow Goat"
+  },
+  "499": {
+    "name": "Interdimensional Tourist"
+  },
+  "500": {
+    "name": "Iron Horse"
+  },
+  "501": {
+    "name": "Jungle Constrictor"
+  },
+  "502": {
+    "name": "Jungle Predator"
+  },
+  "503": {
+    "name": "Jungle Stalker"
+  },
+  "504": {
+    "name": "Juvenile Ice Wyrm"
+  },
+  "505": {
+    "name": "Labyrinth Guardian"
+  },
+  "506": {
+    "name": "Lake Lurker Serpent"
+  },
+  "507": {
+    "name": "Lilith the Corruptor"
+  },
+  "508": {
+    "name": "Living Armor"
+  },
+  "509": {
+    "name": "Living Monolith"
+  },
+  "510": {
+    "name": "Luck Elemental"
+  },
+  "511": {
+    "name": "Luminous Angler"
+  },
+  "512": {
+    "name": "Luminous Defender"
+  },
+  "513": {
+    "name": "Magma Centipede"
+  },
+  "514": {
+    "name": "Majestic Enchantress "
+  },
+  "515": {
+    "name": "Marshjaw Heloderma"
+  },
+  "516": {
+    "name": "Marshjaw Stalker"
+  },
+  "517": {
+    "name": "Master Chen"
+  },
+  "518": {
+    "name": "Merchant's Nightmare"
+  },
+  "519": {
+    "name": "Mi-go Brain Harvester"
+  },
+  "520": {
+    "name": "Mianni"
+  },
+  "521": {
+    "name": "Miasma Lantern"
+  },
+  "522": {
+    "name": "Midnight Hunter"
+  },
+  "523": {
     "name": "Mind Flayer"
   },
-  "860": {
-    "name": "Mind Flayer Moth"
+  "524": {
+    "name": "Molten Slag"
   },
-  "861": {
-    "name": "Mind Overlord"
+  "525": {
+    "name": "Moonlit Wendigo"
   },
-  "862": {
-    "name": "Mind Shield"
+  "526": {
+    "name": "Moss Viper"
   },
-  "863": {
-    "name": "Mind Tyrant"
+  "527": {
+    "name": "Mossscale Amphibolurus"
   },
-  "864": {
-    "name": "Mire Hydra"
+  "528": {
+    "name": "Mothshade Stalker"
   },
-  "865": {
-    "name": "Molten Guardian"
+  "529": {
+    "name": "Motivational Fungoid"
   },
-  "866": {
-    "name": "Mountain Devastator"
+  "530": {
+    "name": "Mountain Crusher"
   },
-  "867": {
-    "name": "Mountain Devastator"
+  "531": {
+    "name": "Mountain Eagle"
   },
-  "868": {
-    "name": "Mountain Giant"
+  "532": {
+    "name": "Mountain Ogre"
   },
-  "869": {
-    "name": "Mountain Titan"
+  "533": {
+    "name": "Nervous System"
   },
-  "870": {
-    "name": "Mystic Panther"
+  "534": {
+    "name": "Nightmare Bacteria"
   },
-  "871": {
-    "name": "Nether Court Duchess"
+  "535": {
+    "name": "Nightmare Shark"
   },
-  "872": {
-    "name": "Network Overlord"
+  "536": {
+    "name": "Normal pig"
   },
-  "873": {
-    "name": "Nightmare Mage"
+  "537": {
+    "name": "Novice Shaolin Acolyte"
   },
-  "874": {
-    "name": "Nightmare Sovereign"
+  "538": {
+    "name": "Obsidian Burrower"
   },
-  "875": {
-    "name": "Nightveil Assassin"
+  "539": {
+    "name": "Ogre Elemental Adept"
   },
-  "876": {
-    "name": "Nightwisp"
+  "540": {
+    "name": "Ominous Raven Murder"
   },
-  "877": {
-    "name": "Noble Guardian"
+  "541": {
+    "name": "Oneiric Phantom"
   },
-  "878": {
-    "name": "Nyarlathotep Avatar"
+  "542": {
+    "name": "Pain Enthusiast"
   },
-  "879": {
-    "name": "Obsidian Dreadnought"
+  "543": {
+    "name": "Palette Phantom"
   },
-  "880": {
-    "name": "Ogre Warlock King"
+  "544": {
+    "name": "Panda"
   },
-  "881": {
-    "name": "Ominous Raven"
+  "545": {
+    "name": "Paralytic Slug"
   },
-  "882": {
+  "546": {
+    "name": "Parrot"
+  },
+  "547": {
+    "name": "Peregrine Falcon"
+  },
+  "548": {
     "name": "Petrified Enforcer"
   },
-  "883": {
-    "name": "Plague Heap"
+  "549": {
+    "name": "Phantom Archer"
   },
-  "884": {
-    "name": "Primordial Golem"
+  "550": {
+    "name": "Philosophical Zombie"
   },
-  "885": {
-    "name": "Proto Turret"
+  "551": {
+    "name": "Platinum Mimic"
   },
-  "886": {
-    "name": "Quake-Maw Titan"
+  "552": {
+    "name": "Poison Pooka"
   },
-  "887": {
-    "name": "Quantum Archon"
+  "553": {
+    "name": "Polar Bear"
   },
-  "888": {
-    "name": "Quantum Intellect"
+  "554": {
+    "name": "Primal Sloth"
   },
-  "889": {
-    "name": "Rabid Coyote"
+  "555": {
+    "name": "Prismatic Polychromus"
   },
-  "890": {
-    "name": "Radiant Colossus"
+  "556": {
+    "name": "Psionic Fenbeast"
   },
-  "891": {
-    "name": "Radiant Defender"
+  "557": {
+    "name": "Pumpkin Slime"
   },
-  "892": {
-    "name": "Reality Warper"
+  "558": {
+    "name": "Quetzalcoatl Channeler"
   },
-  "893": {
-    "name": "Royal Justicar"
+  "559": {
+    "name": "Radiant Justicar"
   },
-  "894": {
-    "name": "Sabertooth Alpha"
+  "560": {
+    "name": "Radiant Unicorn"
   },
-  "895": {
-    "name": "Scavenging Coyote"
+  "561": {
+    "name": "Rainbow Slime"
   },
-  "896": {
+  "562": {
+    "name": "Rancorous Bull"
+  },
+  "563": {
+    "name": "Rashid Al-Sayf"
+  },
+  "564": {
+    "name": "Rhinobeetle"
+  },
+  "565": {
+    "name": "Ritual Sentinel"
+  },
+  "566": {
+    "name": "Rotvulture"
+  },
+  "567": {
+    "name": "Rotwood Entangler"
+  },
+  "568": {
+    "name": "Royal Champion"
+  },
+  "569": {
+    "name": "Royal Knight"
+  },
+  "570": {
+    "name": "Rubbler"
+  },
+  "571": {
+    "name": "Rummaging Opossum"
+  },
+  "572": {
+    "name": "Sand Cobra"
+  },
+  "573": {
+    "name": "Sandstrider Varanus"
+  },
+  "574": {
+    "name": "Scarecrow Sentinel"
+  },
+  "575": {
+    "name": "Scrapforged"
+  },
+  "576": {
+    "name": "Sea Turtle"
+  },
+  "577": {
+    "name": "Seafoam Enchantress"
+  },
+  "578": {
+    "name": "Seeing Slime"
+  },
+  "579": {
+    "name": "Seismic Tunneler"
+  },
+  "580": {
+    "name": "Sentient Meme"
+  },
+  "581": {
     "name": "Sentient Traffic Cone"
   },
-  "897": {
-    "name": "Shadow Assassin"
+  "582": {
+    "name": "Shadow Bat"
   },
-  "898": {
-    "name": "Screeching Nightbat"
+  "583": {
+    "name": "Shadow Blade"
   },
-  "899": {
-    "name": "Shadow Executioner"
+  "584": {
+    "name": "Shadow Blade"
   },
-  "900": {
-    "name": "Shardmaw"
+  "585": {
+    "name": "Shadow Thief"
   },
-  "901": {
-    "name": "Shellbreaker Bulwark"
+  "586": {
+    "name": "Shadow Tortoise"
   },
-  "902": {
+  "587": {
     "name": "Siege Automation"
   },
-  "903": {
-    "name": "Soul Reaper"
+  "588": {
+    "name": "Silken Enchantress"
   },
-  "904": {
-    "name": "Stomping Elephant"
+  "589": {
+    "name": "Siren Enchantress"
   },
-  "905": {
-    "name": "Storm Elemental"
+  "590": {
+    "name": "Skulmire Slime"
   },
-  "906": {
-    "name": "Storm Harbinger"
+  "591": {
+    "name": "Soldier Ant Colony"
   },
-  "907": {
-    "name": "Storm Roc"
+  "592": {
+    "name": "Somnolent Apparition"
   },
-  "908": {
+  "593": {
+    "name": "Sonic Molten Drakebat"
+  },
+  "594": {
+    "name": "Sorrow Specter"
+  },
+  "595": {
+    "name": "Spectral Songbird"
+  },
+  "596": {
+    "name": "Spectral Wisp"
+  },
+  "597": {
+    "name": "Spikey Porcupine"
+  },
+  "598": {
+    "name": "Spinescale Pogona"
+  },
+  "599": {
+    "name": "Spineshade"
+  },
+  "600": {
+    "name": "Sporeburst Myconid"
+  },
+  "601": {
+    "name": "Star Caller"
+  },
+  "602": {
+    "name": "Storm Dragonling"
+  },
+  "603": {
+    "name": "Striped Tiger"
+  },
+  "604": {
+    "name": "Swamp Gas Elemental"
+  },
+  "605": {
+    "name": "Swamp Scorpion"
+  },
+  "606": {
+    "name": "Sylvan Barkstalker"
+  },
+  "607": {
+    "name": "Talking Door"
+  },
+  "608": {
     "name": "Tanko"
   },
-  "909": {
-    "name": "Tempest Pegasus"
+  "609": {
+    "name": "Terra Golem"
   },
-  "910": {
-    "name": "The Dreamweaver"
+  "610": {
+    "name": "The Blood Countess"
   },
-  "911": {
-    "name": "Thunderwing Roc"
+  "611": {
+    "name": "The Cremator"
   },
-  "912": {
-    "name": "Tidal Warden"
+  "612": {
+    "name": "The Frozen Lady"
   },
-  "913": {
-    "name": "Totemic Protector"
+  "613": {
+    "name": "The Phantom"
   },
-  "914": {
-    "name": "Totemic Titan"
+  "614": {
+    "name": "The Puppeteer"
   },
-  "915": {
-    "name": "Toxic Ooze"
+  "615": {
+    "name": "The Scarlet Judge"
   },
-  "916": {
-    "name": "Tyrant Crocodilian"
+  "616": {
+    "name": "The Taxidermist"
   },
-  "917": {
-    "name": "Vampiric Nightwing"
+  "617": {
+    "name": "The Viper"
   },
-  "918": {
-    "name": "Velocicorn"
+  "618": {
+    "name": "Thought Weaver"
   },
-  "919": {
-    "name": "Velociraptor"
+  "619": {
+    "name": "Thunder Blob"
   },
-  "920": {
-    "name": "Virulent Slimefiend"
+  "620": {
+    "name": "Thunder Dragonling"
   },
-  "921": {
-    "name": "Void Empress"
+  "621": {
+    "name": "Tide Sculptor"
   },
-  "922": {
-    "name": "Void Weaver"
+  "622": {
+    "name": "Timeworn Owlbear"
   },
-  "923": {
-    "name": "War Colossus"
+  "623": {
+    "name": "Tonno Dimensionale"
   },
-  "924": {
-    "name": "War Hyppotaur"
+  "624": {
+    "name": "Totem Adept"
   },
-  "925": {
-    "name": "War Idol"
+  "625": {
+    "name": "Toxic Amalgam"
   },
-  "926": {
-    "name": "World Serpent"
+  "626": {
+    "name": "Toxic Ghost"
   },
-  "927": {
-    "name": "Yellow King"
+  "627": {
+    "name": "Tsunami Guardian"
   },
-  "938": {
-    "name": "<-- 41-50 -->"
+  "628": {
+    "name": "Umbra Panthera"
   },
-  "939": {
-    "name": "Abyssal Siren"
+  "629": {
+    "name": "Vampire Lord"
   },
-  "940": {
-    "name": "Celestial Protector"
+  "630": {
+    "name": "Veiled Phantasm"
   },
-  "941": {
-    "name": "Dusk Commander"
+  "631": {
+    "name": "Venomfang Archer"
   },
-  "942": {
-    "name": "Gloomscale Basilisk"
+  "632": {
+    "name": "Venomous Dragonfly"
   },
-  "943": {
-    "name": "Goblin Head"
+  "633": {
+    "name": "Viktor 'Iron Fist' Volkov"
   },
-  "944": {
-    "name": "Goblin Metal Warlord"
+  "634": {
+    "name": "Warborn Chieftain"
   },
-  "945": {
-    "name": "Goblin Riot Caster"
+  "635": {
+    "name": "Whispering Wraith"
   },
-  "946": {
-    "name": "Goblin Shrieker"
+  "636": {
+    "name": "Winter Court Knight"
   },
-  "947": {
-    "name": "Iron Palm Disciple"
+  "637": {
+    "name": "Wrath Dolphin"
   },
-  "948": {
-    "name": "Luminescent Mycelian"
+  "638": {
+    "name": "Zephyr Djinn"
   },
-  "949": {
-    "name": "Mechanized Harbinger"
+  "639": {
+    "name": "<-- 31-40 -->"
   },
-  "950": {
-    "name": "Mire Dragon"
+  "640": {
+    "name": "Abyssal Pixie"
   },
-  "951": {
-    "name": "Molten Efreeti"
+  "641": {
+    "name": "Advertisement Badger"
   },
-  "952": {
-    "name": "Mountain King"
+  "642": {
+    "name": "Alpha Dire Wolf"
   },
-  "953": {
-    "name": "Nepenthe Mycoastrum"
+  "643": {
+    "name": "Alpha Warg"
   },
-  "954": {
-    "name": "Phantom Chloroblade"
+  "644": {
+    "name": "Annunaki Overlord"
   },
-  "955": {
-    "name": "Phylactery Guardian"
-  },
-  "956": {
-    "name": "Sewers slime"
-  },
-  "957": {
-    "name": "Singularity Prime"
-  },
-  "958": {
-    "name": "Sky Serpent"
-  },
-  "959": {
-    "name": "Stone Bulwark"
-  },
-  "960": {
-    "name": "Swamp Leviathan"
-  },
-  "961": {
-    "name": "Tempest Djinn"
-  },
-  "962": {
-    "name": "Titanothere Alpha"
-  },
-  "963": {
-    "name": "Totemic Overlord"
-  },
-  "974": {
-    "name": "<-- 51-60 -->"
-  },
-  "975": {
-    "name": "Chrono Consumer"
-  },
-  "976": {
-    "name": "Cinderheart Scion"
-  },
-  "977": {
-    "name": "Echo Wisp"
-  },
-  "978": {
-    "name": "Infernal Pyromancer"
-  },
-  "979": {
-    "name": "Marrow Archmage"
-  },
-  "980": {
-    "name": "Obsidian Wraith"
-  },
-  "981": {
-    "name": "Ossuary Colossus"
-  },
-  "982": {
-    "name": "Stratos Sovereign"
-  },
-  "983": {
-    "name": "Tempest Wyvern"
-  },
-  "984": {
-    "name": "Xylomanti Florous "
-  },
-  "985": {
-    "name": "Zen Fist Master"
-  },
-  "996": {
-    "name": "<-- 61-70 -->"
-  },
-  "997": {
-    "name": "Aether Splicer"
-  },
-  "998": {
-    "name": "Backwards Doll"
-  },
-  "999": {
-    "name": "Color Out of Sound"
-  },
-  "1000": {
-    "name": "Crystal Giant"
-  },
-  "1001": {
-    "name": "Emberclaw Bear"
-  },
-  "1002": {
-    "name": "Emotional Leech"
-  },
-  "1003": {
-    "name": "Foul Gouger"
-  },
-  "1004": {
-    "name": "Frostfang Bear"
-  },
-  "1005": {
-    "name": "Galeshell Tortoise"
-  },
-  "1006": {
-    "name": "Identity Thief"
-  },
-  "1007": {
-    "name": "Inferno Archivist"
-  },
-  "1008": {
-    "name": "Inverted Hunger"
-  },
-  "1009": {
-    "name": "Lullaby Wraith"
-  },
-  "1010": {
-    "name": "Meat Puppet Theater"
-  },
-  "1011": {
-    "name": "Memory Leech"
-  },
-  "1012": {
-    "name": "Nightcurse Tortoise"
-  },
-  "1013": {
-    "name": "Rattus Sapscream"
-  },
-  "1014": {
-    "name": "Screaming Jar"
-  },
-  "1015": {
-    "name": "Sentient Wound"
-  },
-  "1016": {
-    "name": "Thought Parasite"
-  },
-  "1017": {
-    "name": "Thundermaw Ursine"
-  },
-  "1028": {
-    "name": "<-- 71-80 -->"
-  },
-  "1029": {
-    "name": "Ancient Dragon :EP"
-  },
-  "1030": {
-    "name": "Battle Mech :EP"
-  },
-  "1031": {
-    "name": "Bleeding Statue"
-  },
-  "1032": {
-    "name": "Blood Countess :EP"
-  },
-  "1033": {
-    "name": "Bone Orchestra"
-  },
-  "1034": {
-    "name": "Crimson Magma Drake"
-  },
-  "1035": {
-    "name": "Crimson Vampire :EP"
-  },
-  "1036": {
-    "name": "Dawnshell Tortoise"
-  },
-  "1037": {
-    "name": "Dragon of Death Nergal"
-  },
-  "1038": {
-    "name": "Earthen Colossus"
-  },
-  "1039": {
-    "name": "Eldergloom Sporemantle"
-  },
-  "1040": {
-    "name": "Emberback Hellscorpion"
-  },
-  "1041": {
-    "name": "Entropy Wyrm :EP"
-  },
-  "1042": {
-    "name": "Fleshweaver Spider"
-  },
-  "1043": {
-    "name": "Geometry Devourer"
-  },
-  "1044": {
-    "name": "Gravity Worm"
-  },
-  "1045": {
-    "name": "Hollow Mother"
-  },
-  "1046": {
-    "name": "Inverted Angel"
-  },
-  "1047": {
-    "name": "Mathematics Eater"
-  },
-  "1048": {
-    "name": "Motivational Speaker :EP"
-  },
-  "1049": {
-    "name": "Probability Spider"
-  },
-  "1050": {
-    "name": "Pyroshell Tortoise"
-  },
-  "1051": {
-    "name": "Quantum Fluctuation :EP"
-  },
-  "1052": {
-    "name": "Stormshell Tortoise"
-  },
-  "1053": {
-    "name": "Temporal Barnacle"
-  },
-  "1054": {
-    "name": "Temporal Hornet"
-  },
-  "1055": {
-    "name": "Tiamat, Mother of Chaos"
-  },
-  "1056": {
-    "name": "Tidalcarapace Tortoise"
-  },
-  "1057": {
-    "name": "Totem of Sins"
-  },
-  "1058": {
-    "name": "Umbilical Strangler"
-  },
-  "1059": {
-    "name": "Void Howler"
-  },
-  "1060": {
-    "name": "Whispering Door"
-  },
-  "1061": {
-    "name": "Womb of Nightmares"
-  },
-  "1072": {
-    "name": "<-- 81-90 -->"
-  },
-  "1073": {
-    "name": "Badass Pigeon"
-  },
-  "1074": {
-    "name": "Baptism Font"
-  },
-  "1075": {
-    "name": "Basaltstone Golem"
-  },
-  "1076": {
-    "name": "Blazing Inferno Elemental"
-  },
-  "1077": {
-    "name": "Celestial Dragon Anshar"
-  },
-  "1078": {
-    "name": "Childhood's End"
-  },
-  "1079": {
-    "name": "Creeping Luminspore"
-  },
-  "1080": {
-    "name": "Crying Tree"
-  },
-  "1081": {
-    "name": "Doped Chimp"
-  },
-  "1082": {
-    "name": "Dragon Monk :EP"
-  },
-  "1083": {
-    "name": "Eternal Lich-King"
-  },
-  "1084": {
-    "name": "Flesh Calculator"
-  },
-  "1085": {
-    "name": "Grief Collector"
-  },
-  "1086": {
-    "name": "Hunger Incarnate"
-  },
-  "1087": {
-    "name": "Hyperdimensional Grimorie :EP"
-  },
-  "1088": {
-    "name": "Inside-Out Whale"
-  },
-  "1089": {
-    "name": "Mirror Basher"
-  },
-  "1090": {
-    "name": "Non-Euclidean Crab"
-  },
-  "1091": {
-    "name": "Obsidian Hellhound"
-  },
-  "1092": {
-    "name": "Ophanim Judicator"
-  },
-  "1093": {
-    "name": "Orphanage Warden"
-  },
-  "1094": {
-    "name": "Primal Ocean Dragon Abzu"
-  },
-  "1095": {
-    "name": "Puppet Master's Corpse"
-  },
-  "1096": {
-    "name": "Searing Magma Wyrm"
-  },
-  "1097": {
-    "name": "Surgeon of Souls"
-  },
-  "1098": {
-    "name": "Terraclaw Tortoise"
-  },
-  "1099": {
-    "name": "Yog-Sothoth Spawn :EP"
-  },
-  "1110": {
-    "name": "<-- 91-100 -->"
-  },
-  "1111": {
-    "name": "Abortion Mimic"
-  },
-  "1112": {
-    "name": "Backwards Tree"
-  },
-  "1113": {
-    "name": "Breathing Building"
-  },
-  "1114": {
-    "name": "Celestial Avatar :EP"
-  },
-  "1115": {
-    "name": "Cherubic Host-Alpha"
-  },
-  "1116": {
-    "name": "Cogwork Bulwark"
-  },
-  "1117": {
-    "name": "Diamond Mimic :EP"
-  },
-  "1118": {
-    "name": "Dragon of the Underworld Kur"
-  },
-  "1119": {
-    "name": "Feast of Famine"
-  },
-  "1120": {
-    "name": "Fiery Deity"
-  },
-  "1121": {
-    "name": "Frostback Tortoise"
-  },
-  "1122": {
-    "name": "Horseshoe Crab"
-  },
-  "1123": {
-    "name": "Maternity Ward"
-  },
-  "1124": {
-    "name": "Pyroclast Phoenix"
-  },
-  "1125": {
-    "name": "Seraph of the Seventh Veil"
-  },
-  "1126": {
-    "name": "Storm Dragon King Enlil"
-  },
-  "1137": {
-    "name": "<-- 101-110 -->"
-  },
-  "1138": {
-    "name": "Armored Rex Lord"
-  },
-  "1139": {
-    "name": "Colossal Mammoth King"
-  },
-  "1140": {
-    "name": "Dire Saber-tooth Alpha"
-  },
-  "1141": {
-    "name": "Dominion of the Flame"
-  },
-  "1142": {
-    "name": "Dragon of Wisdom Enki "
-  },
-  "1143": {
-    "name": "Iron Bastion Automaton"
-  },
-  "1144": {
-    "name": "Megalodon Prime"
-  },
-  "1145": {
-    "name": "Primordial Terror Rex"
-  },
-  "1146": {
-    "name": "Steelshell Tortoise"
-  },
-  "1147": {
-    "name": "Supreme Dragon God Usumgallu"
-  },
-  "1148": {
-    "name": "Thunder Lizard Colossus"
-  },
-  "1149": {
-    "name": "Titanic Cave Bear"
-  },
-  "1160": {
-    "name": "<-- 111-120 -->"
-  },
-  "1161": {
-    "name": "Brass Sentinel Mk. IV"
-  },
-  "1162": {
-    "name": "Cultist of Cthulhu"
-  },
-  "1163": {
-    "name": "Cultist of Nyarlathotep"
-  },
-  "1164": {
-    "name": "Cultist of Shub-Niggurath"
-  },
-  "1165": {
-    "name": "Cultist of Yog-Sothoth"
-  },
-  "1166": {
-    "name": "Giant Terror Bird"
-  },
-  "1167": {
-    "name": "Primordial Dragon Turtle"
-  },
-  "1178": {
-    "name": "<-- 121-130 -->"
-  },
-  "1179": {
+  "645": {
     "name": "Archangel Mortifier"
   },
-  "1190": {
-    "name": "<-- 131-140 -->"
+  "646": {
+    "name": "Arctic Wolf"
   },
-  "1191": {
-    "name": "Vorthak the Membrane-Ripper"
+  "647": {
+    "name": "Armored Rex Lord"
   },
-  "1202": {
-    "name": "<-- 141-150 -->"
+  "648": {
+    "name": "Azathoth Fragment"
   },
-  "1203": {
-    "name": "Yith'oghra the Consensus-Breaker"
+  "649": {
+    "name": "Babalon Priestess"
   },
-  "1214": {
-    "name": "<-- 151-160 -->"
+  "650": {
+    "name": "Bald Eagle"
   },
-  "1215": {
+  "651": {
+    "name": "Beast 666"
+  },
+  "652": {
+    "name": "Blight Sylph"
+  },
+  "653": {
+    "name": "Brimstone Behemutt"
+  },
+  "654": {
+    "name": "Carrion Stalker"
+  },
+  "655": {
+    "name": "Caustic Slime"
+  },
+  "656": {
+    "name": "Celestial Avatar :EP"
+  },
+  "657": {
+    "name": "Cherubic Host-Alpha"
+  },
+  "658": {
+    "name": "Chromatic Tick"
+  },
+  "659": {
+    "name": "Chronovore"
+  },
+  "660": {
+    "name": "Cognitive Bacteria"
+  },
+  "661": {
+    "name": "Colossal Mammoth King"
+  },
+  "662": {
+    "name": "Corporate Ninja"
+  },
+  "663": {
+    "name": "Crimson Patriarch"
+  },
+  "664": {
+    "name": "Cultist of Cthulhu"
+  },
+  "665": {
+    "name": "Cultist of Nyarlathotep"
+  },
+  "666": {
+    "name": "Cultist of Shub-Niggurath"
+  },
+  "667": {
+    "name": "Cultist of Yog-Sothoth"
+  },
+  "668": {
+    "name": "Cursed Grimorie"
+  },
+  "669": {
+    "name": "Deepmaw Horror"
+  },
+  "670": {
+    "name": "Dire Saber-tooth Alpha"
+  },
+  "671": {
+    "name": "Dominion of the Flame"
+  },
+  "672": {
+    "name": "Dragon Monk :EP"
+  },
+  "673": {
+    "name": "Esmeralda the Dream Weaver"
+  },
+  "674": {
+    "name": "Eternal Lich-King"
+  },
+  "675": {
+    "name": "Ethereal Tactician"
+  },
+  "676": {
+    "name": "Fiery Deity"
+  },
+  "677": {
+    "name": "Frost Archmagus"
+  },
+  "678": {
+    "name": "Frost Knight"
+  },
+  "679": {
+    "name": "Gale Sentinel"
+  },
+  "680": {
+    "name": "Ghost Tiger"
+  },
+  "681": {
+    "name": "Giant Terror Bird"
+  },
+  "682": {
+    "name": "Gilded Guardian"
+  },
+  "683": {
+    "name": "Glitch Entity"
+  },
+  "684": {
+    "name": "Goblin Marksman"
+  },
+  "685": {
+    "name": "Goblin Shaman"
+  },
+  "686": {
+    "name": "Goblin Warrior"
+  },
+  "687": {
+    "name": "Grey Zeta Reticulan"
+  },
+  "688": {
+    "name": "Hellfire Mammoth"
+  },
+  "689": {
+    "name": "Hyperdimensional Grimorie :EP"
+  },
+  "690": {
+    "name": "Inferno Pooka"
+  },
+  "691": {
+    "name": "Iron Sentinel"
+  },
+  "692": {
+    "name": "Living Theorem"
+  },
+  "693": {
+    "name": "Luminous Locust King"
+  },
+  "694": {
+    "name": "Mad Boar"
+  },
+  "695": {
+    "name": "Maelstrom Sovereign"
+  },
+  "696": {
+    "name": "Megalodon"
+  },
+  "697": {
+    "name": "Mind Flayer Moth"
+  },
+  "698": {
+    "name": "Mind Shield"
+  },
+  "699": {
     "name": "Mor'dun the Flesh-Architect"
   },
-  "1226": {
-    "name": "<-- 161-170 -->"
+  "700": {
+    "name": "Mountain Devastator"
   },
-  "1227": {
-    "name": "Qel'thuzad the Memory-Eater"
+  "701": {
+    "name": "Mountain Giant"
   },
-  "1238": {
-    "name": "<-- 181-190 -->"
+  "702": {
+    "name": "Mystic Panther"
   },
-  "1239": {
-    "name": "Nyth'aggoth the Concept-Corruptor"
+  "703": {
+    "name": "Nether Court Duchess"
   },
-  "1250": {
-    "name": "<-- 191-200 -->"
+  "704": {
+    "name": "Network Overlord"
   },
-  "1251": {
-    "name": "Shal'thyss the Void-Surgeon"
+  "705": {
+    "name": "Nightmare Mage"
   },
-  "1262": {
-    "name": "<-- 201-210 -->"
+  "706": {
+    "name": "Nightveil Assassin"
   },
-  "1263": {
-    "name": "Gul'magoth the Time-Weaver"
+  "707": {
+    "name": "Nightwisp"
   },
-  "1274": {
-    "name": "<-- 211-220 -->"
+  "708": {
+    "name": "Noble Guardian"
   },
-  "1275": {
-    "name": "Xoth'nagal the Dream-Plague"
+  "709": {
+    "name": "Ominous Raven"
   },
-  "1286": {
-    "name": "<-- 231-240 -->"
+  "710": {
+    "name": "Plague Heap"
   },
-  "1287": {
-    "name": "Vel'korthak the Reality-Breeder"
-  },
-  "1298": {
-    "name": "<-- 241-250 -->"
-  },
-  "1299": {
-    "name": "Zhoth'aggur the Silence-Weaver"
-  },
-  "1310": {
-    "name": "<-- 261-270 -->"
-  },
-  "1311": {
+  "711": {
     "name": "Primordial Behemoth"
   },
-  "1322": {
-    "name": "<-- Postgame 130+ -->"
+  "712": {
+    "name": "Primordial Dragon Turtle"
   },
-  "1323": {
-    "name": "Leyline Aneurysm"
+  "713": {
+    "name": "Primordial Terror Rex"
   },
-  "1324": {
-    "name": "Squishing Echo"
+  "714": {
+    "name": "Proto Turret"
   },
-  "1325": {
-    "name": "Asphalt Revenant"
+  "715": {
+    "name": "Qel'thuzad the Memory-Eater"
   },
-  "1326": {
-    "name": "Off-Ramp Incarnate"
+  "716": {
+    "name": "Rabid Coyote"
   },
-  "1327": {
-    "name": "Time-Loop Stalker"
+  "717": {
+    "name": "Radiant Defender"
   },
-  "1328": {
-    "name": "Porphyrin Leech"
+  "718": {
+    "name": "Royal Justicar"
   },
-  "1329": {
-    "name": "Varlenia Mirage"
+  "719": {
+    "name": "Scavenging Coyote"
   },
-  "1330": {
-    "name": "Folded Saint"
+  "720": {
+    "name": "Scorched Tyrant"
   },
-  "1331": {
-    "name": "Discord Larva"
+  "721": {
+    "name": "Screeching Nightbat"
   },
-  "1332": {
-    "name": "Encompassing Roadwarden"
+  "722": {
+    "name": "Shadow Assassin"
   },
-  "1333": {
-    "name": "Maat's Severed Hand"
+  "723": {
+    "name": "Shellbreaker Bulwark"
   },
-  "1334": {
-    "name": "Thoth's Broken Ward"
+  "724": {
+    "name": "Sky Serpent"
   },
-  "1335": {
-    "name": "The Cube That Wasn't"
+  "725": {
+    "name": "Soul Reaper"
   },
-  "1336": {
-    "name": "Petrodemon Hatchling"
+  "726": {
+    "name": "Steelshell Tortoise"
   },
-  "1337": {
-    "name": "Avatar of the Seven Sisters"
+  "727": {
+    "name": "Stomping Elephant"
   },
-  "1338": {
-    "name": "Porphyrin Colossus"
+  "728": {
+    "name": "Stone Bulwark"
   },
-  "1339": {
-    "name": "The Bascape Flame"
+  "729": {
+    "name": "Storm Elemental"
   },
-  "1340": {
-    "name": "Crude Leviathan"
+  "730": {
+    "name": "Storm Roc"
   },
-  "1341": {
-    "name": "The Well That Dreams"
+  "731": {
+    "name": "Summer Court Archon"
   },
-  "1342": {
-    "name": "Maat Within Eris"
+  "732": {
+    "name": "Swamp Leech Queen"
   },
-  "1343": {
-    "name": "Eris, Judgment of Discord"
+  "733": {
+    "name": "Swordfish Sovereign"
   },
-  "1344": {
-    "name": "<-- Bestiary: Beasts -->"
+  "734": {
+    "name": "Tempest Pegasus"
   },
-  "1345": {
-    "name": "Mangy Howler"
+  "735": {
+    "name": "Thunderwing Roc"
   },
-  "1346": {
+  "736": {
+    "name": "Titanic Cave Bear"
+  },
+  "737": {
+    "name": "Totemic Protector"
+  },
+  "738": {
+    "name": "Toxic Ooze"
+  },
+  "739": {
+    "name": "Velocicorn"
+  },
+  "740": {
+    "name": "Velociraptor"
+  },
+  "741": {
+    "name": "Virulent Slimefiend"
+  },
+  "742": {
+    "name": "Vorthak the Membrane-Ripper"
+  },
+  "743": {
+    "name": "War Hyppotaur"
+  },
+  "744": {
+    "name": "War Idol"
+  },
+  "745": {
+    "name": "World Serpent"
+  },
+  "746": {
+    "name": "Yith'oghra the Consensus-Breaker"
+  },
+  "747": {
+    "name": "<-- 41-50 -->"
+  },
+  "748": {
+    "name": "Abyssal Devourer"
+  },
+  "749": {
+    "name": "Abyssal Hydromancer"
+  },
+  "750": {
+    "name": "Aether Splicer"
+  },
+  "751": {
+    "name": "Ancient Lich"
+  },
+  "752": {
     "name": "Ashen Direwolf"
   },
-  "1347": {
-    "name": "Hollow-Eyed Snapper"
+  "753": {
+    "name": "Asphalt Revenant"
   },
-  "1348": {
-    "name": "Pack Boar"
+  "754": {
+    "name": "Astral Sentinel"
   },
-  "1349": {
-    "name": "Pack Ripper"
+  "755": {
+    "name": "Behemoth Gorilla"
   },
-  "1350": {
-    "name": "Three-Tailed Boar"
+  "756": {
+    "name": "Bloodlord Supreme"
   },
-  "1351": {
-    "name": "Mud-Caked Ripper"
+  "757": {
+    "name": "Bog Golem"
   },
-  "1352": {
-    "name": "Storm-Howler"
+  "758": {
+    "name": "Bone Commander"
   },
-  "1353": {
-    "name": "Iron-Fanged Hornbeast"
+  "759": {
+    "name": "Bull Wyvern"
   },
-  "1354": {
-    "name": "Starving Saber-Cat"
-  },
-  "1355": {
-    "name": "Pack Ridgeback"
-  },
-  "1356": {
-    "name": "Starving Clawrunner"
-  },
-  "1357": {
-    "name": "Scarred Clawrunner"
-  },
-  "1358": {
-    "name": "Ashen Prowler"
-  },
-  "1359": {
-    "name": "Mangy Stalkhound"
-  },
-  "1360": {
-    "name": "Gaunt Snapper"
-  },
-  "1361": {
-    "name": "Hollow-Eyed Boar"
-  },
-  "1362": {
-    "name": "Cinder Thornhide"
-  },
-  "1363": {
-    "name": "Frost-Hornbeast"
-  },
-  "1364": {
-    "name": "Pack Clawrunner"
-  },
-  "1365": {
-    "name": "Pack Lynx"
-  },
-  "1366": {
-    "name": "Storm-Gnasher"
-  },
-  "1367": {
-    "name": "Feral Lynx"
-  },
-  "1368": {
-    "name": "Dire Gnasher"
-  },
-  "1369": {
-    "name": "Rabid Lynx"
-  },
-  "1370": {
-    "name": "Pack Hornbeast"
-  },
-  "1371": {
-    "name": "Gaunt Clawrunner"
-  },
-  "1372": {
-    "name": "Cinder Direwolf"
-  },
-  "1373": {
-    "name": "Hollow-Eyed Bristleback"
-  },
-  "1374": {
-    "name": "Three-Tailed Lynx"
-  },
-  "1375": {
-    "name": "Scarred Bristleback"
-  },
-  "1376": {
-    "name": "Mud-Caked Clawrunner"
-  },
-  "1377": {
-    "name": "Feral Prowler"
-  },
-  "1378": {
-    "name": "Rabid Badger"
-  },
-  "1379": {
-    "name": "Dire Clawrunner"
-  },
-  "1380": {
-    "name": "Mangy Ridgeback"
-  },
-  "1381": {
-    "name": "Mud-Caked Prowler"
-  },
-  "1382": {
-    "name": "Pack Jackal"
-  },
-  "1383": {
-    "name": "Mud-Caked Gnasher"
-  },
-  "1384": {
-    "name": "Iron-Fanged Direwolf"
-  },
-  "1385": {
-    "name": "Three-Tailed Hornbeast"
-  },
-  "1386": {
-    "name": "Gaunt Ripper"
-  },
-  "1387": {
-    "name": "Lone Jackal"
-  },
-  "1388": {
-    "name": "Iron-Fanged Maw-Hound"
-  },
-  "1389": {
-    "name": "Bloodmaw Direwolf"
-  },
-  "1390": {
-    "name": "Gaunt Lynx"
-  },
-  "1391": {
-    "name": "Bloodmaw Maw-Hound"
-  },
-  "1392": {
-    "name": "Feral Badger"
-  },
-  "1393": {
-    "name": "Starving Gnasher"
-  },
-  "1394": {
-    "name": "Feral Ridgeback"
-  },
-  "1395": {
-    "name": "<-- Bestiary: Undead -->"
-  },
-  "1396": {
-    "name": "Salt-Cured Mourner"
-  },
-  "1397": {
-    "name": "Sunken Charnelhound"
-  },
-  "1398": {
-    "name": "Salt-Cured Cerecloth"
-  },
-  "1399": {
-    "name": "Mummified Mourner"
-  },
-  "1400": {
-    "name": "Salt-Cured Wight"
-  },
-  "1401": {
-    "name": "Forgotten Cadaver"
-  },
-  "1402": {
-    "name": "Restless Charnelhound"
-  },
-  "1403": {
-    "name": "Restless Revenant"
-  },
-  "1404": {
-    "name": "Restless Pallbearer"
-  },
-  "1405": {
-    "name": "Cinder-Wrapped Thrall"
-  },
-  "1406": {
-    "name": "Plague Cerecloth"
-  },
-  "1407": {
-    "name": "Withered Mourner"
-  },
-  "1408": {
-    "name": "Withered Charnelhound"
-  },
-  "1409": {
-    "name": "Cerement Gravewalker"
-  },
-  "1410": {
-    "name": "Cerement Bonepicker"
-  },
-  "1411": {
-    "name": "Plague Husk"
-  },
-  "1412": {
-    "name": "Crypt Bonepicker"
-  },
-  "1413": {
-    "name": "Rotting Husk"
-  },
-  "1414": {
-    "name": "Withered Husk"
-  },
-  "1415": {
-    "name": "Restless Cadaver"
-  },
-  "1416": {
-    "name": "Crypt Wight"
-  },
-  "1417": {
-    "name": "Cerement Boneknight"
-  },
-  "1418": {
-    "name": "Gilded Revenant"
-  },
-  "1419": {
-    "name": "Sunken Husk"
-  },
-  "1420": {
-    "name": "Hollow Bonepicker"
-  },
-  "1421": {
-    "name": "Restless Bonepicker"
-  },
-  "1422": {
-    "name": "Restless Thrall"
-  },
-  "1423": {
-    "name": "Withered Thrall"
-  },
-  "1424": {
-    "name": "Grave-Bound Gravewalker"
-  },
-  "1425": {
-    "name": "Cinder-Wrapped Sentinel"
-  },
-  "1426": {
-    "name": "Grave-Bound Mourner"
-  },
-  "1427": {
-    "name": "Restless Gravewalker"
-  },
-  "1428": {
-    "name": "Hollow Charnelhound"
-  },
-  "1429": {
-    "name": "Sunken Pallbearer"
-  },
-  "1430": {
-    "name": "Forgotten Boneknight"
-  },
-  "1431": {
-    "name": "Forgotten Thrall"
-  },
-  "1432": {
-    "name": "Grave-Bound Boneknight"
-  },
-  "1433": {
-    "name": "Gilded Thrall"
-  },
-  "1434": {
-    "name": "Salt-Cured Gravewalker"
-  },
-  "1435": {
-    "name": "Forgotten Charnelhound"
-  },
-  "1436": {
-    "name": "Gilded Sentinel"
-  },
-  "1437": {
-    "name": "Hollow Gravewalker"
-  },
-  "1438": {
-    "name": "Forgotten Sentinel"
-  },
-  "1439": {
-    "name": "Mummified Gravewalker"
-  },
-  "1440": {
-    "name": "Gilded Lichling"
-  },
-  "1441": {
-    "name": "Cinder-Wrapped Wight"
-  },
-  "1442": {
-    "name": "Hollow Wight"
-  },
-  "1443": {
-    "name": "Sunken Gravewalker"
-  },
-  "1444": {
-    "name": "Crypt Revenant"
-  },
-  "1445": {
-    "name": "Plague Pallbearer"
-  },
-  "1446": {
-    "name": "<-- Bestiary: OozeBug -->"
-  },
-  "1447": {
-    "name": "Molten Pudding"
-  },
-  "1448": {
-    "name": "Twitching Pudding"
-  },
-  "1449": {
-    "name": "Swarming Hivemind"
-  },
-  "1450": {
-    "name": "Crystalline Brood-Thing"
-  },
-  "1451": {
-    "name": "Gelatinous Drone-Bug"
-  },
-  "1452": {
-    "name": "Molten Glob"
-  },
-  "1453": {
-    "name": "Swarming Brood-Thing"
-  },
-  "1454": {
-    "name": "Crystalline Carapace"
-  },
-  "1455": {
+  "760": {
     "name": "Caustic Larva"
   },
-  "1456": {
-    "name": "Gelatinous Pudding"
+  "761": {
+    "name": "Celestial Protector"
   },
-  "1457": {
-    "name": "Glittering Crawler"
+  "762": {
+    "name": "Chrono Consumer"
   },
-  "1458": {
-    "name": "Chittering Mire-Spawn"
+  "763": {
+    "name": "Chronos, Time Titan"
   },
-  "1459": {
-    "name": "Bloated Drone-Bug"
-  },
-  "1460": {
-    "name": "Gelatinous Mire-Spawn"
-  },
-  "1461": {
-    "name": "Bloated Gel"
-  },
-  "1462": {
-    "name": "Bloated Glob"
-  },
-  "1463": {
-    "name": "Glittering Brood-Thing"
-  },
-  "1464": {
-    "name": "Quivering Larva"
-  },
-  "1465": {
-    "name": "Crystalline Glob"
-  },
-  "1466": {
-    "name": "Gelatinous Ooze"
-  },
-  "1467": {
-    "name": "Brackish Ooze"
-  },
-  "1468": {
-    "name": "Bloated Mold"
-  },
-  "1469": {
-    "name": "Chittering Pudding"
-  },
-  "1470": {
-    "name": "Swarming Mire-Spawn"
-  },
-  "1471": {
-    "name": "Gelatinous Husk-Beetle"
-  },
-  "1472": {
-    "name": "Acidic Mire-Spawn"
-  },
-  "1473": {
-    "name": "Skittering Mold"
-  },
-  "1474": {
-    "name": "Bloated Ooze"
-  },
-  "1475": {
-    "name": "Caustic Mire-Spawn"
-  },
-  "1476": {
-    "name": "Molten Mold"
-  },
-  "1477": {
-    "name": "Caustic Carapace"
-  },
-  "1478": {
-    "name": "Molten Mire-Spawn"
-  },
-  "1479": {
-    "name": "Twitching Drone-Bug"
-  },
-  "1480": {
-    "name": "Gelatinous Glob"
-  },
-  "1481": {
-    "name": "Twitching Ooze"
-  },
-  "1482": {
-    "name": "Brackish Pudding"
-  },
-  "1483": {
-    "name": "Sludgy Crawler"
-  },
-  "1484": {
-    "name": "Chittering Husk-Beetle"
-  },
-  "1485": {
-    "name": "Swarming Swarmling"
-  },
-  "1486": {
-    "name": "Crystalline Drone-Bug"
-  },
-  "1487": {
-    "name": "Quivering Carapace"
-  },
-  "1488": {
-    "name": "Skittering Drone-Bug"
-  },
-  "1489": {
-    "name": "Glittering Larva"
-  },
-  "1490": {
-    "name": "Acidic Larva"
-  },
-  "1491": {
-    "name": "Iridescent Crawler"
-  },
-  "1492": {
-    "name": "Bloated Carapace"
-  },
-  "1493": {
-    "name": "Quivering Hivemind"
-  },
-  "1494": {
-    "name": "Crystalline Larva"
-  },
-  "1495": {
-    "name": "Crystalline Gel"
-  },
-  "1496": {
-    "name": "Quivering Brood-Thing"
-  },
-  "1497": {
-    "name": "<-- Bestiary: ElemGolem -->"
-  },
-  "1498": {
-    "name": "Raging Geist"
-  },
-  "1499": {
-    "name": "Raging Conduit"
-  },
-  "1500": {
-    "name": "Searing Conduit"
-  },
-  "1501": {
-    "name": "Crackling Spirit"
-  },
-  "1502": {
-    "name": "Quartz Sylph"
-  },
-  "1503": {
-    "name": "Raging Animus"
-  },
-  "1504": {
-    "name": "Obsidian Elemental"
-  },
-  "1505": {
-    "name": "Crackling Effigy"
-  },
-  "1506": {
-    "name": "Petrified Sylph"
-  },
-  "1507": {
-    "name": "Raging Colossus-Spawn"
-  },
-  "1508": {
-    "name": "Molten Sentinel"
-  },
-  "1509": {
-    "name": "Obsidian Conduit"
-  },
-  "1510": {
-    "name": "Searing Spirit"
-  },
-  "1511": {
-    "name": "Petrified Effigy"
-  },
-  "1512": {
-    "name": "Tempest Conduit"
-  },
-  "1513": {
-    "name": "Tempest Colossus-Spawn"
-  },
-  "1514": {
-    "name": "Frozen Revenant"
-  },
-  "1515": {
-    "name": "Quartz Wisp"
-  },
-  "1516": {
-    "name": "Molten Warden"
-  },
-  "1517": {
-    "name": "Crackling Elemental"
-  },
-  "1518": {
-    "name": "Radiant Monolith"
-  },
-  "1519": {
-    "name": "Crackling Revenant"
-  },
-  "1520": {
-    "name": "Crackling Animus"
-  },
-  "1521": {
-    "name": "Searing Elemental"
-  },
-  "1522": {
-    "name": "Molten Sylph"
-  },
-  "1523": {
-    "name": "Howling Elemental"
-  },
-  "1524": {
-    "name": "Frozen Construct"
-  },
-  "1525": {
-    "name": "Frozen Sentinel"
-  },
-  "1526": {
-    "name": "Quartz Colossus-Spawn"
-  },
-  "1527": {
-    "name": "Howling Revenant"
-  },
-  "1528": {
-    "name": "Obsidian Animus"
-  },
-  "1529": {
-    "name": "Grinding Spirit"
-  },
-  "1530": {
-    "name": "Living Sentinel"
-  },
-  "1531": {
-    "name": "Petrified Warden"
-  },
-  "1532": {
-    "name": "Surging Elemental"
-  },
-  "1533": {
-    "name": "Molten Construct"
-  },
-  "1534": {
-    "name": "Molten Colossus-Spawn"
-  },
-  "1535": {
-    "name": "Surging Sylph"
-  },
-  "1536": {
-    "name": "Glacial Geist"
-  },
-  "1537": {
-    "name": "Petrified Monolith"
-  },
-  "1538": {
-    "name": "Raging Sentinel"
-  },
-  "1539": {
-    "name": "Quartz Geist"
-  },
-  "1540": {
-    "name": "Grinding Construct"
-  },
-  "1541": {
-    "name": "Surging Construct"
-  },
-  "1542": {
-    "name": "Quartz Monolith"
-  },
-  "1543": {
-    "name": "Howling Sylph"
-  },
-  "1544": {
-    "name": "Tempest Wisp"
-  },
-  "1545": {
-    "name": "Living Elemental"
-  },
-  "1546": {
-    "name": "Tempest Sylph"
-  },
-  "1547": {
-    "name": "Frozen Monolith"
-  },
-  "1548": {
-    "name": "<-- Bestiary: DemonFey -->"
-  },
-  "1549": {
-    "name": "Capering Hex-Weaver"
-  },
-  "1550": {
-    "name": "Whispering Tormentor"
-  },
-  "1551": {
-    "name": "Hollow Pixie"
-  },
-  "1552": {
-    "name": "Fanged Imp"
-  },
-  "1553": {
-    "name": "Pact-Bound Devilkin"
-  },
-  "1554": {
-    "name": "Sulphur Gremlin"
-  },
-  "1555": {
-    "name": "Glimmering Succubus"
-  },
-  "1556": {
-    "name": "Whispering Nixie"
-  },
-  "1557": {
-    "name": "Sulphur Whisperling"
-  },
-  "1558": {
-    "name": "Leering Sprite"
-  },
-  "1559": {
-    "name": "Capering Trickster"
-  },
-  "1560": {
-    "name": "Spiteful Devilkin"
-  },
-  "1561": {
-    "name": "Gibbering Sprite"
-  },
-  "1562": {
-    "name": "Glimmering Devilkin"
-  },
-  "1563": {
-    "name": "Brimstone Nixie"
-  },
-  "1564": {
-    "name": "Brimstone Sprite"
-  },
-  "1565": {
-    "name": "Pact-Bound Fiend"
-  },
-  "1566": {
-    "name": "Brimstone Fiend"
-  },
-  "1567": {
-    "name": "Spiteful Pixie"
-  },
-  "1568": {
-    "name": "Hollow Whisperling"
-  },
-  "1569": {
-    "name": "Gibbering Fiend"
-  },
-  "1570": {
-    "name": "Mocking Whisperling"
-  },
-  "1571": {
-    "name": "Capering Devilkin"
-  },
-  "1572": {
-    "name": "Capering Fiend"
-  },
-  "1573": {
-    "name": "Brimstone Whisperling"
-  },
-  "1574": {
-    "name": "Hexing Cambion"
-  },
-  "1575": {
-    "name": "Sulphur Cambion"
-  },
-  "1576": {
-    "name": "Glimmering Trickster"
-  },
-  "1577": {
-    "name": "Capering Pixie"
-  },
-  "1578": {
-    "name": "Hollow Imp"
-  },
-  "1579": {
-    "name": "Leering Pixie"
-  },
-  "1580": {
-    "name": "Capering Nixie"
-  },
-  "1581": {
-    "name": "Gibbering Trickster"
-  },
-  "1582": {
-    "name": "Brimstone Devilkin"
-  },
-  "1583": {
-    "name": "Hollow Succubus"
-  },
-  "1584": {
-    "name": "Twilight Gremlin"
-  },
-  "1585": {
-    "name": "Twilight Shade"
-  },
-  "1586": {
-    "name": "Spiteful Tormentor"
-  },
-  "1587": {
-    "name": "Glimmering Hex-Weaver"
-  },
-  "1588": {
-    "name": "Pact-Bound Nixie"
-  },
-  "1589": {
-    "name": "Spiteful Cambion"
-  },
-  "1590": {
-    "name": "Twilight Pixie"
-  },
-  "1591": {
-    "name": "Brimstone Cambion"
-  },
-  "1592": {
-    "name": "Mocking Nixie"
-  },
-  "1593": {
-    "name": "Mocking Shade"
-  },
-  "1594": {
-    "name": "Sulphur Nixie"
-  },
-  "1595": {
-    "name": "Glimmering Sprite"
-  },
-  "1596": {
-    "name": "Gibbering Hex-Weaver"
-  },
-  "1597": {
-    "name": "Sulphur Shade"
-  },
-  "1598": {
-    "name": "Sulphur Sprite"
-  },
-  "1599": {
-    "name": "<-- Bestiary: FolkMech -->"
-  },
-  "1600": {
+  "764": {
     "name": "Conscript Raider"
   },
-  "1601": {
-    "name": "Salvaged Outlaw"
+  "765": {
+    "name": "Crag Behemoth"
   },
-  "1602": {
-    "name": "Overclocked Poacher"
+  "766": {
+    "name": "Crimson Tyrant"
   },
-  "1603": {
+  "767": {
+    "name": "Crystalline Brood-Thing"
+  },
+  "768": {
+    "name": "Crystalline Carapace"
+  },
+  "769": {
+    "name": "Demon Bear"
+  },
+  "770": {
     "name": "Disgraced Bot"
   },
-  "1604": {
-    "name": "Veteran Goon"
+  "771": {
+    "name": "Dusk Commander"
   },
-  "1605": {
+  "772": {
+    "name": "Elder Thing"
+  },
+  "773": {
+    "name": "Fae Queen"
+  },
+  "774": {
+    "name": "Forest Sovereign"
+  },
+  "775": {
+    "name": "Forest Witch"
+  },
+  "776": {
+    "name": "Frost Weaver"
+  },
+  "777": {
+    "name": "Gelatinous Drone-Bug"
+  },
+  "778": {
+    "name": "Glacial Titan"
+  },
+  "779": {
+    "name": "Gloomscale Basilisk"
+  },
+  "780": {
+    "name": "Goblin Cavalry"
+  },
+  "781": {
+    "name": "Goblin Elite Guard"
+  },
+  "782": {
+    "name": "Goblin Master Sniper"
+  },
+  "783": {
+    "name": "Gul'magoth the Time-Weaver"
+  },
+  "784": {
+    "name": "Hollow-Eyed Snapper"
+  },
+  "785": {
+    "name": "Iron Palm Disciple"
+  },
+  "786": {
+    "name": "King Slime"
+  },
+  "787": {
+    "name": "Kodiak Bear"
+  },
+  "788": {
+    "name": "Leyline Aneurysm"
+  },
+  "789": {
+    "name": "Luminescent Mycelian"
+  },
+  "790": {
+    "name": "Magma Overlord"
+  },
+  "791": {
+    "name": "Mangy Howler"
+  },
+  "792": {
+    "name": "Mind Overlord"
+  },
+  "793": {
+    "name": "Mind Tyrant"
+  },
+  "794": {
+    "name": "Molten Dragon"
+  },
+  "795": {
+    "name": "Molten Efreeti"
+  },
+  "796": {
+    "name": "Molten Glob"
+  },
+  "797": {
+    "name": "Molten Guardian"
+  },
+  "798": {
+    "name": "Molten Pudding"
+  },
+  "799": {
+    "name": "Mountain Devastator"
+  },
+  "800": {
+    "name": "Mountain King"
+  },
+  "801": {
+    "name": "Mountain Titan"
+  },
+  "802": {
+    "name": "Mud-Caked Ripper"
+  },
+  "803": {
+    "name": "Multi-Headed Hydra"
+  },
+  "804": {
+    "name": "Nepenthe Mycoastrum"
+  },
+  "805": {
+    "name": "Nightmare Weaver"
+  },
+  "806": {
+    "name": "Nyth'aggoth the Concept-Corruptor"
+  },
+  "807": {
+    "name": "Obsidian Dreadnought"
+  },
+  "808": {
+    "name": "Off-Ramp Incarnate"
+  },
+  "809": {
+    "name": "Ogre Warlock King"
+  },
+  "810": {
+    "name": "Overclocked Poacher"
+  },
+  "811": {
+    "name": "Pack Boar"
+  },
+  "812": {
+    "name": "Pack Ripper"
+  },
+  "813": {
+    "name": "Petrifying Gorgon"
+  },
+  "814": {
+    "name": "Phylactery Guardian"
+  },
+  "815": {
+    "name": "Porphyrin Leech"
+  },
+  "816": {
+    "name": "Radiant Colossus"
+  },
+  "817": {
+    "name": "Ravenna the Shadowbinder"
+  },
+  "818": {
+    "name": "Sabertooth Alpha"
+  },
+  "819": {
+    "name": "Salt-Cured Cerecloth"
+  },
+  "820": {
+    "name": "Salt-Cured Mourner"
+  },
+  "821": {
+    "name": "Salvaged Outlaw"
+  },
+  "822": {
     "name": "Scrap Raider"
   },
-  "1606": {
+  "823": {
+    "name": "Seraphic Emissary"
+  },
+  "824": {
+    "name": "Sewers slime"
+  },
+  "825": {
+    "name": "Shadow Executioner"
+  },
+  "826": {
+    "name": "Shadow Wraith"
+  },
+  "827": {
+    "name": "Shal'thyss the Void-Surgeon"
+  },
+  "828": {
+    "name": "Shardmaw"
+  },
+  "829": {
+    "name": "Squishing Echo"
+  },
+  "830": {
+    "name": "Storm Caller"
+  },
+  "831": {
+    "name": "Storm-Howler"
+  },
+  "832": {
+    "name": "Sunken Charnelhound"
+  },
+  "833": {
+    "name": "Swarming Brood-Thing"
+  },
+  "834": {
+    "name": "Swarming Hivemind"
+  },
+  "835": {
+    "name": "Tempest Djinn"
+  },
+  "836": {
+    "name": "Three-Tailed Boar"
+  },
+  "837": {
+    "name": "Tidal Warden"
+  },
+  "838": {
+    "name": "Tide Sorcerer"
+  },
+  "839": {
+    "name": "Time-Loop Stalker"
+  },
+  "840": {
+    "name": "Totemic Titan"
+  },
+  "841": {
+    "name": "Twitching Pudding"
+  },
+  "842": {
+    "name": "Tyrant Crocodilian"
+  },
+  "843": {
+    "name": "Umbral Basilisk"
+  },
+  "844": {
+    "name": "Varlenia Mirage"
+  },
+  "845": {
+    "name": "Vel'korthak the Reality-Breeder"
+  },
+  "846": {
+    "name": "Venom Devil"
+  },
+  "847": {
+    "name": "Veteran Goon"
+  },
+  "848": {
+    "name": "Void Desolator"
+  },
+  "849": {
+    "name": "Void Empress"
+  },
+  "850": {
+    "name": "Void Gel"
+  },
+  "851": {
+    "name": "Xoth'nagal the Dream-Plague"
+  },
+  "852": {
+    "name": "Yellow King"
+  },
+  "853": {
+    "name": "Zhoth'aggur the Silence-Weaver"
+  },
+  "854": {
+    "name": "Zombie Whale"
+  },
+  "855": {
+    "name": "<-- 51-60 -->"
+  },
+  "856": {
+    "name": "Abyssal Siren"
+  },
+  "857": {
+    "name": "Ashen Prowler"
+  },
+  "858": {
     "name": "Back-Alley Bot"
   },
-  "1607": {
-    "name": "Bog-Standard Sharpshooter"
+  "859": {
+    "name": "Barbed Manticore"
   },
-  "1608": {
-    "name": "Disgraced Sharpshooter"
+  "860": {
+    "name": "Basilisk"
   },
-  "1609": {
-    "name": "Rusted Brawler"
+  "861": {
+    "name": "Bloated Drone-Bug"
   },
-  "1610": {
+  "862": {
+    "name": "Bloated Gel"
+  },
+  "863": {
+    "name": "Bloated Glob"
+  },
+  "864": {
     "name": "Bog-Standard Marauder"
   },
-  "1611": {
+  "865": {
+    "name": "Bog-Standard Sharpshooter"
+  },
+  "866": {
+    "name": "Boxing Elemental"
+  },
+  "867": {
+    "name": "Brain Swarmer"
+  },
+  "868": {
+    "name": "Capering Hex-Weaver"
+  },
+  "869": {
+    "name": "Chittering Mire-Spawn"
+  },
+  "870": {
+    "name": "Cinderheart Scion"
+  },
+  "871": {
+    "name": "Cone Mimic"
+  },
+  "872": {
+    "name": "Coralic Warcaster"
+  },
+  "873": {
+    "name": "Crackling Spirit"
+  },
+  "874": {
+    "name": "Crimson Harbinger"
+  },
+  "875": {
+    "name": "Crimson Magma Drake"
+  },
+  "876": {
+    "name": "Cryptborn Shrieker"
+  },
+  "877": {
+    "name": "Crystalline Shardbeast"
+  },
+  "878": {
+    "name": "Disco Revenant"
+  },
+  "879": {
+    "name": "Discord Larva"
+  },
+  "880": {
+    "name": "Disgraced Sharpshooter"
+  },
+  "881": {
+    "name": "Earth Sentinel"
+  },
+  "882": {
+    "name": "Echo Wisp"
+  },
+  "883": {
+    "name": "Encompassing Roadwarden"
+  },
+  "884": {
+    "name": "Flower Behemoth"
+  },
+  "885": {
+    "name": "Folded Saint"
+  },
+  "886": {
+    "name": "Forest Treant"
+  },
+  "887": {
+    "name": "Forgotten Cadaver"
+  },
+  "888": {
+    "name": "Frost Enchantress"
+  },
+  "889": {
+    "name": "Frostback Ursid"
+  },
+  "890": {
+    "name": "Fungal Snapjaw"
+  },
+  "891": {
+    "name": "Gaunt Snapper"
+  },
+  "892": {
+    "name": "Gelatinous Mire-Spawn"
+  },
+  "893": {
+    "name": "Gelatinous Pudding"
+  },
+  "894": {
+    "name": "Geode Hydra"
+  },
+  "895": {
+    "name": "Glittering Brood-Thing"
+  },
+  "896": {
+    "name": "Glittering Crawler"
+  },
+  "897": {
+    "name": "Gnome Warlock"
+  },
+  "898": {
+    "name": "Goblin Chieftain"
+  },
+  "899": {
+    "name": "Goblin Shrieker"
+  },
+  "900": {
+    "name": "Hobgoblin Scout"
+  },
+  "901": {
+    "name": "Identity Thief"
+  },
+  "902": {
+    "name": "Infernal Cerberus"
+  },
+  "903": {
+    "name": "Infernal Monarch"
+  },
+  "904": {
+    "name": "Infernal Pyromancer"
+  },
+  "905": {
+    "name": "Infernal Warmonger"
+  },
+  "906": {
+    "name": "Iron-Fanged Hornbeast"
+  },
+  "907": {
+    "name": "Ironhoof Charger"
+  },
+  "908": {
+    "name": "Kraken Spawn"
+  },
+  "909": {
+    "name": "Laughing Mire Idol"
+  },
+  "910": {
+    "name": "Majestic Griffon"
+  },
+  "911": {
+    "name": "Mangy Stalkhound"
+  },
+  "912": {
+    "name": "Marrow Archmage"
+  },
+  "913": {
+    "name": "Marsh Murkweb"
+  },
+  "914": {
+    "name": "Mathematics Eater"
+  },
+  "915": {
     "name": "Mercenary Drone"
   },
-  "1612": {
-    "name": "Overclocked Enforcer"
+  "916": {
+    "name": "Mercury Dragon"
   },
-  "1613": {
-    "name": "Rusted Raider"
+  "917": {
+    "name": "Mire Hydra"
   },
-  "1614": {
-    "name": "Overclocked Marauder"
+  "918": {
+    "name": "Mummified Mourner"
   },
-  "1615": {
-    "name": "Rusted Tinker"
+  "919": {
+    "name": "Necrotic Champion"
   },
-  "1616": {
-    "name": "Twitchy Sharpshooter"
+  "920": {
+    "name": "Nephilim Remnant"
   },
-  "1617": {
+  "921": {
+    "name": "Obsidian Wraith"
+  },
+  "922": {
+    "name": "Ocean Warlock"
+  },
+  "923": {
+    "name": "Pack Ridgeback"
+  },
+  "924": {
+    "name": "Phantom Chloroblade"
+  },
+  "925": {
+    "name": "Plasma Juggernaut"
+  },
+  "926": {
+    "name": "Primordial Golem"
+  },
+  "927": {
+    "name": "Quake-Maw Titan"
+  },
+  "928": {
+    "name": "Quantum Fluctuation"
+  },
+  "929": {
+    "name": "Quantum Intellect"
+  },
+  "930": {
+    "name": "Quantum Supersoldier"
+  },
+  "931": {
+    "name": "Quartz Sylph"
+  },
+  "932": {
+    "name": "Raging Conduit"
+  },
+  "933": {
+    "name": "Raging Geist"
+  },
+  "934": {
+    "name": "Reaganite"
+  },
+  "935": {
+    "name": "Restless Charnelhound"
+  },
+  "936": {
+    "name": "Restless Revenant"
+  },
+  "937": {
+    "name": "Rime Spinner"
+  },
+  "938": {
+    "name": "Rusted Brawler"
+  },
+  "939": {
+    "name": "Salt-Cured Wight"
+  },
+  "940": {
+    "name": "Scarred Clawrunner"
+  },
+  "941": {
+    "name": "Searing Conduit"
+  },
+  "942": {
+    "name": "Selene the Void Witch"
+  },
+  "943": {
+    "name": "Singularity Prime"
+  },
+  "944": {
+    "name": "Siren Sniper"
+  },
+  "945": {
+    "name": "Starving Clawrunner"
+  },
+  "946": {
+    "name": "Starving Saber-Cat"
+  },
+  "947": {
+    "name": "Stratos Sovereign"
+  },
+  "948": {
+    "name": "Swamp Leviathan"
+  },
+  "949": {
+    "name": "Tempest Wyvern"
+  },
+  "950": {
+    "name": "Titanothere Alpha"
+  },
+  "951": {
+    "name": "Totemic Overlord"
+  },
+  "952": {
+    "name": "Vampiric Nightwing"
+  },
+  "953": {
+    "name": "Void Parasite Plant"
+  },
+  "954": {
+    "name": "Void Sorcerer"
+  },
+  "955": {
+    "name": "Volcanic Shark"
+  },
+  "956": {
+    "name": "Volcanic Wyvern"
+  },
+  "957": {
+    "name": "Whispering Tormentor"
+  },
+  "958": {
+    "name": "Winter's Harbinger"
+  },
+  "959": {
+    "name": "Winter's Herald"
+  },
+  "960": {
+    "name": "Xylomanti Florous "
+  },
+  "961": {
+    "name": "Zen Fist Master"
+  },
+  "962": {
+    "name": "<-- 61-70 -->"
+  },
+  "963": {
+    "name": "Acidic Mire-Spawn"
+  },
+  "964": {
+    "name": "Backwards Doll"
+  },
+  "965": {
+    "name": "Baptism Font"
+  },
+  "966": {
+    "name": "Bloated Mold"
+  },
+  "967": {
+    "name": "Bloated Ooze"
+  },
+  "968": {
     "name": "Bog-Standard Goon"
   },
-  "1618": {
+  "969": {
+    "name": "Brackish Ooze"
+  },
+  "970": {
+    "name": "Caustic Mire-Spawn"
+  },
+  "971": {
+    "name": "Celestial Arbiter"
+  },
+  "972": {
+    "name": "Celestial Avatar"
+  },
+  "973": {
+    "name": "Cerement Bonepicker"
+  },
+  "974": {
+    "name": "Cerement Gravewalker"
+  },
+  "975": {
+    "name": "Chittering Pudding"
+  },
+  "976": {
+    "name": "Choronzon"
+  },
+  "977": {
+    "name": "Cinder Thornhide"
+  },
+  "978": {
+    "name": "Cinder-Wrapped Thrall"
+  },
+  "979": {
+    "name": "Color Out of Sound"
+  },
+  "980": {
+    "name": "Crackling Effigy"
+  },
+  "981": {
+    "name": "Crumbling Colossus"
+  },
+  "982": {
+    "name": "Crypt Bonepicker"
+  },
+  "983": {
+    "name": "Crystal Giant"
+  },
+  "984": {
+    "name": "Crystalline Glob"
+  },
+  "985": {
+    "name": "Deep One Monarch"
+  },
+  "986": {
+    "name": "Dire Gnasher"
+  },
+  "987": {
+    "name": "Dread Knight"
+  },
+  "988": {
+    "name": "Elite Boxing Champion"
+  },
+  "989": {
+    "name": "Emberclaw Bear"
+  },
+  "990": {
+    "name": "Emotional Leech"
+  },
+  "991": {
+    "name": "Fanged Imp"
+  },
+  "992": {
+    "name": "Feral Lynx"
+  },
+  "993": {
+    "name": "Flesh Calculator"
+  },
+  "994": {
+    "name": "Foul Gouger"
+  },
+  "995": {
+    "name": "Frost-Hornbeast"
+  },
+  "996": {
+    "name": "Frostfang Bear"
+  },
+  "997": {
+    "name": "Galeshell Tortoise"
+  },
+  "998": {
+    "name": "Gelatinous Husk-Beetle"
+  },
+  "999": {
+    "name": "Gelatinous Ooze"
+  },
+  "1000": {
+    "name": "Glimmering Succubus"
+  },
+  "1001": {
+    "name": "Goblin Head"
+  },
+  "1002": {
+    "name": "Goblin Riot Caster"
+  },
+  "1003": {
+    "name": "Grave Monarch"
+  },
+  "1004": {
+    "name": "Grief Collector"
+  },
+  "1005": {
+    "name": "Hecate the Plague Mistress"
+  },
+  "1006": {
+    "name": "Hobgoblin Shaman"
+  },
+  "1007": {
+    "name": "Hollow Pixie"
+  },
+  "1008": {
+    "name": "Hollow-Eyed Boar"
+  },
+  "1009": {
+    "name": "Infernal Warhound"
+  },
+  "1010": {
+    "name": "Inferno Archivist"
+  },
+  "1011": {
+    "name": "Inside-Out Whale"
+  },
+  "1012": {
+    "name": "Inverted Hunger"
+  },
+  "1013": {
+    "name": "Kraken Leviathan"
+  },
+  "1014": {
+    "name": "Lullaby Wraith"
+  },
+  "1015": {
+    "name": "Maat's Severed Hand"
+  },
+  "1016": {
+    "name": "Meat Puppet Theater"
+  },
+  "1017": {
+    "name": "Mechanized Harbinger"
+  },
+  "1018": {
+    "name": "Memory Leech"
+  },
+  "1019": {
+    "name": "Mind Manipulator"
+  },
+  "1020": {
+    "name": "Mind Sculptor"
+  },
+  "1021": {
+    "name": "Mire Dragon"
+  },
+  "1022": {
+    "name": "Molten Sentinel"
+  },
+  "1023": {
+    "name": "Morgana the Bloodweaver"
+  },
+  "1024": {
+    "name": "Mystic Prodigy"
+  },
+  "1025": {
+    "name": "Nightcurse Tortoise"
+  },
+  "1026": {
+    "name": "Nyarlathotep Avatar"
+  },
+  "1027": {
+    "name": "Obsidian Conduit"
+  },
+  "1028": {
+    "name": "Obsidian Elemental"
+  },
+  "1029": {
+    "name": "Ogre Champion"
+  },
+  "1030": {
+    "name": "Overclocked Enforcer"
+  },
+  "1031": {
+    "name": "Overclocked Marauder"
+  },
+  "1032": {
+    "name": "Pack Clawrunner"
+  },
+  "1033": {
+    "name": "Pack Lynx"
+  },
+  "1034": {
+    "name": "Pact-Bound Devilkin"
+  },
+  "1035": {
+    "name": "Permafrost Conjurer"
+  },
+  "1036": {
+    "name": "Petrified Sylph"
+  },
+  "1037": {
+    "name": "Plague Cerecloth"
+  },
+  "1038": {
+    "name": "Plague Husk"
+  },
+  "1039": {
+    "name": "Quivering Larva"
+  },
+  "1040": {
+    "name": "Rabid Lynx"
+  },
+  "1041": {
+    "name": "Raging Animus"
+  },
+  "1042": {
+    "name": "Raging Colossus-Spawn"
+  },
+  "1043": {
+    "name": "Rattus Sapscream"
+  },
+  "1044": {
+    "name": "Reality Warper"
+  },
+  "1045": {
     "name": "Renegade Bot"
   },
-  "1619": {
+  "1046": {
+    "name": "Restless Pallbearer"
+  },
+  "1047": {
+    "name": "Rusted Raider"
+  },
+  "1048": {
+    "name": "Rusted Tinker"
+  },
+  "1049": {
+    "name": "Screaming Jar"
+  },
+  "1050": {
+    "name": "Searing Magma Wyrm"
+  },
+  "1051": {
+    "name": "Sentient Wound"
+  },
+  "1052": {
+    "name": "Skittering Mold"
+  },
+  "1053": {
+    "name": "Storm-Gnasher"
+  },
+  "1054": {
+    "name": "Stringbound Abomination"
+  },
+  "1055": {
+    "name": "Sulphur Gremlin"
+  },
+  "1056": {
+    "name": "Swarming Mire-Spawn"
+  },
+  "1057": {
+    "name": "The Dreamweaver"
+  },
+  "1058": {
+    "name": "Thoth's Broken Ward"
+  },
+  "1059": {
+    "name": "Thought Parasite"
+  },
+  "1060": {
+    "name": "Thundermaw Ursine"
+  },
+  "1061": {
+    "name": "Twitchy Sharpshooter"
+  },
+  "1062": {
     "name": "Twitchy Tinker"
   },
-  "1620": {
-    "name": "Hired Poacher"
+  "1063": {
+    "name": "Venom Lord"
   },
-  "1621": {
-    "name": "Conscript Goon"
+  "1064": {
+    "name": "Whispering Nixie"
   },
-  "1622": {
-    "name": "Twitchy Drone"
+  "1065": {
+    "name": "Wind Leviathan"
   },
-  "1623": {
-    "name": "Veteran Bot"
+  "1066": {
+    "name": "Withered Charnelhound"
   },
-  "1624": {
-    "name": "Renegade Outlaw"
+  "1067": {
+    "name": "Withered Mourner"
   },
-  "1625": {
-    "name": "Scrap Sentry"
+  "1068": {
+    "name": "Yog-Sothoth Spawn"
   },
-  "1626": {
-    "name": "Overclocked Brawler"
+  "1069": {
+    "name": "<-- 71-80 -->"
   },
-  "1627": {
-    "name": "Grizzled Bot"
+  "1070": {
+    "name": "Abortion Mimic"
   },
-  "1628": {
+  "1071": {
+    "name": "Acidic Larva"
+  },
+  "1072": {
+    "name": "Ancient Dragon :EP"
+  },
+  "1073": {
+    "name": "Bleeding Statue"
+  },
+  "1074": {
     "name": "Bog-Standard Tinker"
   },
-  "1629": {
-    "name": "Masked Bruiser"
+  "1075": {
+    "name": "Bone Orchestra"
   },
-  "1630": {
+  "1076": {
+    "name": "Brackish Pudding"
+  },
+  "1077": {
+    "name": "Brass Sentinel Mk. IV"
+  },
+  "1078": {
+    "name": "Breathing Building"
+  },
+  "1079": {
+    "name": "Brimstone Nixie"
+  },
+  "1080": {
+    "name": "Brimstone Sprite"
+  },
+  "1081": {
+    "name": "Capering Trickster"
+  },
+  "1082": {
+    "name": "Caustic Carapace"
+  },
+  "1083": {
+    "name": "Cerement Boneknight"
+  },
+  "1084": {
+    "name": "Chittering Husk-Beetle"
+  },
+  "1085": {
+    "name": "Cinder Direwolf"
+  },
+  "1086": {
+    "name": "Cogwork Bulwark"
+  },
+  "1087": {
+    "name": "Conscript Goon"
+  },
+  "1088": {
+    "name": "Crackling Elemental"
+  },
+  "1089": {
+    "name": "Crypt Wight"
+  },
+  "1090": {
+    "name": "Crystalline Drone-Bug"
+  },
+  "1091": {
+    "name": "Dawnshell Tortoise"
+  },
+  "1092": {
+    "name": "Dire Clawrunner"
+  },
+  "1093": {
+    "name": "Dragon of Death Nergal"
+  },
+  "1094": {
+    "name": "Earthen Colossus"
+  },
+  "1095": {
+    "name": "Eldergloom Sporemantle"
+  },
+  "1096": {
+    "name": "Emberback Hellscorpion"
+  },
+  "1097": {
+    "name": "Entropy Wyrm :EP"
+  },
+  "1098": {
+    "name": "Feral Prowler"
+  },
+  "1099": {
+    "name": "Fleshweaver Spider"
+  },
+  "1100": {
+    "name": "Frozen Revenant"
+  },
+  "1101": {
+    "name": "Gaunt Clawrunner"
+  },
+  "1102": {
+    "name": "Gelatinous Glob"
+  },
+  "1103": {
+    "name": "Geometry Devourer"
+  },
+  "1104": {
+    "name": "Gibbering Sprite"
+  },
+  "1105": {
+    "name": "Gilded Revenant"
+  },
+  "1106": {
+    "name": "Glimmering Devilkin"
+  },
+  "1107": {
+    "name": "Glittering Larva"
+  },
+  "1108": {
+    "name": "Goblin head"
+  },
+  "1109": {
+    "name": "Goblin Mosh Lord"
+  },
+  "1110": {
+    "name": "Goblin Witch Doctor"
+  },
+  "1111": {
+    "name": "Gravity Worm"
+  },
+  "1112": {
+    "name": "Grizzled Bot"
+  },
+  "1113": {
     "name": "Grizzled Tinker"
   },
-  "1631": {
+  "1114": {
+    "name": "Hired Poacher"
+  },
+  "1115": {
+    "name": "Hollow Bonepicker"
+  },
+  "1116": {
+    "name": "Hollow Mother"
+  },
+  "1117": {
+    "name": "Hollow-Eyed Bristleback"
+  },
+  "1118": {
+    "name": "Inverted Angel"
+  },
+  "1119": {
+    "name": "Iridescent Crawler"
+  },
+  "1120": {
+    "name": "Iron Bastion Automaton"
+  },
+  "1121": {
+    "name": "Leering Sprite"
+  },
+  "1122": {
+    "name": "Maat Within Eris"
+  },
+  "1123": {
+    "name": "Mangy Ridgeback"
+  },
+  "1124": {
+    "name": "Masked Bruiser"
+  },
+  "1125": {
+    "name": "Molten Mire-Spawn"
+  },
+  "1126": {
+    "name": "Molten Mold"
+  },
+  "1127": {
+    "name": "Molten Warden"
+  },
+  "1128": {
+    "name": "Mud-Caked Clawrunner"
+  },
+  "1129": {
+    "name": "Mud-Caked Gnasher"
+  },
+  "1130": {
+    "name": "Mud-Caked Prowler"
+  },
+  "1131": {
+    "name": "Ossuary Colossus"
+  },
+  "1132": {
+    "name": "Overclocked Brawler"
+  },
+  "1133": {
+    "name": "Pack Hornbeast"
+  },
+  "1134": {
+    "name": "Pack Jackal"
+  },
+  "1135": {
+    "name": "Pact-Bound Fiend"
+  },
+  "1136": {
+    "name": "Petrified Effigy"
+  },
+  "1137": {
+    "name": "Petrodemon Hatchling"
+  },
+  "1138": {
+    "name": "Probability Spider"
+  },
+  "1139": {
+    "name": "Pyroshell Tortoise"
+  },
+  "1140": {
+    "name": "Quartz Wisp"
+  },
+  "1141": {
+    "name": "Quivering Carapace"
+  },
+  "1142": {
+    "name": "Rabid Badger"
+  },
+  "1143": {
+    "name": "Radiant Monolith"
+  },
+  "1144": {
+    "name": "Renegade Outlaw"
+  },
+  "1145": {
+    "name": "Restless Bonepicker"
+  },
+  "1146": {
+    "name": "Restless Cadaver"
+  },
+  "1147": {
+    "name": "Restless Thrall"
+  },
+  "1148": {
+    "name": "Rotting Husk"
+  },
+  "1149": {
+    "name": "Scarred Bristleback"
+  },
+  "1150": {
+    "name": "Scrap Sentry"
+  },
+  "1151": {
+    "name": "Searing Spirit"
+  },
+  "1152": {
+    "name": "Skittering Drone-Bug"
+  },
+  "1153": {
+    "name": "Sludgy Crawler"
+  },
+  "1154": {
+    "name": "Spiteful Devilkin"
+  },
+  "1155": {
+    "name": "Stormshell Tortoise"
+  },
+  "1156": {
+    "name": "Sulphur Whisperling"
+  },
+  "1157": {
+    "name": "Sunken Husk"
+  },
+  "1158": {
+    "name": "Swarming Swarmling"
+  },
+  "1159": {
+    "name": "Tempest Colossus-Spawn"
+  },
+  "1160": {
+    "name": "Tempest Conduit"
+  },
+  "1161": {
+    "name": "Temporal Hornet"
+  },
+  "1162": {
+    "name": "The Cube That Wasn't"
+  },
+  "1163": {
+    "name": "Three-Tailed Lynx"
+  },
+  "1164": {
+    "name": "Tiamat, Mother of Chaos"
+  },
+  "1165": {
+    "name": "Twitching Drone-Bug"
+  },
+  "1166": {
+    "name": "Twitching Ooze"
+  },
+  "1167": {
+    "name": "Twitchy Drone"
+  },
+  "1168": {
     "name": "Twitchy Sapper"
   },
-  "1632": {
-    "name": "Hired Tinker"
+  "1169": {
+    "name": "Umbilical Strangler"
   },
-  "1633": {
-    "name": "Scrap Bot"
+  "1170": {
+    "name": "Veteran Bot"
   },
-  "1634": {
-    "name": "Masked Bot"
+  "1171": {
+    "name": "Void Howler"
   },
-  "1635": {
-    "name": "Conscript Marauder"
+  "1172": {
+    "name": "Whispering Door"
   },
-  "1636": {
-    "name": "Renegade Drone"
+  "1173": {
+    "name": "Withered Husk"
   },
-  "1637": {
-    "name": "Masked Outlaw"
+  "1174": {
+    "name": "Withered Thrall"
   },
-  "1638": {
-    "name": "Conscript Bruiser"
+  "1175": {
+    "name": "Womb of Nightmares"
   },
-  "1639": {
-    "name": "Scrap Goon"
+  "1176": {
+    "name": "<-- 81-90 -->"
   },
-  "1640": {
-    "name": "Renegade Enforcer"
+  "1177": {
+    "name": "Abyssal Sea Dragon"
   },
-  "1641": {
+  "1178": {
+    "name": "Aiwass Messenger"
+  },
+  "1179": {
+    "name": "Avatar of the Seven Sisters"
+  },
+  "1180": {
+    "name": "Badass Pigeon"
+  },
+  "1181": {
+    "name": "Basaltstone Golem"
+  },
+  "1182": {
+    "name": "Blazing Inferno Elemental"
+  },
+  "1183": {
+    "name": "Bloated Carapace"
+  },
+  "1184": {
+    "name": "Bloodmaw Direwolf"
+  },
+  "1185": {
+    "name": "Bloodmaw Maw-Hound"
+  },
+  "1186": {
+    "name": "Bog Behemoth"
+  },
+  "1187": {
+    "name": "Brimstone Fiend"
+  },
+  "1188": {
+    "name": "Brimstone Whisperling"
+  },
+  "1189": {
+    "name": "Capering Devilkin"
+  },
+  "1190": {
+    "name": "Capering Fiend"
+  },
+  "1191": {
+    "name": "Celestial Dragon Anshar"
+  },
+  "1192": {
+    "name": "Celestial Tyrannosaurus"
+  },
+  "1193": {
+    "name": "Cerberus Sentinel"
+  },
+  "1194": {
+    "name": "Childhood's End"
+  },
+  "1195": {
+    "name": "Cinder-Wrapped Sentinel"
+  },
+  "1196": {
     "name": "Conscript Automaton"
   },
-  "1642": {
-    "name": "Twitchy Bot"
+  "1197": {
+    "name": "Conscript Bruiser"
   },
-  "1643": {
+  "1198": {
+    "name": "Conscript Marauder"
+  },
+  "1199": {
+    "name": "Crackling Animus"
+  },
+  "1200": {
+    "name": "Crackling Revenant"
+  },
+  "1201": {
+    "name": "Creeping Luminspore"
+  },
+  "1202": {
+    "name": "Crystalline Gel"
+  },
+  "1203": {
+    "name": "Crystalline Larva"
+  },
+  "1204": {
+    "name": "Diamond Mimic :EP"
+  },
+  "1205": {
+    "name": "Doped Chimp"
+  },
+  "1206": {
+    "name": "Dragon of the Underworld Kur"
+  },
+  "1207": {
+    "name": "Emperor Deathstalker"
+  },
+  "1208": {
+    "name": "Feral Badger"
+  },
+  "1209": {
+    "name": "Feral Ridgeback"
+  },
+  "1210": {
+    "name": "Forgotten Boneknight"
+  },
+  "1211": {
+    "name": "Forgotten Thrall"
+  },
+  "1212": {
+    "name": "Frost Dragon"
+  },
+  "1213": {
+    "name": "Frost Monarch"
+  },
+  "1214": {
+    "name": "Frozen Construct"
+  },
+  "1215": {
+    "name": "Frozen Sentinel"
+  },
+  "1216": {
+    "name": "Gaunt Lynx"
+  },
+  "1217": {
+    "name": "Gaunt Ripper"
+  },
+  "1218": {
+    "name": "Gibbering Fiend"
+  },
+  "1219": {
+    "name": "Gilded Thrall"
+  },
+  "1220": {
+    "name": "Goblin Metal Warlord"
+  },
+  "1221": {
+    "name": "Goblin War Chief"
+  },
+  "1222": {
+    "name": "Grave-Bound Boneknight"
+  },
+  "1223": {
+    "name": "Grave-Bound Gravewalker"
+  },
+  "1224": {
+    "name": "Grave-Bound Mourner"
+  },
+  "1225": {
+    "name": "Hexing Cambion"
+  },
+  "1226": {
+    "name": "Hired Tinker"
+  },
+  "1227": {
+    "name": "Hollow Charnelhound"
+  },
+  "1228": {
+    "name": "Hollow Whisperling"
+  },
+  "1229": {
+    "name": "Howling Elemental"
+  },
+  "1230": {
+    "name": "Howling Revenant"
+  },
+  "1231": {
+    "name": "Hunger Incarnate"
+  },
+  "1232": {
+    "name": "Hyperdimensional Grimorie"
+  },
+  "1233": {
+    "name": "Infernal Annihilator"
+  },
+  "1234": {
+    "name": "Infernal Devastator"
+  },
+  "1235": {
+    "name": "Iron-Fanged Direwolf"
+  },
+  "1236": {
+    "name": "Iron-Fanged Maw-Hound"
+  },
+  "1237": {
+    "name": "Landfill Leviathan"
+  },
+  "1238": {
+    "name": "Lone Jackal"
+  },
+  "1239": {
+    "name": "Maelstrom Leviathan"
+  },
+  "1240": {
+    "name": "Masked Bot"
+  },
+  "1241": {
+    "name": "Masked Outlaw"
+  },
+  "1242": {
     "name": "Masked Raider"
   },
-  "1644": {
-    "name": "Overclocked Raider"
+  "1243": {
+    "name": "Mirror Basher"
   },
-  "1645": {
-    "name": "Renegade Poacher"
+  "1244": {
+    "name": "Mocking Whisperling"
   },
-  "1646": {
-    "name": "Salvaged Automaton"
+  "1245": {
+    "name": "Molten Juggernaut"
   },
-  "1647": {
-    "name": "Scrap Automaton"
+  "1246": {
+    "name": "Molten Sylph"
   },
-  "1648": {
-    "name": "Salvaged Sentry"
+  "1247": {
+    "name": "Mutated Goblin"
   },
-  "1649": {
+  "1248": {
+    "name": "Non-Euclidean Crab"
+  },
+  "1249": {
+    "name": "Obsidian Hellhound"
+  },
+  "1250": {
+    "name": "Ogre Warlord"
+  },
+  "1251": {
+    "name": "Ophanim Judicator"
+  },
+  "1252": {
+    "name": "Orphanage Warden"
+  },
+  "1253": {
+    "name": "Permafrost Dragon"
+  },
+  "1254": {
+    "name": "Primal Ocean Dragon Abzu"
+  },
+  "1255": {
+    "name": "Puppet Master's Corpse"
+  },
+  "1256": {
+    "name": "Quartz Colossus-Spawn"
+  },
+  "1257": {
+    "name": "Quivering Brood-Thing"
+  },
+  "1258": {
+    "name": "Quivering Hivemind"
+  },
+  "1259": {
+    "name": "Recursive Paradox"
+  },
+  "1260": {
+    "name": "Renegade Drone"
+  },
+  "1261": {
+    "name": "Renegade Enforcer"
+  },
+  "1262": {
+    "name": "Restless Gravewalker"
+  },
+  "1263": {
+    "name": "Scrap Bot"
+  },
+  "1264": {
+    "name": "Scrap Goon"
+  },
+  "1265": {
+    "name": "Searing Elemental"
+  },
+  "1266": {
+    "name": "Shoggoth"
+  },
+  "1267": {
+    "name": "Spiteful Pixie"
+  },
+  "1268": {
+    "name": "Starving Gnasher"
+  },
+  "1269": {
+    "name": "Storm Dragon King Enlil"
+  },
+  "1270": {
+    "name": "Storm Harbinger"
+  },
+  "1271": {
+    "name": "Sunken Pallbearer"
+  },
+  "1272": {
+    "name": "Surgeon of Souls"
+  },
+  "1273": {
+    "name": "Temporal Barnacle"
+  },
+  "1274": {
+    "name": "Terraclaw Tortoise"
+  },
+  "1275": {
+    "name": "Three-Tailed Hornbeast"
+  },
+  "1276": {
+    "name": "Tidalcarapace Tortoise"
+  },
+  "1277": {
+    "name": "Totem of Sins"
+  },
+  "1278": {
+    "name": "Twitchy Bot"
+  },
+  "1279": {
+    "name": "Void Manipulator"
+  },
+  "1280": {
+    "name": "Void Weaver"
+  },
+  "1281": {
+    "name": "War Colossus"
+  },
+  "1282": {
+    "name": "Yog-Sothoth Spawn :EP"
+  },
+  "1283": {
+    "name": "<-- 91-100 -->"
+  },
+  "1284": {
+    "name": "Abyssal Leviathan"
+  },
+  "1285": {
+    "name": "Ancient Dragon"
+  },
+  "1286": {
+    "name": "Arcane Archmage"
+  },
+  "1287": {
     "name": "Back-Alley Sharpshooter"
   },
-  "1650": {
-    "name": "<-- Superboss -->"
+  "1288": {
+    "name": "Backwards Tree"
   },
-  "1651": {
+  "1289": {
+    "name": "Battle Mech :EP"
+  },
+  "1290": {
+    "name": "Blood Countess :EP"
+  },
+  "1291": {
+    "name": "Blood Leech Colossus"
+  },
+  "1292": {
+    "name": "Brimstone Cambion"
+  },
+  "1293": {
+    "name": "Brimstone Devilkin"
+  },
+  "1294": {
+    "name": "Capering Nixie"
+  },
+  "1295": {
+    "name": "Capering Pixie"
+  },
+  "1296": {
+    "name": "Cinder-Wrapped Wight"
+  },
+  "1297": {
     "name": "Corpse of Maat"
+  },
+  "1298": {
+    "name": "Crimson Vampire :EP"
+  },
+  "1299": {
+    "name": "Crude Leviathan"
+  },
+  "1300": {
+    "name": "Crying Tree"
+  },
+  "1301": {
+    "name": "Crypt Revenant"
+  },
+  "1302": {
+    "name": "Dragon of Wisdom Enki "
+  },
+  "1303": {
+    "name": "Entropy Wyrm"
+  },
+  "1304": {
+    "name": "Eris, Judgment of Discord"
+  },
+  "1305": {
+    "name": "Feast of Famine"
+  },
+  "1306": {
+    "name": "Forgotten Charnelhound"
+  },
+  "1307": {
+    "name": "Forgotten Sentinel"
+  },
+  "1308": {
+    "name": "Frost Colossus"
+  },
+  "1309": {
+    "name": "Frostback Tortoise"
+  },
+  "1310": {
+    "name": "Frozen Monolith"
+  },
+  "1311": {
+    "name": "Gibbering Hex-Weaver"
+  },
+  "1312": {
+    "name": "Gibbering Trickster"
+  },
+  "1313": {
+    "name": "Gilded Lichling"
+  },
+  "1314": {
+    "name": "Gilded Sentinel"
+  },
+  "1315": {
+    "name": "Glacial Geist"
+  },
+  "1316": {
+    "name": "Glimmering Hex-Weaver"
+  },
+  "1317": {
+    "name": "Glimmering Sprite"
+  },
+  "1318": {
+    "name": "Glimmering Trickster"
+  },
+  "1319": {
+    "name": "Goblin King"
+  },
+  "1320": {
+    "name": "Goblin Necromancer"
+  },
+  "1321": {
+    "name": "Goblin Shadow Sorcerer"
+  },
+  "1322": {
+    "name": "Gorgon Queen"
+  },
+  "1323": {
+    "name": "Grinding Construct"
+  },
+  "1324": {
+    "name": "Grinding Spirit"
+  },
+  "1325": {
+    "name": "Hollow Gravewalker"
+  },
+  "1326": {
+    "name": "Hollow Imp"
+  },
+  "1327": {
+    "name": "Hollow Succubus"
+  },
+  "1328": {
+    "name": "Hollow Wight"
+  },
+  "1329": {
+    "name": "Horseshoe Crab"
+  },
+  "1330": {
+    "name": "Howling Sylph"
+  },
+  "1331": {
+    "name": "Infernal Prodigy"
+  },
+  "1332": {
+    "name": "Leering Pixie"
+  },
+  "1333": {
+    "name": "Living Elemental"
+  },
+  "1334": {
+    "name": "Living Sentinel"
+  },
+  "1335": {
+    "name": "Magma Titan"
+  },
+  "1336": {
+    "name": "Maternity Ward"
+  },
+  "1337": {
+    "name": "Megalodon Prime"
+  },
+  "1338": {
+    "name": "Mocking Nixie"
+  },
+  "1339": {
+    "name": "Mocking Shade"
+  },
+  "1340": {
+    "name": "Molten Colossus-Spawn"
+  },
+  "1341": {
+    "name": "Molten Construct"
+  },
+  "1342": {
+    "name": "Motivational Speaker :EP"
+  },
+  "1343": {
+    "name": "Mummified Gravewalker"
+  },
+  "1344": {
+    "name": "Nightmare Sovereign"
+  },
+  "1345": {
+    "name": "Obsidian Animus"
+  },
+  "1346": {
+    "name": "Ogre Archmage"
+  },
+  "1347": {
+    "name": "Overclocked Raider"
+  },
+  "1348": {
+    "name": "Pact-Bound Nixie"
+  },
+  "1349": {
+    "name": "Petrified Monolith"
+  },
+  "1350": {
+    "name": "Petrified Warden"
+  },
+  "1351": {
+    "name": "Plague Pallbearer"
+  },
+  "1352": {
+    "name": "Porphyrin Colossus"
+  },
+  "1353": {
+    "name": "Pyroclast Phoenix"
+  },
+  "1354": {
+    "name": "Quantum Archon"
+  },
+  "1355": {
+    "name": "Quantum Fluctuation :EP"
+  },
+  "1356": {
+    "name": "Quartz Geist"
+  },
+  "1357": {
+    "name": "Quartz Monolith"
+  },
+  "1358": {
+    "name": "Radiant Archpriest"
+  },
+  "1359": {
+    "name": "Raging Sentinel"
+  },
+  "1360": {
+    "name": "Reality Bender"
+  },
+  "1361": {
+    "name": "Renegade Poacher"
+  },
+  "1362": {
+    "name": "Sacred Kraken"
+  },
+  "1363": {
+    "name": "Sacred Phoenix"
+  },
+  "1364": {
+    "name": "Salt-Cured Gravewalker"
+  },
+  "1365": {
+    "name": "Salvaged Automaton"
+  },
+  "1366": {
+    "name": "Salvaged Sentry"
+  },
+  "1367": {
+    "name": "Scrap Automaton"
+  },
+  "1368": {
+    "name": "Seraph of the Seventh Veil"
+  },
+  "1369": {
+    "name": "Spiteful Cambion"
+  },
+  "1370": {
+    "name": "Spiteful Tormentor"
+  },
+  "1371": {
+    "name": "Storm Behemoth"
+  },
+  "1372": {
+    "name": "Sulphur Cambion"
+  },
+  "1373": {
+    "name": "Sulphur Nixie"
+  },
+  "1374": {
+    "name": "Sulphur Shade"
+  },
+  "1375": {
+    "name": "Sulphur Sprite"
+  },
+  "1376": {
+    "name": "Sunken Gravewalker"
+  },
+  "1377": {
+    "name": "Supreme Dragon God Usumgallu"
+  },
+  "1378": {
+    "name": "Surging Construct"
+  },
+  "1379": {
+    "name": "Surging Elemental"
+  },
+  "1380": {
+    "name": "Surging Sylph"
+  },
+  "1381": {
+    "name": "Tempest Sylph"
+  },
+  "1382": {
+    "name": "Tempest Wisp"
+  },
+  "1383": {
+    "name": "The Bascape Flame"
+  },
+  "1384": {
+    "name": "The Well That Dreams"
+  },
+  "1385": {
+    "name": "Thunder Lizard Colossus"
+  },
+  "1386": {
+    "name": "Titan Anaconda"
+  },
+  "1387": {
+    "name": "Twilight Gremlin"
+  },
+  "1388": {
+    "name": "Twilight Pixie"
+  },
+  "1389": {
+    "name": "Twilight Shade"
   }
 }

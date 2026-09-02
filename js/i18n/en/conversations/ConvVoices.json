@@ -9,6 +9,31 @@
       "...right?",
       "I-I hope.",
       "Don't quote me on that."
+    ],
+    "favors": [
+      "worry",
+      "worried",
+      "careful",
+      "maybe",
+      "probably",
+      "risky",
+      "afraid",
+      "scared",
+      "unsure",
+      "trouble",
+      "nervous",
+      "hope",
+      "danger"
+    ],
+    "avoids": [
+      "obviously",
+      "certainly",
+      "easy",
+      "fearless",
+      "bold",
+      "simple",
+      "fine",
+      "calm"
     ]
   },
   "Calm": {
@@ -21,6 +46,29 @@
       "No need to rush.",
       "All in good time.",
       "Breathe."
+    ],
+    "favors": [
+      "steady",
+      "quiet",
+      "gently",
+      "patient",
+      "slowly",
+      "settled",
+      "fine",
+      "calm",
+      "easy",
+      "balance",
+      "still"
+    ],
+    "avoids": [
+      "panic",
+      "frantic",
+      "screaming",
+      "furious",
+      "chaos",
+      "disaster",
+      "hurry",
+      "desperate"
     ]
   },
   "Aggressive": {
@@ -33,6 +81,30 @@
       "Got a problem with that?",
       "Deal with it.",
       "End of story."
+    ],
+    "favors": [
+      "fight",
+      "smash",
+      "idiot",
+      "fists",
+      "hard",
+      "blood",
+      "punch",
+      "teeth",
+      "angry",
+      "tough",
+      "break",
+      "damn"
+    ],
+    "avoids": [
+      "gently",
+      "kindly",
+      "sweet",
+      "polite",
+      "delicate",
+      "softly",
+      "please",
+      "tender"
     ]
   },
   "Melancholic": {
@@ -45,6 +117,31 @@
       "Not that anyone listens.",
       "It all fades anyway.",
       "...like everything else."
+    ],
+    "favors": [
+      "fades",
+      "gone",
+      "sad",
+      "empty",
+      "grey",
+      "lost",
+      "rain",
+      "alone",
+      "ashes",
+      "forgotten",
+      "tired",
+      "weight",
+      "grim",
+      "bleak"
+    ],
+    "avoids": [
+      "wonderful",
+      "thrilled",
+      "bright",
+      "delighted",
+      "joyful",
+      "lucky",
+      "cheerful"
     ]
   },
   "Sanguine": {
@@ -57,6 +154,28 @@
       "Isn't that great?",
       "What a day!",
       "Things are looking up!"
+    ],
+    "favors": [
+      "lovely",
+      "wonderful",
+      "bright",
+      "laugh",
+      "warm",
+      "great",
+      "cheerful",
+      "good",
+      "fun",
+      "sunny",
+      "delightful"
+    ],
+    "avoids": [
+      "grim",
+      "hopeless",
+      "rot",
+      "dread",
+      "miserable",
+      "doomed",
+      "bleak"
     ]
   },
   "Cautious": {
@@ -69,6 +188,28 @@
       "Best to be sure.",
       "Measure twice.",
       "One can't be too careful."
+    ],
+    "favors": [
+      "careful",
+      "measure",
+      "check",
+      "slowly",
+      "safe",
+      "prepared",
+      "perhaps",
+      "risk",
+      "sure",
+      "twice",
+      "prudent"
+    ],
+    "avoids": [
+      "reckless",
+      "gamble",
+      "dive",
+      "instantly",
+      "whatever",
+      "blindly",
+      "hurry"
     ]
   },
   "Impulsive": {
@@ -81,6 +222,26 @@
       "Let's just do it!",
       "No time to waste!",
       "Decided!"
+    ],
+    "favors": [
+      "now",
+      "instantly",
+      "just",
+      "quick",
+      "suddenly",
+      "jump",
+      "fast",
+      "already",
+      "today"
+    ],
+    "avoids": [
+      "patient",
+      "eventually",
+      "carefully",
+      "gradually",
+      "wait",
+      "measured",
+      "slowly"
     ]
   },
   "Stoic": {
@@ -93,6 +254,27 @@
       "Nothing more to say.",
       "It changes nothing.",
       "We endure."
+    ],
+    "favors": [
+      "endure",
+      "bear",
+      "duty",
+      "stone",
+      "simply",
+      "matter",
+      "hold",
+      "must",
+      "fact",
+      "weather"
+    ],
+    "avoids": [
+      "whining",
+      "complain",
+      "crying",
+      "fuss",
+      "drama",
+      "delightful",
+      "thrilled"
     ]
   },
   "Paranoid": {
@@ -105,6 +287,28 @@
       "You didn't hear it from me.",
       "Someone's listening. Always.",
       "Trust no one."
+    ],
+    "favors": [
+      "watching",
+      "listening",
+      "they",
+      "spies",
+      "secret",
+      "behind",
+      "careful",
+      "trap",
+      "marked",
+      "eyes",
+      "plot"
+    ],
+    "avoids": [
+      "harmless",
+      "coincidence",
+      "trust",
+      "innocent",
+      "safe",
+      "openly",
+      "friendly"
     ]
   },
   "Empathetic": {
@@ -117,6 +321,28 @@
       "Are you holding up alright?",
       "I'm here, you know.",
       "We'll get through it together."
+    ],
+    "favors": [
+      "feel",
+      "heart",
+      "gentle",
+      "together",
+      "kind",
+      "hurt",
+      "hold",
+      "warm",
+      "understand",
+      "tears",
+      "dear"
+    ],
+    "avoids": [
+      "deserved",
+      "weak",
+      "pathetic",
+      "stupid",
+      "alone",
+      "ruthless",
+      "cold"
     ]
   },
   "Authoritative": {
@@ -129,6 +355,27 @@
       "That's an order.",
       "See it done.",
       "No arguments."
+    ],
+    "favors": [
+      "order",
+      "must",
+      "command",
+      "rules",
+      "proper",
+      "discipline",
+      "authority",
+      "stand",
+      "law",
+      "clear"
+    ],
+    "avoids": [
+      "maybe",
+      "whatever",
+      "guess",
+      "perhaps",
+      "chaos",
+      "sloppy",
+      "shrug"
     ]
   },
   "Scholarly": {
@@ -141,6 +388,27 @@
       "Worth a footnote, at least.",
       "The evidence speaks.",
       "I should write this down."
+    ],
+    "favors": [
+      "study",
+      "evidence",
+      "precisely",
+      "observe",
+      "theory",
+      "record",
+      "interesting",
+      "reading",
+      "measured",
+      "history",
+      "pattern"
+    ],
+    "avoids": [
+      "nonsense",
+      "whatever",
+      "dunno",
+      "guess",
+      "superstition",
+      "rubbish"
     ]
   },
   "Artistic": {
@@ -153,6 +421,28 @@
       "Almost beautiful, isn't it?",
       "The muse works in strange ways.",
       "I must sketch this later."
+    ],
+    "favors": [
+      "colour",
+      "light",
+      "beautiful",
+      "song",
+      "shape",
+      "strange",
+      "paint",
+      "dream",
+      "rhythm",
+      "shadow",
+      "gold"
+    ],
+    "avoids": [
+      "dull",
+      "practical",
+      "numbers",
+      "ledger",
+      "efficient",
+      "boring",
+      "grey"
     ]
   },
   "Adventurous": {
@@ -165,6 +455,28 @@
       "What's life without a little risk?",
       "Onward!",
       "Beats sitting still!"
+    ],
+    "favors": [
+      "road",
+      "far",
+      "horizon",
+      "climb",
+      "new",
+      "wild",
+      "travel",
+      "out",
+      "north",
+      "danger",
+      "see"
+    ],
+    "avoids": [
+      "home",
+      "settled",
+      "routine",
+      "indoors",
+      "stay",
+      "comfortable",
+      "dull"
     ]
   },
   "Nurturing": {
@@ -177,6 +489,27 @@
       "Have you eaten today?",
       "Wrap up warm, won't you?",
       "Let me know if you need anything."
+    ],
+    "favors": [
+      "feed",
+      "warm",
+      "child",
+      "soup",
+      "careful",
+      "rest",
+      "home",
+      "hands",
+      "gentle",
+      "mend"
+    ],
+    "avoids": [
+      "cruel",
+      "abandon",
+      "cold",
+      "harsh",
+      "alone",
+      "fend",
+      "neglect"
     ]
   },
   "Mischievous": {
@@ -189,6 +522,27 @@
       "*grins*",
       "Don't ask how I know.",
       "This'll be fun."
+    ],
+    "favors": [
+      "trick",
+      "funny",
+      "sneak",
+      "wink",
+      "trouble",
+      "joke",
+      "pinch",
+      "laugh",
+      "grin",
+      "clever"
+    ],
+    "avoids": [
+      "proper",
+      "obedient",
+      "serious",
+      "solemn",
+      "honest",
+      "rules",
+      "dutiful"
     ]
   },
   "Cynical": {
@@ -201,6 +555,26 @@
       "What did you expect?",
       "Same old story.",
       "Color me surprised."
+    ],
+    "favors": [
+      "typical",
+      "money",
+      "lies",
+      "naturally",
+      "pretend",
+      "fools",
+      "again",
+      "sold",
+      "excuse"
+    ],
+    "avoids": [
+      "honest",
+      "hopeful",
+      "noble",
+      "pure",
+      "genuine",
+      "trust",
+      "sincere"
     ]
   },
   "Disciplined": {
@@ -213,6 +587,27 @@
       "Back to work.",
       "No exceptions.",
       "As per the routine."
+    ],
+    "favors": [
+      "routine",
+      "schedule",
+      "training",
+      "drill",
+      "exact",
+      "early",
+      "done",
+      "order",
+      "habit",
+      "precise"
+    ],
+    "avoids": [
+      "lazy",
+      "whenever",
+      "sloppy",
+      "drift",
+      "idle",
+      "excuse",
+      "late"
     ]
   },
   "Fatalistic": {
@@ -225,6 +620,27 @@
       "It was always going to end this way.",
       "The thread is already spun.",
       "What will be, will be."
+    ],
+    "favors": [
+      "fate",
+      "written",
+      "anyway",
+      "end",
+      "inevitable",
+      "sooner",
+      "dust",
+      "already",
+      "destined",
+      "comes"
+    ],
+    "avoids": [
+      "change",
+      "choose",
+      "avoid",
+      "prevent",
+      "hope",
+      "control",
+      "escape"
     ]
   },
   "Grumpy": {
@@ -237,6 +653,29 @@
       "Now leave me be.",
       "Typical.",
       "Bah."
+    ],
+    "favors": [
+      "bah",
+      "again",
+      "noise",
+      "waste",
+      "typical",
+      "backache",
+      "complain",
+      "younger",
+      "cheaper",
+      "hmph",
+      "nonsense",
+      "grim",
+      "miserable"
+    ],
+    "avoids": [
+      "lovely",
+      "delighted",
+      "wonderful",
+      "charming",
+      "grateful",
+      "sweet"
     ]
   },
   "Loyal": {
@@ -249,6 +688,25 @@
       "I keep my word.",
       "For my friends, always.",
       "You have my word on it."
+    ],
+    "favors": [
+      "ours",
+      "friend",
+      "stand",
+      "promise",
+      "side",
+      "together",
+      "word",
+      "owe",
+      "trust"
+    ],
+    "avoids": [
+      "betray",
+      "abandon",
+      "alone",
+      "doubt",
+      "turn",
+      "desert"
     ]
   },
   "Brave": {
@@ -261,6 +719,26 @@
       "We face it head-on.",
       "No retreat.",
       "Courage, friend."
+    ],
+    "favors": [
+      "face",
+      "stand",
+      "forward",
+      "fear",
+      "dare",
+      "strong",
+      "first",
+      "risk",
+      "chest"
+    ],
+    "avoids": [
+      "hide",
+      "flee",
+      "cower",
+      "scared",
+      "behind",
+      "tremble",
+      "retreat"
     ]
   },
   "Timid": {
@@ -273,6 +751,26 @@
       "...if that's alright.",
       "Sorry. Sorry.",
       "I'll be quiet now."
+    ],
+    "favors": [
+      "sorry",
+      "maybe",
+      "quietly",
+      "small",
+      "excuse",
+      "hope",
+      "barely",
+      "hide",
+      "please"
+    ],
+    "avoids": [
+      "demand",
+      "loud",
+      "shout",
+      "confident",
+      "boldly",
+      "never",
+      "insist"
     ]
   },
   "Hedonistic": {
@@ -285,6 +783,27 @@
       "Now, where's the fun gone?",
       "Cheers to that.",
       "Back to my comforts."
+    ],
+    "favors": [
+      "wine",
+      "taste",
+      "pleasure",
+      "warm",
+      "tonight",
+      "enjoy",
+      "sweet",
+      "fine",
+      "soft",
+      "more"
+    ],
+    "avoids": [
+      "duty",
+      "discipline",
+      "denial",
+      "work",
+      "abstain",
+      "virtue",
+      "fasting"
     ]
   },
   "Apathetic": {
@@ -297,6 +816,26 @@
       "Or whatever.",
       "Who cares.",
       "Anyway."
+    ],
+    "favors": [
+      "whatever",
+      "fine",
+      "suppose",
+      "matter",
+      "shrug",
+      "anyway",
+      "care",
+      "same",
+      "meh"
+    ],
+    "avoids": [
+      "urgent",
+      "passion",
+      "must",
+      "thrilling",
+      "desperate",
+      "glorious",
+      "fight"
     ]
   }
 }

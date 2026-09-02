@@ -1,56 +1,64 @@
 {
   "topic": {
     "crimeWave": [
-      "Third break-in on my street this month. Lock your doors.",
-      "Guards on every corner now. About time, with all this thieving.",
-      "I don't walk {group} after dark anymore. Not these days.",
-      "They say the crackdown is working. I say keep your purse close.",
-      "Everyone knows somebody who's been robbed lately. Everyone."
+      "{Third|Fourth|Second} break-in on my street this month. {Lock your doors|Bar your shutters|Keep your door barred}.",
+      "Guards on every corner now. {About time|Not before time|And still not enough}, with all this {thieving|robbery|business}.",
+      "I don't walk {group} after dark anymore. {Not these days|Not since the spring|Nobody sensible does}.",
+      "They say the crackdown is {working|helping|catching them}. I say {keep your purse close|watch your pockets|believe it when I see it}.",
+      "Everyone knows somebody who's been {robbed|turned over|lifted} lately. {Everyone|Every single one of us|Ask anyone}.",
+      "{Someone|Somebody|A neighbour} was {followed home|jumped|relieved of a purse} two streets over. {In daylight|At dusk|In broad daylight}."
     ],
     "boom": [
-      "Work everywhere you look! {group} hasn't seen times like these in years.",
-      "My cousin got hired the day he asked. The day he asked!",
-      "Money's flowing in {group}. Even the beggars are picky now.",
-      "If you can't find a job this season, you're not looking.",
-      "Rents are climbing with the good times. Always a catch."
+      "Work {everywhere you look|on every corner|for anyone who asks}! {group} hasn't seen times like these in {years|a generation|my lifetime}.",
+      "My cousin got hired the {day|hour|morning} he asked. The day he asked!",
+      "Money's {flowing|pouring|moving} in {group}. Even the {beggars|hawkers|street sellers} are picky now.",
+      "If you can't find a job this season, you're {not looking|not trying|asleep}.",
+      "{Rents|Prices|Bread and rent} are climbing with the good times. {Always a catch|There is always a catch|Nothing is free}.",
+      "The {warehouses|yards|workshops} run {past dark|through the night|two shifts} now."
     ],
     "bust": [
-      "Half the shops on my street are dark now. Hard times.",
-      "Nobody's hiring in {group}. Nobody.",
-      "I've seen three friends lose their jobs this season. Three.",
-      "When work dries up, people get desperate. You can feel it.",
-      "Tighten your belt. This slump isn't done with {group} yet."
+      "Half the shops on my street are {dark|shuttered|boarded} now. {Hard times|Bad season|Lean times}.",
+      "Nobody's hiring in {group}. {Nobody|Not one house|Not a soul}.",
+      "I've seen {three|four|two} friends lose their {jobs|places|work} this season. {Three|Four|Two}.",
+      "When work {dries up|goes|stops}, people get {desperate|dangerous|careless}. You can {feel it|smell it|see it in faces}.",
+      "{Tighten your belt|Put something by|Spend nothing}. This {slump|winter|business} isn't done with {group} yet.",
+      "The {mill|yard|dock} let {a dozen|half its people|the young ones} go on {Friday|market day|the same morning}."
     ],
     "festival": [
-      "Are you going to {festival}? Everyone's going.",
-      "The streets smell like fried dough and lamp oil. I love {festival}.",
-      "Best week of the year, {festival}! Just watch your pockets in the crowd.",
-      "I danced till sunrise last night. {festival} only comes once a year."
+      "Are you going to {festival}? {Everyone's going|The whole street is going|Everybody goes}.",
+      "The streets smell like {fried dough and lamp oil|sugar and smoke|wine and burnt sugar}. I {love|wait all year for|live for} {festival}.",
+      "{Best week of the year|Finest days of the year|The one week worth having}, {festival}! Just {watch your pockets|mind your purse|keep a hand on your coin} in the crowd.",
+      "I danced till {sunrise|the lamps went out|my feet gave up} last night. {festival} only comes once a year.",
+      "The {lanterns|bunting|whole square} went up for {festival} {overnight|this morning|while I slept}."
     ],
     "epidemic": [
-      "Cover your mouth. The {epidemic} is going around.",
-      "Two houses on my lane are shut up with the {epidemic}. Stay clear.",
-      "Markets are half empty. Nobody wants to catch the {epidemic}.",
-      "Wash your hands, stranger. The {epidemic} doesn't care who you are."
+      "{Cover your mouth|Keep your distance|Stand back}. The {epidemic} is going around.",
+      "{Two|Three|Four} houses on my lane are {shut up|sealed|marked} with the {epidemic}. {Stay clear|Give it a wide berth|Do not go down there}.",
+      "Markets are {half empty|thin|deserted}. Nobody wants to catch the {epidemic}.",
+      "{Wash your hands|Boil your water|Keep clean}, stranger. The {epidemic} {doesn't care who you are|takes anyone|makes no distinction}.",
+      "The {physician|apothecary|healer} has been {out all night|going door to door|run off her feet} with the {epidemic}."
     ],
     "headline": [
-      "Did you hear? {headline}",
-      "It's all anyone talks about: {headline}",
-      "The news says: {headline}, what times we live in."
+      "{Did you hear|Have you heard|Heard the news}? {headline}",
+      "It's all anyone {talks about|is saying|can talk about}: {headline}",
+      "The {news|crier|broadsheet} says: {headline}. {What times we live in|Make of that what you like|Believe it if you can}."
     ],
     "outlaw": [
-      "That one looks familiar... wasn't there a bounty notice?",
-      "Watch yourself. There are wanted types walking around lately.",
-      "The guard's been showing a sketch around. Looked a lot like you, stranger."
+      "That one looks {familiar|like a face I have seen|awfully familiar}... wasn't there a {bounty notice|wanted sheet|sketch on the board}?",
+      "{Watch yourself|Mind how you go|Keep your eyes open}. There are {wanted types|rough sorts|marked faces} walking around lately.",
+      "The guard's been showing a sketch around. Looked {a lot like you|rather like you|remarkably like you}, stranger.",
+      "{Somebody|Someone|A face} on that board is worth {good coin|more than I earn in a year|a year's wage}."
     ],
     "market": {
       "bullish": [
-        "My broker says oil only goes up from here. Everyone's buying.",
-        "Even the dock workers are trading shares now. Good times."
+        "My broker says {oil only goes up|shares only climb|it only rises} from here. {Everyone's buying|The whole street is buying|Nobody is selling}.",
+        "Even the {dock workers|porters|fishmongers} are trading shares now. {Good times|Strange times|That is how you know}.",
+        "I doubled it in {a season|a month|six weeks}. {On paper|So far|For now}."
       ],
       "bearish": [
-        "Sold my shares before they're worth nothing. Market's rotten.",
-        "Don't put your savings in the market right now. Trust me."
+        "Sold my shares before they're {worth nothing|worthless|paper}. Market's {rotten|going down|finished}.",
+        "Don't put your savings in the market right now. {Trust me|I am telling you|Take it from me}.",
+        "Somebody {jumped|was ruined|lost everything} over the exchange {last week|on Tuesday|this month}."
       ]
     },
     "earthDestroyed": {

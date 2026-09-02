@@ -671,6 +671,24 @@
           for (const _sid of _npcProfile.skillIds) targetActor.learnSkill(_sid);
         }
 
+        // A creature that joins the party brings its body with it. Its class is
+        // one of the non-sentient ones (NPCCreature owns that boundary), and for
+        // a creature the parts themselves are its stats - the anatomy has to be
+        // built out of its archetype before the numbers mean anything
+        // (Health_Core.creatureAnatomyBonus), exactly as creature mode does in
+        // character creation.
+        const _NC = window.NPCCreature;
+        if (_NC && _NC.isNonSentientClassId && _NC.isNonSentientClassId(targetActor._classId)) {
+            targetActor._isCreatureActor = true;
+            const _keys = _NC.archetypeKeysOf(_npcProfile) || [];
+            const _archetype = _keys[0];
+            if (_archetype && window.changeArchetypeForActor) {
+                try { window.changeArchetypeForActor(targetActor, _archetype); } catch (e) { /* anatomy layer not up */ }
+            } else if (window.initializeBodyParts) {
+                try { window.initializeBodyParts(targetActor); } catch (e) { /* anatomy layer not up */ }
+            }
+        }
+
         // Refresh actor to apply changes
         targetActor.refresh();
 

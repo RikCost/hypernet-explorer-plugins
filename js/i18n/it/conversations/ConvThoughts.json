@@ -1,263 +1,292 @@
 {
   "need": {
     "sleep": [
-      "Ho bisogno di stendermi, sul serio...",
-      "Mi si chiudono gli occhi da soli.",
-      "Casa mi sta chiamando a gran voce.",
-      "Ancora quattro passi e poi crollo."
+      "Ho bisogno di {stendermi|dormire|fermarmi}, sul serio...",
+      "Mi si chiudono gli occhi {da soli|senza permesso|contro la mia volontà}.",
+      "{Casa|Il letto|Una stanza silenziosa} mi sta chiamando {a gran voce|da un pezzo|forte}.",
+      "Ancora {quattro passi|due vie|cinque minuti} e poi {crollo|mi stendo|mi fermo}.",
+      "Prima {il letto|dormire|il riposo}. {Il resto può aspettare|Tutto il resto dopo|Il resto si vedrà}.",
+      "Sono {in piedi|sveglio|in giro} da {prima dell'alba|stanotte|troppe ore}."
     ],
     "hunger": [
-      "Lo stomaco mi sta facendo una serenata...",
-      "Adesso mangerei qualsiasi cosa, anche il cartone.",
-      "Qui vicino ci sarà pure un distributore.",
-      "Devo trovare da mangiare, e in fretta."
+      "Lo stomaco mi sta {facendo una serenata|brontolando|rimproverando}...",
+      "Adesso mangerei {qualsiasi cosa, anche il cartone|un forno intero|anche il pane di ieri}.",
+      "Qui vicino ci sarà pure {un distributore|una bancarella|qualcosa di caldo}.",
+      "Devo trovare da mangiare, {e in fretta|subito|prima di svenire}.",
+      "{Pane|Una zuppa|Qualcosa di caldo} e sarei a posto. {Qualsiasi cosa|Davvero qualsiasi cosa|Anche poco}.",
+      "Continuo a {sentire odore di|pensare al|immaginare il} {pane|fritto|brodo}."
     ],
     "work": [
-      "Un altro turno che comincia.",
-      "Almeno lo stipendio arriva puntuale. Quasi.",
-      "Dovrei muovermi, che il lavoro non si fa da solo.",
-      "Un altro giorno, un altro euro."
+      "Un altro {turno|giorno|carico} che comincia.",
+      "Almeno lo stipendio {arriva puntuale. Quasi|è onesto|c'è}.",
+      "Dovrei muovermi, che il lavoro {non si fa da solo|aspetta|non si sbriga da sé}.",
+      "Un altro giorno, un altro {euro|turno|spicciolo}.",
+      "Prima {il dovere|il lavoro|il turno}. {Come sempre|Sempre così|È l'accordo}.",
+      "{Il registro|Il bancone|Il banco} non si {sistema da solo|tiene da solo|riordina da sé}."
     ],
     "leisure": [
-      "Bella giornata per due passi.",
-      "Magari faccio un salto in sala giochi.",
-      "Chissà cosa bolle in pentola da queste parti.",
-      "Ho del tempo libero e non so cosa farmene."
+      "{Bella|Buona|Discreta} giornata per {due passi|una passeggiata|non fare niente}.",
+      "Magari faccio un salto {in sala giochi|al fiume|dove c'è gente}.",
+      "Chissà cosa {bolle in pentola|succede|si dice} da queste parti.",
+      "Ho del tempo libero e {non so cosa farmene|qualche idea ce l'ho|nessuno mi cerca}.",
+      "Nessuno mi {vuole|cerca|aspetta} per {un'ora|un po'|tutto il pomeriggio}.",
+      "{Del vino|Due passi|Una canzone} e {un'ora|una serata|niente} da riempire."
     ],
     "crime": [
-      "Non guarda nessuno...",
-      "Solo per stavolta.",
-      "A me quei soldi servono più che a loro.",
-      "Se faccio in fretta non se ne accorge nessuno."
+      "{Non guarda nessuno|Nessun occhio addosso|La via è vuota}...",
+      "Solo per {stavolta|questa volta|stanotte}.",
+      "A me {quei soldi servono|quella roba serve|serve} più che a loro.",
+      "Se faccio {in fretta|piano|il furbo} non se ne accorge nessuno.",
+      "{Un errore|Una distrazione|Un secondo di troppo} e finisco {in cella|male|sulla lista}.",
+      "{Prendilo|Fallo|Vai} e {non correre|cammina normale|tieni ferme le mani}."
     ],
     "hygiene": [
-      "Ho proprio bisogno di lavarmi.",
-      "Mi sento appiccicoso, dov'è il lavandino più vicino?",
-      "Una tappa in bagno non guasterebbe.",
-      "Datemi cinque minuti e un po' d'acqua."
+      "Ho proprio bisogno di {lavarmi|una sciacquata|acqua pulita}.",
+      "Mi sento {appiccicoso|sporco|un fosso}, dov'è {il lavandino|la fontana|il bagno} più vicino?",
+      "Una tappa {in bagno|alla fontana|dal barbiere} non guasterebbe.",
+      "Datemi cinque minuti e {un po' d'acqua|del sapone|una bacinella}.",
+      "{Sapone|Acqua calda|Una camicia pulita}. {Chiedo tanto|È troppo|Solo quello}?"
     ],
     "money": [
-      "Il portafoglio si sta svuotando.",
-      "Devo inventarmi qualcosa per far cassa.",
-      "Aumenta tutto, tranne quello che guadagno io...",
-      "Serve una ricarica al portafoglio."
+      "Il portafoglio si sta {svuotando|assottigliando|prosciugando}.",
+      "Devo inventarmi qualcosa per {far cassa|racimolare|tirare avanti}.",
+      "Aumenta tutto, tranne {quello che guadagno io|la mia paga|il mio stipendio}...",
+      "Serve una ricarica {al portafoglio|alle tasche|alla borsa}.",
+      "{L'affitto|Il conto|Quello che devo} arriva {lo stesso|comunque|che io ce l'abbia o no}.",
+      "Ho contato questa borsa {tre volte|due volte oggi|di nuovo}."
     ],
     "safety": [
-      "Per un po' conviene stare buoni.",
-      "Meglio mettere questa roba al sicuro.",
-      "Adesso non voglio grane, davvero.",
-      "Sto sotto traccia finché non si calmano le acque."
+      "Per un po' conviene {stare buoni|sparire|non farsi vedere}.",
+      "Meglio {mettere questa roba al sicuro|nasconderla|toglierla dalle mani}.",
+      "Adesso non voglio {grane|risse|domande}, davvero.",
+      "Sto sotto traccia finché {non si calmano le acque|non passa|non si stancano}.",
+      "{Qualcuno|Una guardia|Un tipo} {sorveglia|fa domande|gira per} {questa via|di me|il quartiere}."
     ],
     "comfort": [
-      "Mi meriterei un posto un po' più decente.",
-      "Forse è ora di cambiare sistemazione.",
-      "Un letto vero, per una volta, non sarebbe male.",
-      "Ho messo da parte abbastanza, perché non viziarmi un po'?"
+      "Mi meriterei {un posto un po' più decente|una stanza con la finestra|un tetto che tiene}.",
+      "Forse è ora di {cambiare sistemazione|traslocare|smetterla di vivere così}.",
+      "Un {letto vero|stanza calda|pavimento asciutto}, per una volta, non sarebbe male.",
+      "Ho messo da parte abbastanza, perché non {viziarmi un po'|concedermelo|farmi un regalo}?",
+      "{Il caldo|Una poltrona|Una coperta buona} non è {chiedere troppo|un lusso|pretendere}."
     ],
     "social": [
-      "Dovrei uscire a conoscere gente nuova.",
-      "È un pezzo che non faccio due chiacchiere come si deve.",
-      "Chissà chi si vede in giro oggi.",
-      "Magari incrocio qualcuno che vale la pena."
+      "Dovrei {uscire a conoscere gente nuova|trovare compagnia|parlare con qualcuno}.",
+      "È un pezzo che non {faccio due chiacchiere come si deve|sento una voce amica|parlo con nessuno}.",
+      "Chissà {chi si vede in giro|chi c'è in paese|chi incontro} oggi.",
+      "Magari {incrocio qualcuno che vale la pena|trovo una faccia nota|mi fanno una testa così}.",
+      "{Un amico|Compagnia|Qualcuno, chiunque} {mi farebbe bene|aiuterebbe|sarebbe il benvenuto}."
     ],
     "null": [
-      "..."
+      "...",
+      "{Mah|Mh|...}.",
+      "{...|Uffa.|Beh.}"
     ]
   },
   "crimeIntent": [
-    "{item} starebbe molto meglio nella mia tasca...",
-    "Lo voglio, quel {item}. Lo voglio proprio.",
-    "Chi vuoi che senta la mancanza di un {item}?",
-    "Se sono svelto, quel {item} è mio.",
-    "Un {item} solo. Manco se ne accorgono."
+    "{item} starebbe {molto meglio|proprio bene|benissimo} nella mia tasca...",
+    "Lo voglio, quel {item}. {Lo voglio proprio|Da stamattina|E non smetto di guardarlo}.",
+    "Chi vuoi che {senta la mancanza di|conti|noti} un {item}?",
+    "Se sono {svelto|attento|furbo}, quel {item} è {mio|già andato|in tasca}.",
+    "Un {item} solo. {Manco se ne accorgono|Nessuno li conta|Chi li conta}.",
+    "{Ne hanno|Loro hanno|Il padrone ha} {uno scaffale|una cassa|fin troppi} di {item}.",
+    "Prendo {il {item}|quel {item}|un {item}} ed esco {normale|senza fretta|come se niente fosse}."
   ],
   "crimeSuccess": [
-    "Preso il {item}. Cammina normale. Cammina normale.",
-    "Un {item}, gentilmente offerto dalla casa.",
-    "È stato quasi troppo facile.",
-    "Questo {item} adesso ha un nuovo proprietario."
+    "Preso il {item}. {Cammina normale. Cammina normale|Non correre|Non voltarti}.",
+    "Un {item}, {gentilmente offerto dalla casa|gratis|a spese loro}.",
+    "È stato {quasi troppo facile|più facile del previsto|uno scherzo}.",
+    "Questo {item} adesso {ha un nuovo proprietario|è mio|viene a casa con me}.",
+    "{Mani ferme|Faccia normale|Respira piano}. {Ancora due passi|Manca l'angolo|Cammina}."
   ],
   "crimeCaught": [
-    "Mi hanno visto prendere il {item}...",
-    "Non dovevo toccarlo, quel {item}.",
-    "Perfetto. Adesso ho pure una taglia sulla testa.",
-    "Sotto traccia. Sotto traccia. Sotto traccia."
+    "Mi hanno {visto|beccato|guardato} prendere il {item}...",
+    "Non {dovevo toccarlo|dovevo allungare la mano su|potevo lasciar stare}, quel {item}.",
+    "{Perfetto|Benissimo|Ci mancava}. Adesso ho pure {una taglia sulla testa|il nome su una lista|le guardie addosso}.",
+    "{Sotto traccia|Cammina|Nega tutto}. {Sotto traccia|Non dire niente|Nega tutto}.",
+    "Un {item} del cavolo e {ho rovinato il mese|mi sono giocato tutto|mi sono guadagnato una cella}."
   ],
   "itemBuy": {
     "cheap": [
-      "Un bel {item}, e mi è costato due spiccioli.",
-      "Questo {item} fa proprio al caso mio.",
+      "Un {bel|discreto|onesto} {item}, e mi è costato {due spiccioli|una sciocchezza|quasi niente}.",
+      "Questo {item} {fa proprio al caso mio|andrà benissimo|mi basta}.",
       "Con un {item} a questo prezzo non si sbaglia.",
-      "Contento del mio {item}.",
-      "Ecco, mi mancava giusto un {item}."
+      "{Contento|Soddisfatto|A posto} del mio {item}.",
+      "Ecco, mi mancava giusto un {item}.",
+      "Un {item} a quel prezzo? {Lo prendo e scappo|Ne prendo due|Affare fatto}."
     ],
     "pricey": [
-      "Questo {item} mi è costato, ma se lo merita.",
-      "Un {item} così non lo trovi mica in saldo.",
-      "Mi sono sfondato per un {item}. Zero rimpianti.",
-      "{item} di qualità. Chi più spende meno spende.",
-      "Un {item} caro, ma me lo sono guadagnato."
+      "Questo {item} mi è costato, ma {se lo merita|ne vale la pena|non me ne pento}.",
+      "Un {item} così non lo trovi {mica in saldo|tutti i giorni|due volte}.",
+      "Mi sono {sfondato|svenato|prosciugato} per un {item}. {Zero rimpianti|Nessun rimpianto|Non chiedermelo}.",
+      "{item} di {qualità|fattura vera|buona mano}. Chi più spende meno spende.",
+      "Un {item} caro, ma {me lo sono guadagnato|me lo merito|me lo godrò}.",
+      "Un {item} buono batte {cinque scarsi|uno scaffale di robaccia|qualsiasi offerta}."
     ]
   },
   "itemBrowse": {
     "cheap": [
-      "Questo {item} costa così poco che mi sta tentando.",
-      "Un {item}, mah. Magari un'altra volta.",
-      "Non è male, questo {item}.",
-      "Un {item} così mi tornerebbe utile.",
-      "Quel {item} mi ha fatto l'occhiolino."
+      "Questo {item} costa così poco che {mi sta tentando|è quasi un peccato lasciarlo|mi tenta}.",
+      "Un {item}, {mah|hm|beh}. {Magari un'altra volta|Non oggi|Forse dopo}.",
+      "{Non è male|È decente|È meglio di come sembra}, questo {item}.",
+      "Un {item} così mi {tornerebbe utile|servirebbe|farebbe comodo}.",
+      "Quel {item} {mi ha fatto l'occhiolino|continuo a guardarlo|è ben fatto per il prezzo}."
     ],
     "pricey": [
-      "Quel {item} è fuori dalla mia portata, e di parecchio.",
-      "Un {item} a questo prezzo? Ma è rapina a mano armata.",
-      "Un {item} così io posso solo guardarlo.",
-      "Bello il {item}, peccato per il cartellino.",
-      "Ma chi se lo permette un {item}, di questi tempi?"
+      "Quel {item} è fuori dalla mia portata, {e di parecchio|di molto|proprio}.",
+      "Un {item} a questo prezzo? {Ma è rapina a mano armata|Roba da denuncia|Stanno scherzando}.",
+      "Un {item} così io posso solo {guardarlo|sognarmelo|ammirarlo}.",
+      "{Bello|Splendido|Fine} il {item}, {peccato per il cartellino|ma è per altre tasche|e il prezzo pure}.",
+      "Ma chi se lo permette un {item}, {di questi tempi|a quel prezzo|adesso}?"
     ]
   },
   "itemDisposition": {
     "greedy": [
-      "Ne voglio ancora.",
-      "Mio, tutto mio.",
-      "Non è mai abbastanza."
+      "Ne voglio {ancora|un altro|tutti}.",
+      "{Mio, tutto mio|Mio e basta|E mio resta}.",
+      "Non è {mai|mai stato|mai abbastanza} abbastanza.",
+      "Uno è {solo l'inizio|il primo di tanti|mai l'ultimo}."
     ],
     "frugal": [
-      "Però dovrei mettere da parte.",
-      "Ma mi serve davvero?",
-      "Chi risparmia guadagna due volte."
+      "Però dovrei {mettere da parte|risparmiare|tenermeli}.",
+      "Ma mi serve {davvero|poi|proprio}?",
+      "{Chi risparmia guadagna due volte|Ogni moneta conta|I soldi messi via non fanno rumore}.",
+      "Sono {una settimana di pane|due notti d'affitto|soldi che rivorrò}."
     ],
     "vain": [
-      "Mi invidierà tutta la via.",
-      "L'apparenza conta, diciamocelo.",
-      "Per me solo il meglio."
+      "Mi invidierà {tutta la via|mezzo mercato|chiunque}.",
+      "{L'apparenza conta, diciamocelo|Si guarda anche l'occhio|La gente nota}.",
+      "Per me solo {il meglio|il meglio del meglio|roba fine}.",
+      "Che {guardino|mormorino|dicano pure}."
     ],
     "generous": [
-      "Magari lo regalo a qualcuno.",
-      "Dare è già una ricompensa.",
-      "A qualcuno servirà più che a me."
+      "Magari lo {regalo a qualcuno|passo a qualcun altro|do via}.",
+      "{Dare è già una ricompensa|Meglio in due|Da solo non mi serve}.",
+      "A qualcuno servirà {più che a me|di sicuro|eccome}.",
+      "So {già a chi|esattamente a chi|a chi si illuminerebbe la faccia}."
     ]
   },
   "familiar": [
-    "Chissà se lo rivedo, quel viandante.",
-    "Quella persona ultimamente si vede spesso da queste parti.",
-    "Ho quasi l'impressione di conoscerla.",
-    "Strano come continuiamo a incrociarci.",
-    "Di lui mi fido più che della media degli sconosciuti."
+    "Chissà se {lo rivedo|la rivedo|ci ricapitiamo}, quel {viandante|forestiero|tipo}.",
+    "Quella persona ultimamente si vede {spesso|di continuo|troppo} da queste parti.",
+    "Ho quasi l'impressione di {conoscerla|averci parlato|essere amici}.",
+    "{Strano|Buffo|Curioso} come continuiamo a {incrociarci|ritrovarci|finire nelle stesse vie}.",
+    "Di {lui|lei|loro} mi fido {più che della media degli sconosciuti|abbastanza|più del solito}.",
+    "Prima o poi dovrei {chiedere il nome|dire qualcosa|smetterla di fissare e parlare}."
   ],
   "capability": {
     "cooking_station": [
-      "Quel piatto era proprio quello che ci voleva.",
-      "Cucinarsi da soli batte il mangiare fuori, e di parecchio.",
-      "Dovrei farlo più spesso."
+      "Quel piatto era {proprio quello che ci voleva|meglio del previsto|una consolazione}.",
+      "Cucinarsi da soli {batte il mangiare fuori, e di parecchio|costa la metà|viene pure meglio}.",
+      "Dovrei {farlo più spesso|continuare così|cucinare di più}."
     ],
     "container": [
-      "Chi trova, tiene.",
-      "Ti stupiresti di cosa lascia in giro la gente.",
-      "Un extra non ha mai fatto male a nessuno."
+      "{Chi trova, tiene|Chi trova tiene, si sa|Nessuno l'ha reclamato}.",
+      "Ti stupiresti di cosa {lascia in giro la gente|si dimentica la gente|nessuno torna a prendere}.",
+      "Un {extra|po' di fortuna|piccolo aiuto} non ha mai fatto male a nessuno."
     ],
     "rentable_room": [
-      "Un letto vero, finalmente.",
-      "Vale ogni euro, una notte dormita bene.",
-      "Ne avevo bisogno, di quel riposo."
+      "Un {letto vero|materasso decente|posto asciutto}, {finalmente|per una volta|meno male}.",
+      "Vale {ogni euro|il prezzo|l'affitto}, una notte {dormita bene|intera|tranquilla}.",
+      "{Ne avevo bisogno, di quel riposo|Ho dormito come un sasso|Mi ero scordato cosa fosse dormire}."
     ],
     "apiary": [
-      "Le arnie quest'anno stanno andando alla grande.",
-      "Il miele si vende sempre.",
-      "Le api sono un buon affare."
+      "Le arnie quest'anno stanno {andando alla grande|rendendo|piene}.",
+      "Il miele {si vende sempre|non resta mai fermo|paga l'inverno}.",
+      "Le api sono {un buon affare|lavoratrici pazienti|compagnia migliore di tanti}."
     ],
     "bank": [
-      "Con questi dovrei tirare avanti.",
-      "Meglio metterli al sicuro, in cassaforte e via.",
-      "Le banche. Non ci puoi vivere e non ci puoi campare senza."
+      "Con questi dovrei {tirare avanti|arrivare a fine mese|coprire l'affitto}.",
+      "Meglio metterli {al sicuro|dove i ladri non arrivano|in cassaforte}, e via.",
+      "Le banche. {Non ci puoi vivere e non ci puoi campare senza|Tutti sorrisi e caratteri piccoli|Loro tengono i soldi, io i pensieri}."
     ],
     "real_estate_office": [
-      "Il mattone si ripaga da solo, non c'è che dire.",
-      "Un altro mese, un altro affitto incassato.",
-      "Comprare quella terra è stata la mossa più furba della mia vita."
+      "Il mattone {si ripaga da solo|rende mentre dormo|è l'unica cosa furba che ho fatto}.",
+      "Un altro {mese|trimestre|stagione}, un altro affitto incassato.",
+      "{Comprare quella terra|Firmare quell'atto|Prendere quella casa} è stata la mossa più {furba|azzeccata|redditizia} della mia vita."
     ],
     "stock_exchange": [
-      "Come sono venuti, se ne sono andati.",
-      "Il mercato dà e il mercato toglie.",
-      "La prossima volta me li riprendo."
+      "{Come sono venuti, se ne sono andati|Su un giorno, giù il giorno dopo|È il gioco}.",
+      "Il mercato {dà e il mercato toglie|non ha memoria|non deve niente a nessuno}.",
+      "La prossima volta {me li riprendo|recupero|va meglio}."
     ],
     "fast_travel_terminal": [
-      "Non c'è niente come vedere un posto nuovo.",
-      "Viaggiare libera la testa.",
-      "Chissà cosa c'è là fuori oggi."
+      "Non c'è niente come {vedere un posto nuovo|cambiare cielo|arrivare da qualche parte}.",
+      "Viaggiare {libera la testa|toglie la polvere|è l'unica cura}.",
+      "Chissà cosa c'è {là fuori|in fondo a quella strada|ad aspettarmi} oggi."
     ],
     "furniture_builder": [
-      "Bastano due ritocchi e qui dentro sembra casa.",
-      "Sono le belle cose a fare di quattro muri una casa.",
-      "Ecco, già così è tutta un'altra storia."
+      "Bastano due ritocchi e qui dentro {sembra casa|si respira|non sembra più in prestito}.",
+      "Sono {le belle cose|i piccoli comfort|una buona sedia} a fare di quattro muri una casa.",
+      "Ecco, già così è {tutta un'altra storia|molto meglio|quasi giusto}."
     ]
   },
   "craving": {
     "nicotine": [
-      "Adesso mi farei una sigaretta anche a costo di rubarla.",
-      "Solo una, poi per oggi basta. Come sempre.",
-      "Qualcuno ha un accendino? Qualcuno? Chiunque?",
-      "Le mani hanno ricominciato a fare quella cosa lì.",
-      "In questa giacca c'era un pacchetto. Ci giurerei che c'era un pacchetto."
+      "Adesso mi farei una sigaretta {anche a costo di rubarla|a qualunque prezzo|anche brutta}.",
+      "Solo una, poi per oggi basta. {Come sempre|Giuro|Davvero}.",
+      "Qualcuno ha un accendino? {Qualcuno? Chiunque|Nessuno|Per favore}?",
+      "Le mani hanno ricominciato a {fare quella cosa lì|tremare|cercare una tasca vuota}.",
+      "In questa giacca c'era un pacchetto. {Ci giurerei|Ne sono certo|Sicurissimo} che c'era un pacchetto."
     ],
     "alcohol": [
-      "È quasi tardi abbastanza per chiamarlo aperitivo.",
-      "Un bicchiere. Per calmarmi. Poi basta.",
-      "Sarà ancora aperto quel bar a quest'ora?",
-      "Ho la bocca secca in un modo che l'acqua non risolve.",
-      "Continuo a sentire bottiglie che non ci sono."
+      "È {quasi|ormai quasi|praticamente} tardi abbastanza per chiamarlo aperitivo.",
+      "Un bicchiere. {Per calmarmi|Per fermare le mani|Per smussare}. Poi basta.",
+      "Sarà ancora aperto {quel bar|l'osteria|quel posto all'angolo} a quest'ora?",
+      "Ho la bocca secca in un modo che {l'acqua non risolve|l'acqua non tocca|niente di onesto risolve}.",
+      "Continuo a {sentire bottiglie|sentire vetro|annusare la cantina} che non {ci sono|c'è|nota nessun altro}."
     ],
     "caffeine": [
-      "Prima del caffè non rispondo di me e nemmeno alle domande.",
-      "Il mal di testa è ripartito da dietro gli occhi.",
-      "Ma un espresso decente, in questo posto, dove lo trovo?",
-      "Ho letto quel cartello quattro volte e non so cosa dice.",
-      "Va tutto troppo piano ed è colpa mia."
+      "Prima del caffè non {rispondo di me e nemmeno alle domande|sono una persona|parlo}.",
+      "Il mal di testa {è ripartito da dietro gli occhi|sta arrivando|è puntuale come sempre}.",
+      "Ma un {espresso|caffè|caffè decente}, in questo posto, dove lo trovo?",
+      "Ho letto {quel cartello|quella riga|la stessa pagina} {quattro volte|tre volte|troppe volte} e non so cosa dice.",
+      "Va tutto troppo piano ed è {colpa mia|solo colpa mia|colpa di nessun altro}."
     ],
     "narcotic": [
-      "Sta passando. Sento esattamente il punto dove finisce.",
-      "Avevo detto stasera. Non è ancora stasera.",
-      "I bordi delle cose sono tornati tutti al loro posto.",
-      "Solo quanto basta per stare dritto. Non per stare su.",
-      "So dove andare. Vorrei non saperlo."
+      "Sta {passando|calando|finendo}. Sento {esattamente il punto dove finisce|il bordo|dove si spegne}.",
+      "Avevo detto {stasera|al buio|dopo}. Non è ancora {stasera|buio|dopo}.",
+      "{I bordi|Gli angoli|Le parti dure} delle cose sono {tornati|riemersi|di nuovo lì}.",
+      "Solo quanto basta per {stare dritto|reggermi|essere normale}. Non per {stare su|volare|sparire}.",
+      "So dove andare. {Vorrei non saperlo|Preferirei non saperlo|Non dovrei saperlo}."
     ],
     "gambling": [
-      "Un'ultima giocata. Stavolta i numeri sono dalla mia.",
-      "Una vincita me la devono. Matematicamente me la devono.",
-      "Chiude alle quattro e io non ho ancora puntato niente.",
-      "Ieri lo sentivo che stava girando. Lo sentivo.",
-      "Solo quello che ho in tasca. Niente di più."
+      "Un'ultima {giocata|puntata|mano}. Stavolta i numeri {sono dalla mia|girano|tornano}.",
+      "Una vincita me la devono. {Matematicamente me la devono|Per statistica|A conti fatti}.",
+      "Chiude alle {quattro|sei|sera} e io non ho ancora {puntato niente|giocato|messo nulla}.",
+      "Ieri {lo sentivo che stava girando|si stava girando|lo sentivo nei denti}. {Lo sentivo|Ci giurerei|Lo giuro}.",
+      "Solo quello che ho in tasca. {Niente di più|Neanche una moneta in più|E poi smetto}."
     ]
   },
   "withdrawal": {
     "nicotine": [
-      "Non sento nient'altro oltre alla voglia di una sigaretta.",
-      "A questo punto la raccatterei da terra.",
-      "Oggi quello che mi dite entra da un orecchio ed esce dall'altro.",
-      "Ho in testa un fiammifero acceso e niente da accendere."
+      "Non sento nient'altro oltre {alla voglia di una sigaretta|a questa voglia|al bisogno}.",
+      "A questo punto la raccatterei {da terra|da un posacenere|dalle dita di uno sconosciuto}.",
+      "Oggi quello che mi dite {entra da un orecchio ed esce dall'altro|non arriva|non mi tocca}.",
+      "Ho in testa {un fiammifero acceso e niente da accendere|un cerino|fumo e nessun fuoco}."
     ],
     "alcohol": [
-      "Il tremore è cominciato e da solo non se ne va.",
-      "Non sto bene. Non sto bene da stamattina.",
-      "Non parlatemi finché non ho buttato giù qualcosa.",
-      "La stanza arriva sempre un secondo dopo di me."
+      "Il tremore {è cominciato|è arrivato|si è messo} e da solo {non se ne va|non passa|non smette}.",
+      "Non sto bene. Non sto bene da {stamattina|ieri|prima dell'alba}.",
+      "{Non parlatemi|Non avvicinatevi|Non chiedetemi niente} finché non ho buttato giù qualcosa.",
+      "La stanza {arriva sempre un secondo dopo di me|scivola|mi rincorre}."
     ],
     "caffeine": [
-      "Ho un chiodo che entra dietro l'occhio e non si ferma.",
-      "Non servo a niente e a nessuno. Proprio a niente.",
-      "Sono sveglio da ore e ho dormito per tutto il tempo.",
-      "Mettetemi un caffè in mano prima che dica qualcosa di brutto."
+      "Ho un {chiodo|ferro|filo rovente} che entra dietro l'occhio e non si ferma.",
+      "Non servo a {niente e a nessuno|nulla|niente}. {Proprio a niente|Non oggi|Per niente}.",
+      "Sono sveglio da ore e {ho dormito per tutto il tempo|non c'ero mai|non ero presente}.",
+      "{Mettetemi un caffè in mano|Portatemi qualcosa|Trovatemi una tazza} prima che dica qualcosa di brutto."
     ],
     "narcotic": [
-      "Ogni singolo osso che ho ha un'opinione in merito.",
-      "Ho freddo e fuori non fa freddo.",
-      "A questo punto farei quasi qualsiasi cosa, e lo so bene.",
-      "L'orologio si è fermato. L'ho controllato quattro volte."
+      "Ogni singolo osso che ho {ha un'opinione in merito|si lamenta|fa male per conto suo}.",
+      "Ho freddo e fuori {non fa freddo|non ne fa|c'è il sole}.",
+      "A questo punto farei {quasi qualsiasi cosa|cose di cui mi pentirò|di tutto}, e {lo so bene|me ne rendo conto|mi sento dire}.",
+      "L'orologio si è {fermato|bloccato|arreso}. L'ho controllato {quattro volte|due volte in un minuto|troppe volte}."
     ],
     "gambling": [
-      "Non riesco a stare fermo e non posso dire ad alta voce perché.",
-      "Ho contato i soldi in tasca undici volte.",
-      "C'è una corsa che parte adesso e io non ci sono dentro.",
-      "Vado alla ricevitoria. È già deciso. L'ho deciso ore fa."
+      "Non riesco a {stare fermo|starmene seduto|reggere questa sedia} e non posso dire {ad alta voce|a nessuno|neanche a me stesso} perché.",
+      "Ho contato i soldi in tasca {undici volte|una dozzina di volte|più di quanto ammetterò}.",
+      "C'è una {corsa|partita|mano} che parte adesso e io non ci sono dentro.",
+      "Vado alla ricevitoria. {È già deciso|L'ho deciso da un pezzo|L'ho deciso ore fa}."
     ]
   }
 }

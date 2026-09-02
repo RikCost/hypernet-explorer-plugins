@@ -113,7 +113,7 @@
     },
     "descState": {
         "enemySpawnMode": [
-            "Bioma: può comparire qualunque creatura viva qui. Sette apparizioni su dieci sono di qualsiasi livello fino a 110, tutte con la stessa probabilità, così è il luogo a decidere cosa incontri; le altre tre sono tarate entro cinque livelli dal tuo gruppo, e salgono con l'anno.",
+            "Bioma: può comparire qualunque creatura viva qui. Metà delle apparizioni è tarata entro cinque livelli dal tuo gruppo; l'altra metà è l'intera scala che il luogo ospita, distribuita attorno a una mediana fissata dall'anno, così compaiono sia le creature deboli sia quelle ben più forti, solo più di rado.",
             "Livello del Gruppo: i nemici stanno al passo con il tuo gruppo. I vaganti vanno dal tuo livello fino a dieci sopra; ogni casella nasconde un boss ancora più su. L'opzione più sicura.",
             "Realistico: la difficoltà viene dal luogo, non da te. I livelli salgono più una casella dista da dove hai iniziato. Ogni nazione e bioma ha il proprio elenco, e ogni casella nasconde un boss.",
             "Caos: livelli da 1 a 110 ovunque, bioma o no. Le mappe procedurali ridistribuiscono i mostri a ogni ingresso."

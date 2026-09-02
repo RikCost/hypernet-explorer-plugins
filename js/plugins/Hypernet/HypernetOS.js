@@ -1745,6 +1745,7 @@
         if (window.HypernetNewsApp && typeof window.HypernetNewsApp.update === 'function') window.HypernetNewsApp.update();
         if (window.HypernetJobsApp && typeof window.HypernetJobsApp.update === 'function') window.HypernetJobsApp.update();
         if (window.HypernetBankApp && typeof window.HypernetBankApp.update === 'function') window.HypernetBankApp.update();
+        if (window.HypernetRealEstateApp && typeof window.HypernetRealEstateApp.update === 'function') window.HypernetRealEstateApp.update();
     };
 
     Scene_HypernetOS.prototype.terminate = function() {

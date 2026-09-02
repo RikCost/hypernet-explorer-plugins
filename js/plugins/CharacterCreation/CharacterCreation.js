@@ -681,10 +681,14 @@
     return null;
   }
 
-  // Every archetype a creature can be built from, in Archetypes.json order.
+  // Every archetype a creature can be built from, sorted by the name it shows
+  // under, so every picker that lists them reads alphabetically.
   function creatureArchetypeKeys() {
     const table = (window.Health && window.Health.Archetypes) || null;
-    return table ? Object.keys(table) : [];
+    if (!table) return [];
+    return Object.keys(table).sort((a, b) =>
+      archetypeDisplayName(a).localeCompare(archetypeDisplayName(b))
+    );
   }
 
   // What an archetype is called on screen. The names live in

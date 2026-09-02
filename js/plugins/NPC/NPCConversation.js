@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc NPCConversation v2.3.0, NPC↔NPC dialogues, ambient chatter, thoughts & thought bubbles
+ * @plugindesc NPCConversation v2.4.0, NPC↔NPC dialogues, ambient chatter, thoughts & thought bubbles
  * @author Omni-Lex
  * @help NPCConversation.js
  *
@@ -49,8 +49,8 @@
  *    map's tile-to-screen projection every frame). DOM-guarded so the plugin
  *    still loads headless under the Node test harness.
  *
- * 6. PERSONALITY VOICES (v2.2.0)
- *    Two layers keep all 25 personalities verbally distinct everywhere:
+ * 6. PERSONALITY VOICES (v2.4.0)
+ *    Three layers keep all 25 personalities verbally distinct everywhere:
  *    a) pools written per personality (weather/time situational thoughts,
  *       personality core thoughts), four unique lines per personality per
  *       situation, picked at random;
@@ -58,7 +58,13 @@
  *       ambient chatter, need/world/politics/capability thoughts) passes
  *       through the speaker's PERSONALITY_VOICE, openers/closers unique to
  *       that personality, so two NPCs delivering the same base line speak
- *       personality-flavored variations of it.
+ *       personality-flavored variations of it;
+ *    c) shared lines are written as "{a|b|c}" templates and every alternative
+ *       is weighed against the speaker's own lexicon (the favors/avoids word
+ *       lists in the voice bank) before one is picked, so a personality does
+ *       not merely decorate a line, it chooses the words inside it. Nothing
+ *       is ever impossible: an averse option keeps a quarter of the weight,
+ *       so a Grumpy NPC can still have a lovely morning, just rarely.
  *
  * FILE LAYOUT, the file is split in two clearly-banner'd parts:
  *   PART I , DIALOGUE DATA: every editable word (see its table of contents)
@@ -138,6 +144,8 @@
   // one of these closers, so two NPCs delivering the same base line produce
   // personality-flavored variations of it. Pools that are already written per
   // personality (core thoughts, weather/time) are never re-flavored.
+  // Each voice also carries a LEXICON, the "favors" and "avoids" word lists
+  // that weigh every {a|b|c} alternative in a shared line (see vary, II.1).
   // NOTE: keep every opener/closer unique across the whole table, the test
   // harness enforces it so no two personalities can ever sound identical.
 
@@ -293,13 +301,61 @@
     return _personalityOf(profile)?.name ?? null;
   }
 
+  // Every personality's lexical pull: the words it reaches for and the words
+  // it never would. Read off the voice bank (I.2) so the tilt of a personality
+  // is edited with the rest of its words, in the i18n file, not in here.
+  function _lexiconOf(persName) {
+    if (!persName) return null;
+    if (_lexiconCache.has(persName)) return _lexiconCache.get(persName);
+    const voice = PERSONALITY_VOICES()[persName];
+    const compile = (list) => (Array.isArray(list) ? list : [])
+      .map(w => String(w).toLowerCase().trim()).filter(Boolean);
+    const lex = voice ? { favors: compile(voice.favors), avoids: compile(voice.avoids) } : null;
+    _lexiconCache.set(persName, lex);
+    return lex;
+  }
+  const _lexiconCache = new Map();
+
+  // How strongly one alternative suits a personality. Favored words pull the
+  // pick toward the option, avoided ones push it away; an option that carries
+  // neither keeps a neutral weight, so a template with no charged wording is
+  // still picked uniformly.
+  function _optionWeight(option, lex) {
+    if (!lex) return 1;
+    const hay = ' ' + String(option).toLowerCase().replace(/[^a-z0-9À-ɏ']+/g, ' ') + ' ';
+    let score = 0;
+    for (const w of lex.favors) if (hay.indexOf(' ' + w) >= 0) score += 1;
+    for (const w of lex.avoids) if (hay.indexOf(' ' + w) >= 0) score -= 1;
+    // 4x more likely than neutral at full favor, 4x less at full aversion,
+    // and never impossible: a Grumpy NPC can still have a bright day.
+    return Math.min(4, Math.max(0.25, Math.pow(2, score)));
+  }
+
+  function _pickWeighted(options, lex) {
+    if (!lex || options.length < 2) return _pickFrom(options);
+    const weights = options.map(o => _optionWeight(o, lex));
+    let total = 0;
+    for (const w of weights) total += w;
+    let roll = Math.random() * total;
+    for (let i = 0; i < options.length; i++) {
+      roll -= weights[i];
+      if (roll <= 0) return options[i];
+    }
+    return options[options.length - 1];
+  }
+
   // Resolves "{a|b|c}" groups innermost-first, so groups can nest.
-  function vary(text) {
+  // With a speaker named, every alternative is weighed against that
+  // personality's lexicon (above), so the SAME template phrases itself
+  // differently in a Grumpy mouth than in a Sanguine one.
+  function vary(text, persName) {
     if (typeof text !== "string" || text.indexOf("{") < 0) return text;
+    const lex = _lexiconOf(persName);
     let out = text;
     let guard = 0;
     while (guard++ < 64) {
-      const next = out.replace(/\{([^{}]*\|[^{}]*)\}/g, (m, body) => _pickFrom(body.split("|")));
+      const next = out.replace(/\{([^{}]*\|[^{}]*)\}/g,
+        (m, body) => _pickWeighted(body.split("|"), lex));
       if (next === out) break;
       out = next;
     }
@@ -310,13 +366,13 @@
   // opener or append a closer. Pure-emote lines (*does something*) and NPCs
   // without a resolvable personality pass through untouched.
   function applyVoice(text, persName, chance = VOICE_CHANCE_THOUGHT) {
-    let line = vary(text);
+    let line = vary(text, persName);
     const voice = persName ? PERSONALITY_VOICES()[persName] : null;
     if (!voice || !line || String(line).startsWith('*')) return line;
     if (Math.random() >= chance) return line;
     return Math.random() < 0.5
-      ? `${vary(_pickFrom(voice.openers))} ${line}`
-      : `${line} ${vary(_pickFrom(voice.closers))}`;
+      ? `${vary(_pickFrom(voice.openers), persName)} ${line}`
+      : `${line} ${vary(_pickFrom(voice.closers), persName)}`;
   }
 
   // ---------------------------------------------------------------------------
@@ -438,8 +494,8 @@
     return { kind: tone, lines: _pickFrom(pool), agreement: tone === 'positive' };
   }
 
-  function _resolveLine(text, aName, bName) {
-    return vary(String(text).replace(/{a}/g, aName).replace(/{b}/g, bName));
+  function _resolveLine(text, aName, bName, persName) {
+    return vary(String(text).replace(/{a}/g, aName).replace(/{b}/g, bName), persName);
   }
 
   const ConversationManager = {
@@ -612,7 +668,7 @@
       // personality voice, so the two participants never sound interchangeable.
       const speakerPers = _personalityNameOf(_getProfile(speakerCtrl.eventName));
       const text = applyVoice(
-        _resolveLine(rawText, convo.aName, convo.bName),
+        _resolveLine(rawText, convo.aName, convo.bName, speakerPers),
         speakerPers, VOICE_CHANCE_DIALOGUE);
 
       if (convo.faceToFace) {
@@ -683,28 +739,28 @@
   // degrades gracefully.
 
   const WorldProvider = {
-    fill(template, ctx) {
+    fill(template, ctx, persName) {
       // Fallbacks are words a player reads, so they live with the rest of them.
       const fb = bank('ConvWorld.fallback');
       return vary(String(template)
         .replace(/{group}/g, ctx.group ?? fb.group)
         .replace(/{festival}/g, ctx.festival ?? fb.festival)
         .replace(/{epidemic}/g, ctx.epidemic ?? fb.epidemic)
-        .replace(/{headline}/g, ctx.headline ?? fb.headline));
+        .replace(/{headline}/g, ctx.headline ?? fb.headline), persName);
     },
 
-    _pickRaw(ctx) {
+    _pickRaw(ctx, persName) {
       // Most pressing topic first: plague > crime > festival > economy >
       // wanted player > headline > market chatter.
       const r = Math.random();
-      if (ctx.epidemic && r < 0.35) return this.fill(_pickFrom(WORLD_THOUGHTS().epidemic), ctx);
-      if (ctx.crimeWave && r < 0.5) return this.fill(_pickFrom(WORLD_THOUGHTS().crimeWave), ctx);
-      if (ctx.festival && r < 0.6) return this.fill(_pickFrom(WORLD_THOUGHTS().festival), ctx);
-      if (ctx.boom && r < 0.7) return this.fill(_pickFrom(WORLD_THOUGHTS().boom), ctx);
-      if (ctx.bust && r < 0.7) return this.fill(_pickFrom(WORLD_THOUGHTS().bust), ctx);
-      if (ctx.playerNotorious && r < 0.8) return this.fill(_pickFrom(WORLD_THOUGHTS().outlaw), ctx);
-      if (ctx.headline && r < 0.92) return this.fill(_pickFrom(WORLD_THOUGHTS().headline), ctx);
-      if (ctx.marketMood) return this.fill(_pickFrom(WORLD_THOUGHTS().market[ctx.marketMood]), ctx);
+      if (ctx.epidemic && r < 0.35) return this.fill(_pickFrom(WORLD_THOUGHTS().epidemic), ctx, persName);
+      if (ctx.crimeWave && r < 0.5) return this.fill(_pickFrom(WORLD_THOUGHTS().crimeWave), ctx, persName);
+      if (ctx.festival && r < 0.6) return this.fill(_pickFrom(WORLD_THOUGHTS().festival), ctx, persName);
+      if (ctx.boom && r < 0.7) return this.fill(_pickFrom(WORLD_THOUGHTS().boom), ctx, persName);
+      if (ctx.bust && r < 0.7) return this.fill(_pickFrom(WORLD_THOUGHTS().bust), ctx, persName);
+      if (ctx.playerNotorious && r < 0.8) return this.fill(_pickFrom(WORLD_THOUGHTS().outlaw), ctx, persName);
+      if (ctx.headline && r < 0.92) return this.fill(_pickFrom(WORLD_THOUGHTS().headline), ctx, persName);
+      if (ctx.marketMood) return this.fill(_pickFrom(WORLD_THOUGHTS().market[ctx.marketMood]), ctx, persName);
       return null;
     },
 
@@ -717,7 +773,7 @@
                   : null;
       if (!topic) return null;
       const pool = (persName && topic[persName]) || topic.default;
-      return pool && pool.length ? vary(_pickFrom(pool)) : null;
+      return pool && pool.length ? vary(_pickFrom(pool), persName) : null;
     },
 
     pickWorldThought(profile) {
@@ -731,13 +787,13 @@
         const ending = this._pickWorldEndingRaw(ctx, persName);
         if (ending) return ending;
       }
-      const line = this._pickRaw(ctx);
+      const line = this._pickRaw(ctx, persName);
       return line ? applyVoice(line, persName) : null;
     },
   };
 
   const PoliticsProvider = {
-    fill(template, ctx) {
+    fill(template, ctx, persName) {
       const fb = bank('ConvPolitics.fallback');
       return vary(String(template)
         .replace(/{party}/g, ctx.partyName ?? fb.party)
@@ -751,24 +807,24 @@
         .replace(/{rumorKind}/g, ctx.rumorKind ?? fb.rumorKind)
         .replace(/{winner}/g, ctx.lastWinnerName ?? fb.winner)
         .replace(/{office}/g, ctx.localOffice ?? fb.office)
-        .replace(/{group}/g, ctx.group ?? fb.group));
+        .replace(/{group}/g, ctx.group ?? fb.group), persName);
     },
 
-    _pickRaw(ctx) {
+    _pickRaw(ctx, persName) {
       // Most salient topic first: holding office > hot rumor > policy pain
       // > imminent election > fresh result > general stance.
       const r = Math.random();
-      if (ctx.localOffice && r < 0.25) return this.fill(_pickFrom(OFFICE_HOLDER_THOUGHTS()), ctx);
-      if (ctx.rumorSubject && r < 0.40) return this.fill(_pickFrom(POLITICAL_RUMOR_THOUGHTS()), ctx);
-      if (ctx.gripe && r < 0.55) return this.fill(_pickFrom(POLICY_GRUMBLES()), ctx);
+      if (ctx.localOffice && r < 0.25) return this.fill(_pickFrom(OFFICE_HOLDER_THOUGHTS()), ctx, persName);
+      if (ctx.rumorSubject && r < 0.40) return this.fill(_pickFrom(POLITICAL_RUMOR_THOUGHTS()), ctx, persName);
+      if (ctx.gripe && r < 0.55) return this.fill(_pickFrom(POLICY_GRUMBLES()), ctx, persName);
       if (ctx.daysToElection != null && ctx.daysToElection <= 30 && r < 0.75) {
-        return this.fill(_pickFrom(ELECTION_THOUGHTS().upcoming), ctx);
+        return this.fill(_pickFrom(ELECTION_THOUGHTS().upcoming), ctx, persName);
       }
       if (ctx.lastWinnerName && ctx.engagement >= 25 && r < 0.85) {
-        return this.fill(_pickFrom(ctx.lastElectionWon ? ELECTION_THOUGHTS().won : ELECTION_THOUGHTS().lost), ctx);
+        return this.fill(_pickFrom(ctx.lastElectionWon ? ELECTION_THOUGHTS().won : ELECTION_THOUGHTS().lost), ctx, persName);
       }
       const pool = POLITICAL_THOUGHTS()[ctx.stance] || POLITICAL_THOUGHTS().apathetic;
-      return this.fill(_pickFrom(pool), ctx);
+      return this.fill(_pickFrom(pool), ctx, persName);
     },
 
     pickPoliticalThought(profile) {
@@ -777,8 +833,9 @@
       let ctx;
       try { ctx = window.NPCPolitics.getConversationContext(name); } catch (_) { return null; }
       if (!ctx) return null;
-      const line = this._pickRaw(ctx);
-      return line ? applyVoice(line, _personalityNameOf(profile)) : null;
+      const persName = _personalityNameOf(profile);
+      const line = this._pickRaw(ctx, persName);
+      return line ? applyVoice(line, persName) : null;
     },
   };
 
@@ -800,14 +857,14 @@
         const w = ($gameScreen && ($gameScreen.weatherType?.() ?? $gameScreen._weatherType)) || 'none';
         if (w === 'rain' || w === 'storm' || w === 'snow') type = w;
         const pool = WEATHER_THOUGHTS()[type];
-        return vary(_pickFrom((persName && pool[persName]) || pool.default));
+        return vary(_pickFrom((persName && pool[persName]) || pool.default), persName);
       }
       const hour = $gameVariables?.value(23) ?? 12;
       const tod  = hour >= 5 && hour < 12 ? 'morning'
                  : hour >= 12 && hour < 17 ? 'afternoon'
                  : hour >= 17 && hour < 21 ? 'evening' : 'night';
       const pool = TIME_THOUGHTS()[tod];
-      return vary(_pickFrom((persName && pool[persName]) || pool.default));
+      return vary(_pickFrom((persName && pool[persName]) || pool.default), persName);
     },
   };
 
@@ -882,7 +939,7 @@
     pickPersonalityCoreThought(profile) {
       const name = _personalityOf(profile)?.name;
       const pool = name ? PERSONALITY_CORE_THOUGHTS()[name] : null;
-      return pool?.length ? vary(_pickFrom(pool)) : null;
+      return pool?.length ? vary(_pickFrom(pool), name) : null;
     },
 
     // Crime narration with the coveted/stolen item's name baked in.
@@ -891,7 +948,7 @@
       const pool = kind === 'intent'  ? CRIME_INTENT_THOUGHTS()
                  : kind === 'success' ? CRIME_SUCCESS_THOUGHTS()
                  : CRIME_CAUGHT_THOUGHTS();
-      const line = _pickFrom(pool).replace('{item}', itemName || 'that');
+      const line = _pickFrom(pool).replace(/{item}/g, itemName || 'that');
       return applyVoice(line, _personalityNameOf(profile));
     },
 
@@ -906,7 +963,7 @@
       const price = Number(itemData.price) || 0;
       const tier  = price >= 400 ? 'pricey' : 'cheap';
       const table = kind === 'buy' ? ITEM_BUY_THOUGHTS() : ITEM_BROWSE_THOUGHTS();
-      let line = _pickFrom(table[tier]).replace('{item}', name);
+      let line = _pickFrom(table[tier]).replace(/{item}/g, name);
 
       // Occasionally append a disposition aside that reflects who they are.
       const disp = this._shoppingDisposition(profile);

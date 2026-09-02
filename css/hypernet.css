@@ -2962,3 +2962,52 @@
 .bios-note { font-weight: bold; }
 .bios-note.good { color: #9fe8a4; }
 .bios-note.bad { color: #ff9d8a; }
+
+/* ==========================================================================
+   Real Estate Registry as an OS app (Economy/RealEstateMarket.js)
+   The scene tags its DOM root id="menu-container", which globally means
+   "fullscreen parchment overlay": fixed, 100vw/100vh, dark backdrop, zoomed
+   panel, z-index 1000. Inside a window that paints a dark frame the size of
+   the screen. Neutralize it so the spread sits flush in the window chrome.
+   ========================================================================== */
+#real-estate-content #menu-container {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    z-index: auto !important;
+    overflow: hidden !important;
+}
+/* The panel is sized from the viewport (--ui-panel-w/h) and zoomed to fit it;
+   in a window it has to be the window instead. */
+#real-estate-content #menu-container > * {
+    zoom: 1 !important;
+}
+#real-estate-content .book-spread {
+    width: 100% !important;
+    height: 100% !important;
+    border-width: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    font-size: 1rem !important;
+    animation: none !important;
+}
+/* No decorative leather spine between the pages in app mode. */
+#real-estate-content .book-spread::before {
+    display: none !important;
+}
+#real-estate-content .left-page,
+#real-estate-content .right-page {
+    padding: 12px 14px !important;
+    min-height: 0;
+}
+#real-estate-content .re-list {
+    flex: 1 1 auto;
+    min-height: 0;
+}

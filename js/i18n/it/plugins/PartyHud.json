@@ -19,5 +19,9 @@
   "craving": "Astinenza da {substance}",
   "ill": "{disease}",
   "illUntreated": "{disease} (senza cure)"
+ },
+ "gear": {
+  "held": "[{list}]",
+  "separator": ", "
  }
 }

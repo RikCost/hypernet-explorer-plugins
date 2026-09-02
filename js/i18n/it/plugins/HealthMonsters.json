@@ -15,6 +15,7 @@
   "partElementalHit": "{part} di {enemy} è stato {effect}!",
   "partSevered": "{part} di {enemy} è stato reciso!",
   "partDestroyed": "{part} di {enemy} è stato distrutto!",
+  "partBroken": "{part} di {enemy} è stato rotto!",
   "customPartMessage": "{enemy} {message}",
   "partSeverelyDamaged": "{part} gravemente danneggiato, ma il mostro è ancora troppo forte!",
   "preciseStrike": "Un colpo preciso a {part}!",
@@ -43,7 +44,8 @@
     "vital": "Vitale",
     "severable": "Recidibile",
     "regenerates": "Si rigenera",
-    "destroyed": "Distrutto"
+    "destroyed": "Distrutto",
+    "broken": "ROTTO"
   },
   "aim": {
     "menu": {

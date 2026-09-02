@@ -1,3 +1,24 @@
+0.5.1a 
+
+- enemy levels rebalanced onto a 1 to 100 scale
+- no weapon bank draws the swing1 to swing8 knocks
+- weapon trails, ranged shot sounds and sound volumes reworked
+- damage numbers drawn as sharp html and linger longer
+- character creation archetype list is alphabetical
+- pepperbox no longer tumbles when shooting
+- restored original weapon sounds
+- party hud names equipped gear in battletest, uncut name line
+- body parts break or get cut off depending on the weapon
+- swing1 to swing8 are real whooshing swings
+- title badge reads the version off the changelog itself
+- real estate is a hypernet app, bigger share lots when trading
+- battle test party matches troop level with randomized skills and gear
+- snappier skill hits: effects land on the struck limb, restyled damage numbers
+- biome spawns spread over the whole ladder, half pitched at the party
+- vehicles have headlights at night
+- npc conversation banks reworked with personality-weighted phrase variations
+
+
 0.5.0a MAJOR UPDATE
 
 - ridable animals and creatures can be mounted from the pets menu

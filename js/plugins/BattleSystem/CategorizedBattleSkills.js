@@ -915,6 +915,39 @@
         return picked.slice(0, LOADOUT_MAX);
     }
 
+    // The row a character packs when they are not thinking it through: the
+    // same role plan as the best row, but each slot drawn out of that role's
+    // whole spread weighted by what the skill is worth, so a character who has
+    // gone on learning past their first spells actually carries some of the
+    // later ones instead of the same opening kit every time.
+    function assortedLoadoutIds(actor) {
+        const byRole = { Offensive: [], Healing: [], Support: [] };
+        for (const skill of presetCandidates(actor)) {
+            const roll = byRole[getSkillRole(skill)] || byRole.Support;
+            roll.push({ skill, score: skillValue(actor, skill) });
+        }
+        // A skill worth nothing on paper is still worth carrying now and then,
+        // so every entry keeps a floor of a weight rather than being struck off.
+        const draw = (roll) => {
+            const total = roll.reduce((sum, e) => sum + Math.max(0.05, e.score), 0);
+            let roll_ = Math.random() * total;
+            for (let i = 0; i < roll.length; i++) {
+                roll_ -= Math.max(0.05, roll[i].score);
+                if (roll_ <= 0) return roll.splice(i, 1)[0];
+            }
+            return roll.pop();
+        };
+        const picked = [];
+        const rest = [];
+        for (const step of PRESET_PLAN) {
+            const roll = (byRole[step.role] || []).slice();
+            for (let i = 0; i < step.slots && roll.length; i++) picked.push(draw(roll).skill.id);
+            rest.push(...roll);
+        }
+        while (picked.length < LOADOUT_MAX && rest.length) picked.push(draw(rest).skill.id);
+        return picked.slice(0, LOADOUT_MAX);
+    }
+
     function randomLoadoutIds(actor) {
         const pool = presetCandidates(actor).map(skill => skill.id);
         for (let i = pool.length - 1; i > 0; i--) {
@@ -1025,6 +1058,12 @@
         // The row a character would pack for themself: see PRESET_PLAN.
         best(actor) {
             return actor ? this.setAll(actor, bestLoadoutIds(actor)) : [];
+        },
+
+        // The role plan of the best row, filled by weighted draw: a character
+        // who knows more than nine skills packs a different nine each time.
+        assorted(actor) {
+            return actor ? this.setAll(actor, assortedLoadoutIds(actor)) : [];
         },
 
         // Nine of whatever they know, drawn out of the hat.

@@ -9,6 +9,26 @@
       "...vero?",
       "S-spero.",
       "Poi non dire che l'ho detto io."
+    ],
+    "favors": [
+      "paura",
+      "forse",
+      "preoccupa",
+      "rischio",
+      "attento",
+      "pericolo",
+      "spero",
+      "insicuro",
+      "tremo",
+      "guai"
+    ],
+    "avoids": [
+      "ovvio",
+      "certo",
+      "facile",
+      "tranquillo",
+      "sicuro",
+      "audace"
     ]
   },
   "Calm": {
@@ -21,6 +41,24 @@
       "Non c'è fretta.",
       "Ogni cosa a suo tempo.",
       "Respira."
+    ],
+    "favors": [
+      "calma",
+      "piano",
+      "quieto",
+      "sereno",
+      "pazienza",
+      "tranquillo",
+      "respiro",
+      "equilibrio"
+    ],
+    "avoids": [
+      "panico",
+      "furia",
+      "disastro",
+      "urlare",
+      "fretta",
+      "caos"
     ]
   },
   "Aggressive": {
@@ -33,6 +71,24 @@
       "Hai qualcosa da ridire?",
       "Fattene una ragione.",
       "Fine del discorso."
+    ],
+    "favors": [
+      "pugni",
+      "rissa",
+      "idiota",
+      "sangue",
+      "duro",
+      "spacco",
+      "denti",
+      "rabbia",
+      "forza"
+    ],
+    "avoids": [
+      "gentile",
+      "dolce",
+      "cortese",
+      "delicato",
+      "piano"
     ]
   },
   "Melancholic": {
@@ -45,6 +101,27 @@
       "Tanto non ascolta nessuno.",
       "Sbiadisce tutto, comunque.",
       "...come ogni cosa."
+    ],
+    "favors": [
+      "svanisce",
+      "vuoto",
+      "grigio",
+      "triste",
+      "perduto",
+      "pioggia",
+      "solo",
+      "cenere",
+      "stanco",
+      "peso",
+      "cupo",
+      "desolato"
+    ],
+    "avoids": [
+      "splendido",
+      "felice",
+      "allegro",
+      "luminoso",
+      "fortuna"
     ]
   },
   "Sanguine": {
@@ -57,6 +134,24 @@
       "Non è fantastico?",
       "Che giornata!",
       "Le cose si mettono bene!"
+    ],
+    "favors": [
+      "bello",
+      "splendido",
+      "ridere",
+      "allegro",
+      "caldo",
+      "sole",
+      "buono",
+      "festa",
+      "meraviglia"
+    ],
+    "avoids": [
+      "cupo",
+      "marcio",
+      "disperato",
+      "condannato",
+      "miseria"
     ]
   },
   "Cautious": {
@@ -69,6 +164,23 @@
       "Meglio andare sul sicuro.",
       "Misura due volte, taglia una.",
       "La prudenza non è mai troppa."
+    ],
+    "favors": [
+      "attenzione",
+      "prudenza",
+      "controllare",
+      "piano",
+      "sicuro",
+      "forse",
+      "rischio",
+      "misurare"
+    ],
+    "avoids": [
+      "avventato",
+      "azzardo",
+      "subito",
+      "cieca",
+      "fretta"
     ]
   },
   "Impulsive": {
@@ -81,6 +193,23 @@
       "E facciamolo, dai!",
       "Non c'è tempo da perdere!",
       "Deciso!"
+    ],
+    "favors": [
+      "subito",
+      "adesso",
+      "veloce",
+      "dai",
+      "salto",
+      "già",
+      "oggi",
+      "corsa"
+    ],
+    "avoids": [
+      "pazienza",
+      "gradualmente",
+      "aspettare",
+      "lentamente",
+      "calma"
     ]
   },
   "Stoic": {
@@ -93,6 +222,22 @@
       "Non c'è altro da dire.",
       "Non cambia nulla.",
       "Si tira avanti."
+    ],
+    "favors": [
+      "reggere",
+      "dovere",
+      "pietra",
+      "semplicemente",
+      "sopportare",
+      "fatto",
+      "resistere"
+    ],
+    "avoids": [
+      "lamento",
+      "piagnucolare",
+      "dramma",
+      "entusiasta",
+      "chiasso"
     ]
   },
   "Paranoid": {
@@ -105,6 +250,24 @@
       "Non l'hai sentito da me.",
       "Qualcuno ascolta. Sempre.",
       "Non fidarti di nessuno."
+    ],
+    "favors": [
+      "guardano",
+      "ascoltano",
+      "spie",
+      "segreto",
+      "dietro",
+      "trappola",
+      "occhi",
+      "complotto"
+    ],
+    "avoids": [
+      "innocuo",
+      "caso",
+      "fiducia",
+      "innocente",
+      "sicuro",
+      "aperto"
     ]
   },
   "Empathetic": {
@@ -117,6 +280,24 @@
       "Ma tu stai reggendo?",
       "Io ci sono, lo sai.",
       "Ne usciamo insieme."
+    ],
+    "favors": [
+      "sento",
+      "cuore",
+      "gentile",
+      "insieme",
+      "dolore",
+      "caldo",
+      "capire",
+      "lacrime",
+      "caro"
+    ],
+    "avoids": [
+      "meritato",
+      "patetico",
+      "stupido",
+      "freddo",
+      "spietato"
     ]
   },
   "Authoritative": {
@@ -129,6 +310,22 @@
       "È un ordine.",
       "Vedi di farlo.",
       "Non si discute."
+    ],
+    "favors": [
+      "ordine",
+      "regole",
+      "comando",
+      "disciplina",
+      "legge",
+      "chiaro",
+      "autorità"
+    ],
+    "avoids": [
+      "forse",
+      "boh",
+      "magari",
+      "caos",
+      "sciatto"
     ]
   },
   "Scholarly": {
@@ -141,6 +338,23 @@
       "Merita almeno una nota a piè di pagina.",
       "Sono i fatti a parlare.",
       "Devo prenderne appunto."
+    ],
+    "favors": [
+      "studio",
+      "prove",
+      "esattamente",
+      "osservare",
+      "teoria",
+      "registro",
+      "lettura",
+      "storia",
+      "schema"
+    ],
+    "avoids": [
+      "sciocchezze",
+      "boh",
+      "superstizione",
+      "fesserie"
     ]
   },
   "Artistic": {
@@ -153,6 +367,26 @@
       "Quasi bello, no?",
       "La musa lavora per vie storte.",
       "Devo schizzarlo su carta."
+    ],
+    "favors": [
+      "colore",
+      "luce",
+      "bello",
+      "canto",
+      "forma",
+      "strano",
+      "sogno",
+      "ritmo",
+      "ombra",
+      "oro"
+    ],
+    "avoids": [
+      "noioso",
+      "pratico",
+      "numeri",
+      "registro",
+      "efficiente",
+      "grigio"
     ]
   },
   "Adventurous": {
@@ -165,6 +399,25 @@
       "Che vita è senza un po' di rischio?",
       "Avanti tutta!",
       "Sempre meglio che stare fermi!"
+    ],
+    "favors": [
+      "strada",
+      "lontano",
+      "orizzonte",
+      "scalare",
+      "nuovo",
+      "selvaggio",
+      "viaggio",
+      "fuori",
+      "vedere"
+    ],
+    "avoids": [
+      "casa",
+      "abitudine",
+      "routine",
+      "restare",
+      "comodo",
+      "noioso"
     ]
   },
   "Nurturing": {
@@ -177,6 +430,25 @@
       "Ma hai mangiato oggi?",
       "Copriti bene, mi raccomando.",
       "Se ti serve qualcosa fischia."
+    ],
+    "favors": [
+      "nutrire",
+      "caldo",
+      "curare",
+      "bambino",
+      "zuppa",
+      "riposo",
+      "casa",
+      "mani",
+      "dolce",
+      "medicare"
+    ],
+    "avoids": [
+      "crudele",
+      "abbandonare",
+      "freddo",
+      "duro",
+      "trascurare"
     ]
   },
   "Mischievous": {
@@ -189,6 +461,23 @@
       "*sogghigna*",
       "Non chiedermi come lo so.",
       "Ci divertiamo."
+    ],
+    "favors": [
+      "scherzo",
+      "ridere",
+      "furbo",
+      "guaio",
+      "occhiolino",
+      "burla",
+      "sorriso",
+      "birbante"
+    ],
+    "avoids": [
+      "serio",
+      "obbediente",
+      "solenne",
+      "regole",
+      "dovere"
     ]
   },
   "Cynical": {
@@ -201,6 +490,26 @@
       "E che ti aspettavi?",
       "Solita minestra.",
       "Sono sconvolto, davvero."
+    ],
+    "favors": [
+      "ovviamente",
+      "tipico",
+      "soldi",
+      "bugie",
+      "naturalmente",
+      "fingere",
+      "sciocchi",
+      "ancora",
+      "venduto",
+      "scusa"
+    ],
+    "avoids": [
+      "onesto",
+      "speranza",
+      "nobile",
+      "puro",
+      "sincero",
+      "fiducia"
     ]
   },
   "Disciplined": {
@@ -213,6 +522,24 @@
       "Si torna al lavoro.",
       "Nessuna eccezione.",
       "Come da programma."
+    ],
+    "favors": [
+      "routine",
+      "orario",
+      "addestramento",
+      "esatto",
+      "presto",
+      "fatto",
+      "ordine",
+      "abitudine",
+      "preciso"
+    ],
+    "avoids": [
+      "pigro",
+      "sciatto",
+      "ozio",
+      "scusa",
+      "tardi"
     ]
   },
   "Fatalistic": {
@@ -225,6 +552,23 @@
       "Doveva finire così dall'inizio.",
       "Il filo è già stato filato.",
       "Quel che sarà, sarà."
+    ],
+    "favors": [
+      "destino",
+      "scritto",
+      "comunque",
+      "fine",
+      "inevitabile",
+      "polvere",
+      "già"
+    ],
+    "avoids": [
+      "cambiare",
+      "scegliere",
+      "evitare",
+      "impedire",
+      "speranza",
+      "controllo"
     ]
   },
   "Grumpy": {
@@ -237,6 +581,26 @@
       "E adesso lasciami stare.",
       "Il solito.",
       "Bah."
+    ],
+    "favors": [
+      "bah",
+      "ancora",
+      "rumore",
+      "spreco",
+      "tipico",
+      "schiena",
+      "lamentarsi",
+      "uffa",
+      "sciocchezze",
+      "cupo",
+      "miseria"
+    ],
+    "avoids": [
+      "delizioso",
+      "incantevole",
+      "grato",
+      "meraviglioso",
+      "dolce"
     ]
   },
   "Loyal": {
@@ -249,6 +613,22 @@
       "Io la parola la mantengo.",
       "Per gli amici, sempre.",
       "Hai la mia parola."
+    ],
+    "favors": [
+      "nostro",
+      "amico",
+      "fianco",
+      "promessa",
+      "insieme",
+      "parola",
+      "debito",
+      "fiducia"
+    ],
+    "avoids": [
+      "tradire",
+      "abbandonare",
+      "dubbio",
+      "voltare"
     ]
   },
   "Brave": {
@@ -261,6 +641,24 @@
       "Ci andiamo dritti in faccia.",
       "Nessuna ritirata.",
       "Coraggio, amico."
+    ],
+    "favors": [
+      "affrontare",
+      "avanti",
+      "paura",
+      "osare",
+      "forte",
+      "primo",
+      "rischio",
+      "petto"
+    ],
+    "avoids": [
+      "nascondersi",
+      "fuggire",
+      "spaventato",
+      "dietro",
+      "tremare",
+      "ritirarsi"
     ]
   },
   "Timid": {
@@ -273,6 +671,23 @@
       "...se per te va bene.",
       "Scusa. Scusa.",
       "Ecco, sto zitto."
+    ],
+    "favors": [
+      "scusa",
+      "forse",
+      "piano",
+      "piccolo",
+      "permesso",
+      "spero",
+      "appena"
+    ],
+    "avoids": [
+      "pretendere",
+      "forte",
+      "urlare",
+      "sicuro",
+      "audace",
+      "insistere"
     ]
   },
   "Hedonistic": {
@@ -285,6 +700,25 @@
       "Ma dov'è finito il bello?",
       "Alla salute.",
       "E io torno ai miei agi."
+    ],
+    "favors": [
+      "vino",
+      "gusto",
+      "piacere",
+      "caldo",
+      "stasera",
+      "godere",
+      "dolce",
+      "morbido",
+      "ancora"
+    ],
+    "avoids": [
+      "dovere",
+      "disciplina",
+      "rinuncia",
+      "lavoro",
+      "digiuno",
+      "virtù"
     ]
   },
   "Apathetic": {
@@ -297,6 +731,22 @@
       "O come ti pare.",
       "Chissene.",
       "Comunque."
+    ],
+    "favors": [
+      "vabbè",
+      "comunque",
+      "suppongo",
+      "importa",
+      "uguale",
+      "boh",
+      "tanto"
+    ],
+    "avoids": [
+      "urgente",
+      "passione",
+      "entusiasmante",
+      "disperato",
+      "glorioso"
     ]
   }
 }

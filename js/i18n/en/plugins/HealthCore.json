@@ -19,6 +19,7 @@
   "statusDestroyed": "DESTROYED",
   "statusCutOff": "CUT OFF",
   "partRuined": "{actor}'s {part} was ruined beyond repair!",
+  "partBroken": "{actor}'s {part} was broken!",
   "augmentLost": "The augment installed there ({augment}) was torn off with it.",
   "partDamagedFallback": "{part} damaged!",
   "limbCopy": "{name} {n}"

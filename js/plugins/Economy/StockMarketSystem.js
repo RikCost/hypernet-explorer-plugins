@@ -2059,17 +2059,23 @@
                 <span>Available: <b>${isBuy ? goldToEurosForDisplay(playerGold) : `${sharesHeld} shares`}</b></span>
               </div>
               <div style="display:flex; gap:4px; align-items:center">
+                <button class="sm-action-btn focusable" data-action="step-qty" data-step="-10000" style="padding:4px 8px">-10k</button>
+                <button class="sm-action-btn focusable" data-action="step-qty" data-step="-1000" style="padding:4px 8px">-1k</button>
                 <button class="sm-action-btn focusable" data-action="step-qty" data-step="-10" style="padding:4px 8px">-10</button>
                 <button class="sm-action-btn focusable" data-action="step-qty" data-step="-1" style="padding:4px 8px">-1</button>
                 <input type="number" id="sm-input-qty" value="${this._inputShares}" min="1" max="99999" style="flex:1; padding:4px 6px; font-weight:bold; font-size:14px; text-align:center; border:1px solid #7f9db9">
                 <button class="sm-action-btn focusable" data-action="step-qty" data-step="1" style="padding:4px 8px">+1</button>
                 <button class="sm-action-btn focusable" data-action="step-qty" data-step="10" style="padding:4px 8px">+10</button>
+                <button class="sm-action-btn focusable" data-action="step-qty" data-step="1000" style="padding:4px 8px">+1k</button>
+                <button class="sm-action-btn focusable" data-action="step-qty" data-step="10000" style="padding:4px 8px">+10k</button>
               </div>
               <div style="display:flex; gap:3px; margin-top:4px">
                 <button class="sm-btn-small focusable" style="flex:1" data-action="preset-qty" data-preset="1">+1</button>
                 <button class="sm-btn-small focusable" style="flex:1" data-action="preset-qty" data-preset="5">+5</button>
                 <button class="sm-btn-small focusable" style="flex:1" data-action="preset-qty" data-preset="25">+25</button>
                 <button class="sm-btn-small focusable" style="flex:1" data-action="preset-qty" data-preset="100">+100</button>
+                <button class="sm-btn-small focusable" style="flex:1" data-action="preset-qty" data-preset="1000">+1000</button>
+                <button class="sm-btn-small focusable" style="flex:1" data-action="preset-qty" data-preset="10000">+10000</button>
                 <button class="sm-btn-small focusable" style="flex:1" data-action="preset-qty" data-preset="max">MAX</button>
               </div>
             </div>

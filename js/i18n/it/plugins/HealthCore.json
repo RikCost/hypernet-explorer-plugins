@@ -19,6 +19,7 @@
   "statusDestroyed": "DISTRUTTO",
   "statusCutOff": "AMPUTATO",
   "partRuined": "Il {part} di {actor} è stato rovinato irrimediabilmente!",
+  "partBroken": "Il {part} di {actor} è stato rotto!",
   "augmentLost": "L'innesto installato lì ({augment}) è stato strappato via con esso.",
   "partDamagedFallback": "{part} danneggiato!",
   "limbCopy": "{name} {n}"

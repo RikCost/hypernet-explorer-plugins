@@ -966,6 +966,25 @@
             this._companyCommandIndex = 0;
 
             this.createUIRealEstateDOM();
+
+            // Opened as a window on the hyperdeck desktop the scene is never
+            // pushed, so nothing calls start(): do its work here instead.
+            if (this._isAppMode) this.beginRegistry();
+        }
+
+        // The live handler target for the markup's inline onclick attributes.
+        // In app mode the running RMMZ scene is Scene_HypernetOS, not this one.
+        sceneRef() {
+            return this._isAppMode ? 'window.HypernetRealEstateApp.appInstance' : 'SceneManager._scene';
+        }
+
+        beginRegistry() {
+            ensureRealEstateManager();
+            this._propertyListWindow.setDetailsWindow(this._propertyDetailsWindow);
+            this._propertyListWindow.refresh();
+            this._propertyListWindow.activate();
+            this._propertyListWindow.select(0);
+            this.refreshUIRealEstateDOM();
         }
 
         createHelpWindow() {
@@ -1042,13 +1061,7 @@
 
         start() {
             super.start();
-            ensureRealEstateManager();
-            this._propertyListWindow.setDetailsWindow(this._propertyDetailsWindow);
-            this._propertyListWindow.refresh();
-            this._propertyListWindow.activate();
-            this._propertyListWindow.select(0);
-
-            this.refreshUIRealEstateDOM();
+            this.beginRegistry();
         }
 
         onPropertyOk() {
@@ -1121,7 +1134,7 @@
         }
 
         terminate() {
-            super.terminate();
+            if (!this._isAppMode) super.terminate();
             if (this._dndContainer) {
                 const container = this._dndContainer;
                 container.style.transition = "opacity 0.2s ease-out";
@@ -1141,7 +1154,13 @@
             this._dndContainer.id = 'menu-container';
             this._dndContainer.style.opacity = '0';
             this._dndContainer.style.transition = 'opacity 0.22s ease-out';
-            document.body.appendChild(this._dndContainer);
+            const appHost = this._isAppMode ? document.getElementById('real-estate-content') : null;
+            if (appHost) {
+                appHost.innerHTML = '';
+                appHost.appendChild(this._dndContainer);
+            } else {
+                document.body.appendChild(this._dndContainer);
+            }
 
             // Right-click anywhere in the overlay closes the menu
             this._rightClickStartedHere = false;
@@ -1157,7 +1176,7 @@
                 if (!this._rightClickStartedHere) return;
                 this._rightClickStartedHere = false;
                 SoundManager.playCancel();
-                this.popScene();
+                this.dismiss();
             });
             this._dndContainer.addEventListener('wheel', (e) => {
                 const listEl = this._dndContainer.querySelector('#estate-list');
@@ -1173,6 +1192,7 @@
         }
 
         buildPropertyListHTML(properties, selectedIndex) {
+            const sref = this.sceneRef();
             return properties.map((prop, idx) => {
                 const isSelected = idx === selectedIndex;
                 let statusLabel, statusColor;
@@ -1192,7 +1212,7 @@
                 }
                 const stars = '★'.repeat(prop.stars) + '☆'.repeat(5 - prop.stars);
                 return `
-                    <div class="item-slot ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.selectPropertyItem(${idx})">
+                    <div class="item-slot focusable ${isSelected ? 'selected' : ''}" tabindex="0" data-focus-key="re-prop-${prop.id}" onclick="${sref}.selectPropertyItem(${idx})">
                         <div class="item-slot-info">
                             <div class="item-slot-name">${prop.name}</div>
                             <div class="item-slot-meta">
@@ -1249,7 +1269,7 @@
             const commandsHTML = commands.map((cmd, cIdx) => {
                 const isSel = cIdx === this._dndCommandIndex && this._dndFocusSection === 'commands';
                 const mod = cmd.danger ? ' inspect-btn--danger' : (cmd.secondary ? ' inspect-btn--secondary' : '');
-                return `<div class="inspect-btn${mod} ${isSel ? 'selected' : ''}" onclick="SceneManager._scene.executeDeedCommand('${cmd.action}')">${cmd.label}</div>`;
+                return `<div class="inspect-btn${mod} focusable ${isSel ? 'selected' : ''}" tabindex="0" data-focus-key="re-deed-${cmd.action}" onclick="${sref}.executeDeedCommand('${cmd.action}')">${cmd.label}</div>`;
             }).join('');
 
             const row = (label, value, valStyle = '') =>
@@ -1290,9 +1310,10 @@
 
         // Tab bar switching the left list between properties and companies.
         buildTabBarHTML() {
+            const sref = this.sceneRef();
             const tab = (mode, label) => {
                 const active = this._viewMode === mode ? ' re-tab--active' : '';
-                return `<div class="re-tab${active}" onclick="SceneManager._scene.switchView('${mode}')">${label}</div>`;
+                return `<div class="re-tab${active} focusable" tabindex="0" data-focus-key="re-tab-${mode}" onclick="${sref}.switchView('${mode}')">${label}</div>`;
             };
             return `<div class="re-tabs">
                 ${tab('properties', T('RealEstate.ui.properties'))}
@@ -1385,7 +1406,7 @@
             return `
                 <div class="left-page">
                     <div class="page-header-bar">
-                        <div class="back-button" onclick="SceneManager._scene.popScene()">${dismissText}</div>
+                        <div class="back-button focusable" tabindex="0" data-focus-key="re-dismiss" onclick="${this.sceneRef()}.dismiss()">${dismissText}</div>
                         <h2 class="title">${registryTitle}</h2>
                     </div>
                     ${this.buildTabBarHTML()}
@@ -1466,6 +1487,7 @@
         }
 
         buildCompanyListHTML(companies, selectedIndex) {
+            const sref = this.sceneRef();
             return companies.map((c, idx) => {
                 const isSelected = idx === selectedIndex;
                 const owned = c.sharesOwned > 0;
@@ -1474,7 +1496,7 @@
                     : (T('RealEstate.ui.listed'));
                 const statusColor = owned ? 'var(--text-success-active)' : 'var(--text-primary-hover)';
                 return `
-                    <div class="item-slot ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.selectCompanyItem(${idx})">
+                    <div class="item-slot focusable ${isSelected ? 'selected' : ''}" tabindex="0" data-focus-key="re-co-${c.key}" onclick="${sref}.selectCompanyItem(${idx})">
                         <div class="re-co-bar" style="background:${c.color}"></div>
                         <div class="item-slot-info">
                             <div class="item-slot-name">${c.name}</div>
@@ -1511,10 +1533,15 @@
                 cmds.push({ label: T('RealEstate.ui.buy1'), action: "buy1" });
                 cmds.push({ label: T('RealEstate.ui.buy10'), action: "buy10" });
                 cmds.push({ label: T('RealEstate.ui.buy100'), action: "buy100" });
+                cmds.push({ label: T('RealEstate.ui.buy1000'), action: "buy1000" });
+                cmds.push({ label: T('RealEstate.ui.buy10000'), action: "buy10000" });
             }
             if (company.sharesOwned > 0) {
                 cmds.push({ label: T('RealEstate.ui.sell1'), action: "sell1", danger: true });
                 cmds.push({ label: T('RealEstate.ui.sell10'), action: "sell10", danger: true });
+                cmds.push({ label: T('RealEstate.ui.sell100'), action: "sell100", danger: true });
+                cmds.push({ label: T('RealEstate.ui.sell1000'), action: "sell1000", danger: true });
+                cmds.push({ label: T('RealEstate.ui.sell10000'), action: "sell10000", danger: true });
                 cmds.push({ label: T('RealEstate.ui.sellAll'), action: "sellAll", danger: true });
             }
             if (this._companyCommandIndex >= cmds.length) this._companyCommandIndex = Math.max(0, cmds.length - 1);
@@ -1522,7 +1549,7 @@
             const commandsHTML = cmds.map((cmd, cIdx) => {
                 const isSel = cIdx === this._companyCommandIndex && this._dndFocusSection === 'commands';
                 const mod = cmd.danger ? ' inspect-btn--danger' : '';
-                return `<div class="inspect-btn${mod} ${isSel ? 'selected' : ''}" onclick="SceneManager._scene.executeCompanyCommand('${cmd.action}')">${cmd.label}</div>`;
+                return `<div class="inspect-btn${mod} focusable ${isSel ? 'selected' : ''}" tabindex="0" data-focus-key="re-co-cmd-${cmd.action}" onclick="${sref}.executeCompanyCommand('${cmd.action}')">${cmd.label}</div>`;
             }).join('');
 
             const desc = company.description;
@@ -1546,6 +1573,16 @@
                     ${desc ? `<div class="inspect-bullet-item estate-07">${desc}</div>` : ''}
                     <div class="inspect-actions estate-08">${commandsHTML}</div>
                 </div>`;
+        }
+
+        // Leaving the registry: pop the scene, or close the OS window the app
+        // is drawn in.
+        dismiss() {
+            if (this._isAppMode) {
+                if (window.HypernetRealEstateApp) window.HypernetRealEstateApp.close();
+                return;
+            }
+            this.popScene();
         }
 
         selectPropertyItem(index) {
@@ -1574,7 +1611,7 @@
                 return; // Navigation will handle page transition
             } else if (action === 'back') {
                 SoundManager.playCancel();
-                this.popScene();
+                this.dismiss();
                 return;
             }
             this.refreshUIRealEstateDOM();
@@ -1642,8 +1679,8 @@
         getActiveCompanyCommands(company) {
             const cmds = [];
             if (!company) return cmds;
-            if (company.available > 0) cmds.push('buy1', 'buy10', 'buy100');
-            if (company.sharesOwned > 0) cmds.push('sell1', 'sell10', 'sellAll');
+            if (company.available > 0) cmds.push('buy1', 'buy10', 'buy100', 'buy1000', 'buy10000');
+            if (company.sharesOwned > 0) cmds.push('sell1', 'sell10', 'sell100', 'sell1000', 'sell10000', 'sellAll');
             return cmds;
         }
 
@@ -1654,8 +1691,13 @@
             if (action === 'buy1') ok = $realEstateManager.buyShares(company.key, 1);
             else if (action === 'buy10') ok = $realEstateManager.buyShares(company.key, 10);
             else if (action === 'buy100') ok = $realEstateManager.buyShares(company.key, 100);
+            else if (action === 'buy1000') ok = $realEstateManager.buyShares(company.key, 1000);
+            else if (action === 'buy10000') ok = $realEstateManager.buyShares(company.key, 10000);
             else if (action === 'sell1') ok = $realEstateManager.sellShares(company.key, 1);
             else if (action === 'sell10') ok = $realEstateManager.sellShares(company.key, 10);
+            else if (action === 'sell100') ok = $realEstateManager.sellShares(company.key, 100);
+            else if (action === 'sell1000') ok = $realEstateManager.sellShares(company.key, 1000);
+            else if (action === 'sell10000') ok = $realEstateManager.sellShares(company.key, 10000);
             else if (action === 'sellAll') ok = $realEstateManager.sellShares(company.key, company.sharesOwned);
 
             if (ok) SoundManager.playShop();
@@ -1671,6 +1713,9 @@
         }
 
         update() {
+            // In app mode the OS focus ring walks every '.focusable' control;
+            // reading Input here too would double-process every keypress.
+            if (this._isAppMode) return;
             super.update();
 
             if (this._dndContainer) {
@@ -1690,7 +1735,7 @@
 
                 if (Input.isTriggered('cancel') || Input.isTriggered('escape')) {
                     SoundManager.playCancel();
-                    this.popScene();
+                    this.dismiss();
                 }
 
                 if (moved) {
@@ -2049,23 +2094,97 @@
         }
     };
 
+
+    // ========================================================================
+    // HypernetRealEstateApp - the registry as a window on the hyperdeck desktop
+    // ========================================================================
+    window.HypernetRealEstateApp = {
+        appInstance: null,
+        win: null,
+        launch: function () {
+            if (!window.HypernetWindowManager) {
+                SceneManager.push(Scene_RealEstate);
+                return;
+            }
+            ensureRealEstateManager();
+            if (this.win && document.getElementById('app-real-estate')) {
+                window.HypernetWindowManager.bringToFront(this.win);
+                return;
+            }
+            this.win = window.HypernetWindowManager.createWindow({
+                id: 'app-real-estate',
+                title: T('RealEstate.ui.appName'),
+                icon: 84,
+                width: 1000,
+                height: 660,
+                contentHTML: '<div id="real-estate-content" style="width:100%; height:100%; display:flex; flex-direction:column; background:#ece9d8; overflow:hidden"></div>'
+            });
+            this.appInstance = new Scene_RealEstate();
+            this.appInstance._isAppMode = true;
+            this.appInstance.create();
+            this.win.addEventListener('hypernet-closed', () => {
+                if (this.appInstance) {
+                    this.appInstance.terminate();
+                    this.appInstance = null;
+                }
+                this.win = null;
+            });
+        },
+        close: function () {
+            if (this.win && window.HypernetOS && window.HypernetOS.WindowManager) {
+                window.HypernetOS.WindowManager.closeWindow(this.win);
+            } else if (this.win && window.HypernetWindowManager && window.HypernetWindowManager.closeWindow) {
+                window.HypernetWindowManager.closeWindow(this.win);
+            }
+        },
+        update: function () {
+            // Prices and rents move on the world clock, so repaint the open
+            // window whenever the day the registry ran on has rolled over.
+            if (!this.appInstance || !this.win || !$realEstateManager) return;
+            const key = realEstateDayKey();
+            if (this._paintedDayKey !== key) {
+                this._paintedDayKey = key;
+                this.appInstance.refreshUIRealEstateDOM();
+            }
+        }
+    };
+
+    function openRealEstate() {
+        ensureRealEstateManager();
+        if (window.HypernetOS && SceneManager._scene instanceof Scene_HypernetOS) {
+            window.HypernetRealEstateApp.launch();
+        } else {
+            SceneManager.push(Scene_RealEstate);
+        }
+    }
+
     // Plugin commands
     PluginManager.registerCommand(pluginName, 'openRealEstateMenu', args => {
-        ensureRealEstateManager();
-        SceneManager.push(Scene_RealEstate);
+        openRealEstate();
     });
 
-    if (window.HypernetOS) {
+    function registerRealEstateApp() {
+        if (!window.HypernetOS) return false;
         window.HypernetOS.registerApp({
             id: 'app-real-estate',
             name: T('RealEstate.ui.appName'),
             icon: 84,
-            launchFn: function() {
+            launchFn: function () {
                 ensureRealEstateManager();
-                SceneManager.push(Scene_RealEstate);
+                if (window.HypernetWindowManager) window.HypernetRealEstateApp.launch();
+                else SceneManager.push(Scene_RealEstate);
             },
             desktopShortcut: true
         });
+        return true;
+    }
+
+    if (!registerRealEstateApp()) {
+        const _Scene_Boot_create_RealEstate = Scene_Boot.prototype.create;
+        Scene_Boot.prototype.create = function () {
+            _Scene_Boot_create_RealEstate.call(this);
+            registerRealEstateApp();
+        };
     }
 
 

@@ -113,7 +113,7 @@
     },
     "descState": {
         "enemySpawnMode": [
-            "Biome: anything living here can appear. Seven spawns in ten are any level up to 110, all equally likely, so the place decides what you meet; the other three are pitched within five levels of your party, climbing with the year.",
+            "Biome: anything living here can appear. Half the spawns are pitched within five levels of your party; the other half is the whole ladder the place holds, spread around a median the year sets, so weak and far stronger creatures both turn up, just more rarely.",
             "Party Level: enemies keep pace with your party. Roamers run from your own level up to ten above it; each tile hides one boss above that. The safest option.",
             "Realistic: difficulty comes from the place, not from you. Levels rise the further a tile lies from where you started. Each nation and biome has its own roster, and every tile hides a boss.",
             "Chaos: levels 1-110 roam anywhere, any biome. Procedural maps redeal their monsters on every entry."

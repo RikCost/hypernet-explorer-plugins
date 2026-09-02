@@ -1,56 +1,64 @@
 {
   "topic": {
     "crimeWave": [
-      "Terzo furto in casa nella mia via questo mese. Chiudete a chiave.",
-      "Adesso c'è una guardia a ogni angolo. Era ora, con tutto questo rubare.",
-      "Dopo il tramonto per {group} non ci passo più. Non di questi tempi.",
-      "Dicono che la stretta funziona. Io dico tieniti stretta la borsa.",
-      "Conoscono tutti qualcuno a cui hanno rubato qualcosa. Tutti."
+      "{Terzo|Quarto|Secondo} furto in casa nella mia via questo mese. {Chiudete a chiave|Sbarrate le finestre|Tenete la porta chiusa}.",
+      "Adesso c'è una guardia a ogni angolo. {Era ora|Non un giorno troppo presto|E non bastano ancora}, con tutto questo {rubare|andirivieni|malaffare}.",
+      "Dopo il tramonto per {group} non ci passo più. {Non di questi tempi|Non da primavera|Nessuno con la testa lo fa}.",
+      "Dicono che la stretta {funziona|serve|li sta prendendo}. Io dico {tieniti stretta la borsa|occhio alle tasche|lo credo quando lo vedo}.",
+      "Conoscono tutti qualcuno a cui hanno {rubato qualcosa|svuotato casa|alleggerito le tasche}. {Tutti|Proprio tutti|Chiedi a chi vuoi}.",
+      "{Qualcuno|Un vicino|Una donna} è stato {seguito fino a casa|aggredito|alleggerito della borsa} due vie più in là. {In pieno giorno|All'imbrunire|Con il sole alto}."
     ],
     "boom": [
-      "Lavoro dappertutto! A {group} non si vedevano annate così da un pezzo.",
-      "Mio cugino l'hanno assunto il giorno stesso che ha chiesto. Il giorno stesso!",
-      "A {group} girano soldi. Perfino i mendicanti fanno gli schizzinosi.",
-      "Se non trovi lavoro in questa stagione vuol dire che non lo stai cercando.",
-      "Con la ripresa salgono anche gli affitti. C'è sempre il rovescio della medaglia."
+      "Lavoro {dappertutto|a ogni angolo|per chiunque lo chieda}! A {group} non si vedevano annate così da {un pezzo|una generazione|che ho memoria}.",
+      "Mio cugino l'hanno assunto il {giorno|mattino|momento} stesso che ha chiesto. Il giorno stesso!",
+      "A {group} {girano soldi|i soldi corrono|si muove denaro}. Perfino i {mendicanti|venditori ambulanti|garzoni} fanno gli schizzinosi.",
+      "Se non trovi lavoro in questa stagione vuol dire che {non lo stai cercando|dormi|non ci provi}.",
+      "Con la ripresa salgono anche {gli affitti|i prezzi|pane e affitto}. {C'è sempre il rovescio della medaglia|C'è sempre una fregatura|Niente è gratis}.",
+      "I {magazzini|cantieri|laboratori} adesso vanno {fino a notte|su due turni|anche di domenica}."
     ],
     "bust": [
-      "Metà delle botteghe della mia via ha le luci spente. Tempi duri.",
-      "A {group} non assume nessuno. Nessuno.",
-      "Ho visto tre amici perdere il posto in questa stagione. Tre.",
-      "Quando il lavoro finisce la gente si dispera. Si sente nell'aria.",
-      "Stringi la cinghia. Questa crisi con {group} non ha ancora finito."
+      "Metà delle botteghe della mia via ha {le luci spente|le assi alle finestre|la saracinesca giù}. {Tempi duri|Brutta stagione|Anni magri}.",
+      "A {group} non assume nessuno. {Nessuno|Nemmeno uno|Neanche per carità}.",
+      "Ho visto {tre|quattro|due} amici perdere il posto in questa stagione. {Tre|Quattro|Due}.",
+      "Quando il lavoro finisce la gente si {dispera|fa pericolosa|fa avventata}. {Si sente nell'aria|Lo vedi in faccia|Si respira}.",
+      "{Stringi la cinghia|Metti da parte|Non spendere niente}. Questa {crisi|invernata|storia} con {group} non ha ancora finito.",
+      "Il {mulino|cantiere|porto} ha mandato via {una dozzina di persone|metà squadra|i più giovani} {venerdì|il giorno di mercato|tutti in una mattina}."
     ],
     "festival": [
-      "Ci vai a {festival}? Ci vanno tutti.",
-      "Per strada c'è odore di frittelle e olio di lampada. Adoro {festival}.",
-      "La settimana più bella dell'anno, {festival}! Occhio alle tasche, però, con tutta quella calca.",
-      "Ho ballato fino all'alba. {festival} capita una volta l'anno."
+      "Ci vai a {festival}? {Ci vanno tutti|Ci va tutta la via|Ci va sempre tutti}.",
+      "Per strada c'è odore di {frittelle e olio di lampada|zucchero e fumo|vino e caramello bruciato}. {Adoro|Aspetto tutto l'anno|Vivo per} {festival}.",
+      "{La settimana più bella dell'anno|I giorni migliori dell'anno|L'unica settimana che conta}, {festival}! {Occhio alle tasche|Tieni la borsa stretta|Una mano sui soldi}, però, con tutta quella calca.",
+      "Ho ballato fino {all'alba|a lampade spente|a non sentire i piedi}. {festival} capita una volta l'anno.",
+      "Hanno tirato su {le lanterne|le bandierine|mezza piazza} per {festival} {in una notte|stamattina|mentre dormivo}."
     ],
     "epidemic": [
-      "Copriti la bocca. In giro c'è {epidemic}.",
-      "Nel mio vicolo due case sono sbarrate per {epidemic}. Gira alla larga.",
-      "I mercati sono mezzi vuoti. Nessuno vuole beccarsi {epidemic}.",
-      "Lavati le mani, forestiero. A {epidemic} non interessa chi sei."
+      "{Copriti la bocca|Stammi lontano|Fatti in là}. In giro c'è {epidemic}.",
+      "Nel mio vicolo {due|tre|quattro} case sono {sbarrate|sigillate|segnate} per {epidemic}. {Gira alla larga|Non passarci|Cambia strada}.",
+      "I mercati sono {mezzi vuoti|deserti|spogli}. Nessuno vuole beccarsi {epidemic}.",
+      "{Lavati le mani|Fai bollire l'acqua|Sta' pulito}, forestiero. A {epidemic} {non interessa chi sei|non guarda in faccia nessuno|va bene chiunque}.",
+      "{Il medico|Lo speziale|La guaritrice} è {in piedi da stanotte|di casa in casa|senza fiato} per {epidemic}."
     ],
     "headline": [
-      "L'hai sentita? {headline}",
-      "Non si parla d'altro: {headline}",
-      "Sul giornale c'è scritto: {headline}, in che tempi viviamo."
+      "{L'hai sentita|Hai sentito|La sai la novità}? {headline}",
+      "Non si parla {d'altro|che di questo|di nient'altro}: {headline}",
+      "{Sul giornale|Il banditore|La radio} c'è scritto: {headline}. {In che tempi viviamo|Fanne quello che vuoi|Credici se ci riesci}."
     ],
     "outlaw": [
-      "Quella faccia mi dice qualcosa... non c'era un avviso di taglia?",
-      "Occhi aperti. Ultimamente in giro c'è gente ricercata.",
-      "La guardia va in giro con un ritratto. Ti somigliava parecchio, forestiero."
+      "Quella faccia {mi dice qualcosa|l'ho già vista|non mi è nuova}... non c'era {un avviso di taglia|un ritratto sul muro|un foglio di ricercato}?",
+      "{Occhi aperti|Cammina dritto|Attento a te}. Ultimamente in giro c'è {gente ricercata|brutta gente|facce segnate}.",
+      "La guardia va in giro con un ritratto. Ti somigliava {parecchio|molto|in modo imbarazzante}, forestiero.",
+      "Una di quelle facce sul muro vale {bei soldi|più di quanto guadagno in un anno|una paga annuale}."
     ],
     "market": {
       "bullish": [
-        "Il mio agente dice che il petrolio da qui sale e basta. Comprano tutti.",
-        "Adesso giocano in borsa perfino gli scaricatori di porto. Bei tempi."
+        "Il mio agente dice che {il petrolio|il titolo|tutto} da qui {sale e basta|non può che salire|va su}. {Comprano tutti|Compra tutta la via|Non vende nessuno}.",
+        "Adesso giocano in borsa perfino gli {scaricatori di porto|scaricatori|pescivendoli}. {Bei tempi|Strani tempi|È così che si capisce}.",
+        "L'ho raddoppiato in {una stagione|un mese|sei settimane}. {Sulla carta|Per ora|Finora}."
       ],
       "bearish": [
-        "Ho venduto tutto prima che valesse zero. Il mercato è marcio.",
-        "Adesso i risparmi in borsa non mettercela. Fidati."
+        "Ho venduto tutto prima che valesse {zero|carta straccia|niente}. Il mercato è {marcio|a picco|finito}.",
+        "Adesso i risparmi in borsa non mettercela. {Fidati|Te lo dico io|Dammi retta}.",
+        "{Qualcuno|Un tale|Un signore} si è {rovinato|giocato tutto|buttato} per la borsa {la settimana scorsa|martedì|questo mese}."
       ]
     },
     "earthDestroyed": {

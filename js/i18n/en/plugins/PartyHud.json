@@ -19,5 +19,9 @@
   "craving": "Craving {substance}",
   "ill": "{disease}",
   "illUntreated": "{disease} (untreated)"
+ },
+ "gear": {
+  "held": "[{list}]",
+  "separator": ", "
  }
 }

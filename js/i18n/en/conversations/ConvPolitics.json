@@ -1,87 +1,91 @@
 {
   "stance": {
     "support": [
-      "Say what you like about {head}, the {power} has never run smoother.",
-      "The {party} understands people like me. I'd vote for them twice if I could.",
-      "{head} is the only {title} in living memory worth the chair.",
-      "Things are finally moving in the right direction under the {party}.",
-      "My grandparents would be proud of what the {power} is becoming.",
-      "I put a {party} pin on my coat and I wear it everywhere.",
-      "Whatever the grumblers say, {head} inherited a mess and is cleaning it up.",
-      "Strong leadership, steady hands. That's all I ask, and that's what we have."
+      "Say what you like about {head}, the {power} has never run {smoother|better|this well}.",
+      "The {party} {understands|actually listens to|speaks for} people like me. I'd vote for them {twice if I could|again tomorrow|with both hands}.",
+      "{head} is the only {title} in living memory {worth the chair|fit for the job|I would trust with it}.",
+      "Things are {finally moving in the right direction|steadier|looking up} under the {party}.",
+      "My {grandparents|father|family} would be proud of what the {power} is {becoming|growing into|making of itself}.",
+      "I put a {party} pin on my coat and I wear it {everywhere|proudly|where people can see it}.",
+      "Whatever the {grumblers|complainers|cynics} say, {head} inherited a mess and is {cleaning it up|putting it right|doing the work}.",
+      "{Strong leadership, steady hands|Order and a firm hand|Quiet competence}. That's all I ask, and that's what we have.",
+      "For once the {power} is {run properly|in careful hands|not a shambles}, and nobody wants to admit it."
     ],
     "oppose": [
-      "Don't get me started on {head}. Worst {title} the {power} has ever suffered.",
-      "The {party} bought this government and now we're all paying the interest.",
-      "Every promise {head} made has quietly evaporated. Typical.",
-      "The {power} deserves better than this circus they call a government.",
-      "One more term of the {party} and there'll be nothing left to govern.",
-      "I didn't vote for this, and I know plenty who say the same.",
-      "They call it order. I call it a boot on our necks.",
-      "Someone ought to ask {head} where all the money actually went."
+      "Don't get me started on {head}. {Worst|The most useless|The sorriest} {title} the {power} has ever {suffered|endured|been saddled with}.",
+      "The {party} {bought this government|paid for the chair|owns every seat} and now we're all paying the {interest|price|bill}.",
+      "Every promise {head} made has {quietly evaporated|gone the way of the rest|been forgotten}. {Typical|Naturally|Of course}.",
+      "The {power} deserves better than this {circus|farce|shambles} they call a government.",
+      "One more term of the {party} and there'll be {nothing left to govern|nothing left|only the debts}.",
+      "I didn't vote for this, and I {know plenty who say the same|am not the only one|hear the same on every street}.",
+      "They call it {order|stability|discipline}. I call it {a boot on our necks|theft with paperwork|being told to be grateful}.",
+      "Someone ought to ask {head} where all the money {actually went|really goes|has gone}.",
+      "{Naturally|Of course|Typical} the {party} found coin for {itself|its friends|the capital} and none for us."
     ],
     "apathetic": [
-      "Politics? I have enough trouble keeping bread on the table.",
-      "{title} this, {election} that... none of it changes my rent.",
-      "They're all the same once they're in the chair, if you ask me.",
-      "I stopped reading the proclamations years ago. Better for the digestion.",
-      "Whoever wins, I'll still be up at dawn doing the same work.",
-      "My neighbor won't shut up about the {party}. I just nod and think about lunch."
+      "Politics? I have {enough trouble keeping bread on the table|other worries|a shift in the morning}.",
+      "{title} this, {election} that... {none of it changes my rent|it changes nothing|my rent stays the same}.",
+      "They're all {the same once they're in the chair|the same|indistinguishable}, if you ask me.",
+      "I stopped {reading the proclamations|following it|listening} years ago. {Better for the digestion|Better for the nerves|Much happier for it}.",
+      "Whoever wins, I'll {still be up at dawn doing the same work|be at the same bench|owe the same rent}.",
+      "My {neighbour|cousin|landlord} won't shut up about the {party}. I just {nod|nod and think about lunch|let it wash past}.",
+      "{Whatever|Fine|Suppose so}. {It hardly matters|Same as it ever was|Not my business}."
     ],
     "radical": [
-      "Talk changes nothing. The {power} needs fire, not another {election}.",
-      "When the time comes, everyone will have to pick a side. I've picked mine.",
-      "The {party} is the only thing standing between us and the abyss, history will vindicate us.",
-      "They laughed at us in the squares. They won't laugh forever.",
-      "Every empire looks eternal the week before it falls.",
-      "I keep a list of everyone who said it couldn't be done."
+      "Talk changes nothing. The {power} needs {fire|a reckoning|the whole thing torn down}, not another {election}.",
+      "When the time comes, everyone will have to {pick a side|choose|stand somewhere}. I've picked mine.",
+      "The {party} is the only thing standing between us and {the abyss|the dark|ruin}. {History will vindicate us|We will be proved right|Time will tell it}.",
+      "They laughed at us in the {squares|streets|meeting halls}. They won't laugh {forever|much longer|when it comes}.",
+      "Every {empire|regime|order} looks eternal the {week|season|year} before it falls.",
+      "I keep a list of everyone who said it {couldn't be done|would never happen|was impossible}."
     ]
   },
   "election": {
     "upcoming": [
-      "Only {days} days until the {election}. You can feel it in the streets.",
-      "The {election} is {days} days off and the candidates are already at each other's throats.",
-      "{days} days left. I haven't decided, and don't you dare try to convince me.",
-      "They've started painting slogans on the walls again, {election} season.",
-      "Everyone smiles more before a {election}. It never lasts.",
-      "I'm told the {election} is in {days} days. The bunting is already up."
+      "Only {days} days until the {election}. You can {feel it in the streets|smell it|hear it in every tavern}.",
+      "The {election} is {days} days off and the candidates are already {at each other's throats|slinging mud|shouting}.",
+      "{days} days left. I {haven't decided|am still weighing it|refuse to say}, and {don't you dare try to convince me|do not start|spare me the speech}.",
+      "They've started {painting slogans on the walls|papering the walls|shouting from carts} again. {election} season.",
+      "Everyone {smiles more|is suddenly friendly|remembers your name} before a {election}. It never lasts.",
+      "I'm told the {election} is in {days} days. The {bunting|banner|platform} is already up."
     ],
     "won": [
-      "My side actually won the last {election}. I'm still not used to it.",
-      "I voted for {winner} and for once it counted for something.",
-      "We won! Now let's see if they remember us little people.",
-      "There was dancing in our street the night {winner} took it.",
-      "I keep the victory broadsheet folded in my coat pocket."
+      "My side actually won the last {election}. I'm still {not used to it|waiting for the catch|blinking at it}.",
+      "I voted for {winner} and for once it {counted for something|mattered|was not wasted}.",
+      "We won! Now let's see if they {remember us little people|keep a word of it|come back to this street}.",
+      "There was {dancing|singing|drinking} in our street the night {winner} took it.",
+      "I keep the victory {broadsheet|notice|paper} folded in my {coat pocket|drawer|good coat}."
     ],
     "lost": [
-      "{winner} won. I still can't believe people fell for it.",
-      "My vote went straight into the gutter, as usual.",
-      "The {election} was decided before a single vote, mark my words.",
-      "We'll be back. Losing one {election} isn't losing the argument.",
-      "I don't talk politics with my cousin anymore. Not since {winner} won."
+      "{winner} won. I still can't believe people {fell for it|voted for that|were taken in}.",
+      "My vote went {straight into the gutter|nowhere|into a hole in the ground}, {as usual|as always|naturally}.",
+      "The {election} was decided {before a single vote|in a back room|months ago}, {mark my words|you may quote me|and everyone knows it}.",
+      "We'll be back. Losing one {election} isn't {losing the argument|the end|losing}.",
+      "I don't talk politics with my {cousin|brother|neighbour} anymore. Not since {winner} won."
     ]
   },
   "rumor": [
-    "They say {rumorSubject} is mixed up in some {rumorKind}. I heard it from three people.",
-    "Have you heard about {rumorSubject}? Something about a {rumorKind}. Hush-hush.",
-    "Everyone at the market is whispering about {rumorSubject} and that {rumorKind} business.",
-    "I don't spread gossip... but {rumorSubject}? A {rumorKind}? Where there's smoke...",
-    "My barber swears the {rumorSubject} {rumorKind} story is true. Barbers know things.",
-    "If even half of what they say about {rumorSubject} is true, heads will roll."
+    "They say {rumorSubject} is {mixed up in|neck deep in|behind} some {rumorKind}. I heard it from {three people|two separate people|someone who would know}.",
+    "Have you heard about {rumorSubject}? Something about a {rumorKind}. {Hush-hush|Keep it quiet|Not so loud}.",
+    "Everyone at the {market|well|tavern} is {whispering|talking|muttering} about {rumorSubject} and that {rumorKind} business.",
+    "I don't {spread gossip|repeat things|listen to talk}... but {rumorSubject}? A {rumorKind}? {Where there's smoke|You have to wonder|Draw your own conclusion}...",
+    "My {barber|landlady|cousin at the customs house} swears the {rumorSubject} {rumorKind} story is true. {Barbers know things|She hears everything|He would know}.",
+    "If even half of what they say about {rumorSubject} is true, {heads will roll|somebody hangs|it all comes down}."
   ],
   "grumble": [
-    "Between you and me, {gripe} is bleeding us dry.",
+    "Between {you and me|us|ourselves}, {gripe} is {bleeding us dry|the ruin of us|quietly killing this town}.",
     "I could live with everything else if it weren't for {gripe}.",
-    "They expect us to smile and thank them for {gripe}. Unbelievable.",
-    "My father never had to put up with anything like {gripe}.",
-    "First it was temporary, now {gripe} is just... life.",
-    "Someone in the capital got promoted for inventing {gripe}, I guarantee it."
+    "They expect us to {smile and thank them|be grateful|say nothing} for {gripe}. {Unbelievable|The nerve|Imagine that}.",
+    "My {father|mother|grandfather} never had to put up with anything like {gripe}.",
+    "First it was {temporary|for one season|an emergency measure}, now {gripe} is just... {life|permanent|how it is}.",
+    "Someone in the capital got {promoted|a medal|a fat office} for inventing {gripe}, I {guarantee it|would bet on it|am certain}."
   ],
   "officeHolder": [
-    "Being {office} of {group} is mostly paperwork and complaints. Mostly complaints.",
-    "They call me {office} now. My mother finally tells the neighbors about me.",
-    "Everyone wants a favor from the {office}. Few remember the {office} at festival time.",
-    "I never wanted to be {office}, but somebody competent had to do it."
+    "Being {office} of {group} is mostly {paperwork and complaints|signatures and grievances|listening}. Mostly complaints.",
+    "They call me {office} now. My mother finally {tells the neighbours about me|has something to boast of|approves}.",
+    "Everyone wants {a favour|a word|a signature} from the {office}. Few remember the {office} at {festival time|the end of the season|any other time}.",
+    "I never wanted to be {office}, but {somebody competent had to do it|nobody else would|the alternative was worse}.",
+    "{Duty|The office|The work} does not care {what I wanted|how I feel|whether I sleep}."
   ],
   "debate": [
     {
@@ -89,19 +93,19 @@
       "lines": [
         [
           0,
-          "Did you follow the last election? A disgrace."
+          "Did you follow the last election? {A disgrace|An embarrassment|A stitch-up}."
         ],
         [
           1,
-          "You say that every time your side loses."
+          "You say that {every time your side loses|whenever you lose|each and every time}."
         ],
         [
           0,
-          "My side? I vote on principle, not habit!"
+          "My side? I vote on {principle|conscience|reason}, not habit!"
         ],
         [
           1,
-          "Funny how your principles always pick the same color."
+          "Funny how your principles {always pick the same colour|never change their coat|vote the same way twice}."
         ]
       ]
     },
@@ -110,11 +114,11 @@
       "lines": [
         [
           0,
-          "Taxes again. The capital eats and we starve."
+          "Taxes again. The capital {eats|feasts|grows fat} and we {starve|scrape|count coppers}."
         ],
         [
           1,
-          "Roads, guards, festivals, you think those are free?"
+          "{Roads, guards, festivals|Roads and walls|Guards and grain stores}, you think those are free?"
         ],
         [
           0,
@@ -122,7 +126,7 @@
         ],
         [
           1,
-          "Then run for office and fix it yourself!"
+          "Then {run for office and fix it yourself|stand for the council|go and mend it}!"
         ]
       ]
     },
@@ -131,19 +135,19 @@
       "lines": [
         [
           0,
-          "The hyperpowers carve up the map like a roast."
+          "The hyperpowers carve up the map like {a roast|a cake|somebody else's dinner}."
         ],
         [
           1,
-          "Better a strong patron than chaos on the border."
+          "Better a strong patron than {chaos on the border|open war|nobody at all}."
         ],
         [
           0,
-          "Until the patron decides your town is the price."
+          "Until the patron decides your town is {the price|the bargaining chip|expendable}."
         ],
         [
           1,
-          "That's why you pick the winning patron."
+          "That's why you {pick the winning patron|choose carefully|back the right one}."
         ]
       ]
     },
@@ -152,19 +156,19 @@
       "lines": [
         [
           0,
-          "Whoever wins these elections, the bread costs more."
+          "Whoever wins these elections, the {bread|rent|firewood} costs more."
         ],
         [
           1,
-          "Politicians change. The queue at the bakery is forever."
+          "Politicians change. The {queue at the bakery|price of flour|line for bread} is forever."
         ],
         [
           0,
-          "Maybe the baker should run things for a while."
+          "Maybe the {baker|miller|woman with the flour} should run things for a while."
         ],
         [
           1,
-          "She'd have my vote. At least she rises early."
+          "She'd have my vote. At least she {rises early|works|keeps her word}."
         ]
       ]
     }

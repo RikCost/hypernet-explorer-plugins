@@ -1364,6 +1364,29 @@
                 }
             }
 
+            // --- Vehicle Headlights ---
+            // A vehicle driving at night throws a beam ahead of itself: the one
+            // the party is riding, and every NPC car in traffic (RoadCarAI marks
+            // its events with _isRoadCar). Only the vehicles that are actually
+            // out on the road, never a parked hull.
+            if ($gamePlayer && typeof $gamePlayer.isInVehicle === 'function' &&
+                $gamePlayer.isInVehicle() && !$gamePlayer.isTransparent()) {
+                this.drawHeadlights(ctx, $gamePlayer.screenX() * s, ($gamePlayer.screenY() - th / 2) * s,
+                    $gamePlayer.direction(), s);
+            }
+            if ($gameMap && typeof $gameMap.events === 'function') {
+                const traffic = $gameMap.events();
+                for (let i = 0; i < traffic.length; i++) {
+                    const car = traffic[i];
+                    if (!car || !car._isRoadCar || car._erased) continue;
+                    if (typeof car.isTransparent === 'function' && car.isTransparent()) continue;
+                    const cx2 = car.screenX() * s;
+                    const cy2 = (car.screenY() - th / 2) * s;
+                    if (cx2 < -260 || cx2 > cw + 260 || cy2 < -260 || cy2 > ch + 260) continue;
+                    this.drawHeadlights(ctx, cx2, cy2, car.direction(), s);
+                }
+            }
+
             // --- Placed Event Lights ---
             if ($gameMap && typeof $gameMap.events === 'function') {
                 const events = $gameMap.events();
@@ -1492,6 +1515,39 @@
             }
 
             this._texture.update();
+        }
+
+        // The pair of beams a vehicle throws in the direction it faces, plus the
+        // small pool of spill light under the lamps themselves.
+        drawHeadlights(ctx, x, y, direction, s) {
+            const angles = { 2: Math.PI / 2, 4: Math.PI, 6: 0, 8: -Math.PI / 2 };
+            const angle = angles[direction];
+            if (angle === undefined) return;
+
+            const len = 300 * s;
+            const nearHalf = 22 * s;
+            const farHalf = 130 * s;
+
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+
+            const beam = ctx.createLinearGradient(0, 0, len, 0);
+            beam.addColorStop(0.0, 'rgba(255, 250, 225, 0.85)');
+            beam.addColorStop(0.35, 'rgba(250, 240, 205, 0.45)');
+            beam.addColorStop(0.75, 'rgba(200, 190, 165, 0.16)');
+            beam.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = beam;
+            ctx.beginPath();
+            ctx.moveTo(0, -nearHalf);
+            ctx.lineTo(len, -farHalf);
+            ctx.lineTo(len, farHalf);
+            ctx.lineTo(0, nearHalf);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+
+            this.drawLightCircle(ctx, x, y, 70 * s, 0.55, 'torch');
         }
 
         drawLightCircle(ctx, x, y, radius, intensity = 1.0, type = 'party') {

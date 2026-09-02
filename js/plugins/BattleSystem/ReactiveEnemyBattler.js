@@ -1344,6 +1344,16 @@
         this._randomYRotation = allowRandom ? (Math.random() * 720 - 360) * Math.PI / 180 : 0;
         this._fxLockedPos = null;   // frozen field-local position of the struck part
         this._fxLockedSeq = -1;     // the enemy._fxHitSeq this lock belongs to
+        // The hit that this animation announces has not landed yet when the
+        // effect starts (the battle log plays the animation, THEN applies the
+        // damage), so remember the target's hit counter as it stands now: while
+        // it is unchanged the effect sits on the body centre, and the moment it
+        // moves the effect re-locks onto the limb that was actually struck.
+        this._fxBaseSeq = null;
+        const _t0 = targets && targets[0];
+        const _b0 = _t0 && _t0._battler;
+        if (_b0 && _b0.isEnemy && _b0.isEnemy()) this._fxBaseSeq = _b0._fxHitSeq || 0;
+        this._fxFlashStopAt = -9999;
     };
 
     // Returns the enemy battler this animation should localise onto IF its struck
@@ -1378,7 +1388,12 @@
             // (not a random limb), keeping skill/Effekseer effects centred on the
             // enemy even in multi-battle.
             if (!pos || seq !== this._fxLockedSeq) {
-                const resolved = spriteset.getBattlerPartPosition(battler, null);
+                // Before the blow lands: the body centre. Once it has landed
+                // (the hit counter moved past the value taken at setup): the
+                // struck limb itself, so the effect finishes on the wound.
+                const partKey = (this._fxBaseSeq !== null && seq !== this._fxBaseSeq)
+                    ? battler._fxLastHitPart : null;
+                const resolved = spriteset.getBattlerPartPosition(battler, partKey);
                 if (resolved) {
                     this._fxLockedPos = pos = resolved;
                     this._fxLockedSeq = seq;
@@ -1403,5 +1418,315 @@
             const rz = this._animation.rotation.z * r;
             this._handle.setRotation(rx, ry, rz);
         }
+    };
+
+    //=========================================================================
+    // Impact punctuation: the model stops on an effect's flash frames
+    //=========================================================================
+    // A skill or spell effect reads as an impact only if the body it lands on
+    // answers it. Every flash frame authored into an animation (the moment the
+    // effect "hits") freezes the target's 3D model for a beat and lights up the
+    // struck limb, so a multi-hit spell punches once per flash instead of
+    // playing over a model that carries on idling. Throttled so an effect built
+    // out of a dense flash train does not lock the pose solid.
+    const FLASH_STOP_MIN_GAP = 10;   // frames between two flash-driven freezes
+
+    const _Sprite_Animation_processFlashTimings = Sprite_Animation.prototype.processFlashTimings;
+    Sprite_Animation.prototype.processFlashTimings = function() {
+        _Sprite_Animation_processFlashTimings.call(this);
+        const timing = this._animation && this._animation.flashTimings
+            ? this._animation.flashTimings.find(t => t.frame === this._frameIndex) : null;
+        if (!timing) return;
+        const now = Graphics.frameCount;
+        if (now - this._fxFlashStopAt < FLASH_STOP_MIN_GAP) return;
+        this._fxFlashStopAt = now;
+        const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+        if (!spriteset || !spriteset.get3DModel) return;
+        // Scale the freeze with the flash itself: a faint tick barely stops the
+        // pose, a full white flash hangs it.
+        const alpha = Math.max(0, Math.min(255, (timing.color && timing.color[3]) || 0));
+        const intensity = 0.25 + (alpha / 255) * 0.45;
+        for (const target of (this._targets || [])) {
+            const battler = target && target._battler;
+            if (!battler) continue;
+            const model = spriteset.get3DModel(battler);
+            if (!model) continue;
+            if (model.triggerHitStop) model.triggerHitStop(intensity);
+            if (model.flashBodyPart && battler._fxLastHitPart) {
+                model.flashBodyPart(battler._fxLastHitPart);
+            }
+        }
+    };
+
+    //=========================================================================
+    // Damage numbers
+    //=========================================================================
+    // The popup is the readout of the same impact: it is thrown from the limb
+    // that was struck (3D mode), snaps in at a punched-up scale, and clears the
+    // screen quickly instead of drifting for a second and a half.
+    const DMG_POP_FRAMES = 8;        // scale punch-in
+    const DMG_LIFE = 80;             // total popup life (vanilla: 90)
+    const DMG_RISE_FRAMES = 16;      // how long the number climbs off the wound
+    const DMG_RISE_PX = 34;          // how far it climbs, in game pixels
+    const DMG_ANCHOR_UP = 40;        // it stands this far above its anchor point
+
+    const _Sprite_Battler_createDamageSprite = Sprite_Battler.prototype.createDamageSprite;
+    Sprite_Battler.prototype.createDamageSprite = function() {
+        _Sprite_Battler_createDamageSprite.call(this);
+        const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+        const battler = this._battler;
+        if (!spriteset || !spriteset.getBattlerPartPosition || !battler) return;
+        if (!battler.isEnemy || !battler.isEnemy()) return;
+        const pos = spriteset.getBattlerPartPosition(battler, battler._fxLastHitPart);
+        if (!pos) return;
+        const sprite = this._damages[this._damages.length - 1];
+        if (!sprite) return;
+        // Stack repeats of the same batch upward off the wound rather than
+        // piling every number on one point.
+        const idx = this._damages.length - 1;
+        sprite.x = pos.x + idx * 8;
+        sprite.y = pos.y - idx * 16;
+    };
+
+    const _Sprite_Damage_initialize = Sprite_Damage.prototype.initialize;
+    Sprite_Damage.prototype.initialize = function() {
+        _Sprite_Damage_initialize.call(this);
+        this._duration = DMG_LIFE;
+        this._popFrame = 0;
+        this._isCritical = false;
+        this._domEl = null;
+        this._domText = '';
+        this._domMiss = false;
+    };
+
+    const _Sprite_Damage_setup = Sprite_Damage.prototype.setup;
+    Sprite_Damage.prototype.setup = function(target) {
+        const result = target.result();
+        this._isCritical = !!(result && result.critical);
+        _Sprite_Damage_setup.call(this, target);
+    };
+
+    // A critical is told by its own colour and size, so the vanilla red wash
+    // over the digits (which only muddied them) is dropped.
+    Sprite_Damage.prototype.setupCriticalEffect = function() {
+        this._flashColor = [255, 220, 120, 120];
+        this._flashDuration = 14;
+    };
+
+    //-------------------------------------------------------------------------
+    // The popup is HTML, not a canvas sprite
+    //-------------------------------------------------------------------------
+    // The game view is drawn at a low internal resolution and then blown up to
+    // the window, so anything painted into a bitmap arrives on screen soft. The
+    // numbers are the one thing on the battle screen that has to be read at a
+    // glance, so they are lifted out of the renderer and written as DOM over
+    // the canvas, in the same face the party HUD uses. They stay crisp at any
+    // window size, and the sprite behind them is kept only as their clock and
+    // their anchor: it carries no children and paints nothing.
+    const DMG_LAYER_ID = 'damage-popups';
+
+    const DamagePopupDOM = {
+        _layer: null,
+        _style: null
+    };
+    window.DamagePopupDOM = DamagePopupDOM;
+
+    DamagePopupDOM.css = function() {
+        return `
+            #${DMG_LAYER_ID} {
+                position: fixed;
+                left: 0; top: 0;
+                width: 0; height: 0;
+                overflow: visible;
+                pointer-events: none;
+                z-index: 190;
+                font-family: 'Lora', serif;
+            }
+            #${DMG_LAYER_ID} .dmg-pop {
+                position: absolute;
+                left: 0; top: 0;
+                white-space: nowrap;
+                font-weight: 700;
+                line-height: 1;
+                letter-spacing: -0.02em;
+                will-change: transform, opacity;
+                transform-origin: 50% 100%;
+            }
+            #${DMG_LAYER_ID} .dmg-layer {
+                position: absolute;
+                left: 0; top: 0;
+                transform: translate(-50%, -100%);
+            }
+            /* The rim is a separate copy sitting under the face, so the stroke
+               grows outwards only and never eats into the digits. */
+            #${DMG_LAYER_ID} .dmg-stroke {
+                -webkit-text-stroke: 5px rgba(10, 8, 14, 0.92);
+                color: rgba(10, 8, 14, 0.92);
+                text-shadow: 0 3px 6px rgba(0, 0, 0, 0.75);
+            }
+            #${DMG_LAYER_ID} .dmg-fill {
+                background-image: linear-gradient(to bottom, #ffffff 0%, #f4f6fb 45%, #b9c4d6 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+            #${DMG_LAYER_ID} .dmg-heal .dmg-fill {
+                background-image: linear-gradient(to bottom, #ffffff 0%, #8ff2a8 45%, #3f9d5c 100%);
+            }
+            #${DMG_LAYER_ID} .dmg-mp .dmg-fill {
+                background-image: linear-gradient(to bottom, #ffffff 0%, #9dc0ff 45%, #4a6fbd 100%);
+            }
+            #${DMG_LAYER_ID} .dmg-mpheal .dmg-fill {
+                background-image: linear-gradient(to bottom, #ffffff 0%, #c9a6ff 45%, #7a4ec0 100%);
+            }
+            #${DMG_LAYER_ID} .dmg-crit .dmg-fill {
+                background-image: linear-gradient(to bottom, #fffbe8 0%, #ffd45a 45%, #d08a12 100%);
+            }
+            #${DMG_LAYER_ID} .dmg-crit .dmg-stroke {
+                -webkit-text-stroke-width: 6px;
+                text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 0 14px rgba(255, 190, 60, 0.7);
+            }
+            #${DMG_LAYER_ID} .dmg-miss .dmg-fill {
+                background-image: linear-gradient(to bottom, #ffffff 0%, #d8d8d8 45%, #8e8e8e 100%);
+            }
+        `;
+    };
+
+    DamagePopupDOM.layer = function() {
+        if (this._layer && this._layer.parentNode) return this._layer;
+        if (typeof document === 'undefined') return null;
+        const el = document.createElement('div');
+        el.id = DMG_LAYER_ID;
+        document.body.appendChild(el);
+        this._layer = el;
+        if (!this._style) {
+            const style = document.createElement('style');
+            style.textContent = this.css();
+            document.head.appendChild(style);
+            this._style = style;
+        }
+        return el;
+    };
+
+    // Where the canvas is on the page and how far it has been scaled up, so a
+    // popup written in game pixels lands on the body it came from.
+    DamagePopupDOM.view = function() {
+        const canvas = typeof Graphics !== 'undefined' ? Graphics._canvas : null;
+        if (!canvas || !canvas.getBoundingClientRect) return null;
+        const r = canvas.getBoundingClientRect();
+        if (!(r.width > 0) || !(r.height > 0)) return null;
+        return {
+            left: r.left,
+            top: r.top,
+            sx: r.width / Graphics.width,
+            sy: r.height / Graphics.height
+        };
+    };
+
+    // The punch-in curve: a small overshoot that settles back to 1 and holds.
+    DamagePopupDOM.popScale = function(frame) {
+        if (frame >= DMG_POP_FRAMES) return 1;
+        const t = frame / DMG_POP_FRAMES;
+        if (t < 0.75) return 0.35 + (1.18 - 0.35) * t;
+        return 1.18 - (1.18 - 1) * ((t - 0.75) / 0.25);
+    };
+
+    // How far the number has climbed off the wound, by age in frames: thrown
+    // up, then eased back down to the point it was struck at.
+    DamagePopupDOM.riseAt = function(age) {
+        const t = Math.min(age, DMG_RISE_FRAMES) / DMG_RISE_FRAMES;
+        return Math.round(DMG_RISE_PX * Math.sin(t * Math.PI * 0.5) * (1 - 0.35 * t));
+    };
+
+    Sprite_Damage.prototype.popupClass = function() {
+        if (this._domMiss) return 'dmg-miss';
+        if (this._isCritical) return 'dmg-crit';
+        switch (this._colorType) {
+            case 1: return 'dmg-heal';
+            case 2: return 'dmg-mp';
+            case 3: return 'dmg-mpheal';
+            default: return '';
+        }
+    };
+
+    // Vanilla builds one child sprite per digit. Nothing is built at all now:
+    // the text is remembered and handed to the DOM node on the first update.
+    Sprite_Damage.prototype.createMiss = function() {
+        this._domMiss = true;
+        this._domText = (typeof TextManager !== 'undefined' && TextManager.basic)
+            ? String(TextManager.basic(0) || 'Miss') : 'Miss';
+    };
+
+    Sprite_Damage.prototype.createDigits = function(value) {
+        this._domMiss = false;
+        this._domText = Math.abs(value).toString();
+    };
+
+    Sprite_Damage.prototype.createDomPopup = function() {
+        const layer = DamagePopupDOM.layer();
+        if (!layer) return null;
+        const el = document.createElement('div');
+        el.className = ('dmg-pop ' + this.popupClass()).trim();
+        const stroke = document.createElement('div');
+        stroke.className = 'dmg-layer dmg-stroke';
+        stroke.textContent = this._domText;
+        const fill = document.createElement('div');
+        fill.className = 'dmg-layer dmg-fill';
+        fill.textContent = this._domText;
+        el.appendChild(stroke);
+        el.appendChild(fill);
+        layer.appendChild(el);
+        this._domEl = el;
+        return el;
+    };
+
+    Sprite_Damage.prototype.updateDomPopup = function() {
+        if (!this._domText) return;
+        const view = DamagePopupDOM.view();
+        if (!view) return;
+        const el = this._domEl || this.createDomPopup();
+        if (!el) return;
+        const age = DMG_LIFE - this._duration;
+        const rise = DamagePopupDOM.riseAt(age);
+        const k = DamagePopupDOM.popScale(this._popFrame);
+        // A critical shakes itself out over the punch-in.
+        const shake = (this._isCritical && this._popFrame < DMG_POP_FRAMES)
+            ? (1 - this._popFrame / DMG_POP_FRAMES) * 6 * (this._popFrame % 2 ? 1 : -1)
+            : 0;
+        const wt = this.worldTransform;
+        const gx = (wt && wt.tx !== undefined) ? wt.tx : this.x;
+        const gy = (wt && wt.ty !== undefined) ? wt.ty : this.y;
+        const x = view.left + (gx + shake) * view.sx;
+        const y = view.top + (gy - DMG_ANCHOR_UP - rise) * view.sy;
+        el.style.fontSize = (this.fontSize() * view.sy).toFixed(2) + 'px';
+        el.style.transform = 'translate(' + x.toFixed(1) + 'px, ' + y.toFixed(1) + 'px) scale(' + k.toFixed(3) + ')';
+        el.style.opacity = (this.opacity / 255).toFixed(3);
+    };
+
+    Sprite_Damage.prototype.removeDomPopup = function() {
+        if (this._domEl && this._domEl.parentNode) this._domEl.parentNode.removeChild(this._domEl);
+        this._domEl = null;
+    };
+
+    const _Sprite_Damage_update = Sprite_Damage.prototype.update;
+    Sprite_Damage.prototype.update = function() {
+        _Sprite_Damage_update.call(this);
+        if (this._popFrame < DMG_POP_FRAMES) this._popFrame++;
+        this.updateDomPopup();
+    };
+
+    Sprite_Damage.prototype.updateOpacity = function() {
+        if (this._duration < 14) {
+            this.opacity = (255 * this._duration) / 14;
+        }
+    };
+
+    // Every way the popup can leave the screen ends here: the sprite is dropped
+    // by its battler when its clock runs out, and the whole spriteset is thrown
+    // away when the battle ends. A node left behind would hang over the map.
+    const _Sprite_Damage_destroy = Sprite_Damage.prototype.destroy;
+    Sprite_Damage.prototype.destroy = function(options) {
+        this.removeDomPopup();
+        if (_Sprite_Damage_destroy) _Sprite_Damage_destroy.call(this, options);
     };
 })();

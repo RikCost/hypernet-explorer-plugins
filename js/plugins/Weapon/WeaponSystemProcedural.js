@@ -1274,10 +1274,35 @@ var WeaponSystemProcedural = {
           x: obj.position.x, y: obj.position.y, z: obj.position.z,
           rx: obj.rotation.x, ry: obj.rotation.y, rz: obj.rotation.z
         };
+        if (tag === 'cylinder') obj.userData._gunSpinAxis = this.spinAxisOf(obj);
       }
     });
     model._gunParts = parts;
     return parts;
+  },
+
+  /**
+   * Which of a part's own axes it should turn on to index round.
+   *
+   * A cylinder or a barrel cluster turns on the axis that runs down the bore,
+   * and builders get there in different ways: a barrel-cluster Group is laid
+   * out along +Z untouched, while a CylinderGeometry stands on +Y and is then
+   * tilted a quarter turn to lie down the bore. Turning all of them on Z threw
+   * the tilted ones end over end the moment the shot went off, which is what a
+   * pepperbox did every time it fired.
+   */
+  spinAxisOf(obj) {
+    const declared = obj.userData && obj.userData.spin && obj.userData.spin.axis;
+    if (declared) return declared;
+    if (typeof THREE === 'undefined') return 'z';
+    const q = new THREE.Quaternion().setFromEuler(obj.rotation);
+    let best = 'z', bestDot = -1;
+    for (const axis of ['x', 'y', 'z']) {
+      const v = new THREE.Vector3(axis === 'x' ? 1 : 0, axis === 'y' ? 1 : 0, axis === 'z' ? 1 : 0);
+      const dot = Math.abs(v.applyQuaternion(q).z);
+      if (dot > bestDot + 1e-4) { bestDot = dot; best = axis; }
+    }
+    return best;
   },
 
   /** Starts a firing sequence. Called when a firing animation is played. */
@@ -1375,8 +1400,9 @@ var WeaponSystemProcedural = {
     }
     if (parts.cylinder && fire.cylinderTo !== undefined) {
       const r = parts.cylinder.userData._gunRest;
+      const axis = parts.cylinder.userData._gunSpinAxis || 'z';
       const from = fire.cylinderTo - Math.PI / 3;
-      parts.cylinder.rotation.z = r.rz + from + (Math.PI / 3) * Math.min(1, cyc * 1.4);
+      parts.cylinder.rotation[axis] = r['r' + axis] + from + (Math.PI / 3) * Math.min(1, cyc * 1.4);
     }
     if (parts.shell) {
       // The case leaves as the action opens and is gone by the time it shuts.
@@ -2191,7 +2217,10 @@ var WeaponSystemProcedural = {
     // by a share of the height it is drawn at, so a long bow does not float in
     // the middle of the frame the way a pistol would.
     if (this.aimsAtTarget(weapon)) {
-      return { x: 40, y: 20 - screenH * this.screenFractionFor(weapon) * 0.16 };
+      // A firearm is shouldered off to the side rather than held down the
+      // centre line, so it sits a little further right than a bow does.
+      const gunNudge = weapon.wtypeId === 9 ? 30 : 0;
+      return { x: 40 + gunNudge, y: 20 - screenH * this.screenFractionFor(weapon) * 0.16 };
     }
     if (weapon.model3d) return { x: 0, y: 0 };
     // An unarmed fist is built around its wrist, not its own centre (the

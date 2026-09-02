@@ -350,6 +350,40 @@
     return !!(window.$gameSystem && $gameSystem._bloodAndOilMode);
   }
 
+  // ===========================================================================
+  // What a weapon does to a body part
+  // ===========================================================================
+  //
+  // A mace does not take an arm off. Only an edge or a bullet parts a limb from
+  // a body: Light (1), Sword (2), Axe (4), Gun (9), Claw (10) and Spear (12).
+  // Every other weapon type - Heavy, Whip, Staff, Bow, Projectile, Glove - and
+  // bare hands leave the part attached and merely broken. This is the one
+  // answer to "does this blow cut", read by the monster anatomy as well.
+  const CUTTING_WEAPON_TYPES = [1, 2, 4, 9, 10, 12];
+
+  function attackerCanCut(subject) {
+    const s = subject || (window.BattleManager ? BattleManager._subject : null);
+    if (!s || typeof s.weapons !== "function") return false;
+    const weapons = s.weapons() || [];
+    for (const w of weapons) {
+      if (w && CUTTING_WEAPON_TYPES.includes(w.wtypeId)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * What a part's penalty is worth right now. A limb that comes off the body
+   * owes the archetype's full `amount`; one that is only broken owes the
+   * smaller `brokenAmount` (a bruised arm is not an arm on the floor).
+   */
+  function statEffectAmount(statEffect, removed) {
+    if (!statEffect) return 0;
+    if (removed) return statEffect.amount || 0;
+    return statEffect.brokenAmount !== undefined
+      ? statEffect.brokenAmount
+      : (statEffect.amount || 0);
+  }
+
   /**
    * Whether a part comes off the body when it is finished, rather than being
    * ruined in place. Read off the live part when it carries the flag (bodies
@@ -384,9 +418,14 @@
     const live = part || (actor && actor._bodyParts ? actor._bodyParts[partKey] : null);
     if (!isPartBroken(live)) return "";
     if (!isBloodAndOil()) return T('HealthCore.statusBroken');
-    return partCanCutoff(actor, partKey, live)
-      ? T('HealthCore.statusCutOff')
-      : T('HealthCore.statusDestroyed');
+    // The part is still on the body, so it was not cut: either it cannot come
+    // off at all (ruined where it stands) or the blow only broke it.
+    if (live.ruined) {
+      return live._brokenNotCut
+        ? T('HealthCore.statusBroken')
+        : T('HealthCore.statusDestroyed');
+    }
+    return T('HealthCore.statusBroken');
   }
 
   // ===========================================================================
@@ -622,6 +661,7 @@
           multiple: archetypePart.multiple || false,
           statEffect: archetypePart.statEffect || null,
           damageMsg: getArchetypeText(archetypePart.msg) || null,
+          brokenDamageMsg: getArchetypeText(archetypePart.brokenMsg) || null,
           appliedStatEffect: false,
           hpPercent: archetypePart.hpPercent,
           // What the body can hold a weapon in, which is what decides how many
@@ -1034,6 +1074,7 @@
         canCutoff: archetypePart.canCutoff || false,
         statEffect: archetypePart.statEffect || null,
         damageMsg: getArchetypeText(archetypePart.msg),
+        brokenDamageMsg: getArchetypeText(archetypePart.brokenMsg),
         specialEffect: archetypePart.specialEffect || null,
         appliedStatEffect: false,
         canHoldWeapon: !!archetypePart.canHoldWeapon,
@@ -1304,12 +1345,17 @@
 
     if (part.statEffect && part.statEffect.param !== 0) {
       const paramId = part.statEffect.param;
+      const full = statEffectAmount(part.statEffect, true);
       if (!actor._statModifiers) actor._statModifiers = {};
-      if (!part.appliedStatEffect) {
-        actor._statModifiers[paramId] = (actor._statModifiers[paramId] || 0) + part.statEffect.amount;
-      }
+      // The part may already owe its broken penalty (it was ruined before it
+      // came off). Only the difference up to the full amount is added, never the
+      // whole penalty twice.
+      const owed = part.appliedStatEffect
+        ? full - statEffectAmount(part.statEffect, false)
+        : full;
+      actor._statModifiers[paramId] = (actor._statModifiers[paramId] || 0) + owed;
       if (!actor._removedPartDebuffs) actor._removedPartDebuffs = {};
-      actor._removedPartDebuffs[partKey] = { param: paramId, amount: part.statEffect.amount };
+      actor._removedPartDebuffs[partKey] = { param: paramId, amount: full };
     }
 
     forgetPartSkills(actor, part, partKey);
@@ -1344,6 +1390,10 @@
     part.currentHp = 0;
     part.damaged = true;
     part.ruined = true;
+    // A part that COULD have come off and did not was merely broken by this
+    // blow; one that can never come off is ruined where it stands. The two read
+    // differently on every screen and in the log.
+    part._brokenNotCut = partCanCutoff(actor, partKey, part);
 
     forgetPartSkills(actor, part, partKey);
 
@@ -1363,7 +1413,8 @@
     releaseEquipmentForPart(actor, partKey);
 
     var purpleName = "\c[25]" + part.name + "\c[0]";
-    reportPartLoss(T('HealthCore.partRuined', { actor: actor.name(), part: purpleName }));
+    reportPartLoss(T(part._brokenNotCut ? 'HealthCore.partBroken' : 'HealthCore.partRuined',
+                     { actor: actor.name(), part: purpleName }));
     actor.refresh();
   }
 
@@ -1371,10 +1422,23 @@
    * A part has reached zero in Blood and Oil. A vital one kills, one the body
    * can shed is cut off, and anything else is ruined where it stands.
    */
+  /**
+   * Blood and Oil is the only mode where a party member's part can leave the
+   * body, and even there it is a coin toss: half the time the blow takes the
+   * part off (the archetype's msg, the part gone and its full penalty owed),
+   * half the time it only breaks it where it stands (brokenMsg, the smaller
+   * penalty). A part the archetype says cannot come off is never cut.
+   */
+  function rollPartCutoff(actor, partKey, part) {
+    if (!isBloodAndOil()) return false;
+    if (!partCanCutoff(actor, partKey, part)) return false;
+    return Math.random() < 0.5;
+  }
+
   function finishPartInBloodAndOil(actor, partKey) {
     const part = actor._bodyParts ? actor._bodyParts[partKey] : null;
     if (!part) return;
-    if (part.vital || partCanCutoff(actor, partKey, part)) {
+    if (part.vital || part._cutOff) {
       removeBodyPartOnZeroHp(actor, partKey);
     } else {
       destroyPartInPlace(actor, partKey);
@@ -1436,10 +1500,13 @@
         if (!actor._statModifiers[paramId]) {
           actor._statModifiers[paramId] = 0;
         }
-        if (!part.appliedStatEffect) {
-          actor._statModifiers[paramId] += amount;
-          part.appliedStatEffect = true;
-        }
+        // A part that leaves the body owes the archetype's full amount. If it was
+        // already broken it owes only the difference on top of brokenAmount.
+        const fullAmount = statEffectAmount(part.statEffect, true);
+        actor._statModifiers[paramId] += part.appliedStatEffect
+          ? fullAmount - statEffectAmount(part.statEffect, false)
+          : fullAmount;
+        part.appliedStatEffect = true;
         
         // Also save this in a dedicated object so we know which part caused what debuff
         if (!actor._removedPartDebuffs) {
@@ -1514,6 +1581,9 @@
       // Check if the part is now completely damaged
       if (part.currentHp <= 0) {
         part.damaged = true;
+        // Decided before the wound is announced: the log prints the archetype's
+        // msg for a part that comes off and its brokenMsg for one that stays.
+        part._cutOff = !part.vital && rollPartCutoff(actor, partKey, part);
         handleDamagedBodyPart(actor, partKey);
 
         // --- Blood and Oil mode check ---
@@ -1583,9 +1653,12 @@
 
     if (part.appliedStatEffect || !part.statEffect) return;
 
-    // Apply the stat effect from the part's statEffect property
+    // Apply the stat effect from the part's statEffect property. A part that is
+    // only broken costs the smaller brokenAmount; the archetype's full amount is
+    // what a part LEAVING the body costs, and that is read where it comes off
+    // (removeBodyPartOnZeroHp / loseBodyPart).
     var paramId = part.statEffect.param;
-    var amount = part.statEffect.amount;
+    var amount = statEffectAmount(part.statEffect, false);
 
     // Track the stat modifier
     if (!actor._statModifiers[paramId]) {
@@ -1600,9 +1673,63 @@
     actor.refresh();
   }
 
+  // ===========================================================================
+  // What a creature's own body is worth
+  // ===========================================================================
+  //
+  // A person's stats are their class's: two arms and a head are what a human is
+  // expected to have, so a whole humanoid body adds nothing and only what is
+  // LOST (or fitted in the prosthetic shop) ever moves their numbers.
+  //
+  // A creature is built out of whatever parts it was given - four legs, a tail,
+  // a second head, a pair of wings - and those parts ARE its stats. Every part
+  // it has grants what that part is worth (the archetype's statEffect read the
+  // other way round: a limb worth -3 DEX when it comes off is worth +3 DEX
+  // while it is on), on top of its class. Losing one takes the grant with it
+  // through the ordinary penalty, so the two never double up.
+  //
+  // Read live from the body, so the answer is the same whether the creature was
+  // built in character creation, grafted in the 3D editor, recruited out of the
+  // NPC system or had a part cut off five minutes ago.
+
+  function isCreatureBody(actor) {
+    if (!actor) return false;
+    if (actor._isCreatureActor) return true;
+    const NC = window.NPCCreature;
+    return !!(NC && NC.isNonSentientActor && NC.isNonSentientActor(actor));
+  }
+
+  function creatureAnatomyBonus(actor, paramId) {
+    if (paramId === 0 || !isCreatureBody(actor) || !actor._bodyParts) return 0;
+    let total = 0;
+    for (const key in actor._bodyParts) {
+      const part = actor._bodyParts[key];
+      if (!part || !part.statEffect) continue;
+      if (part.statEffect.param !== paramId) continue;
+      // A part that is off the body, ruined or broken is not granting anything.
+      if (part.ruined || part.damaged || part.currentHp <= 0) continue;
+      total -= part.statEffect.amount || 0;
+    }
+    return total;
+  }
+
   // Get parameter name for display
   function getParamName(paramId) {
     return T.list('HealthCore.paramNames')[paramId] || T('HealthCore.statFallback');
+  }
+
+  /**
+   * The line a wound prints. A part that stays on the body reads its brokenMsg
+   * ("Left Arm broken!"); one that is coming off reads the archetype's msg
+   * ("Left Arm severed!"). Bodies built before brokenMsg existed fall back to
+   * the msg they have.
+   */
+  function partWoundMsg(part) {
+    if (!part) return "";
+    const msg = part._cutOff
+      ? (part.damageMsg || part.brokenDamageMsg)
+      : (part.brokenDamageMsg || part.damageMsg);
+    return msg || T('HealthCore.partDamagedFallback', { part: part.name });
   }
 
   // Handle effects of a damaged body part
@@ -1641,14 +1768,14 @@
       $gameTemp.limbDamageLog = {
         name: actor.name(),
         partName: part.name,
-        damageMsg: part.damageMsg || T('HealthCore.partDamagedFallback', { part: part.name }),
+        damageMsg: partWoundMsg(part),
         paramName:
           part.statEffect && part.statEffect.param !== 0
             ? getParamName(part.statEffect.param)
             : null,
         amount:
           part.statEffect && part.statEffect.param !== 0
-            ? part.statEffect.amount
+            ? statEffectAmount(part.statEffect, !!part._cutOff)
             : null,
       };
     }
@@ -1694,6 +1821,8 @@
       bodyPart.currentHp = bodyPart.maxHp;
       bodyPart.damaged = false;
       bodyPart.appliedStatEffect = false;
+      bodyPart._cutOff = false;
+      bodyPart._brokenNotCut = false;
     }
 
     // A limb that is whole again is a limb whose abilities come back.
@@ -1835,6 +1964,12 @@
     ) {
       value = Math.round(value * (1 + this._statModifiers[paramId] / 100));
     }
+
+    // ...and what a creature's own anatomy grants it, on any actor: the party
+    // member built in creature mode, and the creature recruited out of the NPC
+    // system alike.
+    const anatomy = creatureAnatomyBonus(this, paramId);
+    if (anatomy) value = Math.round(value * (1 + anatomy / 100));
 
     return Math.max(1, value);
   };
@@ -2657,6 +2792,18 @@
   window.HealthCore.archetypePartName = archetypePartName;
   window.HealthCore.canPartHoldWeapon = canPartHoldWeapon;
   window.HealthCore.partCanCutoff = partCanCutoff;
+  // Does the blow being struck cut? Read by the monster anatomy so a mace
+  // breaks a limb where a sword takes it off.
+  window.HealthCore.attackerCanCut = attackerCanCut;
+  window.HealthCore.CUTTING_WEAPON_TYPES = CUTTING_WEAPON_TYPES;
+  // What a part's penalty is worth broken (false) versus taken off (true).
+  window.HealthCore.statEffectAmount = statEffectAmount;
+  // A creature's parts are its stats; a person's are not (character creation and
+  // the NPC system both build bodies through initializeBodyParts, so both get
+  // this for free).
+  window.HealthCore.isCreatureBody = isCreatureBody;
+  window.HealthCore.creatureAnatomyBonus = creatureAnatomyBonus;
+  window.HealthCore.partWoundMsg = partWoundMsg;
   window.HealthCore.partStates = partStates;
   window.HealthCore.loseBodyPart = loseBodyPart;
   window.HealthCore.isPartBroken = isPartBroken;

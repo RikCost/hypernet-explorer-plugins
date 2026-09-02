@@ -587,7 +587,7 @@
   // cut is that the streak is exactly where the steel was and then is not
   // there any more.
   const TRAIL_MAX_SAMPLES = 40;
-  const TRAIL_LIFE = 105;
+  const TRAIL_LIFE = 80;
   // Below this much movement between frames the blade is not swinging and no
   // sample is taken, so an idle weapon leaves nothing behind. Kept small on
   // purpose: a swing starts slow, and a threshold that waits for the fast part
@@ -605,7 +605,7 @@
   // white reads as a painted shape stuck to the screen. This is deliberately
   // low: the trail is meant to be noticed out of the corner of the eye and
   // then be gone, the way it is in Bushido Blade, not to be looked at.
-  const TRAIL_ALPHA = 0.28;
+  const TRAIL_ALPHA = 0.22;
   // How much of its width the strip keeps as it dies: a fading streak narrows
   // toward the edge it was cut with rather than dissolving in place.
   const TRAIL_NARROW = 0.85;
@@ -654,17 +654,18 @@
       geo.setIndex(new THREE.BufferAttribute(idx, 1));
       geo.setDrawRange(0, 0);
       this.geometry = geo;
-      // Normal blending, not additive: additive light is a magic effect, and
-      // a sword is not one. This is a pale solid sheet that covers what is
-      // behind it, which is what a blade streak looked like on a PlayStation
-      // and still reads as steel rather than as a spell.
+      // Additive, not normal: the strip carries its fade in the vertex
+      // colours themselves, and under normal blending a faded vertex is an
+      // opaque near-black one, which painted the swing as a black smear.
+      // Added instead, a dim vertex adds almost nothing and a bright one
+      // reads as the pale white flash of steel, or as the weapon's element.
       this.mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
         vertexColors: true,
         transparent: true,
         opacity: 1,
         depthTest: false,
         depthWrite: false,
-        blending: THREE.NormalBlending,
+        blending: THREE.AdditiveBlending,
         side: THREE.DoubleSide
       }));
       this.mesh.frustumCulled = false;
@@ -753,9 +754,9 @@
         this.colors[o]     = this.core.r * alpha;
         this.colors[o + 1] = this.core.g * alpha;
         this.colors[o + 2] = this.core.b * alpha;
-        this.colors[o + 3] = this.color.r * alpha * 0.4;
-        this.colors[o + 4] = this.color.g * alpha * 0.4;
-        this.colors[o + 5] = this.color.b * alpha * 0.4;
+        this.colors[o + 3] = this.color.r * alpha * 0.6;
+        this.colors[o + 4] = this.color.g * alpha * 0.6;
+        this.colors[o + 5] = this.color.b * alpha * 0.6;
       }
       this.geometry.attributes.position.needsUpdate = true;
       this.geometry.attributes.color.needsUpdate = true;
@@ -1052,7 +1053,13 @@
       if (!this._trails) {
         const look = FX.lookFor(this._weapon);
         const color = (look && look.color) || profile.color;
-        const core = (look && look.core) || profile.core || 0xffffff;
+        // A plain weapon flashes white along its edge. An elemental one keeps
+        // that flash but pulls it toward its own element, so a fire sword
+        // sweeps warm and an ice one cold rather than both sweeping white.
+        let core = (look && look.core) || profile.core || 0xffffff;
+        if (look && look.color !== undefined) {
+          core = new THREE.Color(core).lerp(new THREE.Color(look.color), 0.4).getHex();
+        }
         // How many strips this weapon leaves. One per cutting edge: a sword
         // has one, a pair of claws rakes three lines at once, and the spacing
         // between them is a fraction of the blade's own length.
@@ -1366,24 +1373,30 @@
   // the way in is WeaponSystem's business and is only suppressed here for the
   // weapons that have nothing to whistle (see `swing: false`).
   const HIT_SE = {
-    // Every one of these is a recording cut for the job and kept in
-    // audio/se/Weapons: no engine stock sound, and nothing borrowed out of an
-    // ambience folder that was never meant to be struck.
-    slash:  ["Weapons/HitSlash1", "Weapons/HitSlash2", "Weapons/HitSlash3", "Weapons/HitSlash4",   // i18n-ignore  audio/se filenames
-             "Weapons/HitSlash5", "Weapons/HitSlash6", "Weapons/HitSlash7", "Weapons/HitSlash8"],
-    cleave: ["Weapons/HitCleave1", "Weapons/HitCleave2", "Weapons/HitCleave3",                     // i18n-ignore
-             "Weapons/HitCleave4", "Weapons/HitCleave5", "Weapons/HitCleave6"],
-    blunt:  ["Weapons/HitBlunt1", "Weapons/HitBlunt2", "Weapons/HitBlunt3",                        // i18n-ignore
-             "Weapons/HitBlunt4", "Weapons/HitBlunt5", "Weapons/HitBlunt6"],
-    flesh:  ["Weapons/HitFlesh1", "Weapons/HitFlesh2", "Weapons/HitFlesh3",                        // i18n-ignore
+    // Reassigned by measurement, not by name. The weapon-on-weapon recordings
+    // are thin metallic pings taken at a distance: 0.015 to 0.035 RMS against
+    // 0.11 to 0.30 for the body impacts, a crest factor over 30 dB, which is
+    // to say almost the whole clip is silence. Played at the same volume as
+    // everything else they were inaudible, which is what "dull, and sometimes
+    // it does not seem to play" was. Each bank now leads with the body impact
+    // that carries the blow and keeps only the loudest ring of its own kind
+    // for the character on top; the quietest takes of every metal bank are no
+    // longer drawn at all. A blade is the bright pair, a mace the heavy pair.
+    slash:  ["Weapons/HitFlesh1", "Weapons/HitFlesh5", "Weapons/HitSlash5",     // i18n-ignore  audio/se filenames
+             "Weapons/HitPierce5"],
+    cleave: ["Weapons/HitFlesh4", "Weapons/HitFlesh6", "Weapons/HitCleave6",    // i18n-ignore
+             "Weapons/HitBlunt2"],
+    blunt:  ["Weapons/HitFlesh2", "Weapons/HitFlesh4", "Weapons/HitFlesh6",     // i18n-ignore
+             "Weapons/HitBlunt2"],
+    flesh:  ["Weapons/HitFlesh1", "Weapons/HitFlesh2", "Weapons/HitFlesh3",     // i18n-ignore
              "Weapons/HitFlesh4", "Weapons/HitFlesh5", "Weapons/HitFlesh6"],
-    pierce: ["Weapons/HitPierce1", "Weapons/HitPierce2", "Weapons/HitPierce3",                     // i18n-ignore
-             "Weapons/HitPierce4", "Weapons/HitPierce5", "Weapons/HitPierce6"],
-    magic:  ["Weapons/HitMagic1", "Weapons/HitMagic2", "Weapons/HitMagic3"],                       // i18n-ignore
-    lash:   ["Weapons/HitLash1", "Weapons/HitLash2", "Weapons/HitLash3"],                          // i18n-ignore
-    bullet: ["impact/bfh1_hit_01", "impact/bfh1_hit_02", "impact/bfh1_hit_05",                     // i18n-ignore
-             "impact/bfh1_hit_09", "impact/bfh1_hit_12"],
-    casing: ["impact/bfh1_metal_falling_01", "impact/bfh1_metal_falling_02",                       // i18n-ignore
+    pierce: ["Weapons/HitFlesh3", "Weapons/HitFlesh5", "Weapons/HitPierce4",    // i18n-ignore
+             "Weapons/HitPierce5"],
+    magic:  ["Weapons/HitMagic1", "Weapons/HitMagic2", "Weapons/HitMagic3"],    // i18n-ignore
+    lash:   ["Weapons/HitLash1", "Weapons/HitLash3", "Weapons/HitFlesh1"],      // i18n-ignore
+    bullet: ["impact/bfh1_hit_07", "impact/bfh1_hit_02", "impact/bfh1_hit_06",  // i18n-ignore
+             "impact/bfh1_hit_08", "impact/bfh1_hit_10"],
+    casing: ["impact/bfh1_metal_falling_01", "impact/bfh1_metal_falling_02",    // i18n-ignore
              "impact/bfh1_metal_falling_04"]
   };
 

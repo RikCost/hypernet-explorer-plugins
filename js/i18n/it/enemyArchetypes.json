@@ -2,123 +2,154 @@
   "enemyArchetypes": {
     "humanoid": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso schiacciato in poltiglia!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato via!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato via!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra tagliata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra tagliata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "brain": {
         "name": "Cervello",
-        "msg": "Concussione cerebrale!"
+        "msg": "Cervello in poltiglia!",
+        "brokenMsg": "Cervello in sofferenza!"
       },
       "left_eye": {
         "name": "Occhio sinistro",
-        "msg": "Occhio sinistro gonfio!"
+        "msg": "Occhio sinistro via di netto!",
+        "brokenMsg": "Occhio sinistro fuori uso!"
       },
       "right_eye": {
         "name": "Occhio destro",
-        "msg": "Occhio destro gonfio!"
+        "msg": "Occhio destro via di netto!",
+        "brokenMsg": "Occhio destro fuori uso!"
       },
       "nose": {
         "name": "Naso",
-        "msg": "Naso rotto!"
+        "msg": "Naso via di netto!",
+        "brokenMsg": "Naso con crepe!"
       },
       "left_ear": {
         "name": "Orecchio sinistro",
-        "msg": "Orecchio sinistro che fischia!"
+        "msg": "Orecchio sinistro via di netto!",
+        "brokenMsg": "Orecchio sinistro fuori uso!"
       },
       "right_ear": {
         "name": "Orecchio destro",
-        "msg": "Orecchio destro che fischia!"
+        "msg": "Orecchio destro via di netto!",
+        "brokenMsg": "Orecchio destro fuori uso!"
       },
       "mouth": {
         "name": "Bocca",
-        "msg": "Mascella lussata!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       },
       "teeth": {
         "name": "Denti",
-        "msg": "Denti divelti!"
+        "msg": "Denti in frantumi!",
+        "brokenMsg": "Denti con crepe!"
       },
       "genitals": {
         "name": "Genitali",
-        "msg": "Genitali danneggiati!"
+        "msg": "Genitali via di netto!",
+        "brokenMsg": "Genitali in sofferenza!"
       },
       "heart": {
         "name": "Cuore",
-        "msg": "Cuore danneggiato!"
+        "msg": "Cuore in poltiglia!",
+        "brokenMsg": "Cuore in sofferenza!"
       },
       "left_lung": {
         "name": "Polmone sinistro",
-        "msg": "Polmone sinistro collassato!"
+        "msg": "Polmone sinistro in poltiglia!",
+        "brokenMsg": "Polmone sinistro in sofferenza!"
       },
       "right_lung": {
         "name": "Polmone destro",
-        "msg": "Polmone destro collassato!"
+        "msg": "Polmone destro in poltiglia!",
+        "brokenMsg": "Polmone destro in sofferenza!"
       },
       "liver": {
         "name": "Fegato",
-        "msg": "Fegato lacerato!"
+        "msg": "Fegato in poltiglia!",
+        "brokenMsg": "Fegato in sofferenza!"
       },
       "stomach": {
         "name": "Stomaco",
-        "msg": "Stomaco lacerato!"
+        "msg": "Stomaco in poltiglia!",
+        "brokenMsg": "Stomaco in sofferenza!"
       },
       "spleen": {
         "name": "Milza",
-        "msg": "Milza lacerata!"
+        "msg": "Milza in poltiglia!",
+        "brokenMsg": "Milza in sofferenza!"
       },
       "intestines": {
         "name": "Intestino",
-        "msg": "Intestino perforato!"
+        "msg": "Intestino in poltiglia!",
+        "brokenMsg": "Intestino in sofferenza!"
       },
       "left_hand": {
         "name": "Mano sinistra",
-        "msg": "Mano sinistra mutilata!"
+        "msg": "Mano sinistra via di netto!",
+        "brokenMsg": "Mano sinistra fuori uso!"
       },
       "left_fingers": {
         "name": "Dita della mano sinistra",
-        "msg": "Dita sinistre rotte!"
+        "msg": "Dita della mano sinistra via di netto!",
+        "brokenMsg": "Dita della mano sinistra a brandelli!"
       },
       "right_hand": {
         "name": "Mano destra",
-        "msg": "Mano destra mutilata!"
+        "msg": "Mano destra via di netto!",
+        "brokenMsg": "Mano destra fuori uso!"
       },
       "right_fingers": {
         "name": "Dita della mano destra",
-        "msg": "Dita destre rotte!"
+        "msg": "Dita della mano destra via di netto!",
+        "brokenMsg": "Dita della mano destra a brandelli!"
       },
       "left_foot": {
         "name": "Piede sinistro",
-        "msg": "Piede sinistro danneggiato!"
+        "msg": "Piede sinistro via di netto!",
+        "brokenMsg": "Piede sinistro fuori uso!"
       },
       "left_toes": {
         "name": "Dita del piede sinistro",
-        "msg": "Dita del piede sinistro schiacciate!"
+        "msg": "Dita del piede sinistro via di netto!",
+        "brokenMsg": "Dita del piede sinistro fuori uso!"
       },
       "right_foot": {
         "name": "Piede destro",
-        "msg": "Piede destro danneggiato!"
+        "msg": "Piede destro via di netto!",
+        "brokenMsg": "Piede destro fuori uso!"
       },
       "right_toes": {
         "name": "Dita del piede destro",
-        "msg": "Dita del piede destro schiacciate!"
+        "msg": "Dita del piede destro via di netto!",
+        "brokenMsg": "Dita del piede destro fuori uso!"
       },
       "name": "Umanoide"
     },
@@ -246,1020 +277,1270 @@
     },
     "beast": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "mouth": {
         "name": "Bocca",
-        "msg": "Fauci spezzate!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo schiacciato in poltiglia!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra tagliata!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra tagliata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra tagliata!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra tagliata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda mozzata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Bestia"
     },
     "insectoid": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "thorax": {
         "name": "Torace",
-        "msg": "Torace perforato!"
+        "msg": "Torace in poltiglia!",
+        "brokenMsg": "Torace in sofferenza!"
       },
       "abdomen": {
         "name": "Addome",
-        "msg": "Addome esploso!"
+        "msg": "Addome in poltiglia!",
+        "brokenMsg": "Addome in sofferenza!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra tagliata!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra tagliata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "middle_left_leg": {
         "name": "Zampa Centrale Sinistra",
-        "msg": "Zampa centrale sinistra tagliata!"
+        "msg": "Zampa Centrale Sinistra via di netto!",
+        "brokenMsg": "Zampa Centrale Sinistra fuori uso!"
       },
       "middle_right_leg": {
         "name": "Zampa Centrale Destra",
-        "msg": "Zampa centrale destra tagliata!"
+        "msg": "Zampa Centrale Destra via di netto!",
+        "brokenMsg": "Zampa Centrale Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra tagliata!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra tagliata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "mandibles": {
         "name": "Mandibole",
-        "msg": "Mandibole polverizzate!"
+        "msg": "Mandibole via di netto!",
+        "brokenMsg": "Mandibole con crepe!"
       },
       "name": "Insettoide"
     },
     "frog": {
       "head": {
         "name": "Testa",
-        "msg": "Testa crepata!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo schiacciato in poltiglia!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "tongue": {
         "name": "Lingua",
-        "msg": "Lingua recisa!"
+        "msg": "Lingua via di netto!",
+        "brokenMsg": "Lingua con crepe!"
       },
       "vocal_sac": {
         "name": "Sacca Vocale",
-        "msg": "Sacca vocale lacerata!"
+        "msg": "Sacca Vocale via di netto!",
+        "brokenMsg": "Sacca Vocale in sofferenza!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra tagliata!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra tagliata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "hind_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra tagliata!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "hind_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra tagliata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "name": "Rana"
     },
     "dragon": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "fire_breath_organ": {
         "name": "Organo del Soffio di Fuoco",
-        "msg": "Organo del soffio di fuoco esploso in sangue!"
+        "msg": "Organo del Soffio di Fuoco in poltiglia!",
+        "brokenMsg": "Organo del Soffio di Fuoco in sofferenza!"
       },
       "neck": {
         "name": "Collo",
-        "msg": "Collo torto fino a spezzarsi!"
+        "msg": "Collo in poltiglia!",
+        "brokenMsg": "Collo in sofferenza!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo schiacciato in poltiglia!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra ridotta a brandelli!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra ridotta a brandelli!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra tagliata!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra tagliata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda mozzata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Dragone",
       "left_claw": {
         "name": "Artiglio Anteriore Sinistro",
-        "msg": "Artiglio anteriore sinistro strappato!"
+        "msg": "Artiglio Anteriore Sinistro via di netto!",
+        "brokenMsg": "Artiglio Anteriore Sinistro fuori uso!"
       },
       "right_claw": {
         "name": "Artiglio Anteriore Destro",
-        "msg": "Artiglio anteriore destro strappato!"
+        "msg": "Artiglio Anteriore Destro via di netto!",
+        "brokenMsg": "Artiglio Anteriore Destro fuori uso!"
       },
       "maw": {
         "name": "Fauci",
-        "msg": "Fauci frantumate!"
+        "msg": "Fauci in frantumi!",
+        "brokenMsg": "Fauci con crepe!"
       }
     },
     "skeleton": {
       "head": {
         "name": "Testa",
-        "msg": "Cranio andato in frantumi!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Gabbia toracica crollata in polvere!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Osso del braccio sinistro spezzato!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Osso del braccio destro spezzato!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra andata in frantumi!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra andata in frantumi!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Scheletro",
       "jaws": {
         "name": "Mascelle",
-        "msg": "Mascelle spezzate!"
+        "msg": "Mascelle in frantumi!",
+        "brokenMsg": "Mascelle con crepe!"
       }
     },
     "fairy": {
       "head": {
         "name": "Testa",
-        "msg": "Testa spaccata!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso schiacciato in polvere scintillante!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato via!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato via!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra lacerata!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra lacerata!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "pixie_dust_sac": {
         "name": "Sacca di Polvere Fatata",
-        "msg": "Sacca di polvere magica lacerata!"
+        "msg": "Sacca di Polvere Fatata via di netto!",
+        "brokenMsg": "Sacca di Polvere Fatata in sofferenza!"
       },
       "name": "Fata",
       "mouth": {
         "name": "Bocca",
-        "msg": "Bocca lacerata!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       }
     },
     "slime": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo collassato violentemente!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "upper_body": {
         "name": "Parte Superiore",
-        "msg": "Parte superiore schiacciata in poltiglia!"
+        "msg": "Parte Superiore a pezzi!",
+        "brokenMsg": "Parte Superiore fuori uso!"
       },
       "lower_body": {
         "name": "Parte Inferiore",
-        "msg": "Parte inferiore schiacciata in poltiglia!"
+        "msg": "Parte Inferiore a pezzi!",
+        "brokenMsg": "Parte Inferiore fuori uso!"
       },
       "pseudopod_1": {
         "name": "Pseudopodo 1",
-        "msg": "Pseudopodo 1 sciolto in fanghiglia!"
+        "msg": "Pseudopodo 1 via di netto!",
+        "brokenMsg": "Pseudopodo 1 a brandelli!"
       },
       "pseudopod_2": {
         "name": "Pseudopodo 2",
-        "msg": "Pseudopodo 2 sciolto in fanghiglia!"
+        "msg": "Pseudopodo 2 via di netto!",
+        "brokenMsg": "Pseudopodo 2 a brandelli!"
       },
       "name": "Slime",
       "maw": {
         "name": "Fauci Dissolventi",
-        "msg": "Fauci dissolventi collassate!"
+        "msg": "Fauci Dissolventi in frantumi!",
+        "brokenMsg": "Fauci Dissolventi con crepe!"
       }
     },
     "undead": {
       "skull": {
         "name": "Teschio",
-        "msg": "Teschio obliterato!"
+        "msg": "Teschio via di netto!",
+        "brokenMsg": "Teschio con crepe!"
       },
       "ribcage": {
         "name": "Gabbia Toracica",
-        "msg": "Gabbia toracica crollata!"
+        "msg": "Gabbia Toracica in poltiglia!",
+        "brokenMsg": "Gabbia Toracica in sofferenza!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato via!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato via!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra tagliata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra tagliata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Non-morto",
       "jaws": {
         "name": "Mascelle Putride",
-        "msg": "Mascelle putride sbriciolate!"
+        "msg": "Mascelle Putride in frantumi!",
+        "brokenMsg": "Mascelle Putride con crepe!"
       }
     },
     "scorpion": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "cephalothorax": {
         "name": "Cefalotorace",
-        "msg": "Cefalotorace schiacciato!"
+        "msg": "Cefalotorace in poltiglia!",
+        "brokenMsg": "Cefalotorace in sofferenza!"
       },
       "abdomen": {
         "name": "Addome",
-        "msg": "Addome esploso!"
+        "msg": "Addome in poltiglia!",
+        "brokenMsg": "Addome in sofferenza!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda mozzata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "stinger": {
         "name": "Pungiglione",
-        "msg": "Pungiglione spezzato!"
+        "msg": "Pungiglione via di netto!",
+        "brokenMsg": "Pungiglione con crepe!"
       },
       "pincer_left": {
         "name": "Chela Sinistra",
-        "msg": "Chela sinistra frantumata!"
+        "msg": "Chela Sinistra via di netto!",
+        "brokenMsg": "Chela Sinistra fuori uso!"
       },
       "pincer_right": {
         "name": "Chela Destra",
-        "msg": "Chela destra frantumata!"
+        "msg": "Chela Destra via di netto!",
+        "brokenMsg": "Chela Destra fuori uso!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra tagliata!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra tagliata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "mid_left_leg": {
         "name": "Zampa Centrale Anteriore Sinistra",
-        "msg": "Zampa centrale anteriore sinistra tagliata!"
+        "msg": "Zampa Centrale Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Centrale Anteriore Sinistra fuori uso!"
       },
       "mid_right_leg": {
         "name": "Zampa Centrale Anteriore Destra",
-        "msg": "Zampa centrale anteriore destra tagliata!"
+        "msg": "Zampa Centrale Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Centrale Anteriore Destra fuori uso!"
       },
       "mid_rear_left_leg": {
         "name": "Zampa Centrale Posteriore Sinistra",
-        "msg": "Zampa centrale posteriore sinistra tagliata!"
+        "msg": "Zampa Centrale Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Centrale Posteriore Sinistra fuori uso!"
       },
       "mid_rear_right_leg": {
         "name": "Zampa Centrale Posteriore Destra",
-        "msg": "Zampa centrale posteriore destra tagliata!"
+        "msg": "Zampa Centrale Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Centrale Posteriore Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra tagliata!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra tagliata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "name": "Scorpione",
       "mandibles": {
         "name": "Mandibole",
-        "msg": "Mandibole frantumate!"
+        "msg": "Mandibole in frantumi!",
+        "brokenMsg": "Mandibole con crepe!"
       }
     },
     "spider": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "cephalothorax": {
         "name": "Cefalotorace",
-        "msg": "Cefalotorace spaccato!"
+        "msg": "Cefalotorace in poltiglia!",
+        "brokenMsg": "Cefalotorace in sofferenza!"
       },
       "abdomen": {
         "name": "Addome",
-        "msg": "Addome esploso!"
+        "msg": "Addome in poltiglia!",
+        "brokenMsg": "Addome in sofferenza!"
       },
       "fangs": {
         "name": "Zanne Velenifere",
-        "msg": "Zanne velenifere andate in frantumi!"
+        "msg": "Zanne Velenifere via di netto!",
+        "brokenMsg": "Zanne Velenifere con crepe!"
       },
       "spinnerets": {
         "name": "Filieri",
-        "msg": "Filiere recise!"
+        "msg": "Filieri via di netto!",
+        "brokenMsg": "Filieri fuori uso!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra tagliata!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra tagliata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "mid_left_leg": {
         "name": "Zampa Centrale Anteriore Sinistra",
-        "msg": "Zampa centrale anteriore sinistra tagliata!"
+        "msg": "Zampa Centrale Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Centrale Anteriore Sinistra fuori uso!"
       },
       "mid_right_leg": {
         "name": "Zampa Centrale Anteriore Destra",
-        "msg": "Zampa centrale anteriore destra tagliata!"
+        "msg": "Zampa Centrale Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Centrale Anteriore Destra fuori uso!"
       },
       "mid_rear_left_leg": {
         "name": "Zampa Centrale Posteriore Sinistra",
-        "msg": "Zampa centrale posteriore sinistra tagliata!"
+        "msg": "Zampa Centrale Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Centrale Posteriore Sinistra fuori uso!"
       },
       "mid_rear_right_leg": {
         "name": "Zampa Centrale Posteriore Destra",
-        "msg": "Zampa centrale posteriore destra tagliata!"
+        "msg": "Zampa Centrale Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Centrale Posteriore Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra tagliata!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra tagliata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "name": "Ragno"
     },
     "plant": {
       "flower": {
         "name": "Fiore",
-        "msg": "Fiore appassito fino a marcire!"
+        "msg": "Fiore via di netto!",
+        "brokenMsg": "Fiore fuori uso!"
       },
       "stem": {
         "name": "Stelo",
-        "msg": "Stelo attorcigliato fino a spezzarsi!"
+        "msg": "Stelo in poltiglia!",
+        "brokenMsg": "Stelo fuori uso!"
       },
       "roots": {
         "name": "Radici",
-        "msg": "Radici strappate via!"
+        "msg": "Radici in poltiglia!",
+        "brokenMsg": "Radici fuori uso!"
       },
       "vine_1": {
         "name": "Rampicante 1",
-        "msg": "Rampicante 1 ridotto in poltiglia!"
+        "msg": "Rampicante 1 via di netto!",
+        "brokenMsg": "Rampicante 1 fuori uso!"
       },
       "vine_2": {
         "name": "Rampicante 2",
-        "msg": "Rampicante 2 ridotto in poltiglia!"
+        "msg": "Rampicante 2 via di netto!",
+        "brokenMsg": "Rampicante 2 fuori uso!"
       },
       "name": "Pianta",
       "maw": {
         "name": "Bocciolo Mordace",
-        "msg": "Bocciolo mordace squarciato!"
+        "msg": "Bocciolo Mordace in frantumi!",
+        "brokenMsg": "Bocciolo Mordace con crepe!"
       }
     },
     "elemental": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo collassato violentemente!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "upper_form": {
         "name": "Forma Superiore",
-        "msg": "Forma superiore disgregata!"
+        "msg": "Forma Superiore a pezzi!",
+        "brokenMsg": "Forma Superiore fuori uso!"
       },
       "lower_form": {
         "name": "Forma Inferiore",
-        "msg": "Forma inferiore disgregata!"
+        "msg": "Forma Inferiore a pezzi!",
+        "brokenMsg": "Forma Inferiore fuori uso!"
       },
       "left_appendage": {
         "name": "Appendice Sinistra",
-        "msg": "Appendice sinistra liquefatta all'impatto!"
+        "msg": "Appendice Sinistra via di netto!",
+        "brokenMsg": "Appendice Sinistra fuori uso!"
       },
       "right_appendage": {
         "name": "Appendice Destra",
-        "msg": "Appendice destra liquefatta all'impatto!"
+        "msg": "Appendice Destra via di netto!",
+        "brokenMsg": "Appendice Destra fuori uso!"
       },
       "name": "Elementale",
       "maw": {
         "name": "Fauci Elementali",
-        "msg": "Fauci elementali disperse!"
+        "msg": "Fauci Elementali in frantumi!",
+        "brokenMsg": "Fauci Elementali con crepe!"
       }
     },
     "aquaticfish": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo schiacciato in poltiglia!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "tail_fin": {
         "name": "Pinna Caudale",
-        "msg": "Pinna caudale tagliata via!"
+        "msg": "Pinna Caudale via di netto!",
+        "brokenMsg": "Pinna Caudale a brandelli!"
       },
       "dorsal_fin": {
         "name": "Pinna Dorsale",
-        "msg": "Pinna dorsale ridotta in poltiglia!"
+        "msg": "Pinna Dorsale via di netto!",
+        "brokenMsg": "Pinna Dorsale a brandelli!"
       },
       "left_pectoral_fin": {
         "name": "Pinna Pettorale Sinistra",
-        "msg": "Pinna pettorale sinistra ridotta a brandelli!"
+        "msg": "Pinna Pettorale Sinistra via di netto!",
+        "brokenMsg": "Pinna Pettorale Sinistra a brandelli!"
       },
       "right_pectoral_fin": {
         "name": "Pinna Pettorale Destra",
-        "msg": "Pinna pettorale destra ridotta a brandelli!"
+        "msg": "Pinna Pettorale Destra via di netto!",
+        "brokenMsg": "Pinna Pettorale Destra a brandelli!"
       },
       "name": "Pesce Acquatico",
       "mouth": {
         "name": "Bocca",
-        "msg": "Bocca squarciata!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       }
     },
     "octopus": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "mantle": {
         "name": "Mantello",
-        "msg": "Mantello schiacciato in poltiglia!"
+        "msg": "Mantello a brandelli!",
+        "brokenMsg": "Mantello a brandelli!"
       },
       "tentacle_1": {
         "name": "Tentacolo 1",
-        "msg": "Tentacolo 1 strappato via!"
+        "msg": "Tentacolo 1 via di netto!",
+        "brokenMsg": "Tentacolo 1 a brandelli!"
       },
       "tentacle_2": {
         "name": "Tentacolo 2",
-        "msg": "Tentacolo 2 strappato via!"
+        "msg": "Tentacolo 2 via di netto!",
+        "brokenMsg": "Tentacolo 2 a brandelli!"
       },
       "tentacle_3": {
         "name": "Tentacolo 3",
-        "msg": "Tentacolo 3 strappato via!"
+        "msg": "Tentacolo 3 via di netto!",
+        "brokenMsg": "Tentacolo 3 a brandelli!"
       },
       "tentacle_4": {
         "name": "Tentacolo 4",
-        "msg": "Tentacolo 4 strappato via!"
+        "msg": "Tentacolo 4 via di netto!",
+        "brokenMsg": "Tentacolo 4 a brandelli!"
       },
       "name": "Polpo",
       "beak": {
         "name": "Becco",
-        "msg": "Becco incrinato!"
+        "msg": "Becco in frantumi!",
+        "brokenMsg": "Becco con crepe!"
       }
     },
     "robot": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo collassato violentemente!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro staccato!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro staccato!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra tagliata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra tagliata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Robot",
       "jaws": {
         "name": "Mascelle Servoassistite",
-        "msg": "Mascelle servoassistite bloccate!"
+        "msg": "Mascelle Servoassistite in frantumi!",
+        "brokenMsg": "Mascelle Servoassistite con crepe!"
       }
     },
     "bird": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo schiacciato in poltiglia!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "beak": {
         "name": "Becco",
-        "msg": "Becco obliterato!"
+        "msg": "Becco via di netto!",
+        "brokenMsg": "Becco con crepe!"
       },
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra ridotta a brandelli!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra ridotta a brandelli!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "talons": {
         "name": "Artigli",
-        "msg": "Artigli strappati via!"
+        "msg": "Artigli via di netto!",
+        "brokenMsg": "Artigli fuori uso!"
       },
       "name": "Uccello"
     },
     "reptilian": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso schiacciato in poltiglia!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato via!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato via!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra tagliata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra tagliata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda mozzata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Rettiliano",
       "maw": {
         "name": "Fauci Zannute",
-        "msg": "Fauci zannute spezzate!"
+        "msg": "Fauci Zannute in frantumi!",
+        "brokenMsg": "Fauci Zannute con crepe!"
       }
     },
     "mushroom": {
       "cap": {
         "name": "Cappello",
-        "msg": "Cappello ridotto in poltiglia!"
+        "msg": "Cappello via di netto!",
+        "brokenMsg": "Cappello fuori uso!"
       },
       "stalk": {
         "name": "Gambo",
-        "msg": "Gambo attorcigliato fino a spezzarsi!"
+        "msg": "Gambo in poltiglia!",
+        "brokenMsg": "Gambo fuori uso!"
       },
       "roots": {
         "name": "Radici",
-        "msg": "Radici strappate via!"
+        "msg": "Radici in poltiglia!",
+        "brokenMsg": "Radici fuori uso!"
       },
       "spore_sacs": {
         "name": "Sacche Sporali",
-        "msg": "Sacche sporali esplose!"
+        "msg": "Sacche Sporali via di netto!",
+        "brokenMsg": "Sacche Sporali in sofferenza!"
       },
       "name": "Fungo",
       "maw": {
         "name": "Fauci Lamellari",
-        "msg": "Fauci lamellari sbrindellate!"
+        "msg": "Fauci Lamellari in frantumi!",
+        "brokenMsg": "Fauci Lamellari con crepe!"
       }
     },
     "tree": {
       "crown": {
         "name": "Chioma",
-        "msg": "Chioma ridotta in poltiglia!"
+        "msg": "Chioma via di netto!",
+        "brokenMsg": "Chioma con crepe!"
       },
       "trunk": {
         "name": "Tronco",
-        "msg": "Tronco spaccato brutalmente!"
+        "msg": "Tronco in poltiglia!",
+        "brokenMsg": "Tronco fuori uso!"
       },
       "roots": {
         "name": "Radici",
-        "msg": "Radici strappate via!"
+        "msg": "Radici in poltiglia!",
+        "brokenMsg": "Radici fuori uso!"
       },
       "branch_1": {
         "name": "Ramo 1",
-        "msg": "Ramo 1 spezzato!"
+        "msg": "Ramo 1 via di netto!",
+        "brokenMsg": "Ramo 1 fuori uso!"
       },
       "branch_2": {
         "name": "Ramo 2",
-        "msg": "Ramo 2 spezzato!"
+        "msg": "Ramo 2 via di netto!",
+        "brokenMsg": "Ramo 2 fuori uso!"
       },
       "name": "Albero"
     },
     "bacterial": {
       "nucleus": {
         "name": "Nucleo",
-        "msg": "Nucleo esploso!"
+        "msg": "Nucleo in poltiglia!",
+        "brokenMsg": "Nucleo in sofferenza!"
       },
       "membrane": {
         "name": "Membrana",
-        "msg": "Membrana sciolta in fanghiglia!"
+        "msg": "Membrana a brandelli!",
+        "brokenMsg": "Membrana a brandelli!"
       },
       "flagellum": {
         "name": "Flagello",
-        "msg": "Flagello ridotto a brandelli!"
+        "msg": "Flagello via di netto!",
+        "brokenMsg": "Flagello a brandelli!"
       },
       "toxin_sacs": {
         "name": "Sacche Tossiche",
-        "msg": "Sacche tossiche esplose!"
+        "msg": "Sacche Tossiche via di netto!",
+        "brokenMsg": "Sacche Tossiche in sofferenza!"
       },
       "name": "Batterico",
       "mouth": {
         "name": "Poro Nutritivo",
-        "msg": "Poro nutritivo lacerato!"
+        "msg": "Poro Nutritivo a pezzi!",
+        "brokenMsg": "Poro Nutritivo fuori uso!"
       }
     },
     "doubleheadedhumanoid": {
       "head_left": {
         "name": "Testa Sinistra",
-        "msg": "Testa sinistra dilaniata!"
+        "msg": "Testa Sinistra via di netto!",
+        "brokenMsg": "Testa Sinistra fuori uso!"
       },
       "head_right": {
         "name": "Testa Destra",
-        "msg": "Testa destra dilaniata!"
+        "msg": "Testa Destra via di netto!",
+        "brokenMsg": "Testa Destra fuori uso!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso schiacciato in poltiglia!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato via!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato via!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra tagliata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra tagliata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Umanoide Bicefalo",
       "mouth": {
         "name": "Bocche Gemelle",
-        "msg": "Bocche gemelle zittite!"
+        "msg": "Bocche Gemelle a pezzi!",
+        "brokenMsg": "Bocche Gemelle fuori uso!"
       }
     },
     "serpent": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "fangs": {
         "name": "Zanne",
-        "msg": "Zanne frantumate!"
+        "msg": "Zanne via di netto!",
+        "brokenMsg": "Zanne con crepe!"
       },
       "body_segment_1": {
         "name": "Segmento Corporeo 1",
-        "msg": "Segmento corporeo 1 lacerato!"
+        "msg": "Segmento Corporeo 1 in poltiglia!",
+        "brokenMsg": "Segmento Corporeo 1 a brandelli!"
       },
       "body_segment_2": {
         "name": "Segmento Corporeo 2",
-        "msg": "Segmento corporeo 2 lacerato!"
+        "msg": "Segmento Corporeo 2 in poltiglia!",
+        "brokenMsg": "Segmento Corporeo 2 a brandelli!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda mozzata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Serpente"
     },
     "golem": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo incrinato e collassato!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro sbriciolato!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro sbriciolato!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra fratturata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra fratturata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Golem",
       "maw": {
         "name": "Fauci di Pietra",
-        "msg": "Fauci di pietra frantumate!"
+        "msg": "Fauci di Pietra in frantumi!",
+        "brokenMsg": "Fauci di Pietra con crepe!"
       }
     },
     "demon": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "horns": {
         "name": "Corna",
-        "msg": "Corna frantumate!"
+        "msg": "Corna via di netto!",
+        "brokenMsg": "Corna con crepe!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso schiacciato in poltiglia!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra sbrindellata!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra sbrindellata!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda recisa!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Demone",
       "left_claw": {
         "name": "Artiglio Sinistro",
-        "msg": "Artiglio sinistro reciso!"
+        "msg": "Artiglio Sinistro via di netto!",
+        "brokenMsg": "Artiglio Sinistro fuori uso!"
       },
       "right_claw": {
         "name": "Artiglio Destro",
-        "msg": "Artiglio destro reciso!"
+        "msg": "Artiglio Destro via di netto!",
+        "brokenMsg": "Artiglio Destro fuori uso!"
       },
       "maw": {
         "name": "Fauci",
-        "msg": "Fauci spalancate a forza!"
+        "msg": "Fauci in frantumi!",
+        "brokenMsg": "Fauci con crepe!"
       }
     },
     "ghost": {
       "face": {
         "name": "Volto",
-        "msg": "Volto disintegrato in vapore!"
+        "msg": "Volto in frantumi!",
+        "brokenMsg": "Volto con crepe!"
       },
       "core": {
         "name": "Nucleo Essenziale",
-        "msg": "Nucleo essenziale disgregato!"
+        "msg": "Nucleo Essenziale a pezzi!",
+        "brokenMsg": "Nucleo Essenziale fuori uso!"
       },
       "left_wisp": {
         "name": "Fantasma Sinistro",
-        "msg": "Fantasma sinistro disperso!"
+        "msg": "Fantasma Sinistro in frantumi!",
+        "brokenMsg": "Fantasma Sinistro con crepe!"
       },
       "right_wisp": {
         "name": "Fantasma Destro",
-        "msg": "Fantasma destro disperso!"
+        "msg": "Fantasma Destro in frantumi!",
+        "brokenMsg": "Fantasma Destro con crepe!"
       },
       "name": "Fantasma",
       "maw": {
         "name": "Fauci Ululanti",
-        "msg": "Fauci ululanti zittite!"
+        "msg": "Fauci Ululanti in frantumi!",
+        "brokenMsg": "Fauci Ululanti con crepe!"
       }
     },
     "drone": {
       "sensor_array": {
         "name": "Sensori",
-        "msg": "Sensori completamente distrutti!"
+        "msg": "Sensori via di netto!",
+        "brokenMsg": "Sensori fuori uso!"
       },
       "chassis": {
         "name": "Telaio",
-        "msg": "Telaio schiacciato in poltiglia!"
+        "msg": "Telaio in frantumi!",
+        "brokenMsg": "Telaio con ammaccature!"
       },
       "left_prop": {
         "name": "Elica Sinistra",
-        "msg": "Elica sinistra ridotta in rottami!"
+        "msg": "Elica Sinistra via di netto!",
+        "brokenMsg": "Elica Sinistra in avaria!"
       },
       "right_prop": {
         "name": "Elica Destra",
-        "msg": "Elica destra ridotta in rottami!"
+        "msg": "Elica Destra via di netto!",
+        "brokenMsg": "Elica Destra in avaria!"
       },
       "name": "Drone",
       "jaws": {
         "name": "Pinze di Presa",
-        "msg": "Pinze di presa bloccate!"
+        "msg": "Pinze di Presa in frantumi!",
+        "brokenMsg": "Pinze di Presa con crepe!"
       }
     },
     "voidspawn": {
       "abyssal_eye": {
         "name": "Occhio Abissale",
-        "msg": "Occhio abissale trafitto!"
+        "msg": "Occhio Abissale perduto per sempre!",
+        "brokenMsg": "Occhio Abissale fuori uso!"
       },
       "maw": {
         "name": "Fauci",
-        "msg": "Fauci spalancate!"
+        "msg": "Fauci via di netto!",
+        "brokenMsg": "Fauci con crepe!"
       },
       "void_tendril_1": {
         "name": "Tentacolo del Vuoto 1",
-        "msg": "Tentacolo del vuoto 1 appassito!"
+        "msg": "Tentacolo del Vuoto 1 via di netto!",
+        "brokenMsg": "Tentacolo del Vuoto 1 a brandelli!"
       },
       "void_tendril_2": {
         "name": "Tentacolo del Vuoto 2",
-        "msg": "Tentacolo del vuoto 2 appassito!"
+        "msg": "Tentacolo del Vuoto 2 via di netto!",
+        "brokenMsg": "Tentacolo del Vuoto 2 a brandelli!"
       },
       "core": {
         "name": "Frammento Nucleare",
-        "msg": "Frammento nucleare fratturato!"
+        "msg": "Frammento Nucleare a pezzi!",
+        "brokenMsg": "Frammento Nucleare fuori uso!"
       },
       "name": "Creatura del Vuoto"
     },
     "mutant": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "mass": {
         "name": "Massa Mutevole",
-        "msg": "Massa mutevole disgregata!"
+        "msg": "Massa Mutevole in poltiglia!",
+        "brokenMsg": "Massa Mutevole a brandelli!"
       },
       "extra_limb_1": {
         "name": "Arto Extra 1",
-        "msg": "Arto extra 1 caduto!"
+        "msg": "Arto Extra 1 via di netto!",
+        "brokenMsg": "Arto Extra 1 fuori uso!"
       },
       "extra_limb_2": {
         "name": "Arto Extra 2",
-        "msg": "Arto extra 2 caduto!"
+        "msg": "Arto Extra 2 via di netto!",
+        "brokenMsg": "Arto Extra 2 fuori uso!"
       },
       "eye_cluster": {
         "name": "Grappolo di Occhi",
-        "msg": "Grappolo di occhi esploso!"
+        "msg": "Grappolo di Occhi via di netto!",
+        "brokenMsg": "Grappolo di Occhi fuori uso!"
       },
       "tail_spike": {
         "name": "Aculeo Caudale",
-        "msg": "Aculeo caudale staccato!"
+        "msg": "Aculeo Caudale via di netto!",
+        "brokenMsg": "Aculeo Caudale con crepe!"
       },
       "name": "Mutante",
       "maw": {
         "name": "Fauci Spalancate",
-        "msg": "Fauci spalancate lacerate!"
+        "msg": "Fauci Spalancate in frantumi!",
+        "brokenMsg": "Fauci Spalancate con crepe!"
       }
     },
     "crystalentity": {
       "core": {
         "name": "Nucleo Cristallino",
-        "msg": "Nucleo cristallino incrinato!"
+        "msg": "Nucleo Cristallino a pezzi!",
+        "brokenMsg": "Nucleo Cristallino fuori uso!"
       },
       "left_spire": {
         "name": "Guglia Sinistra",
-        "msg": "Guglia sinistra obliterata!"
+        "msg": "Guglia Sinistra via di netto!",
+        "brokenMsg": "Guglia Sinistra con crepe!"
       },
       "right_spire": {
         "name": "Guglia Destra",
-        "msg": "Guglia destra obliterata!"
+        "msg": "Guglia Destra via di netto!",
+        "brokenMsg": "Guglia Destra con crepe!"
       },
       "focus_gem": {
         "name": "Gemma Focale",
-        "msg": "Gemma focale spenta!"
+        "msg": "Gemma Focale in frantumi!",
+        "brokenMsg": "Gemma Focale con crepe!"
       },
       "shield_crystal": {
         "name": "Cristallo Scudo",
-        "msg": "Cristallo scudo frantumato in schegge!"
+        "msg": "Cristallo Scudo via di netto!",
+        "brokenMsg": "Cristallo Scudo con crepe!"
       },
       "name": "Entità di Cristallo",
       "maw": {
         "name": "Fauci Prismatiche",
-        "msg": "Fauci prismatiche fratturate!"
+        "msg": "Fauci Prismatiche in frantumi!",
+        "brokenMsg": "Fauci Prismatiche con crepe!"
       }
     },
     "amphibian": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso schiacciato in poltiglia!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "tongue": {
         "name": "Lingua",
-        "msg": "Lingua strappata via!"
+        "msg": "Lingua via di netto!",
+        "brokenMsg": "Lingua con crepe!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra tagliata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra tagliata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Anfibio"
     },
     "constructedundead": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Torso Cucito",
-        "msg": "Torso cucito lacerato nel mezzo!"
+        "msg": "Torso Cucito a pezzi!",
+        "brokenMsg": "Torso Cucito fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro staccato!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro staccato!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "power_stitch": {
         "name": "Cucitura di Forza",
-        "msg": "Cucitura di forza esplosa disordinatamente!"
+        "msg": "Cucitura di Forza in avaria totale!",
+        "brokenMsg": "Cucitura di Forza in avaria!"
       },
       "name": "Non-morto Costruito",
       "jaws": {
         "name": "Mascelle Cucite",
-        "msg": "Mascelle cucite scoppiate!"
+        "msg": "Mascelle Cucite in frantumi!",
+        "brokenMsg": "Mascelle Cucite con crepe!"
       }
     },
     "minotaur": {
       "head": {
-        "name": "Testa"
+        "name": "Testa",
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "horns": {
         "name": "Corna",
-        "msg": "Corna frantumate!"
+        "msg": "Corna via di netto!",
+        "brokenMsg": "Corna con crepe!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso schiacciato in poltiglia!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato via!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato via!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Zampa di Toro Sinistra",
-        "msg": "Zampa di toro sinistra tagliata via!"
+        "msg": "Zampa di Toro Sinistra via di netto!",
+        "brokenMsg": "Zampa di Toro Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa di Toro Destra",
-        "msg": "Zampa di toro destra tagliata via!"
+        "msg": "Zampa di Toro Destra via di netto!",
+        "brokenMsg": "Zampa di Toro Destra fuori uso!"
       },
       "name": "Minotauro",
       "maw": {
         "name": "Fauci Sbuffanti",
-        "msg": "Fauci sbuffanti spezzate!"
+        "msg": "Fauci Sbuffanti in frantumi!",
+        "brokenMsg": "Fauci Sbuffanti con crepe!"
       }
     },
     "goblin": {
       "brain": {
         "name": "Cervello",
-        "msg": "Cervello distrutto!"
+        "msg": "Cervello in poltiglia!",
+        "brokenMsg": "Cervello in sofferenza!"
       },
       "skull": {
         "name": "Cranio",
-        "msg": "Cranio incrinato!"
+        "msg": "Cranio via di netto!",
+        "brokenMsg": "Cranio con crepe!"
       },
       "cervical_vertebrae": {
         "name": "Vertebre Cervicali",
@@ -1275,1620 +1556,2001 @@
       },
       "ribcage": {
         "name": "Gabbia Toracica",
-        "msg": "Gabbia toracica frantumata!"
+        "msg": "Gabbia Toracica in poltiglia!",
+        "brokenMsg": "Gabbia Toracica in sofferenza!"
       },
       "pelvis": {
         "name": "Pelvi",
-        "msg": "Pelvi schiacciata!"
+        "msg": "Pelvi in poltiglia!",
+        "brokenMsg": "Pelvi in sofferenza!"
       },
       "heart": {
         "name": "Cuore",
-        "msg": "Cuore perforato!"
+        "msg": "Cuore in poltiglia!",
+        "brokenMsg": "Cuore in sofferenza!"
       },
       "lungs": {
         "name": "Polmoni",
-        "msg": "Polmoni collassati!"
+        "msg": "Polmoni in poltiglia!",
+        "brokenMsg": "Polmoni in sofferenza!"
       },
       "liver": {
         "name": "Fegato",
-        "msg": "Fegato squarciato!"
+        "msg": "Fegato in poltiglia!",
+        "brokenMsg": "Fegato in sofferenza!"
       },
       "kidneys": {
         "name": "Reni",
-        "msg": "Reni distrutti!"
+        "msg": "Reni in poltiglia!",
+        "brokenMsg": "Reni in sofferenza!"
       },
       "stomach": {
         "name": "Stomaco",
-        "msg": "Stomaco squarciato!"
+        "msg": "Stomaco in poltiglia!",
+        "brokenMsg": "Stomaco in sofferenza!"
       },
       "small_intestine": {
         "name": "Intestino Tenue",
-        "msg": "Intestino tenue lacerato!"
+        "msg": "Intestino Tenue in poltiglia!",
+        "brokenMsg": "Intestino Tenue in sofferenza!"
       },
       "large_intestine": {
         "name": "Intestino Crasso",
-        "msg": "Intestino crasso esploso!"
+        "msg": "Intestino Crasso in poltiglia!",
+        "brokenMsg": "Intestino Crasso in sofferenza!"
       },
       "pancreas": {
         "name": "Pancreas",
-        "msg": "Pancreas obliterato!"
+        "msg": "Pancreas in poltiglia!",
+        "brokenMsg": "Pancreas in sofferenza!"
       },
       "spleen": {
         "name": "Milza",
-        "msg": "Milza squarciata!"
+        "msg": "Milza in poltiglia!",
+        "brokenMsg": "Milza in sofferenza!"
       },
       "eye_left": {
         "name": "Occhio Sinistro",
-        "msg": "Occhio sinistro cavato fuori!"
+        "msg": "Occhio Sinistro via di netto!",
+        "brokenMsg": "Occhio Sinistro fuori uso!"
       },
       "eye_right": {
         "name": "Occhio Destro",
-        "msg": "Occhio destro cavato fuori!"
+        "msg": "Occhio Destro via di netto!",
+        "brokenMsg": "Occhio Destro fuori uso!"
       },
       "ear_left": {
         "name": "Orecchio Sinistro",
-        "msg": "Orecchio sinistro strappato!"
+        "msg": "Orecchio Sinistro via di netto!",
+        "brokenMsg": "Orecchio Sinistro fuori uso!"
       },
       "ear_right": {
         "name": "Orecchio Destro",
-        "msg": "Orecchio destro strappato!"
+        "msg": "Orecchio Destro via di netto!",
+        "brokenMsg": "Orecchio Destro fuori uso!"
       },
       "tongue": {
         "name": "Lingua",
-        "msg": "Lingua rimossa!"
+        "msg": "Lingua via di netto!",
+        "brokenMsg": "Lingua con crepe!"
       },
       "left_upper_arm": {
         "name": "Parte Superiore Braccio Sinistro",
-        "msg": "Parte superiore braccio sinistro recisa!"
+        "msg": "Parte Superiore Braccio Sinistro via di netto!",
+        "brokenMsg": "Parte Superiore Braccio Sinistro fuori uso!"
       },
       "left_forearm": {
         "name": "Avambraccio Sinistro",
-        "msg": "Avambraccio sinistro incrinato!"
+        "msg": "Avambraccio Sinistro via di netto!",
+        "brokenMsg": "Avambraccio Sinistro fuori uso!"
       },
       "left_hand": {
         "name": "Mano Sinistra",
-        "msg": "Mano sinistra smembrata!"
+        "msg": "Mano Sinistra via di netto!",
+        "brokenMsg": "Mano Sinistra fuori uso!"
       },
       "right_upper_arm": {
         "name": "Parte Superiore Braccio Destro",
-        "msg": "Parte superiore braccio destro recisa!"
+        "msg": "Parte Superiore Braccio Destro via di netto!",
+        "brokenMsg": "Parte Superiore Braccio Destro fuori uso!"
       },
       "right_forearm": {
         "name": "Avambraccio Destro",
-        "msg": "Avambraccio destro incrinato!"
+        "msg": "Avambraccio Destro via di netto!",
+        "brokenMsg": "Avambraccio Destro fuori uso!"
       },
       "right_hand": {
         "name": "Mano Destra",
-        "msg": "Mano destra smembrata!"
+        "msg": "Mano Destra via di netto!",
+        "brokenMsg": "Mano Destra fuori uso!"
       },
       "left_thigh": {
         "name": "Coscia Sinistra",
-        "msg": "Coscia sinistra frantumata!"
+        "msg": "Coscia Sinistra via di netto!",
+        "brokenMsg": "Coscia Sinistra fuori uso!"
       },
       "left_shin": {
         "name": "Gamba Sinistra Bassa",
-        "msg": "Gamba sinistra bassa rotta!"
+        "msg": "Gamba Sinistra Bassa via di netto!",
+        "brokenMsg": "Gamba Sinistra Bassa fuori uso!"
       },
       "left_foot": {
         "name": "Piede Sinistro",
-        "msg": "Piede sinistro staccato!"
+        "msg": "Piede Sinistro via di netto!",
+        "brokenMsg": "Piede Sinistro fuori uso!"
       },
       "right_thigh": {
         "name": "Coscia Destra",
-        "msg": "Coscia destra frantumata!"
+        "msg": "Coscia Destra via di netto!",
+        "brokenMsg": "Coscia Destra fuori uso!"
       },
       "right_shin": {
         "name": "Gamba Destra Bassa",
-        "msg": "Gamba destra bassa rotta!"
+        "msg": "Gamba Destra Bassa via di netto!",
+        "brokenMsg": "Gamba Destra Bassa fuori uso!"
       },
       "right_foot": {
         "name": "Piede Destro",
-        "msg": "Piede destro staccato!"
+        "msg": "Piede Destro via di netto!",
+        "brokenMsg": "Piede Destro fuori uso!"
       },
       "name": "Goblin",
       "mouth": {
         "name": "Bocca",
-        "msg": "Bocca lacerata!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
+      },
+      "torso": {
+        "name": "Torso",
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
+      },
+      "nose": {
+        "name": "Nose",
+        "msg": "Nose via di netto!",
+        "brokenMsg": "Nose con crepe!"
       }
     },
     "crustacean": {
       "claw_left": {
         "name": "Chela Sinistra",
-        "msg": "Chela sinistra frantumata!"
+        "msg": "Chela Sinistra via di netto!",
+        "brokenMsg": "Chela Sinistra fuori uso!"
       },
       "claw_right": {
         "name": "Chela Destra",
-        "msg": "Chela destra ridotta a brandelli!"
+        "msg": "Chela Destra via di netto!",
+        "brokenMsg": "Chela Destra fuori uso!"
       },
       "carapace": {
         "name": "Carapace",
-        "msg": "Carapace spaccato!"
+        "msg": "Carapace in frantumi!",
+        "brokenMsg": "Carapace con ammaccature!"
       },
       "abdomen": {
         "name": "Addome",
-        "msg": "Addome squarciato!"
+        "msg": "Addome in poltiglia!",
+        "brokenMsg": "Addome in sofferenza!"
       },
       "front_leg": {
         "name": "Zampa Anteriore",
-        "msg": "Zampa anteriore recisa!"
+        "msg": "Zampa Anteriore via di netto!",
+        "brokenMsg": "Zampa Anteriore fuori uso!"
       },
       "rear_leg": {
         "name": "Zampa Posteriore",
-        "msg": "Zampa posteriore mozzata!"
+        "msg": "Zampa Posteriore via di netto!",
+        "brokenMsg": "Zampa Posteriore fuori uso!"
       },
       "antennae": {
         "name": "Antenne",
-        "msg": "Antenne schiacciate!"
+        "msg": "Antenne via di netto!",
+        "brokenMsg": "Antenne fuori uso!"
       },
       "name": "Crostaceo",
       "mandibles": {
         "name": "Mandibole",
-        "msg": "Mandibole frantumate!"
+        "msg": "Mandibole in frantumi!",
+        "brokenMsg": "Mandibole con crepe!"
       }
     },
     "spherical": {
       "core": {
         "name": "Nucleo",
-        "msg": "Integrità del nucleo compromessa!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "shell": {
         "name": "Guscio Esterno",
-        "msg": "Guscio incrinato!"
+        "msg": "Guscio Esterno in frantumi!",
+        "brokenMsg": "Guscio Esterno con ammaccature!"
       },
       "sensor_array": {
         "name": "Matrice di Sensori",
-        "msg": "Matrice di sensori disattivata!"
+        "msg": "Matrice di Sensori via di netto!",
+        "brokenMsg": "Matrice di Sensori fuori uso!"
       },
       "spin_spines": {
         "name": "Spine Rotanti",
-        "msg": "Spine rotanti divelte!"
+        "msg": "Spine Rotanti via di netto!",
+        "brokenMsg": "Spine Rotanti in sofferenza!"
       },
       "aux_drives": {
         "name": "Propulsori Ausiliari",
-        "msg": "Propulsori ausiliari hanno smesso di funzionare!"
+        "msg": "Propulsori Ausiliari in avaria totale!",
+        "brokenMsg": "Propulsori Ausiliari in avaria!"
       },
       "name": "Sferico",
       "maw": {
         "name": "Fauci a Portello",
-        "msg": "Fauci a portello deformate!"
+        "msg": "Fauci a Portello in frantumi!",
+        "brokenMsg": "Fauci a Portello con crepe!"
       }
     },
     "turtle": {
       "shell": {
         "name": "Guscio",
-        "msg": "Guscio spaccato!"
+        "msg": "Guscio in frantumi!",
+        "brokenMsg": "Guscio con ammaccature!"
       },
       "head": {
         "name": "Testa",
-        "msg": "Testa danneggiata!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra rotta!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra spezzata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra recisa!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra mozzata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda tagliata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Tartaruga",
       "beak": {
         "name": "Becco",
-        "msg": "Becco incrinato!"
+        "msg": "Becco in frantumi!",
+        "brokenMsg": "Becco con crepe!"
       }
     },
     "manticore": {
       "brain": {
         "name": "Cervello",
-        "msg": "Cervello distrutto!"
+        "msg": "Cervello in poltiglia!",
+        "brokenMsg": "Cervello in sofferenza!"
       },
       "skull": {
         "name": "Cranio",
-        "msg": "Cranio incrinato!"
+        "msg": "Cranio in frantumi!",
+        "brokenMsg": "Cranio con crepe!"
       },
       "spine": {
         "name": "Colonna Vertebrale",
-        "msg": "Colonna vertebrale recisa!"
+        "msg": "Colonna Vertebrale in poltiglia!",
+        "brokenMsg": "Colonna Vertebrale in sofferenza!"
       },
       "ribcage": {
         "name": "Gabbia Toracica",
-        "msg": "Gabbia toracica perforata!"
+        "msg": "Gabbia Toracica in poltiglia!",
+        "brokenMsg": "Gabbia Toracica in sofferenza!"
       },
       "front_left_paw": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra fatta a brandelli!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "front_right_paw": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra fatta a brandelli!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra dilaniata!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra dilaniata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "left_eye": {
         "name": "Occhio Sinistro",
-        "msg": "Occhio sinistro cavato!"
+        "msg": "Occhio Sinistro via di netto!",
+        "brokenMsg": "Occhio Sinistro fuori uso!"
       },
       "right_eye": {
         "name": "Occhio Destro",
-        "msg": "Occhio destro cavato!"
+        "msg": "Occhio Destro via di netto!",
+        "brokenMsg": "Occhio Destro fuori uso!"
       },
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra strappata!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra strappata!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "left_lung": {
         "name": "Polmone Sinistro",
-        "msg": "Polmone sinistro perforato!"
+        "msg": "Polmone Sinistro in poltiglia!",
+        "brokenMsg": "Polmone Sinistro in sofferenza!"
       },
       "right_lung": {
         "name": "Polmone Destro",
-        "msg": "Polmone destro perforato!"
+        "msg": "Polmone Destro in poltiglia!",
+        "brokenMsg": "Polmone Destro in sofferenza!"
       },
       "name": "Manticora",
       "maw": {
         "name": "Fauci Leonine",
-        "msg": "Fauci leonine spezzate!"
+        "msg": "Fauci Leonine in frantumi!",
+        "brokenMsg": "Fauci Leonine con crepe!"
       }
     },
     "chestmimic": {
       "core": {
         "name": "Nucleo Morbido",
-        "msg": "Nucleo lacerato!"
+        "msg": "Nucleo Morbido a pezzi!",
+        "brokenMsg": "Nucleo Morbido fuori uso!"
       },
       "lid": {
         "name": "Coperchio del Baule",
-        "msg": "Coperchio aperto!"
+        "msg": "Coperchio del Baule via di netto!",
+        "brokenMsg": "Coperchio del Baule fuori uso!"
       },
       "teeth": {
         "name": "Denti Frastagliati",
-        "msg": "Denti spinti fuori!"
+        "msg": "Denti Frastagliati via di netto!",
+        "brokenMsg": "Denti Frastagliati con crepe!"
       },
       "tongue": {
         "name": "Lingua Slime",
-        "msg": "Lingua recisa!"
+        "msg": "Lingua Slime via di netto!",
+        "brokenMsg": "Lingua Slime con crepe!"
       },
       "feet": {
         "name": "Zampe Corte",
-        "msg": "Zampe schiacciate!"
+        "msg": "Zampe Corte via di netto!",
+        "brokenMsg": "Zampe Corte fuori uso!"
       },
       "name": "Mimic"
     },
     "phoenix": {
       "core": {
         "name": "Nucleo di Cenere",
-        "msg": "Nucleo di cenere annientato!"
+        "msg": "Nucleo di Cenere a pezzi!",
+        "brokenMsg": "Nucleo di Cenere fuori uso!"
       },
       "feathers": {
         "name": "Piume Fiammeggianti",
-        "msg": "Piume bruciate!"
+        "msg": "Piume Fiammeggianti via di netto!",
+        "brokenMsg": "Piume Fiammeggianti a brandelli!"
       },
       "beak": {
         "name": "Becco",
-        "msg": "Becco incrinato!"
+        "msg": "Becco via di netto!",
+        "brokenMsg": "Becco con crepe!"
       },
       "talons": {
         "name": "Artigli",
-        "msg": "Artigli frantumati!"
+        "msg": "Artigli via di netto!",
+        "brokenMsg": "Artigli fuori uso!"
       },
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra spenta!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra spenta!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "left_eye": {
         "name": "Occhio Ardente Sinistro",
-        "msg": "Occhio sinistro spento!"
+        "msg": "Occhio Ardente Sinistro via di netto!",
+        "brokenMsg": "Occhio Ardente Sinistro fuori uso!"
       },
       "right_eye": {
         "name": "Occhio Ardente Destro",
-        "msg": "Occhio destro spento!"
+        "msg": "Occhio Ardente Destro via di netto!",
+        "brokenMsg": "Occhio Ardente Destro fuori uso!"
       },
       "name": "Fenice"
     },
     "ogre": {
       "head": {
         "name": "Testa",
-        "msg": "Testa colpita!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Torace",
-        "msg": "Torace maltrattato!"
+        "msg": "Torace a pezzi!",
+        "brokenMsg": "Torace fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro rotto!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro spezzato!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra compromessa!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra mutilata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Orco",
       "maw": {
         "name": "Fauci Spalancate",
-        "msg": "Fauci spalancate spezzate!"
+        "msg": "Fauci Spalancate in frantumi!",
+        "brokenMsg": "Fauci Spalancate con crepe!"
       }
     },
     "scarecrow": {
       "head": {
         "name": "Testa",
-        "msg": "Testa distrutta!"
+        "msg": "Testa a pezzi!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Corpo",
-        "msg": "Corpo lacerato!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra spezzata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra rotta!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Spaventapasseri",
       "mouth": {
         "name": "Bocca Cucita",
-        "msg": "Bocca cucita scucita!"
+        "msg": "Bocca Cucita a pezzi!",
+        "brokenMsg": "Bocca Cucita fuori uso!"
       }
     },
     "segmentworm": {
       "head": {
         "name": "Testa",
-        "msg": "Testa schiacciata!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "heart_segment": {
         "name": "Segmento Cardiaco",
-        "msg": "Segmento cardiaco lacerato!"
+        "msg": "Segmento Cardiaco in poltiglia!",
+        "brokenMsg": "Segmento Cardiaco in sofferenza!"
       },
       "body_segment": {
         "name": "Segmento Corporeo",
-        "msg": "Segmento corporeo reciso!"
+        "msg": "Segmento Corporeo via di netto!",
+        "brokenMsg": "Segmento Corporeo a brandelli!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda recisa!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Verme Segmentato",
       "maw": {
         "name": "Fauci Anulari",
-        "msg": "Fauci anulari squarciate!"
+        "msg": "Fauci Anulari in frantumi!",
+        "brokenMsg": "Fauci Anulari con crepe!"
       }
     },
     "mineral": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo frantumato!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "shell": {
         "name": "Conchiglia",
-        "msg": "Conchiglia crepata!"
+        "msg": "Conchiglia in frantumi!",
+        "brokenMsg": "Conchiglia con ammaccature!"
       },
       "crystals": {
         "name": "Cristalli",
-        "msg": "Cristalli frantumati!"
+        "msg": "Cristalli via di netto!",
+        "brokenMsg": "Cristalli con crepe!"
       },
       "veins": {
         "name": "Vene Minerali",
-        "msg": "Vene interrotte!"
+        "msg": "Vene Minerali via di netto!",
+        "brokenMsg": "Vene Minerali in sofferenza!"
       },
       "name": "Minerale",
       "maw": {
         "name": "Fauci Frantumanti",
-        "msg": "Fauci frantumanti spaccate!"
+        "msg": "Fauci Frantumanti in frantumi!",
+        "brokenMsg": "Fauci Frantumanti con crepe!"
       }
     },
     "hydra": {
       "head_one": {
         "name": "Testa Sinistra",
-        "msg": "Testa sinistra recisa!"
+        "msg": "Testa Sinistra via di netto!",
+        "brokenMsg": "Testa Sinistra fuori uso!"
       },
       "head_two": {
         "name": "Testa Centrale",
-        "msg": "Testa centrale decapitata!"
+        "msg": "Testa Centrale via di netto!",
+        "brokenMsg": "Testa Centrale fuori uso!"
       },
       "head_three": {
         "name": "Testa Destra",
-        "msg": "Testa destra troncata!"
+        "msg": "Testa Destra via di netto!",
+        "brokenMsg": "Testa Destra fuori uso!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo schiacciato!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda recisa!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Idra",
       "maw": {
         "name": "Fauci Centrali",
-        "msg": "Fauci centrali squarciate!"
+        "msg": "Fauci Centrali in frantumi!",
+        "brokenMsg": "Fauci Centrali con crepe!"
       }
     },
     "vampire": {
       "head": {
         "name": "Testa",
-        "msg": "Testa colpita!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "heart": {
         "name": "Cuore",
-        "msg": "Cuore trafitto!"
+        "msg": "Cuore in poltiglia!",
+        "brokenMsg": "Cuore in sofferenza!"
       },
       "fangs": {
         "name": "Zanne",
-        "msg": "Zanne frantumate!"
+        "msg": "Zanne via di netto!",
+        "brokenMsg": "Zanne con crepe!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro rotto!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro frantumato!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra compromessa!"
+        "msg": "Gamba Sinistra a pezzi!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra compromessa!"
+        "msg": "Gamba Destra a pezzi!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Vampiro",
       "torso": {
         "name": "Torso",
-        "msg": "Torso sfondato!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       }
     },
     "bat": {
       "head": {
         "name": "Testa",
-        "msg": "Testa stordita!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo maltrattato!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra lacerata!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra ridotta a brandelli!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "fangs": {
         "name": "Zanne",
-        "msg": "Zanne spuntate!"
+        "msg": "Zanne via di netto!",
+        "brokenMsg": "Zanne con crepe!"
       },
       "name": "Pipistrello"
     },
     "rabbit": {
       "head": {
         "name": "Testa",
-        "msg": "Testa stordita!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo maltrattato!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "ears": {
         "name": "Orecchie",
-        "msg": "Orecchie lacerate!"
+        "msg": "Orecchie via di netto!",
+        "brokenMsg": "Orecchie fuori uso!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra spezzata!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra spezzata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra compromessa!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra compromessa!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda spezzata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Coniglio",
       "teeth": {
         "name": "Incisivi",
-        "msg": "Incisivi spezzati!"
+        "msg": "Incisivi in frantumi!",
+        "brokenMsg": "Incisivi con crepe!"
       }
     },
     "armoredknight": {
       "helmet": {
         "name": "Elmo",
-        "msg": "Elmo rimosso!"
+        "msg": "Elmo via di netto!",
+        "brokenMsg": "Elmo con ammaccature!"
       },
       "chestplate": {
         "name": "Corazza",
-        "msg": "Corazza incrinata!"
+        "msg": "Corazza via di netto!",
+        "brokenMsg": "Corazza con ammaccature!"
       },
       "pauldron_left": {
         "name": "Spallina Sinistra",
-        "msg": "Spallina sinistra frantumata!"
+        "msg": "Spallina Sinistra via di netto!",
+        "brokenMsg": "Spallina Sinistra con ammaccature!"
       },
       "pauldron_right": {
         "name": "Spallina Destra",
-        "msg": "Spallina destra frantumata!"
+        "msg": "Spallina Destra via di netto!",
+        "brokenMsg": "Spallina Destra con ammaccature!"
       },
       "greaves_left": {
         "name": "Gambali Sinistri",
-        "msg": "Gambali sinistri piegati!"
+        "msg": "Gambali Sinistri via di netto!",
+        "brokenMsg": "Gambali Sinistri con ammaccature!"
       },
       "greaves_right": {
         "name": "Gambali Destri",
-        "msg": "Gambali destri piegati!"
+        "msg": "Gambali Destri via di netto!",
+        "brokenMsg": "Gambali Destri con ammaccature!"
       },
       "name": "Cavaliere Corazzato",
       "left_gauntlet": {
         "name": "Guanto Sinistro",
-        "msg": "Guanto sinistro strappato via!"
+        "msg": "Guanto Sinistro via di netto!",
+        "brokenMsg": "Guanto Sinistro con ammaccature!"
       },
       "right_gauntlet": {
         "name": "Guanto Destro",
-        "msg": "Guanto destro strappato via!"
+        "msg": "Guanto Destro via di netto!",
+        "brokenMsg": "Guanto Destro con ammaccature!"
       },
       "mouth": {
         "name": "Bocca della Visiera",
-        "msg": "Bocca della visiera sfondata!"
+        "msg": "Bocca della Visiera a pezzi!",
+        "brokenMsg": "Bocca della Visiera fuori uso!"
       }
     },
     "centaur": {
       "head": {
         "name": "Testa",
-        "msg": "Testa sfondata!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "torso": {
         "name": "Torso Umano",
-        "msg": "Torso umano schiacciato in poltiglia!"
+        "msg": "Torso Umano a pezzi!",
+        "brokenMsg": "Torso Umano fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato via!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato via!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "body": {
         "name": "Corpo Equino",
-        "msg": "Corpo equino crolla!"
+        "msg": "Corpo Equino a pezzi!",
+        "brokenMsg": "Corpo Equino fuori uso!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra recisa!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra recisa!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra mozzata!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra mozzata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "name": "Centauro",
       "mouth": {
         "name": "Bocca",
-        "msg": "Bocca lacerata!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       }
     },
     "insectswarm": {
       "mandibles": {
         "name": "Gruppo di Mandibole",
-        "msg": "Gruppo di mandibole frantumato!"
+        "msg": "Gruppo di Mandibole via di netto!",
+        "brokenMsg": "Gruppo di Mandibole con crepe!"
       },
       "wings": {
         "name": "Sciame di Ali",
-        "msg": "Sciame di ali disperso!"
+        "msg": "Sciame di Ali via di netto!",
+        "brokenMsg": "Sciame di Ali a brandelli!"
       },
       "legs": {
         "name": "Gruppo di Zampe",
-        "msg": "Gruppo di zampe reso incapacitato!"
+        "msg": "Gruppo di Zampe via di netto!",
+        "brokenMsg": "Gruppo di Zampe fuori uso!"
       },
       "abdomen": {
         "name": "Gruppo di Addomi",
-        "msg": "Gruppo di addomi distrutto!"
+        "msg": "Gruppo di Addomi via di netto!",
+        "brokenMsg": "Gruppo di Addomi in sofferenza!"
       },
       "stingers": {
         "name": "Sciame di Pungiglioni",
-        "msg": "Sciame di pungiglioni neutralizzato!"
+        "msg": "Sciame di Pungiglioni via di netto!",
+        "brokenMsg": "Sciame di Pungiglioni con crepe!"
       },
       "name": "Sciame di Insetti"
     },
     "roboticdefender": {
       "head": {
         "name": "Testa",
-        "msg": "Testa disabilitata!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "arm_cannon": {
         "name": "Cannone Braccio",
-        "msg": "Cannone distrutto!"
+        "msg": "Cannone Braccio via di netto!",
+        "brokenMsg": "Cannone Braccio in avaria!"
       },
       "torso": {
         "name": "Torace",
-        "msg": "Torace violato!"
+        "msg": "Torace a pezzi!",
+        "brokenMsg": "Torace fuori uso!"
       },
       "leg_joints": {
         "name": "Articolazioni delle Gambe",
-        "msg": "Giacoltà gambe bloccate!"
+        "msg": "Articolazioni delle Gambe via di netto!",
+        "brokenMsg": "Articolazioni delle Gambe in avaria!"
       },
       "sensors": {
         "name": "Sensori",
-        "msg": "Sensori offline!"
+        "msg": "Sensori perduto per sempre!",
+        "brokenMsg": "Sensori fuori uso!"
       },
       "name": "Difensore Robotico",
       "jaws": {
         "name": "Ganasce",
-        "msg": "Ganasce bloccate!"
+        "msg": "Ganasce in frantumi!",
+        "brokenMsg": "Ganasce con crepe!"
       }
     },
     "turret": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo disattivato!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "gun_barrel": {
         "name": "Canna",
-        "msg": "Canna distrutta!"
+        "msg": "Canna via di netto!",
+        "brokenMsg": "Canna in avaria!"
       },
       "sensor_array": {
         "name": "Sensori",
-        "msg": "Sensori offline!"
+        "msg": "Sensori perduto per sempre!",
+        "brokenMsg": "Sensori fuori uso!"
       },
       "rotation_mech": {
         "name": "Meccanismo di Rotazione",
-        "msg": "Rotazione bloccata!"
+        "msg": "Meccanismo di Rotazione via di netto!",
+        "brokenMsg": "Meccanismo di Rotazione in avaria!"
       },
       "ammo_chamber": {
         "name": "Camera Munizioni",
-        "msg": "Camera munizioni lacerata!"
+        "msg": "Camera Munizioni in avaria totale!",
+        "brokenMsg": "Camera Munizioni in avaria!"
       },
       "name": "Torretta",
       "jaws": {
         "name": "Ganasce di Alimentazione",
-        "msg": "Ganasce di alimentazione inceppate!"
+        "msg": "Ganasce di Alimentazione in frantumi!",
+        "brokenMsg": "Ganasce di Alimentazione con crepe!"
       }
     },
     "gorgon": {
       "eyes": {
         "name": "Occhi",
-        "msg": "Occhi accecati!"
+        "msg": "Occhi via di netto!",
+        "brokenMsg": "Occhi fuori uso!"
       },
       "snake_hair": {
         "name": "Capelli Serpente",
-        "msg": "Capelli serpente recisi!"
+        "msg": "Capelli Serpente via di netto!",
+        "brokenMsg": "Capelli Serpente con crepe!"
       },
       "upper_body": {
         "name": "Corpo Superiore",
-        "msg": "Corpo superiore pietrificato!"
+        "msg": "Corpo Superiore a pezzi!",
+        "brokenMsg": "Corpo Superiore fuori uso!"
       },
       "lower_body": {
         "name": "Corpo Inferiore",
-        "msg": "Corpo inferiore frantumato!"
+        "msg": "Corpo Inferiore a pezzi!",
+        "brokenMsg": "Corpo Inferiore fuori uso!"
       },
       "name": "Gorgone",
       "left_hand": {
         "name": "Mano Sinistra",
-        "msg": "Mano sinistra recisa!"
+        "msg": "Mano Sinistra via di netto!",
+        "brokenMsg": "Mano Sinistra fuori uso!"
       },
       "right_hand": {
         "name": "Mano Destra",
-        "msg": "Mano destra recisa!"
+        "msg": "Mano Destra via di netto!",
+        "brokenMsg": "Mano Destra fuori uso!"
       },
       "fangs": {
         "name": "Zanne",
-        "msg": "Zanne spezzate!"
+        "msg": "Zanne in frantumi!",
+        "brokenMsg": "Zanne con crepe!"
       }
     },
     "abyssalleviathan": {
       "eye": {
         "name": "Occhio Gigante",
-        "msg": "Occhio accecato!"
+        "msg": "Occhio Gigante via di netto!",
+        "brokenMsg": "Occhio Gigante fuori uso!"
       },
       "maw": {
         "name": "Fauce",
-        "msg": "Fauce schiacciata!"
+        "msg": "Fauce via di netto!",
+        "brokenMsg": "Fauce con crepe!"
       },
       "dorsal_plates": {
         "name": "Placche Dorsali",
-        "msg": "Placche dorsali incrinate!"
+        "msg": "Placche Dorsali in frantumi!",
+        "brokenMsg": "Placche Dorsali con ammaccature!"
       },
       "tentacles": {
         "name": "Tentacoli",
-        "msg": "Tentacoli recisi!"
+        "msg": "Tentacoli via di netto!",
+        "brokenMsg": "Tentacoli a brandelli!"
       },
       "heart_chamber": {
         "name": "Camera Cardiaca",
-        "msg": "Camera cardiaca lacerata!"
+        "msg": "Camera Cardiaca in poltiglia!",
+        "brokenMsg": "Camera Cardiaca in sofferenza!"
       },
       "name": "Leviatano Abissale"
     },
     "snail": {
       "shell": {
         "name": "Conchiglia",
-        "msg": "Conchiglia frantumata!"
+        "msg": "Conchiglia in frantumi!",
+        "brokenMsg": "Conchiglia con ammaccature!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo schiacciato!"
+        "msg": "Corpo via di netto!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "tentacle_1": {
         "name": "Tentacolo 1",
-        "msg": "Tentacolo 1 reciso!"
+        "msg": "Tentacolo 1 via di netto!",
+        "brokenMsg": "Tentacolo 1 a brandelli!"
       },
       "tentacle_2": {
         "name": "Tentacolo 2",
-        "msg": "Tentacolo 2 reciso!"
+        "msg": "Tentacolo 2 via di netto!",
+        "brokenMsg": "Tentacolo 2 a brandelli!"
       },
       "eye": {
         "name": "Occhio",
-        "msg": "Occhio accecato!"
+        "msg": "Occhio via di netto!",
+        "brokenMsg": "Occhio fuori uso!"
       },
       "foot": {
         "name": "Piede",
-        "msg": "Piede schiacciato!"
+        "msg": "Piede via di netto!",
+        "brokenMsg": "Piede fuori uso!"
       },
       "name": "Lumaca",
       "mouth": {
         "name": "Radula",
-        "msg": "Radula sbrindellata!"
+        "msg": "Radula a pezzi!",
+        "brokenMsg": "Radula fuori uso!"
       }
     },
     "waterelemental": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo crollato in nebbia!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "body": {
         "name": "Corpo d'Acqua",
-        "msg": "Corpo d'acqua disperso!"
+        "msg": "Corpo d'Acqua a pezzi!",
+        "brokenMsg": "Corpo d'Acqua fuori uso!"
       },
       "water_arms": {
         "name": "Braccia d'Acqua",
-        "msg": "Braccia d'acqua lacerate!"
+        "msg": "Braccia d'Acqua a pezzi!",
+        "brokenMsg": "Braccia d'Acqua fuori uso!"
       },
       "left_water_leg": {
         "name": "Gamba d'Acqua Sinistra",
-        "msg": "Gamba d'acqua sinistra evaporata!"
+        "msg": "Gamba d'Acqua Sinistra a pezzi!",
+        "brokenMsg": "Gamba d'Acqua Sinistra fuori uso!"
       },
       "right_water_leg": {
         "name": "Gamba d'Acqua Destra",
-        "msg": "Gamba d'acqua destra evaporata!"
+        "msg": "Gamba d'Acqua Destra a pezzi!",
+        "brokenMsg": "Gamba d'Acqua Destra fuori uso!"
       },
       "name": "Elementale dell'Acqua",
       "maw": {
         "name": "Fauci Impetuose",
-        "msg": "Fauci impetuose disperse!"
+        "msg": "Fauci Impetuose in frantumi!",
+        "brokenMsg": "Fauci Impetuose con crepe!"
       }
     },
     "thunderelemental": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo frantumato dal fulmine!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "body": {
         "name": "Corpo Elettrico",
-        "msg": "Corpo elettrico ha fatto corto circuito!"
+        "msg": "Corpo Elettrico a pezzi!",
+        "brokenMsg": "Corpo Elettrico fuori uso!"
       },
       "left_electric_arm": {
         "name": "Braccio Elettrico Sinistro",
-        "msg": "Braccio elettrico sinistro ha perso potenza!"
+        "msg": "Braccio Elettrico Sinistro a pezzi!",
+        "brokenMsg": "Braccio Elettrico Sinistro fuori uso!"
       },
       "right_electric_arm": {
         "name": "Braccio Elettrico Destro",
-        "msg": "Braccio elettrico destro ha perso potenza!"
+        "msg": "Braccio Elettrico Destro a pezzi!",
+        "brokenMsg": "Braccio Elettrico Destro fuori uso!"
       },
       "left_electric_leg": {
         "name": "Gamba Elettrica Sinistra",
-        "msg": "Gamba elettrica sinistra messa a terra!"
+        "msg": "Gamba Elettrica Sinistra a pezzi!",
+        "brokenMsg": "Gamba Elettrica Sinistra fuori uso!"
       },
       "right_electric_leg": {
         "name": "Gamba Elettrica Destra",
-        "msg": "Gamba elettrica destra messa a terra!"
+        "msg": "Gamba Elettrica Destra a pezzi!",
+        "brokenMsg": "Gamba Elettrica Destra fuori uso!"
       },
       "name": "Elementale del Tuono",
       "maw": {
         "name": "Fauci Folgoranti",
-        "msg": "Fauci folgoranti scaricate!"
+        "msg": "Fauci Folgoranti in frantumi!",
+        "brokenMsg": "Fauci Folgoranti con crepe!"
       }
     },
     "stormelemental": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo disperso nella raffica!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "body": {
         "name": "Corpo di Vento",
-        "msg": "Corpo di vento disperso!"
+        "msg": "Corpo di Vento a pezzi!",
+        "brokenMsg": "Corpo di Vento fuori uso!"
       },
       "left_rain_arm": {
         "name": "Braccio di Pioggia Sinistro",
-        "msg": "Braccio di pioggia sinistro spazzato via!"
+        "msg": "Braccio di Pioggia Sinistro a pezzi!",
+        "brokenMsg": "Braccio di Pioggia Sinistro fuori uso!"
       },
       "right_rain_arm": {
         "name": "Braccio di Pioggia Destro",
-        "msg": "Braccio di pioggia destro spazzato via!"
+        "msg": "Braccio di Pioggia Destro a pezzi!",
+        "brokenMsg": "Braccio di Pioggia Destro fuori uso!"
       },
       "left_thunder_leg": {
         "name": "Gamba di Tuono Sinistra",
-        "msg": "Gamba di tuono sinistra abbattuta!"
+        "msg": "Gamba di Tuono Sinistra a pezzi!",
+        "brokenMsg": "Gamba di Tuono Sinistra fuori uso!"
       },
       "right_thunder_leg": {
         "name": "Gamba di Tuono Destra",
-        "msg": "Gamba di tuono destra abbattuta!"
+        "msg": "Gamba di Tuono Destra a pezzi!",
+        "brokenMsg": "Gamba di Tuono Destra fuori uso!"
       },
       "name": "Elementale della Tempesta",
       "maw": {
         "name": "Fauci Ululanti",
-        "msg": "Fauci ululanti placate!"
+        "msg": "Fauci Ululanti in frantumi!",
+        "brokenMsg": "Fauci Ululanti con crepe!"
       }
     },
     "fireelemental": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo incenerito!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "body": {
         "name": "Corpo di Fiamma",
-        "msg": "Corpo di fiamma estinto!"
+        "msg": "Corpo di Fiamma a pezzi!",
+        "brokenMsg": "Corpo di Fiamma fuori uso!"
       },
       "ember_arms": {
         "name": "Braccia di Brace",
-        "msg": "Braccia di brace raffreddate!"
+        "msg": "Braccia di Brace a pezzi!",
+        "brokenMsg": "Braccia di Brace fuori uso!"
       },
       "ash_legs": {
         "name": "Gambe di Cenere",
-        "msg": "Gambe di cenere sbriciolate!"
+        "msg": "Gambe di Cenere a pezzi!",
+        "brokenMsg": "Gambe di Cenere fuori uso!"
       },
       "name": "Elementale del Fuoco",
       "maw": {
         "name": "Fauci Ardenti",
-        "msg": "Fauci ardenti spente!"
+        "msg": "Fauci Ardenti in frantumi!",
+        "brokenMsg": "Fauci Ardenti con crepe!"
       }
     },
     "metalelemental": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo deformato!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "plate_armor": {
         "name": "Armatura",
-        "msg": "Armatura incrinata!"
+        "msg": "Armatura in frantumi!",
+        "brokenMsg": "Armatura con ammaccature!"
       },
       "spike_arms": {
         "name": "Braccia Spinose",
-        "msg": "Braccia spinose smussate!"
+        "msg": "Braccia Spinose in frantumi!",
+        "brokenMsg": "Braccia Spinose con crepe!"
       },
       "gear_legs": {
         "name": "Gambe Ingranaggio",
-        "msg": "Gambe ingranaggio bloccate!"
+        "msg": "Gambe Ingranaggio in avaria totale!",
+        "brokenMsg": "Gambe Ingranaggio in avaria!"
       },
       "name": "Elementale del Metallo",
       "jaws": {
         "name": "Ganasce a Morsa",
-        "msg": "Ganasce a morsa saltate!"
+        "msg": "Ganasce a Morsa in frantumi!",
+        "brokenMsg": "Ganasce a Morsa con crepe!"
       }
     },
     "darkelemental": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo consumato dalle ombre!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "body": {
         "name": "Corpo d'Ombra",
-        "msg": "Corpo d'ombra appassito!"
+        "msg": "Corpo d'Ombra a pezzi!",
+        "brokenMsg": "Corpo d'Ombra fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Spettrale Sinistro",
-        "msg": "Braccio spettrale sinistro affievolito!"
+        "msg": "Braccio Spettrale Sinistro a pezzi!",
+        "brokenMsg": "Braccio Spettrale Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Spettrale Destro",
-        "msg": "Braccio spettrale destro affievolito!"
+        "msg": "Braccio Spettrale Destro a pezzi!",
+        "brokenMsg": "Braccio Spettrale Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Maledetta Sinistra",
-        "msg": "Gamba maledetta sinistra crollata!"
+        "msg": "Gamba Maledetta Sinistra a pezzi!",
+        "brokenMsg": "Gamba Maledetta Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Maledetta Destra",
-        "msg": "Gamba maledetta destra crollata!"
+        "msg": "Gamba Maledetta Destra a pezzi!",
+        "brokenMsg": "Gamba Maledetta Destra fuori uso!"
       },
       "name": "Elementale dell'Oscurità",
       "maw": {
         "name": "Fauci del Vuoto",
-        "msg": "Fauci del vuoto collassate!"
+        "msg": "Fauci del Vuoto in frantumi!",
+        "brokenMsg": "Fauci del Vuoto con crepe!"
       }
     },
     "sacredelemental": {
       "core": {
         "name": "Nucleo",
-        "msg": "Nucleo santificato!"
+        "msg": "Nucleo a pezzi!",
+        "brokenMsg": "Nucleo fuori uso!"
       },
       "body": {
         "name": "Corpo di Luce",
-        "msg": "Corpo di luce annientato!"
+        "msg": "Corpo di Luce a pezzi!",
+        "brokenMsg": "Corpo di Luce fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Radioso Sinistro",
-        "msg": "Braccio radioso sinistro affievolito!"
+        "msg": "Braccio Radioso Sinistro a pezzi!",
+        "brokenMsg": "Braccio Radioso Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Radioso Destro",
-        "msg": "Braccio radioso destro affievolito!"
+        "msg": "Braccio Radioso Destro a pezzi!",
+        "brokenMsg": "Braccio Radioso Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba d'Aura Sinistra",
-        "msg": "Gamba d'aura sinistra ha perso forma!"
+        "msg": "Gamba d'Aura Sinistra a pezzi!",
+        "brokenMsg": "Gamba d'Aura Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba d'Aura Destra",
-        "msg": "Gamba d'aura destra ha perso forma!"
+        "msg": "Gamba d'Aura Destra a pezzi!",
+        "brokenMsg": "Gamba d'Aura Destra fuori uso!"
       },
       "name": "Elementale Sacro",
       "mouth": {
         "name": "Bocca Corale",
-        "msg": "Bocca corale zittita!"
+        "msg": "Bocca Corale a pezzi!",
+        "brokenMsg": "Bocca Corale fuori uso!"
       }
     },
     "totem": {
       "core": {
         "name": "Nucleo Spirituale",
-        "msg": "Nucleo Spirituale frantumato!"
+        "msg": "Nucleo Spirituale a pezzi!",
+        "brokenMsg": "Nucleo Spirituale fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio Sinistro scheggiato!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio Destro scheggiato!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "eyes": {
         "name": "Occhi del Totem",
-        "msg": "Occhi del Totem frantumati!"
+        "msg": "Occhi del Totem via di netto!",
+        "brokenMsg": "Occhi del Totem fuori uso!"
       },
       "base": {
         "name": "Base",
-        "msg": "Base incrinata!"
+        "msg": "Base a pezzi!",
+        "brokenMsg": "Base fuori uso!"
       },
       "name": "Totem",
       "mouth": {
         "name": "Bocca Intagliata",
-        "msg": "Bocca intagliata spaccata!"
+        "msg": "Bocca Intagliata a pezzi!",
+        "brokenMsg": "Bocca Intagliata fuori uso!"
       }
     },
     "ophanim": {
       "wheel_one": {
         "name": "Ruota Uno",
-        "msg": "Ruota Uno distrutta!"
+        "msg": "Ruota Uno via di netto!",
+        "brokenMsg": "Ruota Uno in avaria!"
       },
       "wheel_two": {
         "name": "Ruota Due",
-        "msg": "Ruota Due distrutta!"
+        "msg": "Ruota Due via di netto!",
+        "brokenMsg": "Ruota Due in avaria!"
       },
       "wheel_three": {
         "name": "Ruota Tre",
-        "msg": "Ruota Tre distrutta!"
+        "msg": "Ruota Tre via di netto!",
+        "brokenMsg": "Ruota Tre in avaria!"
       },
       "wheel_four": {
         "name": "Ruota Quattro",
-        "msg": "Ruota Quattro distrutta!"
+        "msg": "Ruota Quattro via di netto!",
+        "brokenMsg": "Ruota Quattro in avaria!"
       },
       "eye_ring": {
         "name": "Anello di Occhi",
-        "msg": "Anello di Occhi accecato!"
+        "msg": "Anello di Occhi perduto per sempre!",
+        "brokenMsg": "Anello di Occhi fuori uso!"
       },
       "name": "Ophanim",
       "mouth": {
         "name": "Bocca Salmodiante",
-        "msg": "Bocca salmodiante zittita!"
+        "msg": "Bocca Salmodiante a pezzi!",
+        "brokenMsg": "Bocca Salmodiante fuori uso!"
       }
     },
     "angel": {
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra tagliata!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra tagliata!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "halo": {
         "name": "Aureola",
-        "msg": "Aureola frantumata!"
+        "msg": "Aureola in frantumi!",
+        "brokenMsg": "Aureola con crepe!"
       },
       "core": {
         "name": "Cuore Spirituale",
-        "msg": "Cuore Spirituale trafitto!"
+        "msg": "Cuore Spirituale a pezzi!",
+        "brokenMsg": "Cuore Spirituale fuori uso!"
       },
       "robe": {
         "name": "Veste",
-        "msg": "Veste lacerata!"
+        "msg": "Veste in frantumi!",
+        "brokenMsg": "Veste con ammaccature!"
       },
       "left_foot": {
         "name": "Piede Sinistro",
-        "msg": "Piede sinistro rotto!"
+        "msg": "Piede Sinistro via di netto!",
+        "brokenMsg": "Piede Sinistro fuori uso!"
       },
       "right_foot": {
         "name": "Piede Destro",
-        "msg": "Piede destro rotto!"
+        "msg": "Piede Destro via di netto!",
+        "brokenMsg": "Piede Destro fuori uso!"
       },
       "name": "Angelo",
       "left_hand": {
         "name": "Mano Sinistra",
-        "msg": "Mano sinistra recisa!"
+        "msg": "Mano Sinistra via di netto!",
+        "brokenMsg": "Mano Sinistra fuori uso!"
       },
       "right_hand": {
         "name": "Mano Destra",
-        "msg": "Mano destra recisa!"
+        "msg": "Mano Destra via di netto!",
+        "brokenMsg": "Mano Destra fuori uso!"
       },
       "mouth": {
         "name": "Bocca",
-        "msg": "Bocca zittita!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       }
     },
     "elven": {
       "head": {
         "name": "Testa",
-        "msg": "Testa colpita!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "heart": {
         "name": "Cuore",
-        "msg": "Cuore lacerato!"
+        "msg": "Cuore in poltiglia!",
+        "brokenMsg": "Cuore in sofferenza!"
       },
       "bow": {
         "name": "Setto nasale",
-        "msg": "Setto nasale spezzato!"
+        "msg": "Setto nasale via di netto!",
+        "brokenMsg": "Setto nasale fuori uso!"
       },
       "robe": {
         "name": "Veste",
-        "msg": "Veste lacerata!"
+        "msg": "Veste in frantumi!",
+        "brokenMsg": "Veste con ammaccature!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra compromessa!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra compromessa!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Elfico",
       "left_hand": {
         "name": "Mano Sinistra",
-        "msg": "Mano sinistra recisa!"
+        "msg": "Mano Sinistra via di netto!",
+        "brokenMsg": "Mano Sinistra fuori uso!"
       },
       "right_hand": {
         "name": "Mano Destra",
-        "msg": "Mano destra recisa!"
+        "msg": "Mano Destra via di netto!",
+        "brokenMsg": "Mano Destra fuori uso!"
       },
       "mouth": {
         "name": "Bocca",
-        "msg": "Bocca lacerata!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       }
     },
     "gnome": {
       "head": {
         "name": "Testa",
-        "msg": "Testa urtata!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "beard": {
         "name": "Barba",
-        "msg": "Barba lacerata!"
+        "msg": "Barba via di netto!",
+        "brokenMsg": "Barba con crepe!"
       },
       "hat": {
         "name": "Cappello",
-        "msg": "Cappello volato via!"
+        "msg": "Cappello via di netto!",
+        "brokenMsg": "Cappello con ammaccature!"
       },
       "heart": {
         "name": "Cuore",
-        "msg": "Cuore stretto!"
+        "msg": "Cuore in poltiglia!",
+        "brokenMsg": "Cuore in sofferenza!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra ceduta!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra ceduta!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Gnomo",
       "left_hand": {
         "name": "Mano Sinistra",
-        "msg": "Mano sinistra recisa!"
+        "msg": "Mano Sinistra via di netto!",
+        "brokenMsg": "Mano Sinistra fuori uso!"
       },
       "right_hand": {
         "name": "Mano Destra",
-        "msg": "Mano destra recisa!"
+        "msg": "Mano Destra via di netto!",
+        "brokenMsg": "Mano Destra fuori uso!"
       },
       "mouth": {
         "name": "Bocca",
-        "msg": "Bocca lacerata!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso sfondato!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       }
     },
     "dwarf": {
       "head": {
         "name": "Testa",
-        "msg": "Testa colpita!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "beard": {
         "name": "Barba",
-        "msg": "Barba rasata via!"
+        "msg": "Barba via di netto!",
+        "brokenMsg": "Barba con crepe!"
       },
       "torso": {
         "name": "Torso",
-        "msg": "Torso schiacciato in poltiglia!"
+        "msg": "Torso a pezzi!",
+        "brokenMsg": "Torso fuori uso!"
       },
       "left_arm": {
         "name": "Braccio Sinistro",
-        "msg": "Braccio sinistro strappato via!"
+        "msg": "Braccio Sinistro via di netto!",
+        "brokenMsg": "Braccio Sinistro fuori uso!"
       },
       "right_arm": {
         "name": "Braccio Destro",
-        "msg": "Braccio destro strappato via!"
+        "msg": "Braccio Destro via di netto!",
+        "brokenMsg": "Braccio Destro fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra tagliata!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra tagliata!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "brain": {
         "name": "Cervello",
-        "msg": "Concussione cerebrale!"
+        "msg": "Cervello in poltiglia!",
+        "brokenMsg": "Cervello in sofferenza!"
       },
       "left_eye": {
         "name": "Occhio sinistro",
-        "msg": "Occhio sinistro gonfio!"
+        "msg": "Occhio sinistro via di netto!",
+        "brokenMsg": "Occhio sinistro fuori uso!"
       },
       "right_eye": {
         "name": "Occhio destro",
-        "msg": "Occhio destro gonfio!"
+        "msg": "Occhio destro via di netto!",
+        "brokenMsg": "Occhio destro fuori uso!"
       },
       "nose": {
         "name": "Naso",
-        "msg": "Naso rotto!"
+        "msg": "Naso via di netto!",
+        "brokenMsg": "Naso con crepe!"
       },
       "left_ear": {
         "name": "Orecchio sinistro",
-        "msg": "Orecchio sinistro che fischia!"
+        "msg": "Orecchio sinistro via di netto!",
+        "brokenMsg": "Orecchio sinistro fuori uso!"
       },
       "right_ear": {
         "name": "Orecchio destro",
-        "msg": "Orecchio destro che fischia!"
+        "msg": "Orecchio destro via di netto!",
+        "brokenMsg": "Orecchio destro fuori uso!"
       },
       "mouth": {
         "name": "Bocca",
-        "msg": "Mascella lussata!"
+        "msg": "Bocca a pezzi!",
+        "brokenMsg": "Bocca fuori uso!"
       },
       "teeth": {
         "name": "Denti",
-        "msg": "Denti divelti!"
+        "msg": "Denti in frantumi!",
+        "brokenMsg": "Denti con crepe!"
       },
       "genitals": {
         "name": "Genitali",
-        "msg": "Genitali danneggiati!"
+        "msg": "Genitali via di netto!",
+        "brokenMsg": "Genitali in sofferenza!"
       },
       "heart": {
         "name": "Cuore",
-        "msg": "Cuore danneggiato!"
+        "msg": "Cuore in poltiglia!",
+        "brokenMsg": "Cuore in sofferenza!"
       },
       "left_lung": {
         "name": "Polmone sinistro",
-        "msg": "Polmone sinistro collassato!"
+        "msg": "Polmone sinistro in poltiglia!",
+        "brokenMsg": "Polmone sinistro in sofferenza!"
       },
       "right_lung": {
         "name": "Polmone destro",
-        "msg": "Polmone destro collassato!"
+        "msg": "Polmone destro in poltiglia!",
+        "brokenMsg": "Polmone destro in sofferenza!"
       },
       "liver": {
         "name": "Fegato",
-        "msg": "Fegato lacerato!"
+        "msg": "Fegato in poltiglia!",
+        "brokenMsg": "Fegato in sofferenza!"
       },
       "stomach": {
         "name": "Stomaco",
-        "msg": "Stomaco lacerato!"
+        "msg": "Stomaco in poltiglia!",
+        "brokenMsg": "Stomaco in sofferenza!"
       },
       "spleen": {
         "name": "Milza",
-        "msg": "Milza lacerata!"
+        "msg": "Milza in poltiglia!",
+        "brokenMsg": "Milza in sofferenza!"
       },
       "intestines": {
         "name": "Intestino",
-        "msg": "Intestino perforato!"
+        "msg": "Intestino in poltiglia!",
+        "brokenMsg": "Intestino in sofferenza!"
       },
       "left_hand": {
         "name": "Mano sinistra",
-        "msg": "Mano sinistra mutilata!"
+        "msg": "Mano sinistra via di netto!",
+        "brokenMsg": "Mano sinistra fuori uso!"
       },
       "left_fingers": {
         "name": "Dita della mano sinistra",
-        "msg": "Dita sinistre rotte!"
+        "msg": "Dita della mano sinistra via di netto!",
+        "brokenMsg": "Dita della mano sinistra a brandelli!"
       },
       "right_hand": {
         "name": "Mano destra",
-        "msg": "Mano destra mutilata!"
+        "msg": "Mano destra via di netto!",
+        "brokenMsg": "Mano destra fuori uso!"
       },
       "right_fingers": {
         "name": "Dita della mano destra",
-        "msg": "Dita destre rotte!"
+        "msg": "Dita della mano destra via di netto!",
+        "brokenMsg": "Dita della mano destra a brandelli!"
       },
       "left_foot": {
         "name": "Piede sinistro",
-        "msg": "Piede sinistro danneggiato!"
+        "msg": "Piede sinistro via di netto!",
+        "brokenMsg": "Piede sinistro fuori uso!"
       },
       "left_toes": {
         "name": "Dita del piede sinistro",
-        "msg": "Dita del piede sinistro schiacciate!"
+        "msg": "Dita del piede sinistro via di netto!",
+        "brokenMsg": "Dita del piede sinistro fuori uso!"
       },
       "right_foot": {
         "name": "Piede destro",
-        "msg": "Piede destro danneggiato!"
+        "msg": "Piede destro via di netto!",
+        "brokenMsg": "Piede destro fuori uso!"
       },
       "right_toes": {
         "name": "Dita del piede destro",
-        "msg": "Dita del piede destro schiacciate!"
+        "msg": "Dita del piede destro via di netto!",
+        "brokenMsg": "Dita del piede destro fuori uso!"
       },
       "name": "Nano"
     },
     "elephant": {
       "head": {
         "name": "Testa",
-        "msg": "Testa colpita!"
+        "msg": "Testa a pezzi!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "trunk": {
         "name": "Proboscide",
-        "msg": "Proboscide recisa!"
+        "msg": "Proboscide via di netto!",
+        "brokenMsg": "Proboscide fuori uso!"
       },
       "tusks": {
         "name": "Zanne",
-        "msg": "Zanne rotte!"
+        "msg": "Zanne via di netto!",
+        "brokenMsg": "Zanne con crepe!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo contuso!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Anteriore Sinistra",
-        "msg": "Gamba anteriore sinistra compromessa!"
+        "msg": "Gamba Anteriore Sinistra via di netto!",
+        "brokenMsg": "Gamba Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Anteriore Destra",
-        "msg": "Gamba anteriore destra compromessa!"
+        "msg": "Gamba Anteriore Destra via di netto!",
+        "brokenMsg": "Gamba Anteriore Destra fuori uso!"
       },
       "hind_left_leg": {
         "name": "Gamba Posteriore Sinistra",
-        "msg": "Gamba posteriore sinistra compromessa!"
+        "msg": "Gamba Posteriore Sinistra via di netto!",
+        "brokenMsg": "Gamba Posteriore Sinistra fuori uso!"
       },
       "hind_right_leg": {
         "name": "Gamba Posteriore Destra",
-        "msg": "Gamba posteriore destra compromessa!"
+        "msg": "Gamba Posteriore Destra via di netto!",
+        "brokenMsg": "Gamba Posteriore Destra fuori uso!"
       },
       "name": "Elefante"
     },
     "tentacledcreature": {
       "eye": {
         "name": "Occhio Centrale",
-        "msg": "Occhio frantumato!"
+        "msg": "Occhio Centrale via di netto!",
+        "brokenMsg": "Occhio Centrale fuori uso!"
       },
       "tentacle_one": {
         "name": "Tentacolo Uno",
-        "msg": "Tentacolo Uno reciso!"
+        "msg": "Tentacolo Uno via di netto!",
+        "brokenMsg": "Tentacolo Uno a brandelli!"
       },
       "tentacle_two": {
         "name": "Tentacolo Due",
-        "msg": "Tentacolo Due reciso!"
+        "msg": "Tentacolo Due via di netto!",
+        "brokenMsg": "Tentacolo Due a brandelli!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo maltrattato!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "name": "Creatura Tentacolata",
       "beak": {
         "name": "Becco",
-        "msg": "Becco incrinato!"
+        "msg": "Becco in frantumi!",
+        "brokenMsg": "Becco con crepe!"
       }
     },
     "spiderhumanhybrid": {
       "body": {
         "name": "Corpo Ragno",
-        "msg": "Corpo Ragno distrutto!"
+        "msg": "Corpo Ragno a pezzi!",
+        "brokenMsg": "Corpo Ragno fuori uso!"
       },
       "torso": {
         "name": "Torso Umano",
-        "msg": "Torso Umano schiacciato!"
+        "msg": "Torso Umano a pezzi!",
+        "brokenMsg": "Torso Umano fuori uso!"
       },
       "head": {
         "name": "Testa Umana",
-        "msg": "Testa Umana recisa!"
+        "msg": "Testa Umana via di netto!",
+        "brokenMsg": "Testa Umana fuori uso!"
       },
       "left_leg": {
         "name": "Zampa Anteriore Sinistra",
-        "msg": "Zampa anteriore sinistra smantellata!"
+        "msg": "Zampa Anteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Zampa Anteriore Destra",
-        "msg": "Zampa anteriore destra smantellata!"
+        "msg": "Zampa Anteriore Destra via di netto!",
+        "brokenMsg": "Zampa Anteriore Destra fuori uso!"
       },
       "middle_left_leg": {
         "name": "Zampa Centrale Sinistra",
-        "msg": "Zampa centrale sinistra smantellata!"
+        "msg": "Zampa Centrale Sinistra via di netto!",
+        "brokenMsg": "Zampa Centrale Sinistra fuori uso!"
       },
       "middle_right_leg": {
         "name": "Zampa Centrale Destra",
-        "msg": "Zampa centrale destra smantellata!"
+        "msg": "Zampa Centrale Destra via di netto!",
+        "brokenMsg": "Zampa Centrale Destra fuori uso!"
       },
       "rear_left_leg": {
         "name": "Zampa Posteriore Sinistra",
-        "msg": "Zampa posteriore sinistra smantellata!"
+        "msg": "Zampa Posteriore Sinistra via di netto!",
+        "brokenMsg": "Zampa Posteriore Sinistra fuori uso!"
       },
       "rear_right_leg": {
         "name": "Zampa Posteriore Destra",
-        "msg": "Zampa posteriore destra smantellata!"
+        "msg": "Zampa Posteriore Destra via di netto!",
+        "brokenMsg": "Zampa Posteriore Destra fuori uso!"
       },
       "name": "Ibrido Ragno-Umano",
       "left_hand": {
         "name": "Mano Sinistra",
-        "msg": "Mano sinistra recisa!"
+        "msg": "Mano Sinistra via di netto!",
+        "brokenMsg": "Mano Sinistra fuori uso!"
       },
       "right_hand": {
         "name": "Mano Destra",
-        "msg": "Mano destra recisa!"
+        "msg": "Mano Destra via di netto!",
+        "brokenMsg": "Mano Destra fuori uso!"
       },
       "fangs": {
         "name": "Zanne",
-        "msg": "Zanne spezzate!"
+        "msg": "Zanne in frantumi!",
+        "brokenMsg": "Zanne con crepe!"
       }
     },
     "spikymonster": {
       "spikes": {
         "name": "Spine",
-        "msg": "Spine frantumate!"
+        "msg": "Spine via di netto!",
+        "brokenMsg": "Spine con crepe!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo stordito!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "eyes": {
         "name": "Occhi",
-        "msg": "Occhi accecati!"
+        "msg": "Occhi via di netto!",
+        "brokenMsg": "Occhi fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Sinistra",
-        "msg": "Gamba sinistra compromessa!"
+        "msg": "Gamba Sinistra via di netto!",
+        "brokenMsg": "Gamba Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Destra",
-        "msg": "Gamba destra compromessa!"
+        "msg": "Gamba Destra via di netto!",
+        "brokenMsg": "Gamba Destra fuori uso!"
       },
       "name": "Mostro Spinoso",
       "left_claw": {
         "name": "Artiglio Sinistro",
-        "msg": "Artiglio sinistro spezzato!"
+        "msg": "Artiglio Sinistro via di netto!",
+        "brokenMsg": "Artiglio Sinistro fuori uso!"
       },
       "right_claw": {
         "name": "Artiglio Destro",
-        "msg": "Artiglio destro spezzato!"
+        "msg": "Artiglio Destro via di netto!",
+        "brokenMsg": "Artiglio Destro fuori uso!"
       },
       "maw": {
         "name": "Fauci Irte",
-        "msg": "Fauci irte lacerate!"
+        "msg": "Fauci Irte in frantumi!",
+        "brokenMsg": "Fauci Irte con crepe!"
       }
     },
     "horse": {
       "head": {
         "name": "Testa",
-        "msg": "Testa stordita!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo contuso!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Anteriore Sinistra",
-        "msg": "Gamba anteriore sinistra compromessa!"
+        "msg": "Gamba Anteriore Sinistra via di netto!",
+        "brokenMsg": "Gamba Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Anteriore Destra",
-        "msg": "Gamba anteriore destra compromessa!"
+        "msg": "Gamba Anteriore Destra via di netto!",
+        "brokenMsg": "Gamba Anteriore Destra fuori uso!"
       },
       "hind_left_leg": {
         "name": "Gamba Posteriore Sinistra",
-        "msg": "Gamba posteriore sinistra compromessa!"
+        "msg": "Gamba Posteriore Sinistra via di netto!",
+        "brokenMsg": "Gamba Posteriore Sinistra fuori uso!"
       },
       "hind_right_leg": {
         "name": "Gamba Posteriore Destra",
-        "msg": "Gamba posteriore destra compromessa!"
+        "msg": "Gamba Posteriore Destra via di netto!",
+        "brokenMsg": "Gamba Posteriore Destra fuori uso!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda spezzata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Cavallo",
       "mouth": {
         "name": "Muso",
-        "msg": "Muso spezzato!"
+        "msg": "Muso a pezzi!",
+        "brokenMsg": "Muso fuori uso!"
       }
     },
     "unicorn": {
       "horn": {
         "name": "Corno",
-        "msg": "Corno frantumato!"
+        "msg": "Corno in frantumi!",
+        "brokenMsg": "Corno con crepe!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo ferito!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Anteriore Sinistra",
-        "msg": "Gamba anteriore sinistra compromessa!"
+        "msg": "Gamba Anteriore Sinistra via di netto!",
+        "brokenMsg": "Gamba Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Anteriore Destra",
-        "msg": "Gamba anteriore destra compromessa!"
+        "msg": "Gamba Anteriore Destra via di netto!",
+        "brokenMsg": "Gamba Anteriore Destra fuori uso!"
       },
       "hind_left_leg": {
         "name": "Gamba Posteriore Sinistra",
-        "msg": "Gamba posteriore sinistra compromessa!"
+        "msg": "Gamba Posteriore Sinistra via di netto!",
+        "brokenMsg": "Gamba Posteriore Sinistra fuori uso!"
       },
       "hind_right_leg": {
         "name": "Gamba Posteriore Destra",
-        "msg": "Gamba posteriore destra compromessa!"
+        "msg": "Gamba Posteriore Destra via di netto!",
+        "brokenMsg": "Gamba Posteriore Destra fuori uso!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda tagliata!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "name": "Unicorno",
       "mouth": {
         "name": "Muso",
-        "msg": "Muso spezzato!"
+        "msg": "Muso a pezzi!",
+        "brokenMsg": "Muso fuori uso!"
       }
     },
     "hellhound": {
       "head": {
         "name": "Testa",
-        "msg": "Testa bruciata!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "collar": {
         "name": "Collare",
-        "msg": "Collare rotto!"
+        "msg": "Collare in frantumi!",
+        "brokenMsg": "Collare con ammaccature!"
       },
       "body": {
         "name": "Corpo",
-        "msg": "Corpo bruciato!"
+        "msg": "Corpo a pezzi!",
+        "brokenMsg": "Corpo fuori uso!"
       },
       "left_leg": {
         "name": "Gamba Anteriore Sinistra",
-        "msg": "Gamba anteriore sinistra resa incapace!"
+        "msg": "Gamba Anteriore Sinistra via di netto!",
+        "brokenMsg": "Gamba Anteriore Sinistra fuori uso!"
       },
       "right_leg": {
         "name": "Gamba Anteriore Destra",
-        "msg": "Gamba anteriore destra resa incapace!"
+        "msg": "Gamba Anteriore Destra via di netto!",
+        "brokenMsg": "Gamba Anteriore Destra fuori uso!"
       },
       "hind_left_leg": {
         "name": "Gamba Posteriore Sinistra",
-        "msg": "Gamba posteriore sinistra resa incapace!"
+        "msg": "Gamba Posteriore Sinistra via di netto!",
+        "brokenMsg": "Gamba Posteriore Sinistra fuori uso!"
       },
       "hind_right_leg": {
         "name": "Gamba Posteriore Destra",
-        "msg": "Gamba posteriore destra resa incapace!"
+        "msg": "Gamba Posteriore Destra via di netto!",
+        "brokenMsg": "Gamba Posteriore Destra fuori uso!"
       },
       "name": "Segugio Infernale",
       "maw": {
         "name": "Fauci Ardenti",
-        "msg": "Fauci ardenti spente!"
+        "msg": "Fauci Ardenti in frantumi!",
+        "brokenMsg": "Fauci Ardenti con crepe!"
       }
     },
     "wingeddemon": {
       "head": {
         "name": "Testa",
-        "msg": "Testa maledetta!"
+        "msg": "Testa via di netto!",
+        "brokenMsg": "Testa fuori uso!"
       },
       "left_wing": {
         "name": "Ala Sinistra",
-        "msg": "Ala sinistra bruciata!"
+        "msg": "Ala Sinistra via di netto!",
+        "brokenMsg": "Ala Sinistra a brandelli!"
       },
       "right_wing": {
         "name": "Ala Destra",
-        "msg": "Ala destra bruciata!"
+        "msg": "Ala Destra via di netto!",
+        "brokenMsg": "Ala Destra a brandelli!"
       },
       "tail": {
         "name": "Coda",
-        "msg": "Coda recisa!"
+        "msg": "Coda via di netto!",
+        "brokenMsg": "Coda fuori uso!"
       },
       "core": {
         "name": "Nucleo Infernale",
-        "msg": "Nucleo Infernale spento!"
+        "msg": "Nucleo Infernale a pezzi!",
+        "brokenMsg": "Nucleo Infernale fuori uso!"
       },
       "claws": {
         "name": "Artigli",
-        "msg": "Artigli frantumati!"
+        "msg": "Artigli via di netto!",
+        "brokenMsg": "Artigli fuori uso!"
       },
       "name": "Demone Alato",
       "maw": {
         "name": "Fauci",
-        "msg": "Fauci spalancate a forza!"
+        "msg": "Fauci in frantumi!",
+        "brokenMsg": "Fauci con crepe!"
       }
     },
     "trashcreature": {
       "trash_pile": {
         "name": "Mucchio di Spazzatura",
-        "msg": "Mucchio di Spazzatura disperso!"
+        "msg": "Mucchio di Spazzatura a pezzi!",
+        "brokenMsg": "Mucchio di Spazzatura fuori uso!"
       },
       "limbs": {
         "name": "Arti",
-        "msg": "Arti rimosse!"
+        "msg": "Arti via di netto!",
+        "brokenMsg": "Arti fuori uso!"
       },
       "eyes": {
         "name": "Occhi",
-        "msg": "Occhi ostruiti!"
+        "msg": "Occhi via di netto!",
+        "brokenMsg": "Occhi fuori uso!"
       },
       "heart": {
         "name": "Cuore",
-        "msg": "Cuore schiacciato!"
+        "msg": "Cuore in poltiglia!",
+        "brokenMsg": "Cuore in sofferenza!"
       },
       "name": "Creatura dei Rifiuti",
       "maw": {
         "name": "Fauci di Rifiuti",
-        "msg": "Fauci di rifiuti disperse!"
+        "msg": "Fauci di Rifiuti in frantumi!",
+        "brokenMsg": "Fauci di Rifiuti con crepe!"
       }
     }
   }

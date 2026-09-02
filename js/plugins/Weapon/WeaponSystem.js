@@ -203,24 +203,38 @@
   // weapons keep the plain swing bank as their common ground and layer a
   // sharper or heavier set on top of it, so a dagger and a warhammer no
   // longer share one whoosh.
+  // Bow, projectile and gun: the weapon types whose attack is a shot rather
+  // than a swing. One shot is one discrete round, which is why they are heard
+  // whether or not the round connects.
+  const RANGED_WTYPES = [7, 8, 9];
+
   const DEFAULT_WEAPON_SOUNDS = {
-    1: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
-        "knifeSlice", "knifeSlice2", "blade_01", "blade_02", "blade_03"], // Light: knives, daggers, shivs
-    2: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
-        "Sword1", "Sword2", "Sword3", "sword_sound"], // Sword
-    3: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
-        "Hammer1", "Hammer2"], // Heavy: maces, clubs, hammers, flails
-    4: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
-        "Slash1", "Slash2", "Slash3"], // Axe
+    // Chosen by measuring every candidate in audio/se/Weapons rather than by
+    // what its filename claims, because the filenames turned out to be a poor
+    // guide. Three numbers decided it: the spectral centroid of the audible
+    // part (how much blade there is in it against how much thud), how much of
+    // the file is audible at all, and whether the centroid climbs and falls
+    // again the way a real pass through the air does.
+    //
+    // What that turned up: Sword1, Sword2, Sword3 and sword_sound all sit at
+    // 319-481 Hz, which is a low knock with no edge in it, and Swing1 to
+    // Swing8 are knocks of the same kind whatever their name says. None of
+    // those twelve is drawn any more; they stay on disk unused.
+    // Sling* and Throw* are the recorded stick swooshes; those names say which
+    // slot first used them, not what is in them, and they are the brightest
+    // and airiest swings available, so the blades draw them too.
+    1: ["knifeSlice2", "blade_03", "Sling3", "Throw3"], // Light: knives, daggers, shivs
+    2: ["Slash1", "Sling2", "Sling3", "Throw2", "Spear2"], // Sword
+    3: ["Sling1", "Throw2", "Hammer1", "Hammer2"], // Heavy: maces, clubs, hammers, flails
+    4: ["Slash1", "Sling1", "Spear1"], // Axe
     5: ["Whip1", "Whip2", "Whip3", "Whip4"], // Whip
-    6: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8", "Magic2"], // Staff
+    6: ["Sling1", "Sling2", "Throw1"], // Staff
     7: ["Bow", "Bow2", "Bow3"], // Bow
     8: ["Sling1", "Sling2", "Sling3", "Throw1", "Throw2", "Throw3"], // Projectile (name-routed further, see PROJECTILE_NAME_SOUND_RULES)
     9: ["Pistol1", "Pistol2", "Pistol3", "Pistol4", "Pistol5"], // Gun (name-routed further, see GUN_NAME_SOUND_RULES)
-    10: ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8",
-         "knifeSlice", "knifeSlice2"], // Claw
+    10: ["Throw3", "knifeSlice2", "blade_03", "Sling3"], // Claw
     11: ["Punch1", "Punch2", "Punch3"], // Glove
-    12: ["Spear1", "Spear2", "Swing1", "Swing2"] // Spear
+    12: ["Spear1", "Spear2", "Throw2", "Sling1"] // Spear
   };
 
   // A firearm database entry is a name, not a caliber: "Shotgun", "Sniper
@@ -242,10 +256,10 @@
     { test: /rail\s*gun|railgun|coil\s*gun|coilgun|gauss|mass driver/i,
       sounds: ["Railgun1", "Railgun2"],
       reload: "Reload5" },
-    { test: /laser|beam|optical|photon|disintegr/i,
+    { test: /laser|\bbeam\b|optical|photon|disintegr/i,
       sounds: ["BeamShot1", "BeamShot2", "LaserShot1"],
       reload: "Reload5" },
-    { test: /plasma|heat ray|ion|blaster|energy/i,
+    { test: /plasma|heat ray|\bion\b|\bblaster\b|\benergy\b|particle/i,
       sounds: ["LaserShot1", "LaserShot2", "LaserShot3"],
       reload: "Reload5" },
     // A launcher is heard twice: the tube letting go, then what lands.
@@ -255,7 +269,7 @@
     { test: /flame|flamethrower|torch|incendiar|napalm|sprayer/i,
       sounds: ["Flame1", "Flame2", "Flame3", "Flame4"],
       reload: "Reload5" },
-    { test: /air |pneumat|pump|pressure|potato|spud|t-shirt|cap gun|suction|water|hose|jet cutter|dart|blowgun|seed gun|nail/i,
+    { test: /air |pneumat|pump|pressure|potato|spud|t-shirt|cap gun|suction|water|hose|jet cutter|dart|blowgun|seed gun|nail|tranquil/i,
       sounds: ["AirGun1", "AirGun2", "AirGun3"],
       reload: "Reload" },
     // Real firearms, closest match first.
@@ -265,7 +279,7 @@
     { test: /minigun|gatling|machine gun|\bhmg\b|\blmg\b|tommy|thompson|chain gun|volley|autocannon|repeater/i,
       sounds: ["MachineGun1", "MachineGun2", "MachineGun3", "UziAutomatic"],
       reload: "Reload5" },
-    { test: /sniper|bolt-action|bolt action|\bdmr\b|marksman|match grade|anti-materiel/i,
+    { test: /sniper|bolt-action|bolt action|\bdmr\b|marksman|anti-materi[ae]l/i,
       sounds: ["Sniper1", "Sniper2", "Sniper3"],
       reload: "Reload4" },
     { test: /\bsmg\b|uzi|submachine|\bmp\d|\bpdw\b|vector|\baks?-?74u\b|machine pistol/i,
@@ -483,6 +497,17 @@
       weapon.weaponSounds = [...new Set(weapon.weaponSounds)];
     }
 
+    // A gun or a bow is one piece of hardware and makes one noise. A melee
+    // weapon rolling through a bank of samples reads as the same blade landing
+    // differently each time, but a pistol that fires a different report every
+    // shot reads as a different pistol every shot. The bank is therefore
+    // collapsed to a single entry, picked off the weapon's own id so it is the
+    // same report for the life of that weapon while two different pistols can
+    // still sound unlike each other.
+    if (RANGED_WTYPES.includes(weapon.wtypeId) && weapon.weaponSounds.length > 1) {
+      weapon.weaponSounds = [weapon.weaponSounds[weapon.id % weapon.weaponSounds.length]];
+    }
+
     // Process skills for movement tags
     for (const skill of $dataSkills) {
       if (!skill) continue;
@@ -563,7 +588,13 @@
       return weapon.weaponSounds;
     }
     if (weapon.wtypeId && DEFAULT_WEAPON_SOUNDS[weapon.wtypeId]) {
-      return DEFAULT_WEAPON_SOUNDS[weapon.wtypeId];
+      const bank = DEFAULT_WEAPON_SOUNDS[weapon.wtypeId];
+      // The type fallback bank is collapsed the same way the tagged one is, so
+      // a weapon that never got a tag still fires the same report every time.
+      if (RANGED_WTYPES.includes(weapon.wtypeId) && bank.length > 1) {
+        return [bank[(weapon.id || 0) % bank.length]];
+      }
+      return bank;
     }
     return null;
   };
@@ -601,8 +632,8 @@
 
   // What a ranged weapon sounds like once it has run dry and Attack becomes
   // Bash: a plain melee strike with the weapon in hand, not a gunshot or a
-  // bowstring, so it borrows the generic swing bank instead of its own.
-  const BASH_SOUNDS = ["Swing1", "Swing2", "Swing3", "Swing4", "Swing5", "Swing6", "Swing7", "Swing8"];
+  // bowstring, so it borrows the recorded swooshes the melee banks draw.
+  const BASH_SOUNDS = ["Sling1", "Sling2", "Sling3", "Throw1", "Throw2", "Throw3"];
 
   // The one reading of what a weapon sounds like, so anything holding one
   // outside a battle (the dream's first-person weapon, DreamSystem.js) makes
@@ -897,7 +928,13 @@
       // (A landed hit on an enemy is sounded again by displayHpDamage, which
       // never runs on a miss, so this cannot double one up.)
       if (!this._skillAnimations) {
-        const noMultiSound = actor.hasNoMultiAttackSound();
+        const heldWeapon = weapons[weaponIndex] || weapons[0];
+        // A round leaves the barrel or the string on every shot of a burst,
+        // hit or miss, so a ranged weapon is never folded into one report for
+        // the whole flurry the way a multi-hit swing is.
+        const ranged = !!(heldWeapon && RANGED_WTYPES.includes(heldWeapon.wtypeId)) &&
+          !actor.isOutOfBullets();
+        const noMultiSound = !ranged && actor.hasNoMultiAttackSound();
         this._multiAttackHitCount = this._multiAttackHitCount || 0;
 
         if (this._multiAttackHitCount === 0 || !noMultiSound) {
@@ -924,95 +961,14 @@
       debugLog("Shield block animation triggered");
     }
 
-    // In Window_BattleLog.prototype.displayHpDamage - Replace the sound playing section:
-    if (
-      target &&
-      target.isEnemy() &&
-      this._lastAttacker &&
-      this._lastAttacker.isActor()
-    ) {
-      this._multiAttackHitCount = this._multiAttackHitCount || 0;
-      const noMultiSound = this._lastAttacker.hasNoMultiAttackSound();
-
-      // NEW: Determine which weapon is hitting based on attack count for dual wield
-      const weapons = this._lastAttacker.weapons();
-      const isDualWielding = weapons.length >= 2;
-      let weaponIndex = 0;
-
-      if (isDualWielding) {
-        // Calculate which weapon should animate based on hit count
-        const weapon1Repeats = weapons[0]
-          ? this._lastAttacker.attackTimesAdd() + 1
-          : 1;
-        weaponIndex = this._multiAttackHitCount < weapon1Repeats ? 0 : 1;
-      }
-
-      const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
-      if (spriteset && typeof spriteset.playWeaponAnimation === "function") {
-        spriteset.playWeaponAnimation(this._skillAnimations, weaponIndex, {
-          crit: !!target.result().critical
-        });
-      }
-
-      // NEW: Play sound for the correct weapon based on weaponIndex
-      if (!this._skillAnimations) {
-        if (this._multiAttackHitCount === 0 || !noMultiSound) {
-          // Get sounds from the correct weapon
-          let sounds = null;
-          if (isDualWielding && weaponIndex === 1 && weapons[1]) {
-            // Left hand weapon - get its specific sounds
-            const leftWeapon = weapons[1];
-            if (leftWeapon.weaponSounds && leftWeapon.weaponSounds.length > 0) {
-              sounds = leftWeapon.weaponSounds;
-            } else if (
-              leftWeapon.wtypeId &&
-              DEFAULT_WEAPON_SOUNDS[leftWeapon.wtypeId]
-            ) {
-              sounds = DEFAULT_WEAPON_SOUNDS[leftWeapon.wtypeId];
-            }
-          } else {
-            // Right hand weapon - use existing method
-            sounds = this._lastAttacker.getWeaponSounds();
-          }
-
-          // Play the sound
-          if (sounds && sounds.length > 0) {
-            const soundName = sounds[Math.floor(Math.random() * sounds.length)];
-            const basePitch = 100;
-            const variation = pitchVariation;
-            const randomPitch =
-              basePitch + (Math.random() * variation * 2 - variation);
-            const pitch = Math.round(Math.max(50, Math.min(150, randomPitch)));
-
-            let finalSoundName = soundName;
-            if (useSubfolder && !soundName.includes("/")) {
-              finalSoundName = "Weapons/" + soundName;
-            }
-
-            const se = {
-              name: finalSoundName,
-              volume: volume,
-              pitch: pitch,
-              pan: 0,
-            };
-
-            AudioManager.playSe(se);
-            debugLog(
-              `Damage Display: Actor ${this._lastAttacker.name()} hit enemy ${target.name()} with weapon ${weaponIndex + 1
-              } (Hit #${this._multiAttackHitCount + 1
-              }), playing sound "${finalSoundName}"`
-            );
-          }
-        } else {
-          debugLog(
-            `Damage Display: Skipping sound for hit #${this._multiAttackHitCount + 1
-            } (NoMultiAttackSound enabled)`
-          );
-        }
-      }
-
-      this._multiAttackHitCount++;
-    }
+    // The swing used to be played a second time here, on top of the one
+    // displayActionResults already played for the same blow. Two copies of the
+    // same file a frame apart do not sound like two hits: the engine reuses one
+    // buffer per SE name, so the second call cuts the first off and what comes
+    // out is a smeared half-swing, or nothing at all. It also advanced
+    // _multiAttackHitCount twice per hit, which walked the dual-wield hand
+    // index off the end of the flurry. displayActionResults owns the sound now,
+    // hit and miss alike, and this is only the shield.
 
     _Window_BattleLog_displayHpDamage.call(this, target);
   };
@@ -1305,6 +1261,7 @@
   Spriteset_Battle.prototype.updateWeaponSprite = function () {
     if (this._weaponModelsExiting) return;
     if (!this._3dWeaponSprites) this._3dWeaponSprites = {};
+    this._mirroredOffhand = false;
 
     // In card combat mode (RoguelikeCardSystem, Switch 45, locked at character
     // creation) attacks are cards rather than weapon swings, so nothing is held.
@@ -1347,6 +1304,10 @@
     let leftShield = null;
     if (!leftWeapon && shields.length) leftShield = shields.shift();
     if (!leftWeapon && !leftShield && isClaws) leftWeapon = weapons[0];
+    // Remembered for the swing: the off hand holds a copy of the right hand's
+    // claw rather than a weapon of its own, so nothing in the action tells
+    // playWeaponAnimation that there is a second claw to move.
+    this._mirroredOffhand = (!weapons[1] && isClaws && leftWeapon === weapons[0]);
 
     this.setHeldWeaponModel('right', rightWeapon || shieldModel(rightShield));
     this.setHeldWeaponModel('left', leftWeapon || shieldModel(leftShield));
@@ -1356,6 +1317,9 @@
   // off: a little under half of a stock swing, which since the attack clips
   // were paced up (WeaponSystemProcedural.ATTACK_PACE) runs about 600ms.
   const DEFAULT_STRIKE_DELAY = 260;
+
+  // How far behind the leading claw the mirrored off-hand one rakes.
+  const OFFHAND_CLAW_DELAY = 110;
 
   /** Show `weapon` in `hand`, rebuilding the model only when it changed. */
   Spriteset_Battle.prototype.setHeldWeaponModel = function (hand, weapon) {
@@ -1542,7 +1506,25 @@
     // clubbing the enemy with the stock. WeaponSystemProcedural.motionForWeapon
     // answers it from the weapon's own type and length.
     const animName = nextWeaponMovement(weapon);
-    sprite.playAnimation(animationOverride || animName, opts);
+    const clip = animationOverride || animName;
+    sprite.playAnimation(clip, opts);
+
+    // A pair of claws is one database weapon worn on both hands
+    // (updateWeaponSprite), so the blow is thrown with both: the off hand
+    // rakes a beat behind the leading one rather than in lockstep with it,
+    // which is what reads as a pair of claws instead of one doubled model.
+    if (!isLeftHand && this._mirroredOffhand) {
+      const offhand = this._3dWeaponSprites && this._3dWeaponSprites['left'];
+      if (offhand && offhand._weapon === weapon) {
+        setTimeout(() => {
+          const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+          if (spriteset !== this) return;
+          if (this._weaponModelsExiting) return;
+          if (this._3dWeaponSprites['left'] !== offhand) return;
+          offhand.playAnimation(clip, opts);
+        }, OFFHAND_CLAW_DELAY);
+      }
+    }
   };
 
   const _Spriteset_Battle_update = Spriteset_Battle.prototype.update;

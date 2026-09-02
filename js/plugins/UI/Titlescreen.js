@@ -142,13 +142,67 @@
     // keeps the label exactly as written. A badge is not worth an exception
     // thrown out of a plugin that may not even be loaded, so the pass is
     // guarded end to end.
+    // The badge does its own read of CHANGELOG.txt rather than depending on the
+    // updater being loaded and having managed its own: the file ships with the
+    // build, so the version on its first line is the version that is running,
+    // whatever the state of any other plugin. Two fields or three, with or
+    // without the letter a release habit puts at the end, and a header is only
+    // looked for near the top so a version written inside an entry is never
+    // mistaken for one.
+    const CHANGELOG_FILE = 'CHANGELOG.txt'; // i18n-ignore: file name
+    const CHANGELOG_VERSION_LINE = /^v?(\d+\.\d+(?:\.\d+)?[A-Za-z]*)$/;
+    const CHANGELOG_SEARCH_LINES = 40;
+    let _changelogVersion; // undefined until read, null when there is none
+
+    const readChangelogVersion = () => {
+        if (_changelogVersion !== undefined) return _changelogVersion;
+        _changelogVersion = null;
+        let text = null;
+        try {
+            if (typeof require === 'function') {
+                const fs = require('fs');
+                const nodePath = require('path');
+                const base = (typeof process !== 'undefined' && process.cwd) ? process.cwd() : '';
+                const file = nodePath.join(base, CHANGELOG_FILE);
+                if (fs.existsSync(file)) text = fs.readFileSync(file, 'utf8');
+            }
+        } catch (e) { /* fall through to the web read */ }
+        if (text === null) {
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', CHANGELOG_FILE, false);
+                xhr.send();
+                // A file:// read answers with status 0 even when it worked.
+                const ok = (xhr.status >= 200 && xhr.status < 300) || (xhr.status === 0 && xhr.responseText);
+                if (ok) text = xhr.responseText;
+            } catch (e) { /* no changelog to read */ }
+        }
+        if (text) {
+            const lines = String(text).split(/\r?\n/, CHANGELOG_SEARCH_LINES);
+            for (let i = 0; i < lines.length; i++) {
+                const found = String(lines[i]).trim().match(CHANGELOG_VERSION_LINE);
+                if (found) { _changelogVersion = found[1]; break; }
+            }
+        }
+        return _changelogVersion;
+    };
+
     const VERSION_TEXT = () => {
         const raw = pathParams.VersionText;
         if (raw !== undefined && String(raw).trim() === '') return '';
-        const text = T.param(raw, 'Titlescreen.version.text');
+        let text = T.param(raw, 'Titlescreen.version.text');
         try {
+            const own = readChangelogVersion();
+            if (own) text = own;
             const updater = window.GameUpdater;
             if (!updater) return text;
+            // The version is settled; the updater only adds the name of the
+            // build this copy sits on, and the build number when the changelog
+            // named nothing.
+            if (own) {
+                if (typeof updater.applyBuildName === 'function') return updater.applyBuildName(text);
+                return text;
+            }
             if (typeof updater.versionLabel === 'function') return updater.versionLabel(text);
             if (typeof updater.applyBuildNumber === 'function') return updater.applyBuildNumber(text);
         } catch (e) {

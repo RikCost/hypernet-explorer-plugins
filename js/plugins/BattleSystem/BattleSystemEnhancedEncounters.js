@@ -22,11 +22,16 @@
  * Enemy spawn modes (Options -> Enemy Spawn, ConfigManager.enemySpawnMode)
  * ----------------------------------------------------------------------------
  *   Biome (0, default)
- *     The place decides what you meet and never how hard it is: every creature
- *     whose <Biome:> tag names this place is equally likely, at any level up to
- *     100, and neither the party nor the ground has any say in it. The calendar
- *     is the only limit that still bites. This is the world as it is, rather
- *     than the world arranged around the party, which is why it leads the list.
+ *     The place decides what you meet. Half the spawns are pitched within five
+ *     levels of the party's median, whatever the year; the other half is the
+ *     place's whole ladder, with nothing filtered off it: every creature the
+ *     place holds can be met, from its level 1 vermin to something many times
+ *     the party's level. How often a level turns up is a spread around a
+ *     median the CALENDAR sets - level 20 in 2001, climbing +10 a year - so
+ *     the far ends of the ladder are rarer and never absent. The
+ *     calendar is the only limit that still bites. This is the world as it is,
+ *     rather than the world arranged around the party, which is why it leads
+ *     the list.
  *
  *   Balanced (1)
  *     Roaming enemies come out of a band that opens upward from the party's
@@ -446,7 +451,7 @@
 
     const SPAWN_START_YEAR = 2001; // TimeDateSystem epoch (Jan 1 2001)
     const ERA_HIGH_LEVEL_YEAR = 2010; // level 80-100 monsters start roaming
-    const ERA_COLLAPSE_YEAR   = 2012; // the paradox completes: level 100+ roam
+    const ERA_COLLAPSE_YEAR   = 2012; // the paradox completes: the level 90-100 apex roams
 
     // Share of the roaming enemies on a map drawn from the era's high-level
     // pool instead of from the spawn mode's own level logic.
@@ -487,7 +492,7 @@
         const year = BSE.Helpers.getCurrentGameYear();
         let era;
         if (year >= ERA_COLLAPSE_YEAR) {
-            era = { key: 'collapse', cap: Infinity, eliteMin: 100,
+            era = { key: 'collapse', cap: Infinity, eliteMin: ERA_COLLAPSE_ELITE_MIN,
                     eliteMax: Infinity, eliteShare: ERA_COLLAPSE_SHARE };
         } else if (year >= ERA_HIGH_LEVEL_YEAR) {
             era = { key: 'highLevel', cap: ERA_OPEN_CEILING, eliteMin: 80,
@@ -518,14 +523,17 @@
     //   2001         the world as written; the mode's own band, untouched
     //   2002 - 2009  the whole band shifts up by 10 levels a year, so a level 1
     //                party meets 1-8 in 2001, 11-18 in 2002, 21-28 in 2003 ...
-    //   2010 - 2011  the band is thrown away: anything from level 1 to 110 roams
+    //   2010 - 2011  the band is thrown away: anything from level 1 to 100 roams
     //   2012 onward  the paradox completes; nothing below level 80 is left, and
-    //                there is no ceiling at all
+    //                the roaming elites are drawn from the very top of the book
     //
     // The ONE exception is a <Special> creature (section 4a): a special biome's
     // exclusive residents are placed by the guarantee whatever the year says.
     const ERA_YEAR_STEP    = 10;  // levels the band climbs per year to 2010
-    const ERA_OPEN_CEILING = 110; // 2010-2011: the whole table is loose
+    // The book stops at level 100 (the apex trio sits at 80 / 92 / 100), so the
+    // open ceiling is the top of the book rather than a level nothing reaches.
+    const ERA_OPEN_CEILING = 100; // 2010-2011: the whole table is loose
+    const ERA_COLLAPSE_ELITE_MIN = 90; // 2012+: the elite pool is the last bracket
     const ERA_COLLAPSE_FLOOR = 80; // 2012+: nothing weaker than this is left
 
     // Levels the mode's own band is pushed up by, before 2010.
@@ -1195,13 +1203,20 @@
             return BSE.Helpers.filterTroopsInDistanceBracket(encList, band);
         }
         if (mode === 'biome') {
-            // Three spawns in ten are pitched at the party, the rest are
-            // whatever the place holds (see getBiomeTetherBand). Both halves
-            // end in the same nearest-level fallback, so neither can empty a
-            // roster.
-            const useTether = BSE.Helpers.rollBiomeTether();
-            return BSE.Helpers.filterTroopsInLevelBand(
-                encList, useTether ? BSE.Helpers.getBiomeTetherBand() : band);
+            // Half the spawns are pitched five levels either side of the
+            // party's median (see getBiomeTetherBand). The other half is the
+            // biome's whole ladder, nothing filtered off it: the era band is
+            // the only cut, and how often a level turns up is the spread
+            // around the calendar's median (see biomeSpreadWeight), so the
+            // small fry and the monsters far over the party's head both stay
+            // possible. Both halves end in the same nearest-level fallback,
+            // so neither can empty a roster.
+            if (BSE.Helpers.rollBiomeTether()) {
+                return BSE.Helpers.filterTroopsInLevelBand(
+                    encList, BSE.Helpers.getBiomeTetherBand());
+            }
+            return BSE.Helpers.spreadBiomeRoster(
+                BSE.Helpers.filterTroopsInLevelBand(encList, band));
         }
         if (mode === 'chaos') {
             return BSE.Helpers.filterTroopsInLevelBand(encList, band);
@@ -1321,8 +1336,8 @@
         return encList;
     };
 
-    // Biome mode: the place's whole roster, drawn three parts in ten around the
-    // party and seven parts in ten from anywhere on the ladder.
+    // Biome mode: the place's whole roster, drawn half around the party and
+    // half from anywhere on the ladder.
     //
     // The wide band is the widest one any mode produces - level 1 to
     // BIOME_MODE_CEILING - because the mode's whole idea is that a biome fields
@@ -1331,8 +1346,10 @@
     // (see the candidate list in spawnEnemiesFromEncounters), so what widens is
     // the level range, never the roster.
     //
-    // Seven spawns in ten come out of that band, so most of what walks a square
-    // is still whatever the place happens to hold. The other three are tethered
+    // Half the spawns come out of that band, so what walks a square is still
+    // whatever the place happens to hold - the small fry and something many
+    // times the party's own level alike, spread around the calendar's median
+    // (see biomeSpreadWeight) and never withheld. The other half is tethered
     // to the party: five levels either side of the median, walked up by the
     // same yearly climb every other mode answers to, so a biome that stood at
     // the party's shoulder in 2001 stands well over their head by 2007 without
@@ -1345,11 +1362,25 @@
     // collapse takes every ceiling off and leaves nothing under level 80
     // standing anywhere. Before that the wide band's floor stays at 1: a biome
     // mode that pushed its own floor up with the year would be Party Level
-    // wearing a different name, which is what the tethered three tenths are
-    // for.
+    // wearing a different name, which is what the tethered half is for.
     const BIOME_MODE_CEILING = ERA_OPEN_CEILING;
-    const BIOME_TETHERED_SHARE = 0.30;  // spawns pitched at the party
+    // Half of what a biome fields is pitched at the party, whatever the year
+    // says. The other half is the place's own roster, small fry included.
+    const BIOME_TETHERED_SHARE = 0.50;  // spawns pitched at the party
     const BIOME_TETHER_SPREAD  = 5;     // levels either side of the median
+
+    // The other half is the biome's own ladder, and nothing on it is filtered
+    // out: every creature the place holds can be met, small fry and monsters
+    // far over the party's head alike. What decides how often is a spread
+    // around a median, and the median is the CALENDAR's, not the party's -
+    // BIOME_SPREAD_MEDIAN in 2001, walked up by the same +10 a year every
+    // other mode answers to. A creature that stands far from that median is
+    // rarer, never absent: the weight tapers and then holds at
+    // BIOME_SPREAD_FLOOR, so the level 1 vermin and the level 110 horror both
+    // keep a real chance of walking out of a 2001 square.
+    const BIOME_SPREAD_MEDIAN = 20;   // the ladder's centre of mass in 2001
+    const BIOME_SPREAD_WIDTH  = 30;   // levels either side before it halves
+    const BIOME_SPREAD_FLOOR  = 0.25; // rarest anything ever gets
 
     BSE.Helpers.getBiomeLevelBand = function() {
         const era = BSE.Helpers.getSpawnEra();
@@ -1359,7 +1390,7 @@
         return { min: 1, max: BIOME_MODE_CEILING, center: BIOME_MODE_CEILING / 2 };
     };
 
-    // The tethered three tenths: the window around the party's median level.
+    // The tethered half: the window around the party's median level.
     //
     // The centre is the median plus the calendar's own shift (+10 a year to
     // 2010, the same term Balanced and Distance are moved by), never below the
@@ -1382,6 +1413,43 @@
     // Which of the two halves this spawn is drawn from. Rolled per enemy event.
     BSE.Helpers.rollBiomeTether = function() {
         return Math.random() < BIOME_TETHERED_SHARE;
+    };
+
+    // The base level the world is pitched at right now: the party's median or
+    // the year's floor, whichever stands higher.
+    BSE.Helpers.getBiomeBaseLevel = function() {
+        return Math.max(1, BSE.Helpers.getPartyReferenceLevel(),
+            BSE.Helpers.getYearLevelFloor());
+    };
+
+    // Where the untethered half's ladder is centred: the calendar's own median,
+    // never under the floor the year has left standing and never over the
+    // mode's ceiling.
+    BSE.Helpers.getBiomeSpreadMedian = function() {
+        const era = BSE.Helpers.getSpawnEra();
+        const ceiling = era.key === 'collapse' ? Infinity : BIOME_MODE_CEILING;
+        const floor = Math.max(1, BSE.Helpers.getYearLevelFloor());
+        const raw = BIOME_SPREAD_MEDIAN + BSE.Helpers.getYearLevelShift();
+        return Math.max(floor, Math.min(ceiling, raw));
+    };
+
+    // How often a creature of this level turns up in that half. Never zero:
+    // the curve tapers away from the median and then holds at the floor, so
+    // nothing the biome holds is ever off the table.
+    BSE.Helpers.biomeSpreadWeight = function(troopLevel) {
+        const d = Math.abs((troopLevel || 1) - BSE.Helpers.getBiomeSpreadMedian()) /
+            BIOME_SPREAD_WIDTH;
+        return Math.max(BIOME_SPREAD_FLOOR, 1 / (1 + d * d));
+    };
+
+    // Apply that spread to an encounter list, leaving the entries themselves
+    // alone. Nothing is dropped, so the list can never be emptied.
+    BSE.Helpers.spreadBiomeRoster = function(encList) {
+        if (!encList || !encList.length) return encList;
+        return encList.map(enc => Object.assign({}, enc, {
+            weight: (enc.weight || 1) * BSE.Helpers.biomeSpreadWeight(
+                BSE.Helpers.getTroopMaxLevel(enc.troopId))
+        }));
     };
 
     // Chaos mode: the whole ladder, every time. The era cap does not apply

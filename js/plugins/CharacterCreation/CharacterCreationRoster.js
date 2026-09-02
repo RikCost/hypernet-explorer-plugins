@@ -473,35 +473,27 @@
     return !!(b0 && b0.level === 1);
   }
 
-  // True when the first battler in the battle test configuration is named "Archivist".
-  function isFirstBattlerNamedArchivist() {
-    const b0 = $dataSystem && $dataSystem.testBattlers && $dataSystem.testBattlers[0];
-    if (b0 && typeof $dataActors !== "undefined" && $dataActors) {
-      const a = $dataActors[b0.actorId];
-      if (a && a.name && a.name.trim().toLowerCase() === "archivist") return true;
-    }
-    const leader = typeof $gameParty !== "undefined" && $gameParty && $gameParty.members && $gameParty.members()[0];
-    if (leader && leader.name && leader.name().trim().toLowerCase() === "archivist") return true;
-    return false;
+  // True when the battle test entry at `index` was left with nothing fitted in
+  // the editor. Whatever the tester actually set - a weapon, a shield, a piece
+  // of armour - counts as a configured member and is left exactly as it is.
+  function isTestBattlerUnequipped(index) {
+    const b = $dataSystem && Array.isArray($dataSystem.testBattlers)
+      ? $dataSystem.testBattlers[index]
+      : null;
+    if (!b) return false;
+    if (!Array.isArray(b.equips) || b.equips.length === 0) return true;
+    return !b.equips.some((id) => id > 0);
   }
 
-  // True when the first battler in the battle test configuration has no weapon equipped.
-  function isFirstBattlerWeaponless() {
-    if (!$dataSystem || !Array.isArray($dataSystem.testBattlers) || $dataSystem.testBattlers.length === 0) {
-      return false;
-    }
-    const b0 = $dataSystem.testBattlers[0];
-    if (!b0) return false;
-    if (!b0.equips || !Array.isArray(b0.equips) || b0.equips.length === 0) return true;
-    const hasWeapon = b0.equips.some((id) => id > 0 && $dataWeapons && $dataWeapons[id]);
-    return !hasWeapon;
-  }
-
-  // True when the battle test party should be randomized:
-  // - Player 1 is named "Archivist"
-  // - Or first character has no weapon equipped
+  // True when any battle test member was left unequipped: those members get
+  // rolled, the configured ones do not. The leader's name has nothing to do
+  // with it any more.
   function shouldRandomizeBattleTestParty() {
-    return isFirstBattlerNamedArchivist() || isFirstBattlerWeaponless();
+    if (!$dataSystem || !Array.isArray($dataSystem.testBattlers)) return false;
+    for (let i = 0; i < $dataSystem.testBattlers.length; i++) {
+      if (isTestBattlerUnequipped(i)) return true;
+    }
+    return false;
   }
 
   // <Level: N> off an item/enemy note, or null.
@@ -883,8 +875,11 @@
       window.randomizeTraitsForActor(actor.actorId());
     }
 
-    // Equipment: balanced, level-appropriate weapon(s) and armor across all slots.
-    equipBalancedGearForActor(actor, targetLevel, classId);
+    // Equipment: balanced, level-appropriate weapon(s) and armor across all
+    // slots, rolled around a level of its own so two runs at the same level do
+    // not kit the party out identically.
+    const gearLevel = Math.max(1, Math.min(99, targetLevel + Math.floor(Math.random() * 5) - 2));
+    equipBalancedGearForActor(actor, gearLevel, classId);
 
     // Baseline starter skills + class learnings up to target level.
     if (Array.isArray(GLOBAL_STARTER_SKILLS)) {
@@ -901,9 +896,14 @@
       }
     }
 
-    // Sync carried skills with "Best" in CategorizedBattleSkills.
-    if (window.BattleLoadout && typeof window.BattleLoadout.best === "function") {
-      window.BattleLoadout.best(actor);
+    // Sync carried skills through CategorizedBattleSkills. The assorted row is
+    // a weighted draw over everything the class has learned up to this level,
+    // so a test party carries a different spread every run instead of the same
+    // opening spells the "best" row always settles on.
+    const BL = window.BattleLoadout;
+    if (BL) {
+      if (typeof BL.assorted === "function") BL.assorted(actor);
+      else if (typeof BL.best === "function") BL.best(actor);
     }
 
     actor.recoverAll();
@@ -911,15 +911,26 @@
 
   function setupRandomBattleTestParty() {
     const enemyMedian = getTroopMedianEnemyLevel() || 10;
-    const cap = Math.max(1, enemyMedian - 1);
-    const baseLevel = Math.max(1, enemyMedian - 2);
 
+    // The party is built AROUND the troop, not under it: the levels are spread
+    // symmetrically about the enemy median so the party's own median lands on
+    // it, which is the fight the tester meant to look at.
     const members = $gameParty.members();
-    for (let i = 0; i < members.length; i++) {
+    const count = members.length;
+    const offsets = [];
+    for (let i = 0; i < count; i++) {
+      const d = i - (count - 1) / 2; // fractional for an even party
+      offsets.push(Math.sign(d) * Math.round(Math.abs(d)));
+    }
+
+    for (let i = 0; i < count; i++) {
       const actor = members[i];
       if (!actor) continue;
+      // A member the tester equipped by hand is the fight they meant to look
+      // at: it keeps its actor, its gear and its level untouched.
+      if (!isTestBattlerUnequipped(i)) continue;
       const b = $dataSystem.testBattlers && $dataSystem.testBattlers[i];
-      let level = b && b.level > 1 ? b.level : Math.min(baseLevel + (i - 1), cap);
+      let level = b && b.level > 1 ? b.level : enemyMedian + offsets[i];
       level = Math.max(1, Math.min(99, level));
       randomizeBattleTestActor(actor, i, level);
     }
@@ -944,7 +955,7 @@
         setupRandomBattleTestParty();
       } else {
         console.log(
-          "[BattleTest] First character has a weapon equipped and is not Archivist - leaving party as configured."
+          "[BattleTest] Every member has equipment set - leaving the party as configured."
         );
       }
     } catch (e) {

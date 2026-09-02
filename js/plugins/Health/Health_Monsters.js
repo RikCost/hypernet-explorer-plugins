@@ -268,8 +268,8 @@
       var locations = [];
 
       for (var loc in hitLocations) {
-        // Skip already destroyed parts
-        if (enemy._bodyParts[loc].destroyed) continue;
+        // Skip parts that are already off the body or ruined
+        if (partFinished(enemy._bodyParts[loc])) continue;
 
         totalWeight += hitLocations[loc].weight;
         locations.push({
@@ -329,8 +329,8 @@
   function calculateHitChance(enemy, partKey, user) {
     var part = enemy._bodyParts[partKey];
 
-    // Guard against missing part or destroyed parts
-    if (!part || part.destroyed) return 0;
+    // Guard against missing part or finished parts
+    if (!part || partFinished(part)) return 0;
 
     user = user || $gameActors.actor(1);
     if (!user) return 0;
@@ -442,7 +442,7 @@
         return 0;
       }
 
-      if (part.destroyed) return 0;
+      if (part.destroyed || part.broken) return 0;
 
       // Find the archetype data
       var archetype = getArchetype(enemy._archetypeName);
@@ -475,8 +475,14 @@
         part.currentHp = 0;
 
         if (canBeDestroyed) {
-          part.destroyed = true;
-          handleDestroyedBodyPart(enemy, partKey);
+          // A part only leaves the body when the archetype says it can come off
+          // AND the blow that finished it cuts (HealthCore.attackerCanCut: an
+          // edge, a claw or a bullet). A mace, a staff or a whip breaks it where
+          // it is: the model keeps the limb, bloodied, and the log says so.
+          var cut = !!basePart.canCutoff && partCutByAttacker();
+          if (cut) part.destroyed = true;
+          else part.broken = true;
+          handleDestroyedBodyPart(enemy, partKey, cut);
         } else {
           // Vital part clamped to 1 HP while the enemy is above the instakill threshold.
           part.currentHp = 1;
@@ -496,6 +502,26 @@
     }
   }
 
+  /**
+   * Whether the blow being struck can take a part off a body. Health_Core owns
+   * the weapon-type table (only Light, Sword, Axe, Gun, Claw and Spear cut); a
+   * monster mauling another monster with no weapon never severs.
+   */
+  /**
+   * A part that is done: taken off the body (destroyed) or ruined where it
+   * stands (broken). Either way it has no HP left to take, cannot be aimed at
+   * and grants nothing.
+   */
+  function partFinished(part) {
+    return !!part && (part.destroyed || part.broken);
+  }
+
+  function partCutByAttacker() {
+    var HC = window.HealthCore;
+    if (!HC || typeof HC.attackerCanCut !== "function") return true;
+    return HC.attackerCanCut();
+  }
+
   // Apply stat effect for a destroyed part
   function applyStatEffect(enemy, partKey) {
     var part = enemy._bodyParts[partKey];
@@ -505,9 +531,14 @@
 
     if (part.appliedStatEffect || !basePart.statEffect) return;
 
-    // Apply the stat effect
+    // Apply the stat effect. A part that is only broken costs the smaller
+    // brokenAmount; one that came off the body costs the archetype's amount.
     var paramId = basePart.statEffect.param;
-    var amount = basePart.statEffect.amount;
+    var HC = window.HealthCore;
+    var removed = !!(part && part.destroyed);
+    var amount = (HC && HC.statEffectAmount)
+      ? HC.statEffectAmount(basePart.statEffect, removed)
+      : basePart.statEffect.amount;
 
     // Track the stat modifier
     if (!enemy._statModifiers[paramId]) {
@@ -530,16 +561,19 @@
   // Translate a body-part i18n msg key (e.g. "enemyArchetypes.robot.right_arm.msg").
   // Returns null when the key is empty or can't be resolved in the current language,
   // so callers fall back to the localized part name instead of printing the raw key.
-  function getPartDamageMsg(basePart) {
-    if (!basePart || !basePart.msg) return null;
+  function getPartDamageMsg(basePart, cut) {
+    var key = (cut === false && basePart && basePart.brokenMsg)
+      ? basePart.brokenMsg
+      : (basePart ? basePart.msg : null);
+    if (!key) return null;
     var translated =
       typeof window.getArchetypeText === "function"
-        ? window.getArchetypeText(basePart.msg)
-        : basePart.msg;
+        ? window.getArchetypeText(key)
+        : key;
     // getArchetypeText echoes the key back when the path isn't found.
     if (
       !translated ||
-      translated === basePart.msg ||
+      translated === key ||
       /^enemyArchetypes\./.test(translated)
     ) {
       return null;
@@ -576,7 +610,7 @@
   }
 
   // Handle effects of a destroyed body part
-  function handleDestroyedBodyPart(enemy, partKey) {
+  function handleDestroyedBodyPart(enemy, partKey, cut) {
     try {
       if (!enemy || !enemy._bodyParts) {
         console.error(
@@ -609,6 +643,10 @@
         return;
       }
 
+      // Callers that take a part off outright (severPart, the cascade) pass
+      // nothing and mean a clean cut; the damage path decides with the weapon.
+      if (cut === undefined) cut = !!part.destroyed;
+
       // Apply stat effect if not already applied
       if (!part.appliedStatEffect) {
         applyStatEffect(enemy, partKey);
@@ -627,11 +665,11 @@
         });
       } else {
         // For physical or non-elemental attacks
-        var translatedMsg = getPartDamageMsg(basePart);
+        var translatedMsg = getPartDamageMsg(basePart, cut);
         if (translatedMsg) {
           // Custom message if available and resolvable in the current language
           message = T('HealthMonsters.customPartMessage', { enemy: enemy.name(), message: translatedMsg });
-        } else if (basePart.canCutoff) {
+        } else if (basePart.canCutoff && cut) {
           // Severing message for parts that can be cut off
           message = T('HealthMonsters.partSevered', { enemy: enemy.name(), part: part.name });
 
@@ -642,9 +680,12 @@
             pitch: 100,
             pan: 0,
           });
-        } else {
+        } else if (cut) {
           // Default destruction message
           message = T('HealthMonsters.partDestroyed', { enemy: enemy.name(), part: part.name });
+        } else {
+          // The part is still on the body, ruined but attached.
+          message = T('HealthMonsters.partBroken', { enemy: enemy.name(), part: part.name });
         }
       }
 
@@ -681,12 +722,13 @@
       // Flag the impact so the 3D battler plays its whole-body stagger/recoil
       // (reserved for critical hits and limb loss; cleared once consumed).
       enemy._partLostStagger = true;
-      if (window.BloodSplatterFX && window.BloodSplatterFX.onBodyPartLost) {
+      if (cut && window.BloodSplatterFX && window.BloodSplatterFX.onBodyPartLost) {
         window.BloodSplatterFX.onBodyPartLost(enemy, partKey);
       }
 
-      // ...and everything that was on the end of it goes too.
-      cascadeSeveredParts(enemy, partKey);
+      // ...and everything that was on the end of it goes too - but only when the
+      // limb actually came off. A broken arm keeps its hand.
+      if (cut) cascadeSeveredParts(enemy, partKey);
     } catch (e) {
       console.error("Error in handleDestroyedBodyPart: " + e.message);
       console.error(e.stack);
@@ -734,7 +776,7 @@
       var archetype = getArchetype(enemy._archetypeName);
       return Object.keys(parts).filter(function (key) {
         var part = parts[key];
-        if (!part || part.destroyed) return false;
+        if (!part || partFinished(part)) return false;
         var basePart = archetype && archetype.parts ? archetype.parts[key] : null;
         var vital = !!(basePart && basePart.vital);
         if (o.vital === true && !vital) return false;
@@ -1119,7 +1161,7 @@
   // How healthy a part reads: the row, its bar and the percentage all take
   // their colour from the same four bands.
   function partGrade(part) {
-    if (part.destroyed) return "gone";
+    if (partFinished(part)) return "gone";
     var pct = part.currentHp / part.maxHp;
     if (pct <= 0.25) return "critical";
     if (pct <= 0.5) return "hurt";
@@ -1266,8 +1308,9 @@
       if (!item) return "";
       var part = item.part;
       var bits = [];
-      if (part.destroyed) {
-        bits.push(T("HealthMonsters.panel.destroyed"));
+      if (partFinished(part)) {
+        bits.push(T(part.destroyed ? "HealthMonsters.panel.destroyed"
+                                   : "HealthMonsters.panel.broken"));
       } else {
         if (this.targeting) {
           bits.push(T("HealthMonsters.panel.hitChance", {
@@ -1365,7 +1408,7 @@
         this._data.push({
           key: partKey,
           part: enemy._bodyParts[partKey],
-          selectable: !(this._isTargeting && enemy._bodyParts[partKey].destroyed),
+          selectable: !(this._isTargeting && partFinished(enemy._bodyParts[partKey])),
         });
       }
     }
@@ -1860,7 +1903,7 @@
   // A part is fit to wrestle with, or to be wrestled, only while it is whole.
   function wrestlePartUsable(part) {
     if (!part) return false;
-    if (part.destroyed || part.damaged) return false;
+    if (partFinished(part) || part.damaged) return false;
     if (typeof part.currentHp === "number" && part.currentHp <= 0) return false;
     return true;
   }

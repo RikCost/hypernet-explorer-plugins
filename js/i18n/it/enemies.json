@@ -3,94 +3,94 @@
     "name": "<-- 1-10 -->"
   },
   "2": {
-    "name": "Novizio abbandonato"
-  },
-  "3": {
     "name": "Scheletro antico"
   },
-  "4": {
+  "3": {
     "name": "Elementale d'ansia"
   },
-  "5": {
+  "4": {
     "name": "Piromante apprendista"
   },
-  "6": {
+  "5": {
     "name": "Resti dell'apprendista"
   },
-  "7": {
+  "6": {
     "name": "Volpe artica"
   },
-  "8": {
+  "7": {
     "name": "Resti corazzati"
   },
-  "9": {
+  "8": {
     "name": "Coniglietto"
   },
-  "10": {
+  "9": {
     "name": "Uccello al contrario"
   },
-  "11": {
+  "10": {
     "name": "Umano bi"
   },
-  "12": {
+  "11": {
     "name": "Verme delle caverne bioluminescente"
   },
-  "13": {
-    "name": "Iniziato del sangue"
+  "12": {
+    "name": "Imitatore del sangue"
   },
-  "14": {
+  "13": {
     "name": "Zanzara di sangue"
   },
-  "15": {
+  "14": {
     "name": "Ghiandaia azzurra"
   },
-  "16": {
+  "15": {
     "name": "Cucciolo di palude"
   },
-  "17": {
+  "16": {
     "name": "Guerriero d'ossa"
   },
-  "18": {
+  "17": {
     "name": "Cacciatore di cimiteri"
   },
-  "19": {
+  "18": {
     "name": "Calamaro a bolle"
   },
-  "20": {
+  "19": {
     "name": "Calamaro a bolle secondo"
   },
-  "21": {
+  "20": {
     "name": "Bombo ronzante"
   },
-  "22": {
+  "21": {
     "name": "Scoiattolo caffeinato"
   },
-  "23": {
+  "22": {
     "name": "Pesce gatto"
   },
-  "24": {
+  "23": {
     "name": "Caticano"
   },
-  "25": {
+  "24": {
     "name": "Catizard"
   },
-  "26": {
+  "25": {
     "name": "Opossum cauto"
   },
-  "27": {
+  "26": {
     "name": "Volpe di cotone"
   },
-  "28": {
+  "27": {
     "name": "Mano strisciante"
   },
-  "29": {
+  "28": {
     "name": "Sentinella della cripta"
   },
-  "30": {
+  "29": {
     "name": "Cultista Accolito"
   },
-  "31": {
+  "30": {
     "name": "Coniglio curioso"
+  },
+  "31": {
+    "name": "Drone dati"
   },
   "32": {
     "name": "Cadavere in decomposizione"
@@ -117,85 +117,85 @@
     "name": "Ghoul elettromagnetico"
   },
   "40": {
-    "name": "Imp di Brace"
-  },
-  "41": {
     "name": "Melma scaduta"
   },
-  "42": {
+  "41": {
     "name": "Lumaca bulbo oculare"
   },
-  "43": {
+  "42": {
     "name": "Guerriero caduto"
   },
-  "44": {
-    "name": "Sifone della paura"
-  },
-  "45": {
+  "43": {
     "name": "Gatto randagio selvatico"
   },
-  "46": {
+  "44": {
     "name": "Cadavere in putrefazione"
   },
-  "47": {
+  "45": {
     "name": "Folletto irrequieto"
   },
-  "48": {
+  "46": {
     "name": "Topo di campagna"
   },
-  "49": {
+  "47": {
     "name": "Verme dito"
   },
-  "50": {
+  "48": {
+    "name": "Drake di fiamma"
+  },
+  "49": {
     "name": "Sentinella fenicottero"
   },
-  "51": {
+  "50": {
     "name": "Fiore Pixie"
   },
-  "52": {
+  "51": {
     "name": "Bracconiere della foresta"
   },
-  "53": {
+  "52": {
     "name": "Topo della foresta"
   },
-  "54": {
+  "53": {
     "name": "Accolito dimenticato"
   },
-  "55": {
+  "54": {
     "name": "Aragosta libera"
   },
-  "56": {
+  "55": {
     "name": "Procione di gelo"
   },
-  "57": {
+  "56": {
     "name": "Servo toccato dal gelo"
   },
-  "58": {
+  "57": {
     "name": "Pipistrello congelato"
   },
-  "59": {
+  "58": {
     "name": "Rana da giardino"
   },
-  "60": {
+  "59": {
     "name": "Wisp fantasma"
+  },
+  "60": {
+    "name": "Medusa gigante"
   },
   "61": {
     "name": "Teschio ridacchiante"
   },
   "62": {
-    "name": "Goblin scintillante"
-  },
-  "63": {
     "name": "Cavalluccio marino dorato"
   },
-  "64": {
+  "63": {
     "name": "Cavalletta"
   },
-  "65": {
+  "64": {
     "name": "Cimitero infestato"
   },
-  "66": {
+  "65": {
     "name": "Barcollante del Cimitero"
+  },
+  "66": {
+    "name": "Hamburger con la Pistola"
   },
   "67": {
     "name": "Arciere hobgoblin"
@@ -207,4029 +207,3963 @@
     "name": "Nanerottolo hobgoblin"
   },
   "70": {
-    "name": "Esploratore hobgoblin"
-  },
-  "71": {
-    "name": "Sciamano hobgoblin"
-  },
-  "72": {
     "name": "Guerriero hobgoblin"
   },
-  "73": {
+  "71": {
     "name": "Lemming di ghiaccio"
   },
-  "74": {
+  "72": {
     "name": "Cucciolo di lupo di ghiaccio"
   },
-  "75": {
+  "73": {
     "name": "Bestiola rovesciata"
   },
-  "76": {
+  "74": {
     "name": "Banshee del karaoke"
   },
-  "77": {
+  "75": {
     "name": "Diavoletto col kazoo"
   },
-  "78": {
+  "76": {
     "name": "Coccinella"
   },
-  "79": {
+  "77": {
     "name": "Gatto pigro"
   },
-  "80": {
+  "78": {
     "name": "Spirito persistente"
   },
-  "81": {
-    "name": "Cecchino lucertola"
-  },
-  "82": {
+  "79": {
     "name": "Ricordo perduto"
   },
-  "83": {
+  "80": {
     "name": "Lumaca larvale"
   },
-  "84": {
+  "81": {
     "name": "Palude furtiva"
   },
-  "85": {
+  "82": {
     "name": "Fantasma meme"
   },
-  "86": {
+  "83": {
     "name": "Schiavo della miniera"
   },
-  "87": {
+  "84": {
     "name": "Tonalità minore"
   },
-  "88": {
+  "85": {
     "name": "Spirito dispettoso"
   },
-  "89": {
+  "86": {
     "name": "Talpa"
   },
-  "90": {
+  "87": {
     "name": "Mr. Inadeguato"
   },
-  "91": {
+  "88": {
     "name": "Boxer principiante"
   },
-  "92": {
+  "89": {
     "name": "Capitano orco"
   },
-  "93": {
+  "90": {
     "name": "Gru di origami"
   },
-  "94": {
+  "91": {
     "name": "Pesce pappagallo grazer"
   },
-  "95": {
-    "name": "Scarabeo del permafrost"
-  },
-  "96": {
-    "name": "Marionetta fantasma"
-  },
-  "97": {
+  "92": {
     "name": "Guardiano cuscino"
   },
-  "98": {
+  "93": {
     "name": "Combattente da fossa"
   },
-  "99": {
+  "94": {
     "name": "Portatore di peste"
   },
-  "100": {
-    "name": "Imp tascabile-dimensionale"
-  },
-  "101": {
+  "95": {
     "name": "Cavalluccio marino gravido"
   },
-  "102": {
+  "96": {
     "name": "Anatra che fa qua qua"
   },
-  "103": {
+  "97": {
     "name": "Iena rabbiosa"
   },
-  "104": {
+  "98": {
     "name": "Guardia rianimata"
   },
-  "105": {
+  "99": {
     "name": "Guppy di barriera"
   },
-  "106": {
+  "100": {
     "name": "Scheletro in putrefazione"
   },
-  "107": {
+  "101": {
     "name": "Famiglio di gomma"
   },
-  "108": {
+  "102": {
     "name": "Blob di realtà di gomma"
   },
-  "109": {
+  "103": {
     "name": "Scuola di Sardine"
   },
-  "110": {
-    "name": "Cucciolo di foca"
-  },
-  "111": {
-    "name": "Topo di fogna"
-  },
-  "112": {
-    "name": "Palloncino di pelle"
-  },
-  "113": {
-    "name": "Puzzola"
-  },
-  "114": {
-    "name": "Bardo del cielo"
-  },
-  "115": {
-    "name": "Tartaruga lenta"
-  },
-  "116": {
-    "name": "Lupo mannaro delle nevi"
-  },
-  "117": {
-    "name": "Vagabondo delle spore"
-  },
-  "118": {
-    "name": "Demone della rapa squittente"
-  },
-  "119": {
-    "name": "Scoiattolo"
-  },
-  "120": {
-    "name": "Spostatore di pietre"
-  },
-  "121": {
-    "name": "Drone di sorveglianza"
-  },
-  "122": {
-    "name": "Lumaca sushi"
-  },
-  "123": {
-    "name": "Ratto di palude"
-  },
-  "124": {
-    "name": "Novizia strega della palude"
-  },
-  "125": {
-    "name": "Esattore delle tasse"
-  },
-  "126": {
-    "name": "Taxidoggo"
-  },
-  "127": {
-    "name": "Cammello assetato"
-  },
-  "128": {
-    "name": "Granchio di marea"
-  },
-  "129": {
-    "name": "Piccolo pulcino"
-  },
-  "130": {
-    "name": "Guardiano della Tomba"
-  },
-  "131": {
-    "name": "Sanguisuga della lingua"
-  },
-  "132": {
-    "name": "Rattide dentuto"
-  },
-  "133": {
-    "name": "Germoglio totemico"
-  },
-  "134": {
-    "name": "Scheletro turista"
-  },
-  "135": {
-    "name": "Corvo della tundra"
-  },
-  "136": {
-    "name": "Arciere non morto"
-  },
-  "137": {
-    "name": "Vampiro vegetale"
-  },
-  "138": {
-    "name": "Occhio vagante"
-  },
-  "139": {
-    "name": "Castoro delle terre desolate"
-  },
-  "140": {
-    "name": "Maschera piangente"
-  },
-  "141": {
-    "name": "Giovane falsa idra"
-  },
-  "142": {
-    "name": "Giovane Orco"
-  },
-  "143": {
-    "name": "Popolano Zombie"
-  },
-  "154": {
-    "name": "<-- 11-20 -->"
-  },
-  "155": {
-    "name": "Serpente abissale"
-  },
-  "156": {
-    "name": "Formica acida"
-  },
-  "157": {
-    "name": "pugile dilettante"
-  },
-  "158": {
-    "name": "Castoro corazzato"
-  },
-  "159": {
-    "name": "Porcospino corazzato"
-  },
-  "160": {
-    "name": "Mech d'assalto"
-  },
-  "161": {
-    "name": "Melma Azzurra"
-  },
-  "162": {
-    "name": "Testa di bambola"
-  },
-  "163": {
-    "name": "Bandito Arciere"
-  },
-  "164": {
-    "name": "Bandito Assassino"
-  },
-  "165": {
-    "name": "Bandito Bardo"
-  },
-  "166": {
-    "name": "Capo Bandito"
-  },
-  "167": {
-    "name": "Chierico bandito"
-  },
-  "168": {
-    "name": "Balestriere bandito"
-  },
-  "169": {
-    "name": "Bandito Grunt"
-  },
-  "170": {
-    "name": "Mago bandito"
-  },
-  "171": {
-    "name": "Bandito Piromante"
-  },
-  "172": {
-    "name": "Bandito ladro"
-  },
-  "173": {
-    "name": "Bandito Scout"
-  },
-  "174": {
-    "name": "Bruiser di pelle di corteccia"
-  },
-  "175": {
-    "name": "Goblin della campana"
-  },
-  "176": {
-    "name": "Pantera Nera"
-  },
-  "177": {
-    "name": "Gufo della bufera"
-  },
-  "178": {
-    "name": "Balena gonfia"
-  },
-  "179": {
-    "name": "Imitatore del sangue"
-  },
-  "180": {
-    "name": "Predone dell'ascia sanguinaria"
-  },
-  "181": {
-    "name": "Sanguisuga di palude"
-  },
-  "182": {
-    "name": "Sentinella delle ossa"
-  },
-  "183": {
-    "name": "Elementale pugile"
-  },
-  "184": {
-    "name": "Sciamatore cerebrale"
-  },
-  "185": {
-    "name": "Orso bruno"
-  },
-  "186": {
-    "name": "Viverna toro"
-  },
-  "187": {
-    "name": "Gnomo delle caverne"
-  },
-  "188": {
-    "name": "Sciamano serpente Chicchan"
-  },
-  "189": {
-    "name": "Aria compressa"
-  },
-  "190": {
-    "name": "Mimic cono"
-  },
-  "191": {
-    "name": "Guardiano del corallo"
-  },
-  "192": {
-    "name": "Ombra strisciante"
-  },
-  "193": {
-    "name": "Gelatina cremisi"
-  },
-  "194": {
-    "name": "Succhiatore cremisi"
-  },
-  "195": {
-    "name": "Boa costrittore"
-  },
-  "196": {
-    "name": "Drone criogenico"
-  },
-  "197": {
-    "name": "Truant cristallino"
-  },
-  "198": {
-    "name": "Drone dati"
-  },
-  "199": {
-    "name": "Axolotl della morte"
-  },
-  "200": {
-    "name": "Testa di Morto"
-  },
-  "201": {
-    "name": "Scorpione del deserto"
-  },
-  "202": {
-    "name": "Maiale tremendo"
-  },
-  "203": {
-    "name": "Coniglio feroce"
-  },
-  "204": {
-    "name": "Demone della Discordia"
-  },
-  "205": {
-    "name": "Diavoletto schivante"
-  },
-  "206": {
-    "name": "Hamburger con la Pistola"
-  },
-  "207": {
-    "name": "Tessitore di sogni"
-  },
-  "208": {
-    "name": "Revenant annegato"
-  },
-  "209": {
-    "name": "Protettore della Driade"
-  },
-  "210": {
-    "name": "Fauci d'Eco"
-  },
-  "211": {
-    "name": "Cantore di Lame Elfico"
-  },
-  "212": {
-    "name": "Tessitore di fiamme elfico"
-  },
-  "213": {
-    "name": "Mago del gelo elfico"
-  },
-  "214": {
-    "name": "Geomante elfico"
-  },
-  "215": {
-    "name": "Alto mago elfico"
-  },
-  "216": {
-    "name": "Mistico elfico"
-  },
-  "217": {
-    "name": "Capitano dei Ranger Elfici"
-  },
-  "218": {
-    "name": "Guardia Reale Elfica"
-  },
-  "219": {
-    "name": "Esploratore elfico"
-  },
-  "220": {
-    "name": "Tiratore scelto elfico"
-  },
-  "221": {
-    "name": "Maestro di spada elfico"
-  },
-  "222": {
-    "name": "Lanciatore di braci"
-  },
-  "223": {
-    "name": "Demonio di Brace"
-  },
-  "224": {
-    "name": "Spiritello di Brace"
-  },
-  "225": {
-    "name": "Melma di smeraldo"
-  },
-  "226": {
-    "name": "Pipistrello senza occhi"
-  },
-  "227": {
-    "name": "Branco di iene selvatiche"
-  },
-  "228": {
-    "name": "Drake di fiamma"
-  },
-  "229": {
-    "name": "Torretta di fiamma"
-  },
-  "230": {
-    "name": "Furetto mutaflusso"
-  },
-  "231": {
-    "name": "Maiale volante"
-  },
-  "232": {
-    "name": "Cervo della foresta"
-  },
-  "233": {
-    "name": "Treant della foresta"
-  },
-  "234": {
-    "name": "Strega della foresta"
-  },
-  "235": {
-    "name": "Apprendista del gelo"
-  },
-  "236": {
-    "name": "Ingannatore del gelo"
-  },
-  "237": {
-    "name": "Elementale del gelo"
-  },
-  "238": {
-    "name": "Ragno di gelo"
-  },
-  "239": {
-    "name": "Succubo del gelo"
-  },
-  "240": {
-    "name": "Silfide del gelo"
-  },
-  "241": {
-    "name": "Tessitore di gelo"
-  },
-  "242": {
-    "name": "Barbaro Urlo Furioso"
-  },
-  "243": {
-    "name": "Medusa gigante"
-  },
-  "244": {
-    "name": "Pinguino gigante"
-  },
-  "245": {
-    "name": "Ratto gigante"
-  },
-  "246": {
-    "name": "Scorpione gigante"
-  },
-  "247": {
-    "name": "Ragno gigante"
-  },
-  "248": {
-    "name": "Avvoltoio gigante"
-  },
-  "249": {
-    "name": "Granchio del ghiacciaio"
-  },
-  "250": {
-    "name": "Gambero luccicante"
-  },
-  "251": {
-    "name": "Gnomo Erborista"
-  },
-  "252": {
-    "name": "Gnomo Minatore"
-  },
-  "253": {
-    "name": "Gnomo Contadino"
-  },
-  "254": {
-    "name": "Gnomo Esploratore"
-  },
-  "255": {
-    "name": "Gnomo Tinkerer"
-  },
-  "256": {
-    "name": "Gnomo imbroglione"
-  },
-  "257": {
-    "name": "Cavalleria Goblin"
-  },
-  "258": {
-    "name": "Capo Goblin"
-  },
-  "259": {
-    "name": "Guardia d'élite goblin"
-  },
-  "260": {
-    "name": "Fante Goblin"
-  },
-  "261": {
-    "name": "Tiratore Goblin"
-  },
-  "262": {
-    "name": "Arciere Goblin a Cavallo"
-  },
-  "263": {
-    "name": "Negromante goblin"
-  },
-  "264": {
-    "name": "Esploratore Goblin"
-  },
-  "265": {
-    "name": "Sciamano Goblin"
-  },
-  "266": {
-    "name": "Capo della Guerra Goblin"
-  },
-  "267": {
-    "name": "Guerriero Goblin"
-  },
-  "268": {
-    "name": "Stregone Goblin"
-  },
-  "269": {
-    "name": "Mimic d'oro"
-  },
-  "270": {
-    "name": "Budino dorato"
-  },
-  "271": {
-    "name": "Melma d'erba"
-  },
-  "272": {
-    "name": "Ghiaia Imp"
-  },
-  "273": {
-    "name": "Lupo grigio"
-  },
-  "274": {
-    "name": "Melma verde"
-  },
-  "275": {
-    "name": "Grifone"
-  },
-  "276": {
-    "name": "Palla di pelo"
-  },
-  "277": {
-    "name": "Accolito di Halo"
-  },
-  "278": {
-    "name": "Mano rampicante"
-  },
-  "279": {
-    "name": "Manichino infestato"
-  },
-  "280": {
-    "name": "Spaventapasseri inquietante"
-  },
-  "281": {
-    "name": "Richiamo olografico"
-  },
-  "282": {
-    "name": "Orso cornuto"
-  },
-  "283": {
-    "name": "Canguro di ghiaccio"
-  },
-  "284": {
-    "name": "Bambino macchia d'inchiostro"
-  },
-  "285": {
-    "name": "Sciame di insetti"
-  },
-  "286": {
-    "name": "Junkrat"
-  },
-  "287": {
-    "name": "Canguro"
-  },
-  "288": {
-    "name": "Drago di Komodo"
-  },
-  "289": {
-    "name": "Diacono luminoso"
-  },
-  "290": {
-    "name": "Formica del magma"
-  },
-  "291": {
-    "name": "Scimmione malefico"
-  },
-  "292": {
-    "name": "Lupo del terrore criniuto"
-  },
-  "293": {
-    "name": "Manichino"
-  },
-  "294": {
-    "name": "Spettro della palude"
-  },
-  "295": {
-    "name": "Sanguisuga mentale"
-  },
-  "296": {
-    "name": "Ragno delle paludi"
-  },
-  "297": {
-    "name": "Demone dello Specchio"
-  },
-  "298": {
-    "name": "Varano"
-  },
-  "299": {
-    "name": "Tasso mostruoso"
-  },
-  "300": {
-    "name": "Melma di fango"
-  },
-  "301": {
-    "name": "Ghoul Murkwallow"
-  },
-  "302": {
-    "name": "Insetto mutante"
-  },
-  "303": {
-    "name": "Procione notturno"
-  },
-  "304": {
-    "name": "Tessitore di incubi"
-  },
-  "305": {
-    "name": "Illusionista principiante"
-  },
-  "306": {
-    "name": "Paladino novizio"
-  },
-  "307": {
-    "name": "Visionario di ossidiana"
-  },
-  "308": {
-    "name": "Sciame di gelatina ocra"
-  },
-  "309": {
-    "name": "Orco Bruto"
-  },
-  "310": {
-    "name": "Schiacciatore Ogre"
-  },
-  "311": {
-    "name": "Sciamano del fuoco dell'orco"
-  },
-  "312": {
-    "name": "Orco Mistico"
-  },
-  "313": {
-    "name": "Picchiatore orco"
-  },
-  "314": {
-    "name": "Scimmia dell'organetto"
-  },
-  "315": {
-    "name": "Popolano sfruttato"
-  },
-  "316": {
-    "name": "Pecora pastorale"
-  },
-  "317": {
-    "name": "Melma rosa"
-  },
-  "318": {
-    "name": "Ratto della peste"
-  },
-  "319": {
-    "name": "Scarabeo orologio da tasca"
-  },
-  "320": {
-    "name": "Canguro primordiale"
-  },
-  "321": {
-    "name": "pugile professionista"
-  },
-  "322": {
-    "name": "Pianta rampicante di palude"
-  },
-  "323": {
-    "name": "Lepre rabbiosa"
-  },
-  "324": {
-    "name": "Re dei ratti"
-  },
-  "325": {
-    "name": "Resti sconcertanti"
-  },
-  "326": {
-    "name": "Cinghiale dorsorasoio"
-  },
-  "327": {
-    "name": "Reaganita"
-  },
-  "328": {
-    "name": "Volpe rossa"
-  },
-  "329": {
-    "name": "Squalo di barriera"
-  },
-  "330": {
-    "name": "Tigre riflettente"
-  },
-  "331": {
-    "name": "Granchio gabbia toracica"
-  },
-  "332": {
-    "name": "Gatto dai denti a sciabola"
-  },
-  "333": {
-    "name": "Melma di sabbia"
-  },
-  "334": {
-    "name": "Berserker selvaggio"
-  },
-  "335": {
+  "104": {
     "name": "Bot di sicurezza"
   },
-  "336": {
-    "name": "Emissario Serafico"
+  "105": {
+    "name": "Palloncino di pelle"
   },
-  "337": {
-    "name": "Strisciante d'Ombra"
+  "106": {
+    "name": "Puzzola"
   },
-  "338": {
-    "name": "Inseguitore d'Ombra"
+  "107": {
+    "name": "Bardo del cielo"
   },
-  "339": {
-    "name": "Agguattatore Umbratile"
+  "108": {
+    "name": "Tartaruga lenta"
   },
-  "340": {
-    "name": "Spettro dell'ombra"
+  "109": {
+    "name": "Lupo mannaro delle nevi"
   },
-  "341": {
-    "name": "Slime Shock"
+  "110": {
+    "name": "Vagabondo delle spore"
   },
-  "342": {
-    "name": "Apprendista Sirena"
+  "111": {
+    "name": "Demone della rapa squittente"
   },
-  "343": {
-    "name": "Cavaliere slime"
+  "112": {
+    "name": "Scoiattolo"
   },
-  "344": {
-    "name": "Mietitore di anime"
+  "113": {
+    "name": "Spostatore di pietre"
   },
-  "345": {
-    "name": "Mercante di anime"
+  "114": {
+    "name": "Drone di sorveglianza"
   },
-  "346": {
-    "name": "Zebra spaziale"
+  "115": {
+    "name": "Lumaca sushi"
   },
-  "347": {
-    "name": "Pietra di guardia spettrale"
+  "116": {
+    "name": "Ratto di palude"
   },
-  "348": {
-    "name": "Lucertola spinata"
+  "117": {
+    "name": "Novizia strega della palude"
   },
-  "349": {
-    "name": "Velocista spinoso"
+  "118": {
+    "name": "Esattore delle tasse"
   },
-  "350": {
-    "name": "Agente furtivo"
+  "119": {
+    "name": "Taxidoggo"
   },
-  "351": {
-    "name": "Guardiano di pietra"
+  "120": {
+    "name": "Cammello assetato"
   },
-  "352": {
-    "name": "Banshee della tempesta"
+  "121": {
+    "name": "Granchio di marea"
   },
-  "353": {
-    "name": "Chiamante di tempesta"
+  "122": {
+    "name": "Piccolo pulcino"
   },
-  "354": {
-    "name": "Combattente di strada"
+  "123": {
+    "name": "Rattide dentuto"
   },
-  "355": {
-    "name": "Punk di strada"
+  "124": {
+    "name": "Germoglio totemico"
   },
-  "356": {
-    "name": "Coccodrillo di palude"
+  "125": {
+    "name": "Scheletro turista"
   },
-  "357": {
-    "name": "Tarantola"
+  "126": {
+    "name": "Corvo della tundra"
   },
-  "358": {
-    "name": "Il chirurgo"
+  "127": {
+    "name": "Arciere non morto"
   },
-  "359": {
-    "name": "Thor"
+  "128": {
+    "name": "Vampiro vegetale"
   },
-  "360": {
-    "name": "Folletto del tuono"
+  "129": {
+    "name": "Occhio vagante"
   },
-  "361": {
-    "name": "Stregone delle maree"
+  "130": {
+    "name": "Castoro delle terre desolate"
   },
-  "362": {
-    "name": "Sciamano di Timberwood"
+  "131": {
+    "name": "Giovane falsa idra"
   },
-  "363": {
-    "name": "Custode della Pietra del Sole"
+  "132": {
+    "name": "Giovane Orco"
   },
-  "364": {
-    "name": "Fatina dei denti"
+  "133": {
+    "name": "Popolano Zombie"
   },
-  "365": {
-    "name": "Guardiano del Totem"
+  "134": {
+    "name": "<-- 11-20 -->"
   },
-  "366": {
-    "name": "Iniziato del Totem"
+  "135": {
+    "name": "Novizio abbandonato"
   },
-  "367": {
-    "name": "Anemone tossico"
+  "136": {
+    "name": "Serpente abissale"
   },
-  "368": {
-    "name": "Fanghi tossici"
+  "137": {
+    "name": "Formica acida"
   },
-  "369": {
-    "name": "Spruzzatore tossico"
+  "138": {
+    "name": "pugile dilettante"
   },
-  "370": {
-    "name": "Spazzatura"
+  "139": {
+    "name": "Castoro corazzato"
   },
-  "371": {
-    "name": "Scimmia arboricola"
+  "140": {
+    "name": "Porcospino corazzato"
   },
-  "372": {
-    "name": "Folletto immortale"
+  "141": {
+    "name": "Mech d'assalto"
   },
-  "373": {
-    "name": "Cacciatore di tridenti"
+  "142": {
+    "name": "Melma Azzurra"
   },
-  "374": {
-    "name": "Cucciolo di mammut della tundra"
+  "143": {
+    "name": "Testa di bambola"
   },
-  "375": {
-    "name": "Talpa da tunnel"
+  "144": {
+    "name": "Bandito Arciere"
   },
-  "376": {
-    "name": "Satiro del crepuscolo"
+  "145": {
+    "name": "Bandito Assassino"
   },
-  "377": {
-    "name": "Marionetta contorta"
+  "146": {
+    "name": "Bandito Bardo"
   },
-  "378": {
-    "name": "Sciame di falene d'ombra"
+  "147": {
+    "name": "Capo Bandito"
   },
-  "379": {
-    "name": "Basilisco umbratile"
+  "148": {
+    "name": "Chierico bandito"
   },
-  "380": {
-    "name": "Pipistrello vampiro"
+  "149": {
+    "name": "Balestriere bandito"
   },
-  "381": {
-    "name": "Diavolo velenoso"
+  "150": {
+    "name": "Bandito Grunt"
   },
-  "382": {
-    "name": "Serpente velenoso"
+  "151": {
+    "name": "Mago bandito"
   },
-  "383": {
-    "name": "Desolatore del vuoto"
+  "152": {
+    "name": "Bandito Piromante"
   },
-  "384": {
-    "name": "Gel vuoto"
+  "153": {
+    "name": "Bandito ladro"
   },
-  "385": {
-    "name": "Arciere errante"
+  "154": {
+    "name": "Bandito Scout"
   },
-  "386": {
-    "name": "Ninfa dell'acqua"
+  "155": {
+    "name": "Bruiser di pelle di corteccia"
   },
-  "387": {
-    "name": "Tessitore di ragnatele"
-  },
-  "388": {
-    "name": "Wisp sussurrante"
-  },
-  "389": {
-    "name": "Cinghiale"
-  },
-  "390": {
-    "name": "Coniglio selvatico"
-  },
-  "391": {
-    "name": "Squartatore selvaggio"
-  },
-  "392": {
-    "name": "Gatto selvatico"
-  },
-  "393": {
-    "name": "Lampada a fuoco fatuo"
-  },
-  "394": {
-    "name": "Gufo saggio"
-  },
-  "395": {
-    "name": "Fiore di legno"
-  },
-  "396": {
-    "name": "Tessiglifi di Xibalba"
-  },
-  "397": {
-    "name": "Giovane yeti"
-  },
-  "398": {
-    "name": "Mago zefiro"
-  },
-  "399": {
-    "name": "Balena zombie"
-  },
-  "410": {
-    "name": "<-- 21-30 -->"
-  },
-  "411": {
-    "name": "Granchio abissale"
-  },
-  "412": {
-    "name": "Demone Abissale"
-  },
-  "413": {
-    "name": "Hallucigenia abissale"
-  },
-  "414": {
-    "name": "Orrore abissale"
-  },
-  "415": {
-    "name": "Cacciatore abissale"
-  },
-  "416": {
-    "name": "Idromante Abissale"
-  },
-  "417": {
-    "name": "Tentacolo abissale"
-  },
-  "418": {
-    "name": "Pesce pietra maledetto"
-  },
-  "419": {
-    "name": "Bombardiere acido"
-  },
-  "420": {
-    "name": "Chiamatore di maree acido"
-  },
-  "421": {
-    "name": "Elementale dell'Aria"
-  },
-  "422": {
-    "name": "Messaggero di Aiwass"
-  },
-  "423": {
-    "name": "Akira Tanaka"
-  },
-  "424": {
-    "name": "Lupo feroce alfa"
-  },
-  "425": {
-    "name": "Labbro alfa"
-  },
-  "426": {
-    "name": "Drago antico"
-  },
-  "427": {
-    "name": "Fantasma dell'angoscia"
-  },
-  "428": {
-    "name": "Arsenale animato"
-  },
-  "429": {
-    "name": "Gravestalker animato"
-  },
-  "430": {
-    "name": "Signore degli Annunaki"
-  },
-  "431": {
-    "name": "Elementale acquatico"
-  },
-  "432": {
-    "name": "Mantide acquatica"
-  },
-  "433": {
-    "name": "Arcimago Arcano"
-  },
-  "434": {
-    "name": "Rinoceronte corazzato"
-  },
-  "435": {
-    "name": "Vespa assassina"
-  },
-  "436": {
-    "name": "Manticora spinata"
-  },
-  "437": {
-    "name": "Basilisco"
-  },
-  "438": {
+  "156": {
     "name": "Mech da battaglia"
   },
-  "439": {
-    "name": "Emergenza vuota"
+  "157": {
+    "name": "Goblin della campana"
   },
-  "440": {
-    "name": "Visualizzazione"
+  "158": {
+    "name": "Pantera Nera"
   },
-  "441": {
-    "name": "Sadico accecante"
+  "159": {
+    "name": "Gufo della bufera"
   },
-  "442": {
-    "name": "Contessa Sanguinaria"
+  "160": {
+    "name": "Balena gonfia"
   },
-  "443": {
-    "name": "Colosso Sanguisuga di Sangue"
+  "161": {
+    "name": "Iniziato del sangue"
   },
-  "444": {
-    "name": "Vedova di sangue"
+  "162": {
+    "name": "Predone dell'ascia sanguinaria"
   },
-  "445": {
-    "name": "Mucca Bloodbell"
+  "163": {
+    "name": "Sanguisuga di palude"
   },
-  "446": {
-    "name": "Crociato assetato di sangue"
-  },
-  "447": {
-    "name": "Behemoth della palude"
-  },
-  "448": {
-    "name": "Elementale della palude"
-  },
-  "449": {
+  "164": {
     "name": "Mutante della palude"
   },
-  "450": {
-    "name": "Cacciatore di scaglie di palude"
+  "165": {
+    "name": "Sentinella delle ossa"
   },
-  "451": {
-    "name": "Comandante delle ossa"
+  "166": {
+    "name": "Orso bruno"
   },
-  "452": {
-    "name": "Divoratore Masticaossa"
+  "167": {
+    "name": "Gnomo delle caverne"
   },
-  "453": {
-    "name": "Salamoia Wisp"
+  "168": {
+    "name": "Sciamano serpente Chicchan"
   },
-  "454": {
-    "name": "Bubba"
-  },
-  "455": {
-    "name": "Incubo burocratico"
-  },
-  "456": {
-    "name": "Tirannosauro celeste"
-  },
-  "457": {
-    "name": "Furia incatenata"
-  },
-  "458": {
-    "name": "Contendente al titolo di campione"
-  },
-  "459": {
-    "name": "Choronzon"
-  },
-  "460": {
-    "name": "Manticora cromatica"
-  },
-  "461": {
-    "name": "Demonio Chupacabra"
-  },
-  "462": {
-    "name": "Tessitore di cenere"
-  },
-  "463": {
-    "name": "Segugio di Cenerentola"
-  },
-  "464": {
-    "name": "Varano golacenere"
-  },
-  "465": {
-    "name": "Gigante delle nuvole"
-  },
-  "466": {
-    "name": "Rex dai piedi di cobalto"
-  },
-  "467": {
+  "169": {
     "name": "Drone da combattimento"
   },
-  "468": {
-    "name": "Guardiano consacrato"
+  "170": {
+    "name": "Aria compressa"
   },
-  "469": {
-    "name": "Incantatrice Maestosa "
+  "171": {
+    "name": "Guardiano del corallo"
   },
-  "470": {
-    "name": "Incantatrice di corallo"
-  },
-  "471": {
-    "name": "Guerriero Coralico"
-  },
-  "472": {
-    "name": "Cavaliere intagliatore di cadaveri"
-  },
-  "473": {
+  "172": {
     "name": "Bioslave corrotto"
   },
-  "474": {
-    "name": "Cavaliere corrotto"
+  "173": {
+    "name": "Ombra strisciante"
   },
-  "475": {
-    "name": "Analizzatore Cremisi"
+  "174": {
+    "name": "Gelatina cremisi"
   },
-  "476": {
-    "name": "Pesce cremisi"
+  "175": {
+    "name": "Succhiatore cremisi"
   },
-  "477": {
-    "name": "Araldo Cremisi"
+  "176": {
+    "name": "Boa costrittore"
   },
-  "478": {
-    "name": "Mietitrice cremisi"
+  "177": {
+    "name": "Drone criogenico"
   },
-  "479": {
-    "name": "Patriarca Cremisi"
+  "178": {
+    "name": "Truant cristallino"
   },
-  "480": {
-    "name": "Colosso in rovina"
-  },
-  "481": {
-    "name": "Strillatore Criptato"
-  },
-  "482": {
-    "name": "Accumulatore di cristalli"
-  },
-  "483": {
-    "name": "Sirena di cristallo"
-  },
-  "484": {
-    "name": "Sceloporo dal dorso cristallino"
-  },
-  "485": {
-    "name": "Sentinella CrystalCarapace"
-  },
-  "486": {
-    "name": "Candela maledetta"
-  },
-  "487": {
+  "179": {
     "name": "Carro armato cibernetico"
   },
-  "488": {
-    "name": "Mago Oscuro"
+  "180": {
+    "name": "Axolotl della morte"
   },
-  "489": {
-    "name": "Anguilla del gelo profondo"
+  "181": {
+    "name": "Testa di Morto"
   },
-  "490": {
-    "name": "Ibrido profondo"
+  "182": {
+    "name": "Scorpione del deserto"
   },
-  "491": {
-    "name": "Folletto cervo"
+  "183": {
+    "name": "Maiale tremendo"
   },
-  "492": {
-    "name": "Comandante del deserto"
+  "184": {
+    "name": "Coniglio feroce"
   },
-  "493": {
-    "name": "Templare devoto"
+  "185": {
+    "name": "Demone della Discordia"
   },
-  "494": {
-    "name": "Diego 'Giaguaro' Rodríguez"
+  "186": {
+    "name": "Diavoletto schivante"
   },
-  "495": {
-    "name": "Redivivo da Discoteca"
+  "187": {
+    "name": "Tessitore di sogni"
   },
-  "496": {
-    "name": "Arbitro Divino"
+  "188": {
+    "name": "Revenant annegato"
   },
-  "497": {
-    "name": "Taskmaster dominante"
+  "189": {
+    "name": "Protettore della Driade"
   },
-  "498": {
-    "name": "Cavaliere del Terrore"
-  },
-  "499": {
-    "name": "Sommo Sacerdote Serpente dei Sogni"
-  },
-  "500": {
-    "name": "Fantasma Onirico"
-  },
-  "501": {
-    "name": "Zanna delle Dune"
-  },
-  "502": {
-    "name": "Uccello diavolo di polvere"
-  },
-  "503": {
+  "190": {
     "name": "Elementale della Terra"
   },
-  "504": {
-    "name": "Guardiano del Bosco Sambuco"
+  "191": {
+    "name": "Fauci d'Eco"
   },
-  "505": {
-    "name": "Aracnide elettrico"
+  "192": {
+    "name": "Cantore di Lame Elfico"
   },
-  "506": {
-    "name": "Elena 'Shadow' Rodriguez"
+  "193": {
+    "name": "Tessitore di fiamme elfico"
   },
-  "507": {
-    "name": "Campione di pugilato d'élite"
+  "194": {
+    "name": "Mago del gelo elfico"
   },
-  "508": {
-    "name": "Em"
+  "195": {
+    "name": "Geomante elfico"
   },
-  "509": {
-    "name": "Millepiedi di brace"
+  "196": {
+    "name": "Alto mago elfico"
   },
-  "510": {
-    "name": "Stalker di smeraldo"
+  "197": {
+    "name": "Mistico elfico"
   },
-  "511": {
-    "name": "Imperatore Deathstalker"
+  "198": {
+    "name": "Capitano dei Ranger Elfici"
   },
-  "512": {
-    "name": "Sciame di zecche ingorgate"
+  "199": {
+    "name": "Guardia Reale Elfica"
   },
-  "513": {
-    "name": "Sanguisuga di essenza"
+  "200": {
+    "name": "Esploratore elfico"
   },
-  "514": {
-    "name": "Stagista eterno"
+  "201": {
+    "name": "Tiratore scelto elfico"
   },
-  "515": {
-    "name": "Divoratore Etereo"
+  "202": {
+    "name": "Maestro di spada elfico"
   },
-  "516": {
-    "name": "Bruto Artigliopalude"
+  "203": {
+    "name": "Lanciatore di braci"
   },
-  "517": {
-    "name": "Incantatrice fatata"
+  "204": {
+    "name": "Demonio di Brace"
   },
-  "518": {
-    "name": "Demone del sonno ardente"
+  "205": {
+    "name": "Imp di Brace"
   },
-  "519": {
-    "name": "Demonio della sporcizia"
+  "206": {
+    "name": "Spiritello di Brace"
   },
-  "520": {
-    "name": "Millepiedi di fuoco"
+  "207": {
+    "name": "Melma di smeraldo"
   },
-  "521": {
+  "208": {
+    "name": "Pipistrello senza occhi"
+  },
+  "209": {
+    "name": "Sifone della paura"
+  },
+  "210": {
+    "name": "Branco di iene selvatiche"
+  },
+  "211": {
     "name": "Drago di fuoco"
   },
-  "522": {
-    "name": "Elementale della fiamma"
+  "212": {
+    "name": "Torretta di fiamma"
   },
-  "523": {
-    "name": "Segugio infernale toccato dalla fiamma"
+  "213": {
+    "name": "Furetto mutaflusso"
   },
-  "524": {
-    "name": "Sentinella di Flatwood"
-  },
-  "525": {
-    "name": "Behemoth floreale"
-  },
-  "526": {
+  "214": {
     "name": "Maiale volante"
   },
-  "527": {
-    "name": "Arciere della foresta"
+  "215": {
+    "name": "Cervo della foresta"
   },
-  "528": {
-    "name": "Centauro della foresta"
+  "216": {
+    "name": "Apprendista del gelo"
   },
-  "529": {
-    "name": "La vendetta della foresta"
+  "217": {
+    "name": "Ingannatore del gelo"
   },
-  "530": {
-    "name": "Sentinella fossile"
+  "218": {
+    "name": "Elementale del gelo"
   },
-  "531": {
-    "name": "Monaco rana"
+  "219": {
+    "name": "Ragno di gelo"
   },
-  "532": {
-    "name": "Colosso di gelo"
+  "220": {
+    "name": "Succubo del gelo"
   },
-  "533": {
-    "name": "Drago del gelo"
+  "221": {
+    "name": "Silfide del gelo"
   },
-  "534": {
-    "name": "Incantatrice del gelo"
+  "222": {
+    "name": "Barbaro Urlo Furioso"
   },
-  "535": {
-    "name": "Scarabeo del gelo"
-  },
-  "536": {
-    "name": "Melma di gelo"
-  },
-  "537": {
-    "name": "Tessitrice di Brina"
-  },
-  "538": {
-    "name": "Urside gelido"
-  },
-  "539": {
-    "name": "Snapjaw fungino"
-  },
-  "540": {
+  "223": {
     "name": "Orrore Gatorghast"
   },
-  "541": {
-    "name": "Lumaca gigante strisciante"
+  "224": {
+    "name": "Pinguino gigante"
   },
-  "542": {
-    "name": "Zapback dorato"
+  "225": {
+    "name": "Ratto gigante"
   },
-  "543": {
-    "name": "Ghiacciaio Serpent"
+  "226": {
+    "name": "Scorpione gigante"
   },
-  "544": {
-    "name": "Worm nero"
+  "227": {
+    "name": "Ragno gigante"
   },
-  "545": {
-    "name": "Gnomo Alchimista"
+  "228": {
+    "name": "Avvoltoio gigante"
   },
-  "546": {
-    "name": "Gnomo Artificiere"
+  "229": {
+    "name": "Granchio del ghiacciaio"
   },
-  "547": {
-    "name": "Gnomo Bombardiere"
+  "230": {
+    "name": "Gambero luccicante"
   },
-  "548": {
-    "name": "Ingegnere Gnomo"
+  "231": {
+    "name": "Goblin scintillante"
   },
-  "549": {
-    "name": "Sciamano gnomo"
+  "232": {
+    "name": "Gnomo Erborista"
   },
-  "550": {
-    "name": "Stregone gnomo"
+  "233": {
+    "name": "Gnomo Minatore"
   },
-  "551": {
-    "name": "Re dei Goblin"
+  "234": {
+    "name": "Gnomo Contadino"
   },
-  "552": {
-    "name": "Goblin Maestro Cecchino"
+  "235": {
+    "name": "Gnomo Esploratore"
   },
-  "553": {
-    "name": "Stregone Ombra Goblin"
+  "236": {
+    "name": "Gnomo Tinkerer"
   },
-  "554": {
-    "name": "Leone d'oro"
+  "237": {
+    "name": "Gnomo imbroglione"
   },
-  "555": {
-    "name": "Regina Gorgone"
+  "238": {
+    "name": "Mimic d'oro"
   },
-  "556": {
-    "name": "Ombra afferrante"
+  "239": {
+    "name": "Budino dorato"
   },
-  "557": {
-    "name": "Revenant legato alla tomba"
+  "240": {
+    "name": "Melma d'erba"
   },
-  "558": {
-    "name": "Melma grottesca"
+  "241": {
+    "name": "Ghiaia Imp"
   },
-  "559": {
-    "name": "Guardiano Vendicatore"
+  "242": {
+    "name": "Lupo grigio"
   },
-  "560": {
-    "name": "Maggotus gutturale"
+  "243": {
+    "name": "Melma verde"
   },
-  "561": {
-    "name": "Esecutore Martello"
+  "244": {
+    "name": "Grifone"
   },
-  "562": {
-    "name": "Arpia Banshee"
+  "245": {
+    "name": "Palla di pelo"
   },
-  "563": {
-    "name": "Ecate la Signora della Peste"
+  "246": {
+    "name": "Accolito di Halo"
   },
-  "564": {
-    "name": "Driade di Hellthorn"
+  "247": {
+    "name": "Mano rampicante"
   },
-  "565": {
-    "name": "Termite della mente alveare"
+  "248": {
+    "name": "Manichino infestato"
   },
-  "566": {
-    "name": "Capra cava"
+  "249": {
+    "name": "Spaventapasseri inquietante"
   },
-  "567": {
+  "250": {
+    "name": "Richiamo olografico"
+  },
+  "251": {
+    "name": "Orso cornuto"
+  },
+  "252": {
     "name": "Motore idrocinetico"
   },
-  "568": {
-    "name": "Grimorio iperdimensionale"
-  },
-  "569": {
+  "253": {
     "name": "Drago di ghiaccio"
   },
-  "570": {
-    "name": "Cerbero infernale"
+  "254": {
+    "name": "Canguro di ghiaccio"
   },
-  "571": {
-    "name": "Devastatore infernale"
+  "255": {
+    "name": "Bambino macchia d'inchiostro"
   },
-  "572": {
-    "name": "Monarca infernale"
+  "256": {
+    "name": "Sciame di insetti"
   },
-  "573": {
-    "name": "Prodigio infernale"
+  "257": {
+    "name": "Junkrat"
   },
-  "574": {
-    "name": "Guerrafondaio infernale"
+  "258": {
+    "name": "Canguro"
   },
-  "575": {
-    "name": "Turista interdimensionale"
+  "259": {
+    "name": "Drago di Komodo"
   },
-  "576": {
-    "name": "Cavallo di ferro"
+  "260": {
+    "name": "Cecchino lucertola"
   },
-  "577": {
-    "name": "Caricatore Ironhoof"
+  "261": {
+    "name": "Diacono luminoso"
   },
-  "578": {
-    "name": "Costritore della giungla"
-  },
-  "579": {
-    "name": "Predatore della giungla"
-  },
-  "580": {
-    "name": "Cacciatore della giungla"
-  },
-  "581": {
-    "name": "Drago di ghiaccio giovane"
-  },
-  "582": {
-    "name": "Kraken Leviatano"
-  },
-  "583": {
-    "name": "Progenie del Kraken"
-  },
-  "584": {
-    "name": "Guardiano del Labirinto"
-  },
-  "585": {
-    "name": "Serpente del lago Lurker"
-  },
-  "586": {
-    "name": "Discarica Leviatano"
-  },
-  "587": {
-    "name": "Lilith la Corruttrice"
-  },
-  "588": {
-    "name": "Armatura vivente"
-  },
-  "589": {
-    "name": "Monolite vivente"
-  },
-  "590": {
-    "name": "Elementale della fortuna"
-  },
-  "591": {
-    "name": "Pescatore luminoso"
-  },
-  "592": {
-    "name": "Difensore luminoso"
-  },
-  "593": {
+  "262": {
     "name": "Medusa luminosa"
   },
-  "594": {
-    "name": "Re delle Locuste Luminose"
+  "263": {
+    "name": "Formica del magma"
   },
-  "595": {
-    "name": "Sovrano del Maelstrom"
+  "264": {
+    "name": "Scimmione malefico"
   },
-  "596": {
-    "name": "Millepiedi di magma"
+  "265": {
+    "name": "Lupo del terrore criniuto"
   },
-  "597": {
-    "name": "Titano di Magma"
+  "266": {
+    "name": "Manichino"
   },
-  "598": {
-    "name": "Tela Torbida di Palude"
+  "267": {
+    "name": "Spettro della palude"
   },
-  "599": {
-    "name": "Heloderma delle paludi"
-  },
-  "600": {
-    "name": "Stalker della palude"
-  },
-  "601": {
-    "name": "Maestro Chen"
-  },
-  "602": {
+  "268": {
     "name": "Golem meccanico"
   },
-  "603": {
-    "name": "L'incubo del mercante"
-  },
-  "604": {
-    "name": "Drago di mercurio"
-  },
-  "605": {
-    "name": "Mietitore di cervelli Mi-go"
-  },
-  "606": {
-    "name": "Mianni"
-  },
-  "607": {
-    "name": "Lanterna Miasma"
-  },
-  "608": {
-    "name": "Cacciatore di mezzanotte"
-  },
-  "609": {
+  "269": {
     "name": "Cyborg militare"
   },
-  "610": {
+  "270": {
     "name": "Scatola a forma di mimica"
   },
-  "611": {
-    "name": "Manipolatore mentale"
+  "271": {
+    "name": "Sanguisuga mentale"
   },
-  "612": {
-    "name": "Scultore della mente"
+  "272": {
+    "name": "Ragno delle paludi"
   },
-  "613": {
-    "name": "Drago fuso"
+  "273": {
+    "name": "Demone dello Specchio"
   },
-  "614": {
-    "name": "Juggernaut Fuso"
+  "274": {
+    "name": "Varano"
   },
-  "615": {
-    "name": "Battaglia di Fuso"
+  "275": {
+    "name": "Tasso mostruoso"
   },
-  "616": {
-    "name": "Wendigo al chiaro di luna"
+  "276": {
+    "name": "Melma di fango"
   },
-  "617": {
-    "name": "Morgana la Tessitrice di Sangue"
+  "277": {
+    "name": "Ghoul Murkwallow"
   },
-  "618": {
-    "name": "Vipera del muschio"
+  "278": {
+    "name": "Insetto mutante"
   },
-  "619": {
-    "name": "Amphibolurus squamoso"
-  },
-  "620": {
-    "name": "Inseguitore Ombra di Falena"
-  },
-  "621": {
-    "name": "Fungoide motivazionale"
-  },
-  "622": {
-    "name": "Frantoio di montagna"
-  },
-  "623": {
-    "name": "Aquila di montagna"
-  },
-  "624": {
-    "name": "Orco di montagna"
-  },
-  "625": {
-    "name": "Idra dalle teste multiple"
-  },
-  "626": {
-    "name": "Goblin mutato"
-  },
-  "627": {
-    "name": "Prodigio Mistico"
-  },
-  "628": {
-    "name": "Campione Necrotico"
-  },
-  "629": {
-    "name": "Residuo dei Nephilim"
-  },
-  "630": {
-    "name": "Sistema nervoso"
-  },
-  "631": {
+  "279": {
     "name": "Interfaccia neurale"
   },
-  "632": {
-    "name": "Batterio da incubo"
+  "280": {
+    "name": "Procione notturno"
   },
-  "633": {
-    "name": "Squalo da incubo"
+  "281": {
+    "name": "Illusionista principiante"
   },
-  "634": {
-    "name": "Maiale normale"
+  "282": {
+    "name": "Paladino novizio"
   },
-  "635": {
-    "name": "Novizio Accolito Shaolin"
+  "283": {
+    "name": "Visionario di ossidiana"
   },
-  "636": {
-    "name": "Scavatore di ossidiana"
+  "284": {
+    "name": "Sciame di gelatina ocra"
   },
-  "637": {
-    "name": "Stregone dell'oceano"
+  "285": {
+    "name": "Orco Bruto"
   },
-  "638": {
-    "name": "Arcimago Ogre"
+  "286": {
+    "name": "Schiacciatore Ogre"
   },
-  "639": {
-    "name": "Campione Orco"
+  "287": {
+    "name": "Sciamano del fuoco dell'orco"
   },
-  "640": {
-    "name": "Adepto Elementale Ogre"
+  "288": {
+    "name": "Orco Mistico"
   },
-  "641": {
-    "name": "Signore della guerra degli orchi"
+  "289": {
+    "name": "Picchiatore orco"
   },
-  "642": {
-    "name": "Omicidio del corvo minaccioso"
+  "290": {
+    "name": "Scimmia dell'organetto"
   },
-  "643": {
-    "name": "Appassionato del dolore"
+  "291": {
+    "name": "Popolano sfruttato"
   },
-  "644": {
-    "name": "Palette fantasma"
+  "292": {
+    "name": "Pecora pastorale"
   },
-  "645": {
-    "name": "Panda"
+  "293": {
+    "name": "Scarabeo del permafrost"
   },
-  "646": {
-    "name": "Lumaca paralizzante"
+  "294": {
+    "name": "Marionetta fantasma"
   },
-  "647": {
-    "name": "Pappagallo"
-  },
-  "648": {
-    "name": "Falco pellegrino"
-  },
-  "649": {
-    "name": "Evocatore del permafrost"
-  },
-  "650": {
-    "name": "Drago del permafrost"
-  },
-  "651": {
-    "name": "Gorgone pietrificante"
-  },
-  "652": {
-    "name": "Arciere fantasma"
-  },
-  "653": {
-    "name": "Zombi filosofico"
-  },
-  "654": {
+  "295": {
     "name": "Difensore dei fotoni"
   },
-  "655": {
-    "name": "Colosso del plasma"
+  "296": {
+    "name": "Melma rosa"
   },
-  "656": {
-    "name": "Platino Mimic"
+  "297": {
+    "name": "Ratto della peste"
   },
-  "657": {
-    "name": "Pooka velenoso"
+  "298": {
+    "name": "Scarabeo orologio da tasca"
   },
-  "658": {
-    "name": "Orso polare"
+  "299": {
+    "name": "Imp tascabile-dimensionale"
   },
-  "659": {
-    "name": "Bradipo primordiale"
+  "300": {
+    "name": "Canguro primordiale"
   },
-  "660": {
-    "name": "Policromo prismatico"
+  "301": {
+    "name": "pugile professionista"
   },
-  "661": {
-    "name": "Bestia di palude psionica"
+  "302": {
+    "name": "Pianta rampicante di palude"
   },
-  "662": {
-    "name": "Melma di zucca"
+  "303": {
+    "name": "Lepre rabbiosa"
   },
-  "663": {
-    "name": "Fluttuazione quantistica"
+  "304": {
+    "name": "Re dei ratti"
   },
-  "664": {
-    "name": "Supersoldato quantico"
+  "305": {
+    "name": "Resti sconcertanti"
   },
-  "665": {
-    "name": "Canalizzatore di Quetzalcoatl"
+  "306": {
+    "name": "Cinghiale dorsorasoio"
   },
-  "666": {
-    "name": "Arciprete Radiante"
+  "307": {
+    "name": "Volpe rossa"
   },
-  "667": {
-    "name": "Giustiziere radioso"
+  "308": {
+    "name": "Squalo di barriera"
   },
-  "668": {
-    "name": "Unicorno radioso"
+  "309": {
+    "name": "Tigre riflettente"
   },
-  "669": {
-    "name": "Melma arcobaleno"
+  "310": {
+    "name": "Granchio gabbia toracica"
   },
-  "670": {
-    "name": "Toro rancoroso"
-  },
-  "671": {
-    "name": "Rashid Al-Sayf"
-  },
-  "672": {
-    "name": "Ravenna la Legatrice d'Ombre"
-  },
-  "673": {
-    "name": "Piegatore della Realtà"
-  },
-  "674": {
-    "name": "Paradosso ricorsivo"
-  },
-  "675": {
-    "name": "Scarabeo rinoceronte"
-  },
-  "676": {
-    "name": "Sentinella rituale"
-  },
-  "677": {
+  "311": {
     "name": "Sentinella Ribelle"
   },
-  "678": {
+  "312": {
     "name": "Lama rotante"
   },
-  "679": {
-    "name": "Avvoltoio marciume"
+  "313": {
+    "name": "Gatto dai denti a sciabola"
   },
-  "680": {
-    "name": "Avviluppatore di Legno Marcio"
-  },
-  "681": {
-    "name": "Campione Reale"
-  },
-  "682": {
-    "name": "Cavaliere Reale"
-  },
-  "683": {
-    "name": "Sfasciamacerie"
-  },
-  "684": {
-    "name": "Opossum rovistatore"
-  },
-  "685": {
-    "name": "Kraken Sacro"
-  },
-  "686": {
-    "name": "Fenice Sacra"
-  },
-  "687": {
-    "name": "Cobra della sabbia"
-  },
-  "688": {
+  "314": {
     "name": "Golem di sabbia"
   },
-  "689": {
-    "name": "Varano strider delle sabbie"
+  "315": {
+    "name": "Melma di sabbia"
   },
-  "690": {
-    "name": "Sentinella spaventapasseri"
+  "316": {
+    "name": "Berserker selvaggio"
   },
-  "691": {
-    "name": "Tiranno bruciato"
-  },
-  "692": {
-    "name": "Forgiato a scarto"
-  },
-  "693": {
+  "317": {
     "name": "Il dolore dello scultore"
   },
-  "694": {
-    "name": "Tartaruga marina"
+  "318": {
+    "name": "Cucciolo di foca"
   },
-  "695": {
-    "name": "Incantatrice di schiuma di mare"
-  },
-  "696": {
+  "319": {
     "name": "Sentinella della sicurezza"
   },
-  "697": {
-    "name": "Vedere Slime"
+  "320": {
+    "name": "Topo di fogna"
   },
-  "698": {
-    "name": "Gallerie sismiche"
+  "321": {
+    "name": "Strisciante d'Ombra"
   },
-  "699": {
-    "name": "Selene la strega del vuoto"
+  "322": {
+    "name": "Inseguitore d'Ombra"
   },
-  "700": {
-    "name": "Meme senziente"
+  "323": {
+    "name": "Slime Shock"
   },
-  "701": {
-    "name": "Pipistrello ombra"
+  "324": {
+    "name": "Apprendista Sirena"
   },
-  "702": {
-    "name": "Lama d'ombra"
-  },
-  "703": {
-    "name": "Lama d'ombra"
-  },
-  "704": {
-    "name": "Ladro d'ombra"
-  },
-  "705": {
-    "name": "Tartaruga ombra"
-  },
-  "706": {
-    "name": "Shoggoth"
-  },
-  "707": {
-    "name": "Incantatrice di seta"
-  },
-  "708": {
-    "name": "Sirena Incantatrice"
-  },
-  "709": {
-    "name": "Cecchina sirena"
-  },
-  "710": {
+  "325": {
     "name": "Custode dei teschi"
   },
-  "711": {
+  "326": {
     "name": "Bruto schiacciacranio"
   },
-  "712": {
-    "name": "Melma di Skulmire"
+  "327": {
+    "name": "Cavaliere slime"
   },
-  "713": {
-    "name": "Colonia di formiche soldato"
+  "328": {
+    "name": "Mietitore di anime"
   },
-  "714": {
-    "name": "Aspetto assonnato"
+  "329": {
+    "name": "Mercante di anime"
   },
-  "715": {
-    "name": "Dracopipistrello Fuso Sonico"
+  "330": {
+    "name": "Zebra spaziale"
   },
-  "716": {
-    "name": "Spettro del dolore"
+  "331": {
+    "name": "Pietra di guardia spettrale"
   },
-  "717": {
-    "name": "Uccello canoro spettrale"
+  "332": {
+    "name": "Lucertola spinata"
   },
-  "718": {
-    "name": "Wisp spettrale"
+  "333": {
+    "name": "Velocista spinoso"
   },
-  "719": {
-    "name": "Porcospino spinoso"
+  "334": {
+    "name": "Agente furtivo"
   },
-  "720": {
-    "name": "Pogona a squame spinali"
+  "335": {
+    "name": "Guardiano di pietra"
   },
-  "721": {
-    "name": "Ombraspina"
+  "336": {
+    "name": "Banshee della tempesta"
   },
-  "722": {
-    "name": "Miconide Sporeburst"
+  "337": {
+    "name": "Combattente di strada"
   },
-  "723": {
-    "name": "Chiamante delle stelle"
+  "338": {
+    "name": "Punk di strada"
   },
-  "724": {
-    "name": "Behemoth della tempesta"
+  "339": {
+    "name": "Coccodrillo di palude"
   },
-  "725": {
-    "name": "Drago della Tempesta"
+  "340": {
+    "name": "Tarantola"
   },
-  "726": {
-    "name": "Abominio legato alle corde"
+  "341": {
+    "name": "Il chirurgo"
   },
-  "727": {
-    "name": "Tigre striata"
+  "342": {
+    "name": "Thor"
   },
-  "728": {
-    "name": "Arconte della Corte Estiva"
+  "343": {
+    "name": "Folletto del tuono"
   },
-  "729": {
-    "name": "Elementale del gas di palude"
+  "344": {
+    "name": "Sciamano di Timberwood"
   },
-  "730": {
-    "name": "Regina delle sanguisughe di palude"
+  "345": {
+    "name": "Guardiano della Tomba"
   },
-  "731": {
-    "name": "Scorpione di palude"
+  "346": {
+    "name": "Custode della Pietra del Sole"
   },
-  "732": {
-    "name": "Sovrano pesce spada"
+  "347": {
+    "name": "Sanguisuga della lingua"
   },
-  "733": {
-    "name": "Silvano Barkstalker"
+  "348": {
+    "name": "Fatina dei denti"
   },
-  "734": {
-    "name": "Porta parlante"
+  "349": {
+    "name": "Guardiano del Totem"
   },
-  "735": {
-    "name": "Golem di Terra"
+  "350": {
+    "name": "Iniziato del Totem"
   },
-  "736": {
-    "name": "La contessa sanguinaria"
+  "351": {
+    "name": "Anemone tossico"
   },
-  "737": {
-    "name": "Il Crematore"
+  "352": {
+    "name": "Fanghi tossici"
   },
-  "738": {
-    "name": "La signora congelata"
+  "353": {
+    "name": "Spruzzatore tossico"
   },
-  "739": {
-    "name": "Il Fantasma"
+  "354": {
+    "name": "Spazzatura"
   },
-  "740": {
-    "name": "Il burattinaio"
-  },
-  "741": {
-    "name": "Il giudice scarlatto"
-  },
-  "742": {
-    "name": "Il tassidermista"
-  },
-  "743": {
-    "name": "La Vipera"
-  },
-  "744": {
-    "name": "Tessitore di pensieri"
-  },
-  "745": {
-    "name": "Tuono a macchia"
-  },
-  "746": {
-    "name": "Piccolo Drago del Tuono"
-  },
-  "747": {
-    "name": "Scultore delle maree"
-  },
-  "748": {
-    "name": "Gufoorso logoro"
-  },
-  "749": {
-    "name": "Titano Anaconda"
-  },
-  "750": {
-    "name": "Tonno Dimensionale"
-  },
-  "751": {
-    "name": "Adepto del Totem"
-  },
-  "752": {
-    "name": "Amalgama tossica"
-  },
-  "753": {
-    "name": "Fantasma tossico"
-  },
-  "754": {
+  "355": {
     "name": "Golem del tesoro"
   },
-  "755": {
-    "name": "Guardiano dello Tsunami"
+  "356": {
+    "name": "Scimmia arboricola"
   },
-  "756": {
-    "name": "Panthera Umbra"
+  "357": {
+    "name": "Folletto immortale"
   },
-  "757": {
-    "name": "Signore dei Vampiri"
+  "358": {
+    "name": "Cacciatore di tridenti"
   },
-  "758": {
-    "name": "Fantasma velato"
+  "359": {
+    "name": "Cucciolo di mammut della tundra"
   },
-  "759": {
-    "name": "Signore del Veleno"
+  "360": {
+    "name": "Talpa da tunnel"
   },
-  "760": {
-    "name": "Arciere Venomfang"
+  "361": {
+    "name": "Satiro del crepuscolo"
   },
-  "761": {
-    "name": "Libellula velenosa"
+  "362": {
+    "name": "Marionetta contorta"
   },
-  "762": {
-    "name": "Viktor 'Pugno di Ferro' Volkov"
+  "363": {
+    "name": "Sciame di falene d'ombra"
   },
-  "763": {
-    "name": "Manipolatore del vuoto"
+  "364": {
+    "name": "Agguattatore Umbratile"
   },
-  "764": {
-    "name": "Pianta parassita del vuoto"
+  "365": {
+    "name": "Pipistrello vampiro"
   },
-  "765": {
-    "name": "Stregone del Vuoto"
+  "366": {
+    "name": "Serpente velenoso"
   },
-  "766": {
-    "name": "Squalo vulcanico"
+  "367": {
+    "name": "Arciere errante"
   },
-  "767": {
-    "name": "Wyvern vulcanico"
+  "368": {
+    "name": "Ninfa dell'acqua"
   },
-  "768": {
-    "name": "Capo nato dalla guerra"
+  "369": {
+    "name": "Tessitore di ragnatele"
   },
-  "769": {
-    "name": "Spettro sussurrante"
+  "370": {
+    "name": "Maschera piangente"
   },
-  "770": {
-    "name": "Leviatano del vento"
+  "371": {
+    "name": "Wisp sussurrante"
   },
-  "771": {
-    "name": "Cavaliere della Corte Invernale"
+  "372": {
+    "name": "Cinghiale"
   },
-  "772": {
-    "name": "Presagio d'inverno"
+  "373": {
+    "name": "Coniglio selvatico"
   },
-  "773": {
-    "name": "Araldo d'inverno"
+  "374": {
+    "name": "Squartatore selvaggio"
   },
-  "774": {
-    "name": "Delfino dell'ira"
+  "375": {
+    "name": "Gatto selvatico"
   },
-  "775": {
-    "name": "Progenie di Yog-Sothoth"
+  "376": {
+    "name": "Lampada a fuoco fatuo"
   },
-  "776": {
+  "377": {
+    "name": "Gufo saggio"
+  },
+  "378": {
+    "name": "Fiore di legno"
+  },
+  "379": {
+    "name": "Tessiglifi di Xibalba"
+  },
+  "380": {
     "name": "Giovane drago di magma"
   },
-  "777": {
-    "name": "Zefiro Djinn"
+  "381": {
+    "name": "Giovane yeti"
   },
-  "788": {
-    "name": "<-- 31-40 -->"
+  "382": {
+    "name": "Mago zefiro"
   },
-  "789": {
-    "name": "Divoratore Abissale"
+  "383": {
+    "name": "<-- 21-30 -->"
   },
-  "790": {
-    "name": "Orrore delle Fauci Profonde"
+  "384": {
+    "name": "Granchio abissale"
   },
-  "791": {
-    "name": "Leviatano abissale"
+  "385": {
+    "name": "Demone Abissale"
   },
-  "792": {
-    "name": "Pixie abissale"
+  "386": {
+    "name": "Hallucigenia abissale"
   },
-  "793": {
-    "name": "Drago marino abissale"
+  "387": {
+    "name": "Orrore abissale"
   },
-  "794": {
-    "name": "Tasso pubblicitario"
+  "388": {
+    "name": "Cacciatore abissale"
   },
-  "795": {
-    "name": "Antico Lich"
+  "389": {
+    "name": "Tentacolo abissale"
   },
-  "796": {
-    "name": "Lupo artico"
+  "390": {
+    "name": "Pesce pietra maledetto"
   },
-  "797": {
-    "name": "Sentinella astrale"
+  "391": {
+    "name": "Bombardiere acido"
   },
-  "798": {
-    "name": "Frammento di Azathoth"
+  "392": {
+    "name": "Chiamatore di maree acido"
   },
-  "799": {
-    "name": "Sacerdotessa Babalon"
+  "393": {
+    "name": "Elementale dell'Aria"
   },
-  "800": {
-    "name": "Aquila calva"
+  "394": {
+    "name": "Akira Tanaka"
   },
-  "801": {
-    "name": "Bestia 666"
+  "395": {
+    "name": "Fantasma dell'angoscia"
   },
-  "802": {
-    "name": "Gorilla gigante"
+  "396": {
+    "name": "Arsenale animato"
   },
-  "803": {
-    "name": "Silfide della Rovina"
+  "397": {
+    "name": "Gravestalker animato"
   },
-  "804": {
-    "name": "Signore Supremo del Sangue"
+  "398": {
+    "name": "Elementale acquatico"
   },
-  "805": {
-    "name": "Libro Golem"
+  "399": {
+    "name": "Mantide acquatica"
   },
-  "806": {
-    "name": "Behemutt di zolfo"
+  "400": {
+    "name": "Rinoceronte corazzato"
   },
-  "807": {
-    "name": "Inseguitore di Carogne"
+  "401": {
+    "name": "Vespa assassina"
   },
-  "808": {
-    "name": "Melma caustica"
+  "402": {
+    "name": "Emergenza vuota"
   },
-  "809": {
-    "name": "Arbitro Celeste"
+  "403": {
+    "name": "Visualizzazione"
   },
-  "810": {
-    "name": "Avatar Celeste"
+  "404": {
+    "name": "Sadico accecante"
   },
-  "811": {
-    "name": "Cerbero Sentinella"
+  "405": {
+    "name": "Contessa Sanguinaria"
   },
-  "812": {
-    "name": "Tick ​​cromatico"
+  "406": {
+    "name": "Vedova di sangue"
   },
-  "813": {
-    "name": "Chronos, Titano del Tempo"
+  "407": {
+    "name": "Mucca Bloodbell"
   },
-  "814": {
-    "name": "Cronovoro"
+  "408": {
+    "name": "Crociato assetato di sangue"
   },
-  "815": {
-    "name": "Batterio cognitivo"
+  "409": {
+    "name": "Elementale della palude"
   },
-  "816": {
-    "name": "Ninja aziendale"
+  "410": {
+    "name": "Cacciatore di scaglie di palude"
   },
-  "817": {
-    "name": "Behemoth delle rocce"
+  "411": {
+    "name": "Divoratore Masticaossa"
   },
-  "818": {
-    "name": "Tiranno Cremisi"
+  "412": {
+    "name": "Salamoia Wisp"
   },
-  "819": {
-    "name": "Bestia Scheggia Cristallina"
+  "413": {
+    "name": "Bubba"
   },
-  "820": {
-    "name": "Grimorio maledetto"
+  "414": {
+    "name": "Incubo burocratico"
   },
-  "821": {
-    "name": "Monarca del Profondo"
+  "415": {
+    "name": "Furia incatenata"
   },
-  "822": {
-    "name": "Orso Demone"
+  "416": {
+    "name": "Contendente al titolo di campione"
   },
-  "823": {
+  "417": {
+    "name": "Manticora cromatica"
+  },
+  "418": {
+    "name": "Demonio Chupacabra"
+  },
+  "419": {
+    "name": "Tessitore di cenere"
+  },
+  "420": {
+    "name": "Segugio di Cenerentola"
+  },
+  "421": {
+    "name": "Varano golacenere"
+  },
+  "422": {
+    "name": "Gigante delle nuvole"
+  },
+  "423": {
+    "name": "Rex dai piedi di cobalto"
+  },
+  "424": {
+    "name": "Guardiano consacrato"
+  },
+  "425": {
+    "name": "Incantatrice di corallo"
+  },
+  "426": {
+    "name": "Cavaliere intagliatore di cadaveri"
+  },
+  "427": {
+    "name": "Cavaliere corrotto"
+  },
+  "428": {
+    "name": "Analizzatore Cremisi"
+  },
+  "429": {
+    "name": "Pesce cremisi"
+  },
+  "430": {
+    "name": "Mietitrice cremisi"
+  },
+  "431": {
+    "name": "Accumulatore di cristalli"
+  },
+  "432": {
+    "name": "Sirena di cristallo"
+  },
+  "433": {
+    "name": "Sceloporo dal dorso cristallino"
+  },
+  "434": {
+    "name": "Sentinella CrystalCarapace"
+  },
+  "435": {
+    "name": "Candela maledetta"
+  },
+  "436": {
+    "name": "Mago Oscuro"
+  },
+  "437": {
+    "name": "Anguilla del gelo profondo"
+  },
+  "438": {
+    "name": "Ibrido profondo"
+  },
+  "439": {
+    "name": "Folletto cervo"
+  },
+  "440": {
+    "name": "Comandante del deserto"
+  },
+  "441": {
+    "name": "Templare devoto"
+  },
+  "442": {
+    "name": "Diego 'Giaguaro' Rodríguez"
+  },
+  "443": {
+    "name": "Arbitro Divino"
+  },
+  "444": {
+    "name": "Taskmaster dominante"
+  },
+  "445": {
+    "name": "Sommo Sacerdote Serpente dei Sogni"
+  },
+  "446": {
     "name": "Testa di cassonetto"
   },
-  "824": {
-    "name": "Sentinella della terra"
+  "447": {
+    "name": "Zanna delle Dune"
   },
-  "825": {
-    "name": "Cosa Anziana"
+  "448": {
+    "name": "Uccello diavolo di polvere"
   },
-  "826": {
+  "449": {
+    "name": "Guardiano del Bosco Sambuco"
+  },
+  "450": {
+    "name": "Aracnide elettrico"
+  },
+  "451": {
+    "name": "Elena 'Shadow' Rodriguez"
+  },
+  "452": {
+    "name": "Em"
+  },
+  "453": {
+    "name": "Millepiedi di brace"
+  },
+  "454": {
     "name": "Guardiano della Brace"
   },
-  "827": {
-    "name": "Wyrm dell'Entropia"
+  "455": {
+    "name": "Stalker di smeraldo"
   },
-  "828": {
-    "name": "Esmeralda la Tessitrice di Sogni"
+  "456": {
+    "name": "Sciame di zecche ingorgate"
   },
-  "829": {
-    "name": "Tattico Eterico"
+  "457": {
+    "name": "Sanguisuga di essenza"
   },
-  "830": {
-    "name": "Regina delle fate"
+  "458": {
+    "name": "Stagista eterno"
   },
-  "831": {
-    "name": "Sovrano della foresta"
+  "459": {
+    "name": "Divoratore Etereo"
   },
-  "832": {
-    "name": "Arcimago del Gelo"
+  "460": {
+    "name": "Bruto Artigliopalude"
   },
-  "833": {
-    "name": "Cavaliere del gelo"
+  "461": {
+    "name": "Incantatrice fatata"
   },
-  "834": {
-    "name": "Monarca del gelo"
+  "462": {
+    "name": "Demone del sonno ardente"
   },
-  "835": {
-    "name": "Sentinella di Bufera"
+  "463": {
+    "name": "Demonio della sporcizia"
   },
-  "836": {
-    "name": "Idra di Geode"
+  "464": {
+    "name": "Millepiedi di fuoco"
   },
-  "837": {
-    "name": "Tigre fantasma"
+  "465": {
+    "name": "Elementale della fiamma"
   },
-  "838": {
-    "name": "Guardiano dorato"
+  "466": {
+    "name": "Segugio infernale toccato dalla fiamma"
   },
-  "839": {
-    "name": "Titano glaciale"
+  "467": {
+    "name": "Sentinella di Flatwood"
   },
-  "840": {
-    "name": "Entità Glitchata"
+  "468": {
+    "name": "Maiale volante"
   },
-  "841": {
-    "name": "Testa di goblin"
+  "469": {
+    "name": "Arciere della foresta"
   },
-  "842": {
-    "name": "Signore del Mosh Goblin"
+  "470": {
+    "name": "Centauro della foresta"
   },
-  "843": {
-    "name": "Monarca della tomba"
+  "471": {
+    "name": "La vendetta della foresta"
   },
-  "844": {
-    "name": "Grigio Zeta Reticulano"
+  "472": {
+    "name": "Sentinella fossile"
   },
-  "845": {
-    "name": "Mammut del Fuoco Infernale"
+  "473": {
+    "name": "Monaco rana"
   },
-  "846": {
-    "name": "Annientatore infernale"
+  "474": {
+    "name": "Scarabeo del gelo"
   },
-  "847": {
-    "name": "Segugio infernale"
+  "475": {
+    "name": "Melma di gelo"
   },
-  "848": {
-    "name": "Pooka Infernale"
+  "476": {
+    "name": "Lumaca gigante strisciante"
   },
-  "849": {
-    "name": "Sentinella di ferro"
+  "477": {
+    "name": "Zapback dorato"
   },
-  "850": {
-    "name": "Re Slime"
+  "478": {
+    "name": "Ghiacciaio Serpent"
   },
-  "851": {
-    "name": "Orso Kodiak"
+  "479": {
+    "name": "Worm nero"
   },
-  "852": {
-    "name": "Idolo di Laughing Mire"
+  "480": {
+    "name": "Gnomo Alchimista"
   },
-  "853": {
-    "name": "Teorema vivente"
+  "481": {
+    "name": "Gnomo Artificiere"
   },
-  "854": {
-    "name": "Cinghiale Pazzo"
+  "482": {
+    "name": "Gnomo Bombardiere"
   },
-  "855": {
-    "name": "Leviatano del Maelstrom"
+  "483": {
+    "name": "Ingegnere Gnomo"
   },
-  "856": {
-    "name": "Signore del Magma"
+  "484": {
+    "name": "Sciamano gnomo"
   },
-  "857": {
-    "name": "Grifone maestoso"
+  "485": {
+    "name": "Fante Goblin"
   },
-  "858": {
-    "name": "Megalodonte"
+  "486": {
+    "name": "Arciere Goblin a Cavallo"
   },
-  "859": {
+  "487": {
+    "name": "Esploratore Goblin"
+  },
+  "488": {
+    "name": "Leone d'oro"
+  },
+  "489": {
+    "name": "Ombra afferrante"
+  },
+  "490": {
+    "name": "Revenant legato alla tomba"
+  },
+  "491": {
+    "name": "Melma grottesca"
+  },
+  "492": {
+    "name": "Guardiano Vendicatore"
+  },
+  "493": {
+    "name": "Maggotus gutturale"
+  },
+  "494": {
+    "name": "Esecutore Martello"
+  },
+  "495": {
+    "name": "Arpia Banshee"
+  },
+  "496": {
+    "name": "Driade di Hellthorn"
+  },
+  "497": {
+    "name": "Termite della mente alveare"
+  },
+  "498": {
+    "name": "Capra cava"
+  },
+  "499": {
+    "name": "Turista interdimensionale"
+  },
+  "500": {
+    "name": "Cavallo di ferro"
+  },
+  "501": {
+    "name": "Costritore della giungla"
+  },
+  "502": {
+    "name": "Predatore della giungla"
+  },
+  "503": {
+    "name": "Cacciatore della giungla"
+  },
+  "504": {
+    "name": "Drago di ghiaccio giovane"
+  },
+  "505": {
+    "name": "Guardiano del Labirinto"
+  },
+  "506": {
+    "name": "Serpente del lago Lurker"
+  },
+  "507": {
+    "name": "Lilith la Corruttrice"
+  },
+  "508": {
+    "name": "Armatura vivente"
+  },
+  "509": {
+    "name": "Monolite vivente"
+  },
+  "510": {
+    "name": "Elementale della fortuna"
+  },
+  "511": {
+    "name": "Pescatore luminoso"
+  },
+  "512": {
+    "name": "Difensore luminoso"
+  },
+  "513": {
+    "name": "Millepiedi di magma"
+  },
+  "514": {
+    "name": "Incantatrice Maestosa "
+  },
+  "515": {
+    "name": "Heloderma delle paludi"
+  },
+  "516": {
+    "name": "Stalker della palude"
+  },
+  "517": {
+    "name": "Maestro Chen"
+  },
+  "518": {
+    "name": "L'incubo del mercante"
+  },
+  "519": {
+    "name": "Mietitore di cervelli Mi-go"
+  },
+  "520": {
+    "name": "Mianni"
+  },
+  "521": {
+    "name": "Lanterna Miasma"
+  },
+  "522": {
+    "name": "Cacciatore di mezzanotte"
+  },
+  "523": {
     "name": "Scorticatore mentale"
   },
-  "860": {
-    "name": "Falena Mind Flayer"
+  "524": {
+    "name": "Battaglia di Fuso"
   },
-  "861": {
-    "name": "Signore della Mente"
+  "525": {
+    "name": "Wendigo al chiaro di luna"
   },
-  "862": {
-    "name": "Scudo mentale"
+  "526": {
+    "name": "Vipera del muschio"
   },
-  "863": {
-    "name": "Tiranno della mente"
+  "527": {
+    "name": "Amphibolurus squamoso"
   },
-  "864": {
-    "name": "Idra di palude"
+  "528": {
+    "name": "Inseguitore Ombra di Falena"
   },
-  "865": {
-    "name": "Guardiano Fuso"
+  "529": {
+    "name": "Fungoide motivazionale"
   },
-  "866": {
-    "name": "Devastatore di montagne"
+  "530": {
+    "name": "Frantoio di montagna"
   },
-  "867": {
-    "name": "Devastatore di montagne"
+  "531": {
+    "name": "Aquila di montagna"
   },
-  "868": {
-    "name": "Gigante della montagna"
+  "532": {
+    "name": "Orco di montagna"
   },
-  "869": {
-    "name": "Titano di montagna"
+  "533": {
+    "name": "Sistema nervoso"
   },
-  "870": {
-    "name": "Pantera mistica"
+  "534": {
+    "name": "Batterio da incubo"
   },
-  "871": {
-    "name": "Duchessa della Corte Inferiore"
+  "535": {
+    "name": "Squalo da incubo"
   },
-  "872": {
-    "name": "Signore della rete"
+  "536": {
+    "name": "Maiale normale"
   },
-  "873": {
-    "name": "Mago dell'incubo"
+  "537": {
+    "name": "Novizio Accolito Shaolin"
   },
-  "874": {
-    "name": "Sovrano dell'incubo"
+  "538": {
+    "name": "Scavatore di ossidiana"
   },
-  "875": {
-    "name": "Assassino del Velo Notturno"
+  "539": {
+    "name": "Adepto Elementale Ogre"
   },
-  "876": {
-    "name": "Fuoco Fatuo Notturno"
+  "540": {
+    "name": "Omicidio del corvo minaccioso"
   },
-  "877": {
-    "name": "Guardiano nobile"
+  "541": {
+    "name": "Fantasma Onirico"
   },
-  "878": {
-    "name": "Avatar di Nyarlathotep"
+  "542": {
+    "name": "Appassionato del dolore"
   },
-  "879": {
-    "name": "Corazzata di ossidiana"
+  "543": {
+    "name": "Palette fantasma"
   },
-  "880": {
-    "name": "Re Stregone Orco"
+  "544": {
+    "name": "Panda"
   },
-  "881": {
-    "name": "Corvo minaccioso"
+  "545": {
+    "name": "Lumaca paralizzante"
   },
-  "882": {
+  "546": {
+    "name": "Pappagallo"
+  },
+  "547": {
+    "name": "Falco pellegrino"
+  },
+  "548": {
     "name": "Esecutore pietrificato"
   },
-  "883": {
-    "name": "Cumulo di peste"
+  "549": {
+    "name": "Arciere fantasma"
   },
-  "884": {
-    "name": "Golem primordiale"
+  "550": {
+    "name": "Zombi filosofico"
   },
-  "885": {
-    "name": "Proto torretta"
+  "551": {
+    "name": "Platino Mimic"
   },
-  "886": {
-    "name": "Titano delle Fauci Terremotiche"
+  "552": {
+    "name": "Pooka velenoso"
   },
-  "887": {
-    "name": "Arconte Quantico"
+  "553": {
+    "name": "Orso polare"
   },
-  "888": {
-    "name": "Intelletto quantistico"
+  "554": {
+    "name": "Bradipo primordiale"
   },
-  "889": {
-    "name": "Coyote rabbioso"
+  "555": {
+    "name": "Policromo prismatico"
   },
-  "890": {
-    "name": "Colosso Radiante"
+  "556": {
+    "name": "Bestia di palude psionica"
   },
-  "891": {
-    "name": "Difensore Radiante"
+  "557": {
+    "name": "Melma di zucca"
   },
-  "892": {
-    "name": "Distorsore della realtà"
+  "558": {
+    "name": "Canalizzatore di Quetzalcoatl"
   },
-  "893": {
-    "name": "Giustiziere reale"
+  "559": {
+    "name": "Giustiziere radioso"
   },
-  "894": {
-    "name": "Alfa dai denti a sciabola"
+  "560": {
+    "name": "Unicorno radioso"
   },
-  "895": {
-    "name": "Coyote spazzino"
+  "561": {
+    "name": "Melma arcobaleno"
   },
-  "896": {
+  "562": {
+    "name": "Toro rancoroso"
+  },
+  "563": {
+    "name": "Rashid Al-Sayf"
+  },
+  "564": {
+    "name": "Scarabeo rinoceronte"
+  },
+  "565": {
+    "name": "Sentinella rituale"
+  },
+  "566": {
+    "name": "Avvoltoio marciume"
+  },
+  "567": {
+    "name": "Avviluppatore di Legno Marcio"
+  },
+  "568": {
+    "name": "Campione Reale"
+  },
+  "569": {
+    "name": "Cavaliere Reale"
+  },
+  "570": {
+    "name": "Sfasciamacerie"
+  },
+  "571": {
+    "name": "Opossum rovistatore"
+  },
+  "572": {
+    "name": "Cobra della sabbia"
+  },
+  "573": {
+    "name": "Varano strider delle sabbie"
+  },
+  "574": {
+    "name": "Sentinella spaventapasseri"
+  },
+  "575": {
+    "name": "Forgiato a scarto"
+  },
+  "576": {
+    "name": "Tartaruga marina"
+  },
+  "577": {
+    "name": "Incantatrice di schiuma di mare"
+  },
+  "578": {
+    "name": "Vedere Slime"
+  },
+  "579": {
+    "name": "Gallerie sismiche"
+  },
+  "580": {
+    "name": "Meme senziente"
+  },
+  "581": {
     "name": "Cono stradale senziente"
   },
-  "897": {
-    "name": "Assassino Ombra"
+  "582": {
+    "name": "Pipistrello ombra"
   },
-  "898": {
-    "name": "Pipistrello Notturno Stridulo"
+  "583": {
+    "name": "Lama d'ombra"
   },
-  "899": {
-    "name": "Boia Ombra"
+  "584": {
+    "name": "Lama d'ombra"
   },
-  "900": {
-    "name": "Fauci di Scheggia"
+  "585": {
+    "name": "Ladro d'ombra"
   },
-  "901": {
-    "name": "Baluardo di Shellbreaker"
+  "586": {
+    "name": "Tartaruga ombra"
   },
-  "902": {
+  "587": {
     "name": "Automazione dell'assedio"
   },
-  "903": {
-    "name": "Mietitore d'Anime"
+  "588": {
+    "name": "Incantatrice di seta"
   },
-  "904": {
-    "name": "Elefante che calpesta"
+  "589": {
+    "name": "Sirena Incantatrice"
   },
-  "905": {
-    "name": "Elementale della tempesta"
+  "590": {
+    "name": "Melma di Skulmire"
   },
-  "906": {
-    "name": "Araldo della tempesta"
+  "591": {
+    "name": "Colonia di formiche soldato"
   },
-  "907": {
-    "name": "Tempesta Roc"
+  "592": {
+    "name": "Aspetto assonnato"
   },
-  "908": {
+  "593": {
+    "name": "Dracopipistrello Fuso Sonico"
+  },
+  "594": {
+    "name": "Spettro del dolore"
+  },
+  "595": {
+    "name": "Uccello canoro spettrale"
+  },
+  "596": {
+    "name": "Wisp spettrale"
+  },
+  "597": {
+    "name": "Porcospino spinoso"
+  },
+  "598": {
+    "name": "Pogona a squame spinali"
+  },
+  "599": {
+    "name": "Ombraspina"
+  },
+  "600": {
+    "name": "Miconide Sporeburst"
+  },
+  "601": {
+    "name": "Chiamante delle stelle"
+  },
+  "602": {
+    "name": "Drago della Tempesta"
+  },
+  "603": {
+    "name": "Tigre striata"
+  },
+  "604": {
+    "name": "Elementale del gas di palude"
+  },
+  "605": {
+    "name": "Scorpione di palude"
+  },
+  "606": {
+    "name": "Silvano Barkstalker"
+  },
+  "607": {
+    "name": "Porta parlante"
+  },
+  "608": {
     "name": "Magro"
   },
-  "909": {
-    "name": "Pegaso della tempesta"
+  "609": {
+    "name": "Golem di Terra"
   },
-  "910": {
-    "name": "Il Tessitore di Sogni"
+  "610": {
+    "name": "La contessa sanguinaria"
   },
-  "911": {
-    "name": "Roc Ala di Tuono"
+  "611": {
+    "name": "Il Crematore"
   },
-  "912": {
-    "name": "Guardiano delle maree"
+  "612": {
+    "name": "La signora congelata"
   },
-  "913": {
-    "name": "Protettore totemico"
+  "613": {
+    "name": "Il Fantasma"
   },
-  "914": {
-    "name": "Titano totemico"
+  "614": {
+    "name": "Il burattinaio"
   },
-  "915": {
-    "name": "Melma tossica"
+  "615": {
+    "name": "Il giudice scarlatto"
   },
-  "916": {
-    "name": "Coccodrillo tiranno"
+  "616": {
+    "name": "Il tassidermista"
   },
-  "917": {
-    "name": "Ala notturna vampirica"
+  "617": {
+    "name": "La Vipera"
   },
-  "918": {
-    "name": "Velocicorno"
+  "618": {
+    "name": "Tessitore di pensieri"
   },
-  "919": {
-    "name": "Velociraptor"
+  "619": {
+    "name": "Tuono a macchia"
   },
-  "920": {
-    "name": "Demone virulento"
+  "620": {
+    "name": "Piccolo Drago del Tuono"
   },
-  "921": {
-    "name": "Imperatrice del Vuoto"
+  "621": {
+    "name": "Scultore delle maree"
   },
-  "922": {
-    "name": "Tessitore del Vuoto"
+  "622": {
+    "name": "Gufoorso logoro"
   },
-  "923": {
-    "name": "Colosso di guerra"
+  "623": {
+    "name": "Tonno Dimensionale"
   },
-  "924": {
-    "name": "Ippotauro da guerra"
+  "624": {
+    "name": "Adepto del Totem"
   },
-  "925": {
-    "name": "Era un idolo"
+  "625": {
+    "name": "Amalgama tossica"
   },
-  "926": {
-    "name": "Serpente del mondo"
+  "626": {
+    "name": "Fantasma tossico"
   },
-  "927": {
-    "name": "Re Giallo"
+  "627": {
+    "name": "Guardiano dello Tsunami"
   },
-  "938": {
-    "name": "<-- 41-50 -->"
+  "628": {
+    "name": "Panthera Umbra"
   },
-  "939": {
-    "name": "Sirene abissali"
+  "629": {
+    "name": "Signore dei Vampiri"
   },
-  "940": {
-    "name": "Protettore Celeste"
+  "630": {
+    "name": "Fantasma velato"
   },
-  "941": {
-    "name": "Comandante del crepuscolo"
+  "631": {
+    "name": "Arciere Venomfang"
   },
-  "942": {
-    "name": "Basilisco squamoso"
+  "632": {
+    "name": "Libellula velenosa"
   },
-  "943": {
-    "name": "Testa di goblin"
+  "633": {
+    "name": "Viktor 'Pugno di Ferro' Volkov"
   },
-  "944": {
-    "name": "Signore della guerra di metallo goblin"
+  "634": {
+    "name": "Capo nato dalla guerra"
   },
-  "945": {
-    "name": "Incantatore Goblin da Sommossa"
+  "635": {
+    "name": "Spettro sussurrante"
   },
-  "946": {
-    "name": "Urlatore Goblin"
+  "636": {
+    "name": "Cavaliere della Corte Invernale"
   },
-  "947": {
-    "name": "Discepolo della Palma di Ferro"
+  "637": {
+    "name": "Delfino dell'ira"
   },
-  "948": {
-    "name": "Micelico luminescente"
+  "638": {
+    "name": "Zefiro Djinn"
   },
-  "949": {
-    "name": "Araldo meccanizzato"
+  "639": {
+    "name": "<-- 31-40 -->"
   },
-  "950": {
-    "name": "Drago di palude"
+  "640": {
+    "name": "Pixie abissale"
   },
-  "951": {
-    "name": "Efreeti fuso"
+  "641": {
+    "name": "Tasso pubblicitario"
   },
-  "952": {
-    "name": "Re della montagna"
+  "642": {
+    "name": "Lupo feroce alfa"
   },
-  "953": {
-    "name": "Nepenthe Mycoastrum"
+  "643": {
+    "name": "Labbro alfa"
   },
-  "954": {
-    "name": "Clorolama fantasma"
+  "644": {
+    "name": "Signore degli Annunaki"
   },
-  "955": {
-    "name": "Guardiano del Filatterio"
-  },
-  "956": {
-    "name": "Melma delle fogne"
-  },
-  "957": {
-    "name": "Singolarità Prima"
-  },
-  "958": {
-    "name": "Serpente del cielo"
-  },
-  "959": {
-    "name": "Baluardo di pietra"
-  },
-  "960": {
-    "name": "Leviatano della palude"
-  },
-  "961": {
-    "name": "Djinn della Tempesta"
-  },
-  "962": {
-    "name": "Titanoterio Alfa"
-  },
-  "963": {
-    "name": "Signore Totemico"
-  },
-  "974": {
-    "name": "<-- 51-60 -->"
-  },
-  "975": {
-    "name": "Consumatore cronologico"
-  },
-  "976": {
-    "name": "Rampollo Cuordibrace"
-  },
-  "977": {
-    "name": "Fuoco Fatuo d'Eco"
-  },
-  "978": {
-    "name": "Piromante infernale"
-  },
-  "979": {
-    "name": "Arcimago del midollo"
-  },
-  "980": {
-    "name": "Spettro di ossidiana"
-  },
-  "981": {
-    "name": "Colosso dell'Ossario"
-  },
-  "982": {
-    "name": "Sovrano di Stratos"
-  },
-  "983": {
-    "name": "Wyvern della Tempesta"
-  },
-  "984": {
-    "name": "Xylomanti floreo"
-  },
-  "985": {
-    "name": "Maestro del Pugno Zen"
-  },
-  "996": {
-    "name": "<-- 61-70 -->"
-  },
-  "997": {
-    "name": "Giuntatore di etere"
-  },
-  "998": {
-    "name": "Bambola al contrario"
-  },
-  "999": {
-    "name": "Colore fuori dal suono"
-  },
-  "1000": {
-    "name": "Gigante di cristallo"
-  },
-  "1001": {
-    "name": "Orso Emberclaw"
-  },
-  "1002": {
-    "name": "Sanguisuga emotiva"
-  },
-  "1003": {
-    "name": "Cavatore immondo"
-  },
-  "1004": {
-    "name": "Orso Zanna Gelida"
-  },
-  "1005": {
-    "name": "Tartaruga Galeshell"
-  },
-  "1006": {
-    "name": "Ladro di identità"
-  },
-  "1007": {
-    "name": "Archivista dell'Inferno"
-  },
-  "1008": {
-    "name": "Fame invertita"
-  },
-  "1009": {
-    "name": "Ninnananna Spettro"
-  },
-  "1010": {
-    "name": "Teatro dei burattini di carne"
-  },
-  "1011": {
-    "name": "Sanguisuga della memoria"
-  },
-  "1012": {
-    "name": "Tartaruga della Maledizione della Notte"
-  },
-  "1013": {
-    "name": "Rattus Sapscream"
-  },
-  "1014": {
-    "name": "Barattolo urlante"
-  },
-  "1015": {
-    "name": "Ferita senziente"
-  },
-  "1016": {
-    "name": "Parassita del pensiero"
-  },
-  "1017": {
-    "name": "Orso Fauci di Tuono"
-  },
-  "1028": {
-    "name": "<-- 71-80 -->"
-  },
-  "1029": {
-    "name": "Drago Antico :EP"
-  },
-  "1030": {
-    "name": "Mech da battaglia :EP"
-  },
-  "1031": {
-    "name": "Statua sanguinante"
-  },
-  "1032": {
-    "name": "Contessa Sanguinaria :EP"
-  },
-  "1033": {
-    "name": "Orchestra d'ossa"
-  },
-  "1034": {
-    "name": "Drago di magma cremisi"
-  },
-  "1035": {
-    "name": "Vampiro Cremisi :EP"
-  },
-  "1036": {
-    "name": "Tartaruga dal guscio d'alba"
-  },
-  "1037": {
-    "name": "Drago della Morte Nergal"
-  },
-  "1038": {
-    "name": "Colosso di Metallo"
-  },
-  "1039": {
-    "name": "Sporemantle di Eldergloom"
-  },
-  "1040": {
-    "name": "Scorpione Infernale di Emberback"
-  },
-  "1041": {
-    "name": "Wyrm dell'Entropia :EP"
-  },
-  "1042": {
-    "name": "Ragno tessitore di carne"
-  },
-  "1043": {
-    "name": "Divoratore di geometria"
-  },
-  "1044": {
-    "name": "Verme gravitazionale"
-  },
-  "1045": {
-    "name": "Madre vuota"
-  },
-  "1046": {
-    "name": "Angelo invertito"
-  },
-  "1047": {
-    "name": "Mangiatore di matematica"
-  },
-  "1048": {
-    "name": "Oratore motivazionale: EP"
-  },
-  "1049": {
-    "name": "Ragno di probabilità"
-  },
-  "1050": {
-    "name": "Tartaruga Pyroshell"
-  },
-  "1051": {
-    "name": "Fluttuazione quantistica :EP"
-  },
-  "1052": {
-    "name": "Tartaruga dal guscio di tempesta"
-  },
-  "1053": {
-    "name": "Balano temporale"
-  },
-  "1054": {
-    "name": "Calabrone temporale"
-  },
-  "1055": {
-    "name": "Tiamat, Madre del Caos"
-  },
-  "1056": {
-    "name": "Tartaruga carapace di marea"
-  },
-  "1057": {
-    "name": "Totem dei peccati"
-  },
-  "1058": {
-    "name": "Strangolatore ombelicale"
-  },
-  "1059": {
-    "name": "Urlatore del Vuoto"
-  },
-  "1060": {
-    "name": "Porta sussurrante"
-  },
-  "1061": {
-    "name": "Grembo degli incubi"
-  },
-  "1072": {
-    "name": "<-- 81-90 -->"
-  },
-  "1073": {
-    "name": "Piccione tosto"
-  },
-  "1074": {
-    "name": "Fonte battesimale"
-  },
-  "1075": {
-    "name": "Golem di basalto"
-  },
-  "1076": {
-    "name": "Elementale dell'Inferno Fiammeggiante"
-  },
-  "1077": {
-    "name": "Drago Celeste Anshar"
-  },
-  "1078": {
-    "name": "La fine dell'infanzia"
-  },
-  "1079": {
-    "name": "Luminspore striscianti"
-  },
-  "1080": {
-    "name": "Albero che piange"
-  },
-  "1081": {
-    "name": "Scimpanzé dopato"
-  },
-  "1082": {
-    "name": "Monaco Drago :EP"
-  },
-  "1083": {
-    "name": "Re dei Lich Eterno"
-  },
-  "1084": {
-    "name": "Calcolatrice della carne"
-  },
-  "1085": {
-    "name": "Collezionista di dolore"
-  },
-  "1086": {
-    "name": "Fame incarnata"
-  },
-  "1087": {
-    "name": "Grimorio iperdimensionale :EP"
-  },
-  "1088": {
-    "name": "Balena al rovescio"
-  },
-  "1089": {
-    "name": "Sfondaspecchi"
-  },
-  "1090": {
-    "name": "Granchio non euclideo"
-  },
-  "1091": {
-    "name": "Segugio infernale di ossidiana"
-  },
-  "1092": {
-    "name": "Giudice Ophanim"
-  },
-  "1093": {
-    "name": "Direttore dell'orfanotrofio"
-  },
-  "1094": {
-    "name": "Drago dell'oceano primordiale Abzu"
-  },
-  "1095": {
-    "name": "Il cadavere del burattinaio"
-  },
-  "1096": {
-    "name": "Wyrm di magma ustionante"
-  },
-  "1097": {
-    "name": "Chirurgo delle anime"
-  },
-  "1098": {
-    "name": "Tartaruga di Terraclaw"
-  },
-  "1099": {
-    "name": "Sì-Sothoth Spawn :EP"
-  },
-  "1110": {
-    "name": "<-- 91-100 -->"
-  },
-  "1111": {
-    "name": "Imitatore dell'aborto"
-  },
-  "1112": {
-    "name": "Albero all'indietro"
-  },
-  "1113": {
-    "name": "Edificio Respirante"
-  },
-  "1114": {
-    "name": "Avatar Celeste :EP"
-  },
-  "1115": {
-    "name": "Ospite cherubino-alfa"
-  },
-  "1116": {
-    "name": "Baluardo di ingranaggi"
-  },
-  "1117": {
-    "name": "Mimic di Diamante :EP"
-  },
-  "1118": {
-    "name": "Drago degli Inferi Kur"
-  },
-  "1119": {
-    "name": "Festa della Carestia"
-  },
-  "1120": {
-    "name": "Divinità infuocata"
-  },
-  "1121": {
-    "name": "Tartaruga gelida"
-  },
-  "1122": {
-    "name": "Limulo"
-  },
-  "1123": {
-    "name": "Reparto maternità"
-  },
-  "1124": {
-    "name": "Piroclasta Phoenix"
-  },
-  "1125": {
-    "name": "Serafino del Settimo Velo"
-  },
-  "1126": {
-    "name": "Enlil, il re drago della tempesta"
-  },
-  "1137": {
-    "name": "<-- 101-110 -->"
-  },
-  "1138": {
-    "name": "Signore Rex corazzato"
-  },
-  "1139": {
-    "name": "Re Mammut Colossale"
-  },
-  "1140": {
-    "name": "Alfa Terribile dai Denti a Sciabola"
-  },
-  "1141": {
-    "name": "Dominio della Fiamma"
-  },
-  "1142": {
-    "name": "Drago della Saggezza Enki"
-  },
-  "1143": {
-    "name": "Automa del Bastione di Ferro"
-  },
-  "1144": {
-    "name": "Megalodonte Primo"
-  },
-  "1145": {
-    "name": "Terrore Primordiale Rex"
-  },
-  "1146": {
-    "name": "Tartaruga dal guscio d'acciaio"
-  },
-  "1147": {
-    "name": "Dio Drago Supremo Usumgallu"
-  },
-  "1148": {
-    "name": "Colosso Lucertola del Tuono"
-  },
-  "1149": {
-    "name": "Orso delle caverne del Titanic"
-  },
-  "1160": {
-    "name": "<-- 111-120 -->"
-  },
-  "1161": {
-    "name": "Sentinel Mk. IV in ottone"
-  },
-  "1162": {
-    "name": "Cultista di Cthulhu"
-  },
-  "1163": {
-    "name": "Cultista di Nyarlathotep"
-  },
-  "1164": {
-    "name": "Cultista di Shub-Niggurath"
-  },
-  "1165": {
-    "name": "Cultista di Yog-Sothoth"
-  },
-  "1166": {
-    "name": "Uccello gigante del terrore"
-  },
-  "1167": {
-    "name": "Tartaruga drago primordiale"
-  },
-  "1178": {
-    "name": "<-- 121-130 -->"
-  },
-  "1179": {
+  "645": {
     "name": "Arcangelo Mortificatore"
   },
-  "1190": {
-    "name": "<-- 131-140 -->"
+  "646": {
+    "name": "Lupo artico"
   },
-  "1191": {
-    "name": "Vorthak lo squarciatore di membrane"
+  "647": {
+    "name": "Signore Rex corazzato"
   },
-  "1202": {
-    "name": "<-- 141-150 -->"
+  "648": {
+    "name": "Frammento di Azathoth"
   },
-  "1203": {
-    "name": "Yith'oghra il Rompi-Consenso"
+  "649": {
+    "name": "Sacerdotessa Babalon"
   },
-  "1214": {
-    "name": "<-- 151-160 -->"
+  "650": {
+    "name": "Aquila calva"
   },
-  "1215": {
+  "651": {
+    "name": "Bestia 666"
+  },
+  "652": {
+    "name": "Silfide della Rovina"
+  },
+  "653": {
+    "name": "Behemutt di zolfo"
+  },
+  "654": {
+    "name": "Inseguitore di Carogne"
+  },
+  "655": {
+    "name": "Melma caustica"
+  },
+  "656": {
+    "name": "Avatar Celeste :EP"
+  },
+  "657": {
+    "name": "Ospite cherubino-alfa"
+  },
+  "658": {
+    "name": "Tick ​​cromatico"
+  },
+  "659": {
+    "name": "Cronovoro"
+  },
+  "660": {
+    "name": "Batterio cognitivo"
+  },
+  "661": {
+    "name": "Re Mammut Colossale"
+  },
+  "662": {
+    "name": "Ninja aziendale"
+  },
+  "663": {
+    "name": "Patriarca Cremisi"
+  },
+  "664": {
+    "name": "Cultista di Cthulhu"
+  },
+  "665": {
+    "name": "Cultista di Nyarlathotep"
+  },
+  "666": {
+    "name": "Cultista di Shub-Niggurath"
+  },
+  "667": {
+    "name": "Cultista di Yog-Sothoth"
+  },
+  "668": {
+    "name": "Grimorio maledetto"
+  },
+  "669": {
+    "name": "Orrore delle Fauci Profonde"
+  },
+  "670": {
+    "name": "Alfa Terribile dai Denti a Sciabola"
+  },
+  "671": {
+    "name": "Dominio della Fiamma"
+  },
+  "672": {
+    "name": "Monaco Drago :EP"
+  },
+  "673": {
+    "name": "Esmeralda la Tessitrice di Sogni"
+  },
+  "674": {
+    "name": "Re dei Lich Eterno"
+  },
+  "675": {
+    "name": "Tattico Eterico"
+  },
+  "676": {
+    "name": "Divinità infuocata"
+  },
+  "677": {
+    "name": "Arcimago del Gelo"
+  },
+  "678": {
+    "name": "Cavaliere del gelo"
+  },
+  "679": {
+    "name": "Sentinella di Bufera"
+  },
+  "680": {
+    "name": "Tigre fantasma"
+  },
+  "681": {
+    "name": "Uccello gigante del terrore"
+  },
+  "682": {
+    "name": "Guardiano dorato"
+  },
+  "683": {
+    "name": "Entità Glitchata"
+  },
+  "684": {
+    "name": "Tiratore Goblin"
+  },
+  "685": {
+    "name": "Sciamano Goblin"
+  },
+  "686": {
+    "name": "Guerriero Goblin"
+  },
+  "687": {
+    "name": "Grigio Zeta Reticulano"
+  },
+  "688": {
+    "name": "Mammut del Fuoco Infernale"
+  },
+  "689": {
+    "name": "Grimorio iperdimensionale :EP"
+  },
+  "690": {
+    "name": "Pooka Infernale"
+  },
+  "691": {
+    "name": "Sentinella di ferro"
+  },
+  "692": {
+    "name": "Teorema vivente"
+  },
+  "693": {
+    "name": "Re delle Locuste Luminose"
+  },
+  "694": {
+    "name": "Cinghiale Pazzo"
+  },
+  "695": {
+    "name": "Sovrano del Maelstrom"
+  },
+  "696": {
+    "name": "Megalodonte"
+  },
+  "697": {
+    "name": "Falena Mind Flayer"
+  },
+  "698": {
+    "name": "Scudo mentale"
+  },
+  "699": {
     "name": "Mor'dun l'Architetto della Carne"
   },
-  "1226": {
-    "name": "<-- 161-170 -->"
+  "700": {
+    "name": "Devastatore di montagne"
   },
-  "1227": {
-    "name": "Qel'Thuzad il Mangiatore di Ricordi"
+  "701": {
+    "name": "Gigante della montagna"
   },
-  "1238": {
-    "name": "<-- 181-190 -->"
+  "702": {
+    "name": "Pantera mistica"
   },
-  "1239": {
-    "name": "Nyth'aggoth il Corruttore di Concetti"
+  "703": {
+    "name": "Duchessa della Corte Inferiore"
   },
-  "1250": {
-    "name": "<-- 191-200 -->"
+  "704": {
+    "name": "Signore della rete"
   },
-  "1251": {
-    "name": "Shal'thyss il Chirurgo del Vuoto"
+  "705": {
+    "name": "Mago dell'incubo"
   },
-  "1262": {
-    "name": "<-- 201-210 -->"
+  "706": {
+    "name": "Assassino del Velo Notturno"
   },
-  "1263": {
-    "name": "Gul'magoth il Tessitore del Tempo"
+  "707": {
+    "name": "Fuoco Fatuo Notturno"
   },
-  "1274": {
-    "name": "<-- 211-220 -->"
+  "708": {
+    "name": "Guardiano nobile"
   },
-  "1275": {
-    "name": "Xoth'nagal la Piaga dei Sogni"
+  "709": {
+    "name": "Corvo minaccioso"
   },
-  "1286": {
-    "name": "<-- 231-240 -->"
+  "710": {
+    "name": "Cumulo di peste"
   },
-  "1287": {
-    "name": "Vel'korthak l'Allevatore di Realtà"
-  },
-  "1298": {
-    "name": "<-- 241-250 -->"
-  },
-  "1299": {
-    "name": "Zhoth'aggur il Tessitore del Silenzio"
-  },
-  "1310": {
-    "name": "<-- 261-270 -->"
-  },
-  "1311": {
+  "711": {
     "name": "Behemoth primordiale"
   },
-  "1322": {
-    "name": "<-- Postgame 130+ -->"
+  "712": {
+    "name": "Tartaruga drago primordiale"
   },
-  "1323": {
-    "name": "Aneurisma della Linea Ley"
+  "713": {
+    "name": "Terrore Primordiale Rex"
   },
-  "1324": {
-    "name": "Eco Sguazzante"
+  "714": {
+    "name": "Proto torretta"
   },
-  "1325": {
-    "name": "Redivivo d'Asfalto"
+  "715": {
+    "name": "Qel'Thuzad il Mangiatore di Ricordi"
   },
-  "1326": {
-    "name": "Incarnazione dello Svincolo"
+  "716": {
+    "name": "Coyote rabbioso"
   },
-  "1327": {
-    "name": "Inseguitore del Ciclo Temporale"
+  "717": {
+    "name": "Difensore Radiante"
   },
-  "1328": {
-    "name": "Sanguisuga Porfirinica"
+  "718": {
+    "name": "Giustiziere reale"
   },
-  "1329": {
-    "name": "Miraggio di Varlenia"
+  "719": {
+    "name": "Coyote spazzino"
   },
-  "1330": {
-    "name": "Santo Ripiegato"
+  "720": {
+    "name": "Tiranno bruciato"
   },
-  "1331": {
-    "name": "Larva della Discordia"
+  "721": {
+    "name": "Pipistrello Notturno Stridulo"
   },
-  "1332": {
-    "name": "Guardastrada Avvolgente"
+  "722": {
+    "name": "Assassino Ombra"
   },
-  "1333": {
-    "name": "Mano Mozzata di Maat"
+  "723": {
+    "name": "Baluardo di Shellbreaker"
   },
-  "1334": {
-    "name": "Guardia Infranta di Thoth"
+  "724": {
+    "name": "Serpente del cielo"
   },
-  "1335": {
-    "name": "Il Cubo Che Non Fu"
+  "725": {
+    "name": "Mietitore d'Anime"
   },
-  "1336": {
-    "name": "Cucciolo di Petrodemone"
+  "726": {
+    "name": "Tartaruga dal guscio d'acciaio"
   },
-  "1337": {
-    "name": "Avatar delle Sette Sorelle"
+  "727": {
+    "name": "Elefante che calpesta"
   },
-  "1338": {
-    "name": "Colosso Porfirinico"
+  "728": {
+    "name": "Baluardo di pietra"
   },
-  "1339": {
-    "name": "La Fiamma di Bascape"
+  "729": {
+    "name": "Elementale della tempesta"
   },
-  "1340": {
-    "name": "Leviatano Greggio"
+  "730": {
+    "name": "Tempesta Roc"
   },
-  "1341": {
-    "name": "Il Pozzo Che Sogna"
+  "731": {
+    "name": "Arconte della Corte Estiva"
   },
-  "1342": {
-    "name": "Maat Dentro Eris"
+  "732": {
+    "name": "Regina delle sanguisughe di palude"
   },
-  "1343": {
-    "name": "Eris, Giudizio della Discordia"
+  "733": {
+    "name": "Sovrano pesce spada"
   },
-  "1344": {
-    "name": "<-- Bestiary: Beasts -->"
+  "734": {
+    "name": "Pegaso della tempesta"
   },
-  "1345": {
-    "name": "Ululante Rognoso"
+  "735": {
+    "name": "Roc Ala di Tuono"
   },
-  "1346": {
+  "736": {
+    "name": "Orso delle caverne del Titanic"
+  },
+  "737": {
+    "name": "Protettore totemico"
+  },
+  "738": {
+    "name": "Melma tossica"
+  },
+  "739": {
+    "name": "Velocicorno"
+  },
+  "740": {
+    "name": "Velociraptor"
+  },
+  "741": {
+    "name": "Demone virulento"
+  },
+  "742": {
+    "name": "Vorthak lo squarciatore di membrane"
+  },
+  "743": {
+    "name": "Ippotauro da guerra"
+  },
+  "744": {
+    "name": "Era un idolo"
+  },
+  "745": {
+    "name": "Serpente del mondo"
+  },
+  "746": {
+    "name": "Yith'oghra il Rompi-Consenso"
+  },
+  "747": {
+    "name": "<-- 41-50 -->"
+  },
+  "748": {
+    "name": "Divoratore Abissale"
+  },
+  "749": {
+    "name": "Idromante Abissale"
+  },
+  "750": {
+    "name": "Giuntatore di etere"
+  },
+  "751": {
+    "name": "Antico Lich"
+  },
+  "752": {
     "name": "Lupo Terribile Cinereo"
   },
-  "1347": {
-    "name": "Azzannatore dagli Occhi Vuoti"
+  "753": {
+    "name": "Redivivo d'Asfalto"
   },
-  "1348": {
-    "name": "Cinghiale di Branco"
+  "754": {
+    "name": "Sentinella astrale"
   },
-  "1349": {
-    "name": "Squartatore di Branco"
+  "755": {
+    "name": "Gorilla gigante"
   },
-  "1350": {
-    "name": "Cinghiale a Tre Code"
+  "756": {
+    "name": "Signore Supremo del Sangue"
   },
-  "1351": {
-    "name": "Squartatore Infangato"
+  "757": {
+    "name": "Libro Golem"
   },
-  "1352": {
-    "name": "Ululante di Tempesta"
+  "758": {
+    "name": "Comandante delle ossa"
   },
-  "1353": {
-    "name": "Bestia Cornuta dalle Zanne di Ferro"
+  "759": {
+    "name": "Viverna toro"
   },
-  "1354": {
-    "name": "Felino Sciabola Affamato"
-  },
-  "1355": {
-    "name": "Dorsocresta di Branco"
-  },
-  "1356": {
-    "name": "Corridartiglio Affamato"
-  },
-  "1357": {
-    "name": "Corridartiglio Sfregiato"
-  },
-  "1358": {
-    "name": "Predatore Furtivo Cinereo"
-  },
-  "1359": {
-    "name": "Segugio Furtivo Rognoso"
-  },
-  "1360": {
-    "name": "Azzannatore Emaciato"
-  },
-  "1361": {
-    "name": "Cinghiale dagli Occhi Vuoti"
-  },
-  "1362": {
-    "name": "Pellespine di Brace"
-  },
-  "1363": {
-    "name": "Bestia Cornuta di Gelo"
-  },
-  "1364": {
-    "name": "Corridartiglio di Branco"
-  },
-  "1365": {
-    "name": "Lince di Branco"
-  },
-  "1366": {
-    "name": "Digrignante di Tempesta"
-  },
-  "1367": {
-    "name": "Lince Ferina"
-  },
-  "1368": {
-    "name": "Digrignante Terribile"
-  },
-  "1369": {
-    "name": "Lince Rabbiosa"
-  },
-  "1370": {
-    "name": "Bestia Cornuta di Branco"
-  },
-  "1371": {
-    "name": "Corridartiglio Emaciato"
-  },
-  "1372": {
-    "name": "Lupo Terribile di Brace"
-  },
-  "1373": {
-    "name": "Dorsosetole dagli Occhi Vuoti"
-  },
-  "1374": {
-    "name": "Lince a Tre Code"
-  },
-  "1375": {
-    "name": "Dorsosetole Sfregiato"
-  },
-  "1376": {
-    "name": "Corridartiglio Infangato"
-  },
-  "1377": {
-    "name": "Predatore Furtivo Ferino"
-  },
-  "1378": {
-    "name": "Tasso Rabbioso"
-  },
-  "1379": {
-    "name": "Corridartiglio Terribile"
-  },
-  "1380": {
-    "name": "Dorsocresta Rognoso"
-  },
-  "1381": {
-    "name": "Predatore Furtivo Infangato"
-  },
-  "1382": {
-    "name": "Sciacallo di Branco"
-  },
-  "1383": {
-    "name": "Digrignante Infangato"
-  },
-  "1384": {
-    "name": "Lupo Terribile dalle Zanne di Ferro"
-  },
-  "1385": {
-    "name": "Bestia Cornuta a Tre Code"
-  },
-  "1386": {
-    "name": "Squartatore Emaciato"
-  },
-  "1387": {
-    "name": "Sciacallo Solitario"
-  },
-  "1388": {
-    "name": "Segugio Fauci dalle Zanne di Ferro"
-  },
-  "1389": {
-    "name": "Lupo Terribile dalle Fauci di Sangue"
-  },
-  "1390": {
-    "name": "Lince Emaciata"
-  },
-  "1391": {
-    "name": "Segugio Fauci dalle Fauci di Sangue"
-  },
-  "1392": {
-    "name": "Tasso Ferino"
-  },
-  "1393": {
-    "name": "Digrignante Affamato"
-  },
-  "1394": {
-    "name": "Dorsocresta Ferino"
-  },
-  "1395": {
-    "name": "<-- Bestiary: Undead -->"
-  },
-  "1396": {
-    "name": "Piagnone Salato"
-  },
-  "1397": {
-    "name": "Mastino d'Ossario Sprofondato"
-  },
-  "1398": {
-    "name": "Sudario Salato"
-  },
-  "1399": {
-    "name": "Piagnone Mummificato"
-  },
-  "1400": {
-    "name": "Spettro Tumulare Salato"
-  },
-  "1401": {
-    "name": "Cadavere Dimenticato"
-  },
-  "1402": {
-    "name": "Mastino d'Ossario Irrequieto"
-  },
-  "1403": {
-    "name": "Redivivo Irrequieto"
-  },
-  "1404": {
-    "name": "Portaferetro Irrequieto"
-  },
-  "1405": {
-    "name": "Schiavo Avvolto nella Cenere"
-  },
-  "1406": {
-    "name": "Sudario della Peste"
-  },
-  "1407": {
-    "name": "Piagnone Avvizzito"
-  },
-  "1408": {
-    "name": "Mastino d'Ossario Avvizzito"
-  },
-  "1409": {
-    "name": "Camminatombe del Sudario"
-  },
-  "1410": {
-    "name": "Spolpaossa del Sudario"
-  },
-  "1411": {
-    "name": "Involucro della Peste"
-  },
-  "1412": {
-    "name": "Spolpaossa della Cripta"
-  },
-  "1413": {
-    "name": "Involucro Putrescente"
-  },
-  "1414": {
-    "name": "Involucro Avvizzito"
-  },
-  "1415": {
-    "name": "Cadavere Irrequieto"
-  },
-  "1416": {
-    "name": "Spettro Tumulare della Cripta"
-  },
-  "1417": {
-    "name": "Cavaliere d'Ossa del Sudario"
-  },
-  "1418": {
-    "name": "Redivivo Dorato"
-  },
-  "1419": {
-    "name": "Involucro Sprofondato"
-  },
-  "1420": {
-    "name": "Spolpaossa Cavo"
-  },
-  "1421": {
-    "name": "Spolpaossa Irrequieto"
-  },
-  "1422": {
-    "name": "Schiavo Irrequieto"
-  },
-  "1423": {
-    "name": "Schiavo Avvizzito"
-  },
-  "1424": {
-    "name": "Camminatombe Legato alla Tomba"
-  },
-  "1425": {
-    "name": "Sentinella Avvolta nella Cenere"
-  },
-  "1426": {
-    "name": "Piagnone Legato alla Tomba"
-  },
-  "1427": {
-    "name": "Camminatombe Irrequieto"
-  },
-  "1428": {
-    "name": "Mastino d'Ossario Cavo"
-  },
-  "1429": {
-    "name": "Portaferetro Sprofondato"
-  },
-  "1430": {
-    "name": "Cavaliere d'Ossa Dimenticato"
-  },
-  "1431": {
-    "name": "Schiavo Dimenticato"
-  },
-  "1432": {
-    "name": "Cavaliere d'Ossa Legato alla Tomba"
-  },
-  "1433": {
-    "name": "Schiavo Dorato"
-  },
-  "1434": {
-    "name": "Camminatombe Salato"
-  },
-  "1435": {
-    "name": "Mastino d'Ossario Dimenticato"
-  },
-  "1436": {
-    "name": "Sentinella Dorata"
-  },
-  "1437": {
-    "name": "Camminatombe Cavo"
-  },
-  "1438": {
-    "name": "Sentinella Dimenticata"
-  },
-  "1439": {
-    "name": "Camminatombe Mummificato"
-  },
-  "1440": {
-    "name": "Lichetto Dorato"
-  },
-  "1441": {
-    "name": "Spettro Tumulare Avvolto nella Cenere"
-  },
-  "1442": {
-    "name": "Spettro Tumulare Cavo"
-  },
-  "1443": {
-    "name": "Camminatombe Sprofondato"
-  },
-  "1444": {
-    "name": "Redivivo della Cripta"
-  },
-  "1445": {
-    "name": "Portaferetro della Peste"
-  },
-  "1446": {
-    "name": "<-- Bestiary: OozeBug -->"
-  },
-  "1447": {
-    "name": "Budino Fuso"
-  },
-  "1448": {
-    "name": "Budino Sussultante"
-  },
-  "1449": {
-    "name": "Mente Alveare Brulicante"
-  },
-  "1450": {
-    "name": "Cosa di Covata Cristallina"
-  },
-  "1451": {
-    "name": "Insetto Fuco Gelatinoso"
-  },
-  "1452": {
-    "name": "Grumo Fuso"
-  },
-  "1453": {
-    "name": "Cosa di Covata Brulicante"
-  },
-  "1454": {
-    "name": "Carapace Cristallino"
-  },
-  "1455": {
+  "760": {
     "name": "Larva Caustica"
   },
-  "1456": {
-    "name": "Budino Gelatinoso"
+  "761": {
+    "name": "Protettore Celeste"
   },
-  "1457": {
-    "name": "Strisciante Scintillante"
+  "762": {
+    "name": "Consumatore cronologico"
   },
-  "1458": {
-    "name": "Nato del Pantano Stridulo"
+  "763": {
+    "name": "Chronos, Titano del Tempo"
   },
-  "1459": {
-    "name": "Insetto Fuco Gonfio"
-  },
-  "1460": {
-    "name": "Nato del Pantano Gelatinoso"
-  },
-  "1461": {
-    "name": "Gel Gonfio"
-  },
-  "1462": {
-    "name": "Grumo Gonfio"
-  },
-  "1463": {
-    "name": "Cosa di Covata Scintillante"
-  },
-  "1464": {
-    "name": "Larva Tremolante"
-  },
-  "1465": {
-    "name": "Grumo Cristallino"
-  },
-  "1466": {
-    "name": "Poltiglia Gelatinosa"
-  },
-  "1467": {
-    "name": "Poltiglia Salmastra"
-  },
-  "1468": {
-    "name": "Muffa Gonfia"
-  },
-  "1469": {
-    "name": "Budino Stridulo"
-  },
-  "1470": {
-    "name": "Nato del Pantano Brulicante"
-  },
-  "1471": {
-    "name": "Scarabeo Guscio Gelatinoso"
-  },
-  "1472": {
-    "name": "Nato del Pantano Acido"
-  },
-  "1473": {
-    "name": "Muffa Guizzante"
-  },
-  "1474": {
-    "name": "Poltiglia Gonfia"
-  },
-  "1475": {
-    "name": "Nato del Pantano Caustico"
-  },
-  "1476": {
-    "name": "Muffa Fusa"
-  },
-  "1477": {
-    "name": "Carapace Caustico"
-  },
-  "1478": {
-    "name": "Nato del Pantano Fuso"
-  },
-  "1479": {
-    "name": "Insetto Fuco Sussultante"
-  },
-  "1480": {
-    "name": "Grumo Gelatinoso"
-  },
-  "1481": {
-    "name": "Poltiglia Sussultante"
-  },
-  "1482": {
-    "name": "Budino Salmastro"
-  },
-  "1483": {
-    "name": "Strisciante Fangoso"
-  },
-  "1484": {
-    "name": "Scarabeo Guscio Stridulo"
-  },
-  "1485": {
-    "name": "Sciamante Brulicante"
-  },
-  "1486": {
-    "name": "Insetto Fuco Cristallino"
-  },
-  "1487": {
-    "name": "Carapace Tremolante"
-  },
-  "1488": {
-    "name": "Insetto Fuco Guizzante"
-  },
-  "1489": {
-    "name": "Larva Scintillante"
-  },
-  "1490": {
-    "name": "Larva Acida"
-  },
-  "1491": {
-    "name": "Strisciante Iridescente"
-  },
-  "1492": {
-    "name": "Carapace Gonfio"
-  },
-  "1493": {
-    "name": "Mente Alveare Tremolante"
-  },
-  "1494": {
-    "name": "Larva Cristallina"
-  },
-  "1495": {
-    "name": "Gel Cristallino"
-  },
-  "1496": {
-    "name": "Cosa di Covata Tremolante"
-  },
-  "1497": {
-    "name": "<-- Bestiary: ElemGolem -->"
-  },
-  "1498": {
-    "name": "Spettro Furioso"
-  },
-  "1499": {
-    "name": "Condotto Furioso"
-  },
-  "1500": {
-    "name": "Condotto Rovente"
-  },
-  "1501": {
-    "name": "Spirito Crepitante"
-  },
-  "1502": {
-    "name": "Silfide di Quarzo"
-  },
-  "1503": {
-    "name": "Animus Furioso"
-  },
-  "1504": {
-    "name": "Elementale di Ossidiana"
-  },
-  "1505": {
-    "name": "Effigie Crepitante"
-  },
-  "1506": {
-    "name": "Silfide Pietrificata"
-  },
-  "1507": {
-    "name": "Nato del Colosso Furioso"
-  },
-  "1508": {
-    "name": "Sentinella Fusa"
-  },
-  "1509": {
-    "name": "Condotto di Ossidiana"
-  },
-  "1510": {
-    "name": "Spirito Rovente"
-  },
-  "1511": {
-    "name": "Effigie Pietrificata"
-  },
-  "1512": {
-    "name": "Condotto di Tempesta"
-  },
-  "1513": {
-    "name": "Nato del Colosso di Tempesta"
-  },
-  "1514": {
-    "name": "Redivivo Congelato"
-  },
-  "1515": {
-    "name": "Fuoco Fatuo di Quarzo"
-  },
-  "1516": {
-    "name": "Guardiano Fuso"
-  },
-  "1517": {
-    "name": "Elementale Crepitante"
-  },
-  "1518": {
-    "name": "Monolito Radiante"
-  },
-  "1519": {
-    "name": "Redivivo Crepitante"
-  },
-  "1520": {
-    "name": "Animus Crepitante"
-  },
-  "1521": {
-    "name": "Elementale Rovente"
-  },
-  "1522": {
-    "name": "Silfide Fusa"
-  },
-  "1523": {
-    "name": "Elementale Urlante"
-  },
-  "1524": {
-    "name": "Costrutto Congelato"
-  },
-  "1525": {
-    "name": "Sentinella Congelata"
-  },
-  "1526": {
-    "name": "Nato del Colosso di Quarzo"
-  },
-  "1527": {
-    "name": "Redivivo Urlante"
-  },
-  "1528": {
-    "name": "Animus di Ossidiana"
-  },
-  "1529": {
-    "name": "Spirito Stridente"
-  },
-  "1530": {
-    "name": "Sentinella Vivente"
-  },
-  "1531": {
-    "name": "Guardiano Pietrificato"
-  },
-  "1532": {
-    "name": "Elementale Impetuoso"
-  },
-  "1533": {
-    "name": "Costrutto Fuso"
-  },
-  "1534": {
-    "name": "Nato del Colosso Fuso"
-  },
-  "1535": {
-    "name": "Silfide Impetuosa"
-  },
-  "1536": {
-    "name": "Spettro Glaciale"
-  },
-  "1537": {
-    "name": "Monolito Pietrificato"
-  },
-  "1538": {
-    "name": "Sentinella Furiosa"
-  },
-  "1539": {
-    "name": "Spettro di Quarzo"
-  },
-  "1540": {
-    "name": "Costrutto Stridente"
-  },
-  "1541": {
-    "name": "Costrutto Impetuoso"
-  },
-  "1542": {
-    "name": "Monolito di Quarzo"
-  },
-  "1543": {
-    "name": "Silfide Urlante"
-  },
-  "1544": {
-    "name": "Fuoco Fatuo di Tempesta"
-  },
-  "1545": {
-    "name": "Elementale Vivente"
-  },
-  "1546": {
-    "name": "Silfide di Tempesta"
-  },
-  "1547": {
-    "name": "Monolito Congelato"
-  },
-  "1548": {
-    "name": "<-- Bestiary: DemonFey -->"
-  },
-  "1549": {
-    "name": "Tessimalefici Saltellante"
-  },
-  "1550": {
-    "name": "Tormentatore Sussurrante"
-  },
-  "1551": {
-    "name": "Folletto Cavo"
-  },
-  "1552": {
-    "name": "Imp Zannuto"
-  },
-  "1553": {
-    "name": "Diavoletto Vincolato dal Patto"
-  },
-  "1554": {
-    "name": "Gremlin di Zolfo"
-  },
-  "1555": {
-    "name": "Succube Luccicante"
-  },
-  "1556": {
-    "name": "Ondina Sussurrante"
-  },
-  "1557": {
-    "name": "Bisbigliante di Zolfo"
-  },
-  "1558": {
-    "name": "Spiritello Torvo"
-  },
-  "1559": {
-    "name": "Ingannatore Saltellante"
-  },
-  "1560": {
-    "name": "Diavoletto Dispettoso"
-  },
-  "1561": {
-    "name": "Spiritello Farfugliante"
-  },
-  "1562": {
-    "name": "Diavoletto Luccicante"
-  },
-  "1563": {
-    "name": "Ondina di Zolfo Ardente"
-  },
-  "1564": {
-    "name": "Spiritello di Zolfo Ardente"
-  },
-  "1565": {
-    "name": "Demonio Vincolato dal Patto"
-  },
-  "1566": {
-    "name": "Demonio di Zolfo Ardente"
-  },
-  "1567": {
-    "name": "Folletto Dispettoso"
-  },
-  "1568": {
-    "name": "Bisbigliante Cavo"
-  },
-  "1569": {
-    "name": "Demonio Farfugliante"
-  },
-  "1570": {
-    "name": "Bisbigliante Beffardo"
-  },
-  "1571": {
-    "name": "Diavoletto Saltellante"
-  },
-  "1572": {
-    "name": "Demonio Saltellante"
-  },
-  "1573": {
-    "name": "Bisbigliante di Zolfo Ardente"
-  },
-  "1574": {
-    "name": "Cambion Maleficante"
-  },
-  "1575": {
-    "name": "Cambion di Zolfo"
-  },
-  "1576": {
-    "name": "Ingannatore Luccicante"
-  },
-  "1577": {
-    "name": "Folletto Saltellante"
-  },
-  "1578": {
-    "name": "Imp Cavo"
-  },
-  "1579": {
-    "name": "Folletto Torvo"
-  },
-  "1580": {
-    "name": "Ondina Saltellante"
-  },
-  "1581": {
-    "name": "Ingannatore Farfugliante"
-  },
-  "1582": {
-    "name": "Diavoletto di Zolfo Ardente"
-  },
-  "1583": {
-    "name": "Succube Cava"
-  },
-  "1584": {
-    "name": "Gremlin del Crepuscolo"
-  },
-  "1585": {
-    "name": "Ombra del Crepuscolo"
-  },
-  "1586": {
-    "name": "Tormentatore Dispettoso"
-  },
-  "1587": {
-    "name": "Tessimalefici Luccicante"
-  },
-  "1588": {
-    "name": "Ondina Vincolata dal Patto"
-  },
-  "1589": {
-    "name": "Cambion Dispettoso"
-  },
-  "1590": {
-    "name": "Folletto del Crepuscolo"
-  },
-  "1591": {
-    "name": "Cambion di Zolfo Ardente"
-  },
-  "1592": {
-    "name": "Ondina Beffarda"
-  },
-  "1593": {
-    "name": "Ombra Beffarda"
-  },
-  "1594": {
-    "name": "Ondina di Zolfo"
-  },
-  "1595": {
-    "name": "Spiritello Luccicante"
-  },
-  "1596": {
-    "name": "Tessimalefici Farfugliante"
-  },
-  "1597": {
-    "name": "Ombra di Zolfo"
-  },
-  "1598": {
-    "name": "Spiritello di Zolfo"
-  },
-  "1599": {
-    "name": "<-- Bestiary: FolkMech -->"
-  },
-  "1600": {
+  "764": {
     "name": "Predone di Leva"
   },
-  "1601": {
-    "name": "Fuorilegge Recuperato"
+  "765": {
+    "name": "Behemoth delle rocce"
   },
-  "1602": {
-    "name": "Bracconiere Sovraccaricato"
+  "766": {
+    "name": "Tiranno Cremisi"
   },
-  "1603": {
+  "767": {
+    "name": "Cosa di Covata Cristallina"
+  },
+  "768": {
+    "name": "Carapace Cristallino"
+  },
+  "769": {
+    "name": "Orso Demone"
+  },
+  "770": {
     "name": "Bot Caduto in Disgrazia"
   },
-  "1604": {
-    "name": "Scagnozzo Veterano"
+  "771": {
+    "name": "Comandante del crepuscolo"
   },
-  "1605": {
+  "772": {
+    "name": "Cosa Anziana"
+  },
+  "773": {
+    "name": "Regina delle fate"
+  },
+  "774": {
+    "name": "Sovrano della foresta"
+  },
+  "775": {
+    "name": "Strega della foresta"
+  },
+  "776": {
+    "name": "Tessitore di gelo"
+  },
+  "777": {
+    "name": "Insetto Fuco Gelatinoso"
+  },
+  "778": {
+    "name": "Titano glaciale"
+  },
+  "779": {
+    "name": "Basilisco squamoso"
+  },
+  "780": {
+    "name": "Cavalleria Goblin"
+  },
+  "781": {
+    "name": "Guardia d'élite goblin"
+  },
+  "782": {
+    "name": "Goblin Maestro Cecchino"
+  },
+  "783": {
+    "name": "Gul'magoth il Tessitore del Tempo"
+  },
+  "784": {
+    "name": "Azzannatore dagli Occhi Vuoti"
+  },
+  "785": {
+    "name": "Discepolo della Palma di Ferro"
+  },
+  "786": {
+    "name": "Re Slime"
+  },
+  "787": {
+    "name": "Orso Kodiak"
+  },
+  "788": {
+    "name": "Aneurisma della Linea Ley"
+  },
+  "789": {
+    "name": "Micelico luminescente"
+  },
+  "790": {
+    "name": "Signore del Magma"
+  },
+  "791": {
+    "name": "Ululante Rognoso"
+  },
+  "792": {
+    "name": "Signore della Mente"
+  },
+  "793": {
+    "name": "Tiranno della mente"
+  },
+  "794": {
+    "name": "Drago fuso"
+  },
+  "795": {
+    "name": "Efreeti fuso"
+  },
+  "796": {
+    "name": "Grumo Fuso"
+  },
+  "797": {
+    "name": "Guardiano Fuso"
+  },
+  "798": {
+    "name": "Budino Fuso"
+  },
+  "799": {
+    "name": "Devastatore di montagne"
+  },
+  "800": {
+    "name": "Re della montagna"
+  },
+  "801": {
+    "name": "Titano di montagna"
+  },
+  "802": {
+    "name": "Squartatore Infangato"
+  },
+  "803": {
+    "name": "Idra dalle teste multiple"
+  },
+  "804": {
+    "name": "Nepenthe Mycoastrum"
+  },
+  "805": {
+    "name": "Tessitore di incubi"
+  },
+  "806": {
+    "name": "Nyth'aggoth il Corruttore di Concetti"
+  },
+  "807": {
+    "name": "Corazzata di ossidiana"
+  },
+  "808": {
+    "name": "Incarnazione dello Svincolo"
+  },
+  "809": {
+    "name": "Re Stregone Orco"
+  },
+  "810": {
+    "name": "Bracconiere Sovraccaricato"
+  },
+  "811": {
+    "name": "Cinghiale di Branco"
+  },
+  "812": {
+    "name": "Squartatore di Branco"
+  },
+  "813": {
+    "name": "Gorgone pietrificante"
+  },
+  "814": {
+    "name": "Guardiano del Filatterio"
+  },
+  "815": {
+    "name": "Sanguisuga Porfirinica"
+  },
+  "816": {
+    "name": "Colosso Radiante"
+  },
+  "817": {
+    "name": "Ravenna la Legatrice d'Ombre"
+  },
+  "818": {
+    "name": "Alfa dai denti a sciabola"
+  },
+  "819": {
+    "name": "Sudario Salato"
+  },
+  "820": {
+    "name": "Piagnone Salato"
+  },
+  "821": {
+    "name": "Fuorilegge Recuperato"
+  },
+  "822": {
     "name": "Predone di Rottame"
   },
-  "1606": {
+  "823": {
+    "name": "Emissario Serafico"
+  },
+  "824": {
+    "name": "Melma delle fogne"
+  },
+  "825": {
+    "name": "Boia Ombra"
+  },
+  "826": {
+    "name": "Spettro dell'ombra"
+  },
+  "827": {
+    "name": "Shal'thyss il Chirurgo del Vuoto"
+  },
+  "828": {
+    "name": "Fauci di Scheggia"
+  },
+  "829": {
+    "name": "Eco Sguazzante"
+  },
+  "830": {
+    "name": "Chiamante di tempesta"
+  },
+  "831": {
+    "name": "Ululante di Tempesta"
+  },
+  "832": {
+    "name": "Mastino d'Ossario Sprofondato"
+  },
+  "833": {
+    "name": "Cosa di Covata Brulicante"
+  },
+  "834": {
+    "name": "Mente Alveare Brulicante"
+  },
+  "835": {
+    "name": "Djinn della Tempesta"
+  },
+  "836": {
+    "name": "Cinghiale a Tre Code"
+  },
+  "837": {
+    "name": "Guardiano delle maree"
+  },
+  "838": {
+    "name": "Stregone delle maree"
+  },
+  "839": {
+    "name": "Inseguitore del Ciclo Temporale"
+  },
+  "840": {
+    "name": "Titano totemico"
+  },
+  "841": {
+    "name": "Budino Sussultante"
+  },
+  "842": {
+    "name": "Coccodrillo tiranno"
+  },
+  "843": {
+    "name": "Basilisco umbratile"
+  },
+  "844": {
+    "name": "Miraggio di Varlenia"
+  },
+  "845": {
+    "name": "Vel'korthak l'Allevatore di Realtà"
+  },
+  "846": {
+    "name": "Diavolo velenoso"
+  },
+  "847": {
+    "name": "Scagnozzo Veterano"
+  },
+  "848": {
+    "name": "Desolatore del vuoto"
+  },
+  "849": {
+    "name": "Imperatrice del Vuoto"
+  },
+  "850": {
+    "name": "Gel vuoto"
+  },
+  "851": {
+    "name": "Xoth'nagal la Piaga dei Sogni"
+  },
+  "852": {
+    "name": "Re Giallo"
+  },
+  "853": {
+    "name": "Zhoth'aggur il Tessitore del Silenzio"
+  },
+  "854": {
+    "name": "Balena zombie"
+  },
+  "855": {
+    "name": "<-- 51-60 -->"
+  },
+  "856": {
+    "name": "Sirene abissali"
+  },
+  "857": {
+    "name": "Predatore Furtivo Cinereo"
+  },
+  "858": {
     "name": "Bot da Vicolo"
   },
-  "1607": {
-    "name": "Tiratore Scelto Qualunque"
+  "859": {
+    "name": "Manticora spinata"
   },
-  "1608": {
-    "name": "Tiratore Scelto Caduto in Disgrazia"
+  "860": {
+    "name": "Basilisco"
   },
-  "1609": {
-    "name": "Attaccabrighe Arrugginito"
+  "861": {
+    "name": "Insetto Fuco Gonfio"
   },
-  "1610": {
+  "862": {
+    "name": "Gel Gonfio"
+  },
+  "863": {
+    "name": "Grumo Gonfio"
+  },
+  "864": {
     "name": "Saccheggiatore Qualunque"
   },
-  "1611": {
+  "865": {
+    "name": "Tiratore Scelto Qualunque"
+  },
+  "866": {
+    "name": "Elementale pugile"
+  },
+  "867": {
+    "name": "Sciamatore cerebrale"
+  },
+  "868": {
+    "name": "Tessimalefici Saltellante"
+  },
+  "869": {
+    "name": "Nato del Pantano Stridulo"
+  },
+  "870": {
+    "name": "Rampollo Cuordibrace"
+  },
+  "871": {
+    "name": "Mimic cono"
+  },
+  "872": {
+    "name": "Guerriero Coralico"
+  },
+  "873": {
+    "name": "Spirito Crepitante"
+  },
+  "874": {
+    "name": "Araldo Cremisi"
+  },
+  "875": {
+    "name": "Drago di magma cremisi"
+  },
+  "876": {
+    "name": "Strillatore Criptato"
+  },
+  "877": {
+    "name": "Bestia Scheggia Cristallina"
+  },
+  "878": {
+    "name": "Redivivo da Discoteca"
+  },
+  "879": {
+    "name": "Larva della Discordia"
+  },
+  "880": {
+    "name": "Tiratore Scelto Caduto in Disgrazia"
+  },
+  "881": {
+    "name": "Sentinella della terra"
+  },
+  "882": {
+    "name": "Fuoco Fatuo d'Eco"
+  },
+  "883": {
+    "name": "Guardastrada Avvolgente"
+  },
+  "884": {
+    "name": "Behemoth floreale"
+  },
+  "885": {
+    "name": "Santo Ripiegato"
+  },
+  "886": {
+    "name": "Treant della foresta"
+  },
+  "887": {
+    "name": "Cadavere Dimenticato"
+  },
+  "888": {
+    "name": "Incantatrice del gelo"
+  },
+  "889": {
+    "name": "Urside gelido"
+  },
+  "890": {
+    "name": "Snapjaw fungino"
+  },
+  "891": {
+    "name": "Azzannatore Emaciato"
+  },
+  "892": {
+    "name": "Nato del Pantano Gelatinoso"
+  },
+  "893": {
+    "name": "Budino Gelatinoso"
+  },
+  "894": {
+    "name": "Idra di Geode"
+  },
+  "895": {
+    "name": "Cosa di Covata Scintillante"
+  },
+  "896": {
+    "name": "Strisciante Scintillante"
+  },
+  "897": {
+    "name": "Stregone gnomo"
+  },
+  "898": {
+    "name": "Capo Goblin"
+  },
+  "899": {
+    "name": "Urlatore Goblin"
+  },
+  "900": {
+    "name": "Esploratore hobgoblin"
+  },
+  "901": {
+    "name": "Ladro di identità"
+  },
+  "902": {
+    "name": "Cerbero infernale"
+  },
+  "903": {
+    "name": "Monarca infernale"
+  },
+  "904": {
+    "name": "Piromante infernale"
+  },
+  "905": {
+    "name": "Guerrafondaio infernale"
+  },
+  "906": {
+    "name": "Bestia Cornuta dalle Zanne di Ferro"
+  },
+  "907": {
+    "name": "Caricatore Ironhoof"
+  },
+  "908": {
+    "name": "Progenie del Kraken"
+  },
+  "909": {
+    "name": "Idolo di Laughing Mire"
+  },
+  "910": {
+    "name": "Grifone maestoso"
+  },
+  "911": {
+    "name": "Segugio Furtivo Rognoso"
+  },
+  "912": {
+    "name": "Arcimago del midollo"
+  },
+  "913": {
+    "name": "Tela Torbida di Palude"
+  },
+  "914": {
+    "name": "Mangiatore di matematica"
+  },
+  "915": {
     "name": "Drone Mercenario"
   },
-  "1612": {
-    "name": "Esecutore Sovraccaricato"
+  "916": {
+    "name": "Drago di mercurio"
   },
-  "1613": {
-    "name": "Predone Arrugginito"
+  "917": {
+    "name": "Idra di palude"
   },
-  "1614": {
-    "name": "Saccheggiatore Sovraccaricato"
+  "918": {
+    "name": "Piagnone Mummificato"
   },
-  "1615": {
-    "name": "Rabberciatore Arrugginito"
+  "919": {
+    "name": "Campione Necrotico"
   },
-  "1616": {
-    "name": "Tiratore Scelto Nervoso"
+  "920": {
+    "name": "Residuo dei Nephilim"
   },
-  "1617": {
+  "921": {
+    "name": "Spettro di ossidiana"
+  },
+  "922": {
+    "name": "Stregone dell'oceano"
+  },
+  "923": {
+    "name": "Dorsocresta di Branco"
+  },
+  "924": {
+    "name": "Clorolama fantasma"
+  },
+  "925": {
+    "name": "Colosso del plasma"
+  },
+  "926": {
+    "name": "Golem primordiale"
+  },
+  "927": {
+    "name": "Titano delle Fauci Terremotiche"
+  },
+  "928": {
+    "name": "Fluttuazione quantistica"
+  },
+  "929": {
+    "name": "Intelletto quantistico"
+  },
+  "930": {
+    "name": "Supersoldato quantico"
+  },
+  "931": {
+    "name": "Silfide di Quarzo"
+  },
+  "932": {
+    "name": "Condotto Furioso"
+  },
+  "933": {
+    "name": "Spettro Furioso"
+  },
+  "934": {
+    "name": "Reaganita"
+  },
+  "935": {
+    "name": "Mastino d'Ossario Irrequieto"
+  },
+  "936": {
+    "name": "Redivivo Irrequieto"
+  },
+  "937": {
+    "name": "Tessitrice di Brina"
+  },
+  "938": {
+    "name": "Attaccabrighe Arrugginito"
+  },
+  "939": {
+    "name": "Spettro Tumulare Salato"
+  },
+  "940": {
+    "name": "Corridartiglio Sfregiato"
+  },
+  "941": {
+    "name": "Condotto Rovente"
+  },
+  "942": {
+    "name": "Selene la strega del vuoto"
+  },
+  "943": {
+    "name": "Singolarità Prima"
+  },
+  "944": {
+    "name": "Cecchina sirena"
+  },
+  "945": {
+    "name": "Corridartiglio Affamato"
+  },
+  "946": {
+    "name": "Felino Sciabola Affamato"
+  },
+  "947": {
+    "name": "Sovrano di Stratos"
+  },
+  "948": {
+    "name": "Leviatano della palude"
+  },
+  "949": {
+    "name": "Wyvern della Tempesta"
+  },
+  "950": {
+    "name": "Titanoterio Alfa"
+  },
+  "951": {
+    "name": "Signore Totemico"
+  },
+  "952": {
+    "name": "Ala notturna vampirica"
+  },
+  "953": {
+    "name": "Pianta parassita del vuoto"
+  },
+  "954": {
+    "name": "Stregone del Vuoto"
+  },
+  "955": {
+    "name": "Squalo vulcanico"
+  },
+  "956": {
+    "name": "Wyvern vulcanico"
+  },
+  "957": {
+    "name": "Tormentatore Sussurrante"
+  },
+  "958": {
+    "name": "Presagio d'inverno"
+  },
+  "959": {
+    "name": "Araldo d'inverno"
+  },
+  "960": {
+    "name": "Xylomanti floreo"
+  },
+  "961": {
+    "name": "Maestro del Pugno Zen"
+  },
+  "962": {
+    "name": "<-- 61-70 -->"
+  },
+  "963": {
+    "name": "Nato del Pantano Acido"
+  },
+  "964": {
+    "name": "Bambola al contrario"
+  },
+  "965": {
+    "name": "Fonte battesimale"
+  },
+  "966": {
+    "name": "Muffa Gonfia"
+  },
+  "967": {
+    "name": "Poltiglia Gonfia"
+  },
+  "968": {
     "name": "Scagnozzo Qualunque"
   },
-  "1618": {
+  "969": {
+    "name": "Poltiglia Salmastra"
+  },
+  "970": {
+    "name": "Nato del Pantano Caustico"
+  },
+  "971": {
+    "name": "Arbitro Celeste"
+  },
+  "972": {
+    "name": "Avatar Celeste"
+  },
+  "973": {
+    "name": "Spolpaossa del Sudario"
+  },
+  "974": {
+    "name": "Camminatombe del Sudario"
+  },
+  "975": {
+    "name": "Budino Stridulo"
+  },
+  "976": {
+    "name": "Choronzon"
+  },
+  "977": {
+    "name": "Pellespine di Brace"
+  },
+  "978": {
+    "name": "Schiavo Avvolto nella Cenere"
+  },
+  "979": {
+    "name": "Colore fuori dal suono"
+  },
+  "980": {
+    "name": "Effigie Crepitante"
+  },
+  "981": {
+    "name": "Colosso in rovina"
+  },
+  "982": {
+    "name": "Spolpaossa della Cripta"
+  },
+  "983": {
+    "name": "Gigante di cristallo"
+  },
+  "984": {
+    "name": "Grumo Cristallino"
+  },
+  "985": {
+    "name": "Monarca del Profondo"
+  },
+  "986": {
+    "name": "Digrignante Terribile"
+  },
+  "987": {
+    "name": "Cavaliere del Terrore"
+  },
+  "988": {
+    "name": "Campione di pugilato d'élite"
+  },
+  "989": {
+    "name": "Orso Emberclaw"
+  },
+  "990": {
+    "name": "Sanguisuga emotiva"
+  },
+  "991": {
+    "name": "Imp Zannuto"
+  },
+  "992": {
+    "name": "Lince Ferina"
+  },
+  "993": {
+    "name": "Calcolatrice della carne"
+  },
+  "994": {
+    "name": "Cavatore immondo"
+  },
+  "995": {
+    "name": "Bestia Cornuta di Gelo"
+  },
+  "996": {
+    "name": "Orso Zanna Gelida"
+  },
+  "997": {
+    "name": "Tartaruga Galeshell"
+  },
+  "998": {
+    "name": "Scarabeo Guscio Gelatinoso"
+  },
+  "999": {
+    "name": "Poltiglia Gelatinosa"
+  },
+  "1000": {
+    "name": "Succube Luccicante"
+  },
+  "1001": {
+    "name": "Testa di goblin"
+  },
+  "1002": {
+    "name": "Incantatore Goblin da Sommossa"
+  },
+  "1003": {
+    "name": "Monarca della tomba"
+  },
+  "1004": {
+    "name": "Collezionista di dolore"
+  },
+  "1005": {
+    "name": "Ecate la Signora della Peste"
+  },
+  "1006": {
+    "name": "Sciamano hobgoblin"
+  },
+  "1007": {
+    "name": "Folletto Cavo"
+  },
+  "1008": {
+    "name": "Cinghiale dagli Occhi Vuoti"
+  },
+  "1009": {
+    "name": "Segugio infernale"
+  },
+  "1010": {
+    "name": "Archivista dell'Inferno"
+  },
+  "1011": {
+    "name": "Balena al rovescio"
+  },
+  "1012": {
+    "name": "Fame invertita"
+  },
+  "1013": {
+    "name": "Kraken Leviatano"
+  },
+  "1014": {
+    "name": "Ninnananna Spettro"
+  },
+  "1015": {
+    "name": "Mano Mozzata di Maat"
+  },
+  "1016": {
+    "name": "Teatro dei burattini di carne"
+  },
+  "1017": {
+    "name": "Araldo meccanizzato"
+  },
+  "1018": {
+    "name": "Sanguisuga della memoria"
+  },
+  "1019": {
+    "name": "Manipolatore mentale"
+  },
+  "1020": {
+    "name": "Scultore della mente"
+  },
+  "1021": {
+    "name": "Drago di palude"
+  },
+  "1022": {
+    "name": "Sentinella Fusa"
+  },
+  "1023": {
+    "name": "Morgana la Tessitrice di Sangue"
+  },
+  "1024": {
+    "name": "Prodigio Mistico"
+  },
+  "1025": {
+    "name": "Tartaruga della Maledizione della Notte"
+  },
+  "1026": {
+    "name": "Avatar di Nyarlathotep"
+  },
+  "1027": {
+    "name": "Condotto di Ossidiana"
+  },
+  "1028": {
+    "name": "Elementale di Ossidiana"
+  },
+  "1029": {
+    "name": "Campione Orco"
+  },
+  "1030": {
+    "name": "Esecutore Sovraccaricato"
+  },
+  "1031": {
+    "name": "Saccheggiatore Sovraccaricato"
+  },
+  "1032": {
+    "name": "Corridartiglio di Branco"
+  },
+  "1033": {
+    "name": "Lince di Branco"
+  },
+  "1034": {
+    "name": "Diavoletto Vincolato dal Patto"
+  },
+  "1035": {
+    "name": "Evocatore del permafrost"
+  },
+  "1036": {
+    "name": "Silfide Pietrificata"
+  },
+  "1037": {
+    "name": "Sudario della Peste"
+  },
+  "1038": {
+    "name": "Involucro della Peste"
+  },
+  "1039": {
+    "name": "Larva Tremolante"
+  },
+  "1040": {
+    "name": "Lince Rabbiosa"
+  },
+  "1041": {
+    "name": "Animus Furioso"
+  },
+  "1042": {
+    "name": "Nato del Colosso Furioso"
+  },
+  "1043": {
+    "name": "Rattus Sapscream"
+  },
+  "1044": {
+    "name": "Distorsore della realtà"
+  },
+  "1045": {
     "name": "Bot Rinnegato"
   },
-  "1619": {
+  "1046": {
+    "name": "Portaferetro Irrequieto"
+  },
+  "1047": {
+    "name": "Predone Arrugginito"
+  },
+  "1048": {
+    "name": "Rabberciatore Arrugginito"
+  },
+  "1049": {
+    "name": "Barattolo urlante"
+  },
+  "1050": {
+    "name": "Wyrm di magma ustionante"
+  },
+  "1051": {
+    "name": "Ferita senziente"
+  },
+  "1052": {
+    "name": "Muffa Guizzante"
+  },
+  "1053": {
+    "name": "Digrignante di Tempesta"
+  },
+  "1054": {
+    "name": "Abominio legato alle corde"
+  },
+  "1055": {
+    "name": "Gremlin di Zolfo"
+  },
+  "1056": {
+    "name": "Nato del Pantano Brulicante"
+  },
+  "1057": {
+    "name": "Il Tessitore di Sogni"
+  },
+  "1058": {
+    "name": "Guardia Infranta di Thoth"
+  },
+  "1059": {
+    "name": "Parassita del pensiero"
+  },
+  "1060": {
+    "name": "Orso Fauci di Tuono"
+  },
+  "1061": {
+    "name": "Tiratore Scelto Nervoso"
+  },
+  "1062": {
     "name": "Rabberciatore Nervoso"
   },
-  "1620": {
-    "name": "Bracconiere Prezzolato"
+  "1063": {
+    "name": "Signore del Veleno"
   },
-  "1621": {
-    "name": "Scagnozzo di Leva"
+  "1064": {
+    "name": "Ondina Sussurrante"
   },
-  "1622": {
-    "name": "Drone Nervoso"
+  "1065": {
+    "name": "Leviatano del vento"
   },
-  "1623": {
-    "name": "Bot Veterano"
+  "1066": {
+    "name": "Mastino d'Ossario Avvizzito"
   },
-  "1624": {
-    "name": "Fuorilegge Rinnegato"
+  "1067": {
+    "name": "Piagnone Avvizzito"
   },
-  "1625": {
-    "name": "Vedetta di Rottame"
+  "1068": {
+    "name": "Progenie di Yog-Sothoth"
   },
-  "1626": {
-    "name": "Attaccabrighe Sovraccaricato"
+  "1069": {
+    "name": "<-- 71-80 -->"
   },
-  "1627": {
-    "name": "Bot Brizzolato"
+  "1070": {
+    "name": "Imitatore dell'aborto"
   },
-  "1628": {
+  "1071": {
+    "name": "Larva Acida"
+  },
+  "1072": {
+    "name": "Drago Antico :EP"
+  },
+  "1073": {
+    "name": "Statua sanguinante"
+  },
+  "1074": {
     "name": "Rabberciatore Qualunque"
   },
-  "1629": {
-    "name": "Picchiatore Mascherato"
+  "1075": {
+    "name": "Orchestra d'ossa"
   },
-  "1630": {
+  "1076": {
+    "name": "Budino Salmastro"
+  },
+  "1077": {
+    "name": "Sentinel Mk. IV in ottone"
+  },
+  "1078": {
+    "name": "Edificio Respirante"
+  },
+  "1079": {
+    "name": "Ondina di Zolfo Ardente"
+  },
+  "1080": {
+    "name": "Spiritello di Zolfo Ardente"
+  },
+  "1081": {
+    "name": "Ingannatore Saltellante"
+  },
+  "1082": {
+    "name": "Carapace Caustico"
+  },
+  "1083": {
+    "name": "Cavaliere d'Ossa del Sudario"
+  },
+  "1084": {
+    "name": "Scarabeo Guscio Stridulo"
+  },
+  "1085": {
+    "name": "Lupo Terribile di Brace"
+  },
+  "1086": {
+    "name": "Baluardo di ingranaggi"
+  },
+  "1087": {
+    "name": "Scagnozzo di Leva"
+  },
+  "1088": {
+    "name": "Elementale Crepitante"
+  },
+  "1089": {
+    "name": "Spettro Tumulare della Cripta"
+  },
+  "1090": {
+    "name": "Insetto Fuco Cristallino"
+  },
+  "1091": {
+    "name": "Tartaruga dal guscio d'alba"
+  },
+  "1092": {
+    "name": "Corridartiglio Terribile"
+  },
+  "1093": {
+    "name": "Drago della Morte Nergal"
+  },
+  "1094": {
+    "name": "Colosso di Metallo"
+  },
+  "1095": {
+    "name": "Sporemantle di Eldergloom"
+  },
+  "1096": {
+    "name": "Scorpione Infernale di Emberback"
+  },
+  "1097": {
+    "name": "Wyrm dell'Entropia :EP"
+  },
+  "1098": {
+    "name": "Predatore Furtivo Ferino"
+  },
+  "1099": {
+    "name": "Ragno tessitore di carne"
+  },
+  "1100": {
+    "name": "Redivivo Congelato"
+  },
+  "1101": {
+    "name": "Corridartiglio Emaciato"
+  },
+  "1102": {
+    "name": "Grumo Gelatinoso"
+  },
+  "1103": {
+    "name": "Divoratore di geometria"
+  },
+  "1104": {
+    "name": "Spiritello Farfugliante"
+  },
+  "1105": {
+    "name": "Redivivo Dorato"
+  },
+  "1106": {
+    "name": "Diavoletto Luccicante"
+  },
+  "1107": {
+    "name": "Larva Scintillante"
+  },
+  "1108": {
+    "name": "Testa di goblin"
+  },
+  "1109": {
+    "name": "Signore del Mosh Goblin"
+  },
+  "1110": {
+    "name": "Stregone Goblin"
+  },
+  "1111": {
+    "name": "Verme gravitazionale"
+  },
+  "1112": {
+    "name": "Bot Brizzolato"
+  },
+  "1113": {
     "name": "Rabberciatore Brizzolato"
   },
-  "1631": {
+  "1114": {
+    "name": "Bracconiere Prezzolato"
+  },
+  "1115": {
+    "name": "Spolpaossa Cavo"
+  },
+  "1116": {
+    "name": "Madre vuota"
+  },
+  "1117": {
+    "name": "Dorsosetole dagli Occhi Vuoti"
+  },
+  "1118": {
+    "name": "Angelo invertito"
+  },
+  "1119": {
+    "name": "Strisciante Iridescente"
+  },
+  "1120": {
+    "name": "Automa del Bastione di Ferro"
+  },
+  "1121": {
+    "name": "Spiritello Torvo"
+  },
+  "1122": {
+    "name": "Maat Dentro Eris"
+  },
+  "1123": {
+    "name": "Dorsocresta Rognoso"
+  },
+  "1124": {
+    "name": "Picchiatore Mascherato"
+  },
+  "1125": {
+    "name": "Nato del Pantano Fuso"
+  },
+  "1126": {
+    "name": "Muffa Fusa"
+  },
+  "1127": {
+    "name": "Guardiano Fuso"
+  },
+  "1128": {
+    "name": "Corridartiglio Infangato"
+  },
+  "1129": {
+    "name": "Digrignante Infangato"
+  },
+  "1130": {
+    "name": "Predatore Furtivo Infangato"
+  },
+  "1131": {
+    "name": "Colosso dell'Ossario"
+  },
+  "1132": {
+    "name": "Attaccabrighe Sovraccaricato"
+  },
+  "1133": {
+    "name": "Bestia Cornuta di Branco"
+  },
+  "1134": {
+    "name": "Sciacallo di Branco"
+  },
+  "1135": {
+    "name": "Demonio Vincolato dal Patto"
+  },
+  "1136": {
+    "name": "Effigie Pietrificata"
+  },
+  "1137": {
+    "name": "Cucciolo di Petrodemone"
+  },
+  "1138": {
+    "name": "Ragno di probabilità"
+  },
+  "1139": {
+    "name": "Tartaruga Pyroshell"
+  },
+  "1140": {
+    "name": "Fuoco Fatuo di Quarzo"
+  },
+  "1141": {
+    "name": "Carapace Tremolante"
+  },
+  "1142": {
+    "name": "Tasso Rabbioso"
+  },
+  "1143": {
+    "name": "Monolito Radiante"
+  },
+  "1144": {
+    "name": "Fuorilegge Rinnegato"
+  },
+  "1145": {
+    "name": "Spolpaossa Irrequieto"
+  },
+  "1146": {
+    "name": "Cadavere Irrequieto"
+  },
+  "1147": {
+    "name": "Schiavo Irrequieto"
+  },
+  "1148": {
+    "name": "Involucro Putrescente"
+  },
+  "1149": {
+    "name": "Dorsosetole Sfregiato"
+  },
+  "1150": {
+    "name": "Vedetta di Rottame"
+  },
+  "1151": {
+    "name": "Spirito Rovente"
+  },
+  "1152": {
+    "name": "Insetto Fuco Guizzante"
+  },
+  "1153": {
+    "name": "Strisciante Fangoso"
+  },
+  "1154": {
+    "name": "Diavoletto Dispettoso"
+  },
+  "1155": {
+    "name": "Tartaruga dal guscio di tempesta"
+  },
+  "1156": {
+    "name": "Bisbigliante di Zolfo"
+  },
+  "1157": {
+    "name": "Involucro Sprofondato"
+  },
+  "1158": {
+    "name": "Sciamante Brulicante"
+  },
+  "1159": {
+    "name": "Nato del Colosso di Tempesta"
+  },
+  "1160": {
+    "name": "Condotto di Tempesta"
+  },
+  "1161": {
+    "name": "Calabrone temporale"
+  },
+  "1162": {
+    "name": "Il Cubo Che Non Fu"
+  },
+  "1163": {
+    "name": "Lince a Tre Code"
+  },
+  "1164": {
+    "name": "Tiamat, Madre del Caos"
+  },
+  "1165": {
+    "name": "Insetto Fuco Sussultante"
+  },
+  "1166": {
+    "name": "Poltiglia Sussultante"
+  },
+  "1167": {
+    "name": "Drone Nervoso"
+  },
+  "1168": {
     "name": "Guastatore Nervoso"
   },
-  "1632": {
-    "name": "Rabberciatore Prezzolato"
+  "1169": {
+    "name": "Strangolatore ombelicale"
   },
-  "1633": {
-    "name": "Bot di Rottame"
+  "1170": {
+    "name": "Bot Veterano"
   },
-  "1634": {
-    "name": "Bot Mascherato"
+  "1171": {
+    "name": "Urlatore del Vuoto"
   },
-  "1635": {
-    "name": "Saccheggiatore di Leva"
+  "1172": {
+    "name": "Porta sussurrante"
   },
-  "1636": {
-    "name": "Drone Rinnegato"
+  "1173": {
+    "name": "Involucro Avvizzito"
   },
-  "1637": {
-    "name": "Fuorilegge Mascherato"
+  "1174": {
+    "name": "Schiavo Avvizzito"
   },
-  "1638": {
-    "name": "Picchiatore di Leva"
+  "1175": {
+    "name": "Grembo degli incubi"
   },
-  "1639": {
-    "name": "Scagnozzo di Rottame"
+  "1176": {
+    "name": "<-- 81-90 -->"
   },
-  "1640": {
-    "name": "Esecutore Rinnegato"
+  "1177": {
+    "name": "Drago marino abissale"
   },
-  "1641": {
+  "1178": {
+    "name": "Messaggero di Aiwass"
+  },
+  "1179": {
+    "name": "Avatar delle Sette Sorelle"
+  },
+  "1180": {
+    "name": "Piccione tosto"
+  },
+  "1181": {
+    "name": "Golem di basalto"
+  },
+  "1182": {
+    "name": "Elementale dell'Inferno Fiammeggiante"
+  },
+  "1183": {
+    "name": "Carapace Gonfio"
+  },
+  "1184": {
+    "name": "Lupo Terribile dalle Fauci di Sangue"
+  },
+  "1185": {
+    "name": "Segugio Fauci dalle Fauci di Sangue"
+  },
+  "1186": {
+    "name": "Behemoth della palude"
+  },
+  "1187": {
+    "name": "Demonio di Zolfo Ardente"
+  },
+  "1188": {
+    "name": "Bisbigliante di Zolfo Ardente"
+  },
+  "1189": {
+    "name": "Diavoletto Saltellante"
+  },
+  "1190": {
+    "name": "Demonio Saltellante"
+  },
+  "1191": {
+    "name": "Drago Celeste Anshar"
+  },
+  "1192": {
+    "name": "Tirannosauro celeste"
+  },
+  "1193": {
+    "name": "Cerbero Sentinella"
+  },
+  "1194": {
+    "name": "La fine dell'infanzia"
+  },
+  "1195": {
+    "name": "Sentinella Avvolta nella Cenere"
+  },
+  "1196": {
     "name": "Automa di Leva"
   },
-  "1642": {
-    "name": "Bot Nervoso"
+  "1197": {
+    "name": "Picchiatore di Leva"
   },
-  "1643": {
+  "1198": {
+    "name": "Saccheggiatore di Leva"
+  },
+  "1199": {
+    "name": "Animus Crepitante"
+  },
+  "1200": {
+    "name": "Redivivo Crepitante"
+  },
+  "1201": {
+    "name": "Luminspore striscianti"
+  },
+  "1202": {
+    "name": "Gel Cristallino"
+  },
+  "1203": {
+    "name": "Larva Cristallina"
+  },
+  "1204": {
+    "name": "Mimic di Diamante :EP"
+  },
+  "1205": {
+    "name": "Scimpanzé dopato"
+  },
+  "1206": {
+    "name": "Drago degli Inferi Kur"
+  },
+  "1207": {
+    "name": "Imperatore Deathstalker"
+  },
+  "1208": {
+    "name": "Tasso Ferino"
+  },
+  "1209": {
+    "name": "Dorsocresta Ferino"
+  },
+  "1210": {
+    "name": "Cavaliere d'Ossa Dimenticato"
+  },
+  "1211": {
+    "name": "Schiavo Dimenticato"
+  },
+  "1212": {
+    "name": "Drago del gelo"
+  },
+  "1213": {
+    "name": "Monarca del gelo"
+  },
+  "1214": {
+    "name": "Costrutto Congelato"
+  },
+  "1215": {
+    "name": "Sentinella Congelata"
+  },
+  "1216": {
+    "name": "Lince Emaciata"
+  },
+  "1217": {
+    "name": "Squartatore Emaciato"
+  },
+  "1218": {
+    "name": "Demonio Farfugliante"
+  },
+  "1219": {
+    "name": "Schiavo Dorato"
+  },
+  "1220": {
+    "name": "Signore della guerra di metallo goblin"
+  },
+  "1221": {
+    "name": "Capo della Guerra Goblin"
+  },
+  "1222": {
+    "name": "Cavaliere d'Ossa Legato alla Tomba"
+  },
+  "1223": {
+    "name": "Camminatombe Legato alla Tomba"
+  },
+  "1224": {
+    "name": "Piagnone Legato alla Tomba"
+  },
+  "1225": {
+    "name": "Cambion Maleficante"
+  },
+  "1226": {
+    "name": "Rabberciatore Prezzolato"
+  },
+  "1227": {
+    "name": "Mastino d'Ossario Cavo"
+  },
+  "1228": {
+    "name": "Bisbigliante Cavo"
+  },
+  "1229": {
+    "name": "Elementale Urlante"
+  },
+  "1230": {
+    "name": "Redivivo Urlante"
+  },
+  "1231": {
+    "name": "Fame incarnata"
+  },
+  "1232": {
+    "name": "Grimorio iperdimensionale"
+  },
+  "1233": {
+    "name": "Annientatore infernale"
+  },
+  "1234": {
+    "name": "Devastatore infernale"
+  },
+  "1235": {
+    "name": "Lupo Terribile dalle Zanne di Ferro"
+  },
+  "1236": {
+    "name": "Segugio Fauci dalle Zanne di Ferro"
+  },
+  "1237": {
+    "name": "Discarica Leviatano"
+  },
+  "1238": {
+    "name": "Sciacallo Solitario"
+  },
+  "1239": {
+    "name": "Leviatano del Maelstrom"
+  },
+  "1240": {
+    "name": "Bot Mascherato"
+  },
+  "1241": {
+    "name": "Fuorilegge Mascherato"
+  },
+  "1242": {
     "name": "Predone Mascherato"
   },
-  "1644": {
-    "name": "Predone Sovraccaricato"
+  "1243": {
+    "name": "Sfondaspecchi"
   },
-  "1645": {
-    "name": "Bracconiere Rinnegato"
+  "1244": {
+    "name": "Bisbigliante Beffardo"
   },
-  "1646": {
-    "name": "Automa Recuperato"
+  "1245": {
+    "name": "Juggernaut Fuso"
   },
-  "1647": {
-    "name": "Automa di Rottame"
+  "1246": {
+    "name": "Silfide Fusa"
   },
-  "1648": {
-    "name": "Vedetta Recuperata"
+  "1247": {
+    "name": "Goblin mutato"
   },
-  "1649": {
+  "1248": {
+    "name": "Granchio non euclideo"
+  },
+  "1249": {
+    "name": "Segugio infernale di ossidiana"
+  },
+  "1250": {
+    "name": "Signore della guerra degli orchi"
+  },
+  "1251": {
+    "name": "Giudice Ophanim"
+  },
+  "1252": {
+    "name": "Direttore dell'orfanotrofio"
+  },
+  "1253": {
+    "name": "Drago del permafrost"
+  },
+  "1254": {
+    "name": "Drago dell'oceano primordiale Abzu"
+  },
+  "1255": {
+    "name": "Il cadavere del burattinaio"
+  },
+  "1256": {
+    "name": "Nato del Colosso di Quarzo"
+  },
+  "1257": {
+    "name": "Cosa di Covata Tremolante"
+  },
+  "1258": {
+    "name": "Mente Alveare Tremolante"
+  },
+  "1259": {
+    "name": "Paradosso ricorsivo"
+  },
+  "1260": {
+    "name": "Drone Rinnegato"
+  },
+  "1261": {
+    "name": "Esecutore Rinnegato"
+  },
+  "1262": {
+    "name": "Camminatombe Irrequieto"
+  },
+  "1263": {
+    "name": "Bot di Rottame"
+  },
+  "1264": {
+    "name": "Scagnozzo di Rottame"
+  },
+  "1265": {
+    "name": "Elementale Rovente"
+  },
+  "1266": {
+    "name": "Shoggoth"
+  },
+  "1267": {
+    "name": "Folletto Dispettoso"
+  },
+  "1268": {
+    "name": "Digrignante Affamato"
+  },
+  "1269": {
+    "name": "Enlil, il re drago della tempesta"
+  },
+  "1270": {
+    "name": "Araldo della tempesta"
+  },
+  "1271": {
+    "name": "Portaferetro Sprofondato"
+  },
+  "1272": {
+    "name": "Chirurgo delle anime"
+  },
+  "1273": {
+    "name": "Balano temporale"
+  },
+  "1274": {
+    "name": "Tartaruga di Terraclaw"
+  },
+  "1275": {
+    "name": "Bestia Cornuta a Tre Code"
+  },
+  "1276": {
+    "name": "Tartaruga carapace di marea"
+  },
+  "1277": {
+    "name": "Totem dei peccati"
+  },
+  "1278": {
+    "name": "Bot Nervoso"
+  },
+  "1279": {
+    "name": "Manipolatore del vuoto"
+  },
+  "1280": {
+    "name": "Tessitore del Vuoto"
+  },
+  "1281": {
+    "name": "Colosso di guerra"
+  },
+  "1282": {
+    "name": "Sì-Sothoth Spawn :EP"
+  },
+  "1283": {
+    "name": "<-- 91-100 -->"
+  },
+  "1284": {
+    "name": "Leviatano abissale"
+  },
+  "1285": {
+    "name": "Drago antico"
+  },
+  "1286": {
+    "name": "Arcimago Arcano"
+  },
+  "1287": {
     "name": "Tiratore Scelto da Vicolo"
   },
-  "1650": {
-    "name": "<-- Superboss -->"
+  "1288": {
+    "name": "Albero all'indietro"
   },
-  "1651": {
+  "1289": {
+    "name": "Mech da battaglia :EP"
+  },
+  "1290": {
+    "name": "Contessa Sanguinaria :EP"
+  },
+  "1291": {
+    "name": "Colosso Sanguisuga di Sangue"
+  },
+  "1292": {
+    "name": "Cambion di Zolfo Ardente"
+  },
+  "1293": {
+    "name": "Diavoletto di Zolfo Ardente"
+  },
+  "1294": {
+    "name": "Ondina Saltellante"
+  },
+  "1295": {
+    "name": "Folletto Saltellante"
+  },
+  "1296": {
+    "name": "Spettro Tumulare Avvolto nella Cenere"
+  },
+  "1297": {
     "name": "Cadavere di Maat"
+  },
+  "1298": {
+    "name": "Vampiro Cremisi :EP"
+  },
+  "1299": {
+    "name": "Leviatano Greggio"
+  },
+  "1300": {
+    "name": "Albero che piange"
+  },
+  "1301": {
+    "name": "Redivivo della Cripta"
+  },
+  "1302": {
+    "name": "Drago della Saggezza Enki"
+  },
+  "1303": {
+    "name": "Wyrm dell'Entropia"
+  },
+  "1304": {
+    "name": "Eris, Giudizio della Discordia"
+  },
+  "1305": {
+    "name": "Festa della Carestia"
+  },
+  "1306": {
+    "name": "Mastino d'Ossario Dimenticato"
+  },
+  "1307": {
+    "name": "Sentinella Dimenticata"
+  },
+  "1308": {
+    "name": "Colosso di gelo"
+  },
+  "1309": {
+    "name": "Tartaruga gelida"
+  },
+  "1310": {
+    "name": "Monolito Congelato"
+  },
+  "1311": {
+    "name": "Tessimalefici Farfugliante"
+  },
+  "1312": {
+    "name": "Ingannatore Farfugliante"
+  },
+  "1313": {
+    "name": "Lichetto Dorato"
+  },
+  "1314": {
+    "name": "Sentinella Dorata"
+  },
+  "1315": {
+    "name": "Spettro Glaciale"
+  },
+  "1316": {
+    "name": "Tessimalefici Luccicante"
+  },
+  "1317": {
+    "name": "Spiritello Luccicante"
+  },
+  "1318": {
+    "name": "Ingannatore Luccicante"
+  },
+  "1319": {
+    "name": "Re dei Goblin"
+  },
+  "1320": {
+    "name": "Negromante goblin"
+  },
+  "1321": {
+    "name": "Stregone Ombra Goblin"
+  },
+  "1322": {
+    "name": "Regina Gorgone"
+  },
+  "1323": {
+    "name": "Costrutto Stridente"
+  },
+  "1324": {
+    "name": "Spirito Stridente"
+  },
+  "1325": {
+    "name": "Camminatombe Cavo"
+  },
+  "1326": {
+    "name": "Imp Cavo"
+  },
+  "1327": {
+    "name": "Succube Cava"
+  },
+  "1328": {
+    "name": "Spettro Tumulare Cavo"
+  },
+  "1329": {
+    "name": "Limulo"
+  },
+  "1330": {
+    "name": "Silfide Urlante"
+  },
+  "1331": {
+    "name": "Prodigio infernale"
+  },
+  "1332": {
+    "name": "Folletto Torvo"
+  },
+  "1333": {
+    "name": "Elementale Vivente"
+  },
+  "1334": {
+    "name": "Sentinella Vivente"
+  },
+  "1335": {
+    "name": "Titano di Magma"
+  },
+  "1336": {
+    "name": "Reparto maternità"
+  },
+  "1337": {
+    "name": "Megalodonte Primo"
+  },
+  "1338": {
+    "name": "Ondina Beffarda"
+  },
+  "1339": {
+    "name": "Ombra Beffarda"
+  },
+  "1340": {
+    "name": "Nato del Colosso Fuso"
+  },
+  "1341": {
+    "name": "Costrutto Fuso"
+  },
+  "1342": {
+    "name": "Oratore motivazionale: EP"
+  },
+  "1343": {
+    "name": "Camminatombe Mummificato"
+  },
+  "1344": {
+    "name": "Sovrano dell'incubo"
+  },
+  "1345": {
+    "name": "Animus di Ossidiana"
+  },
+  "1346": {
+    "name": "Arcimago Ogre"
+  },
+  "1347": {
+    "name": "Predone Sovraccaricato"
+  },
+  "1348": {
+    "name": "Ondina Vincolata dal Patto"
+  },
+  "1349": {
+    "name": "Monolito Pietrificato"
+  },
+  "1350": {
+    "name": "Guardiano Pietrificato"
+  },
+  "1351": {
+    "name": "Portaferetro della Peste"
+  },
+  "1352": {
+    "name": "Colosso Porfirinico"
+  },
+  "1353": {
+    "name": "Piroclasta Phoenix"
+  },
+  "1354": {
+    "name": "Arconte Quantico"
+  },
+  "1355": {
+    "name": "Fluttuazione quantistica :EP"
+  },
+  "1356": {
+    "name": "Spettro di Quarzo"
+  },
+  "1357": {
+    "name": "Monolito di Quarzo"
+  },
+  "1358": {
+    "name": "Arciprete Radiante"
+  },
+  "1359": {
+    "name": "Sentinella Furiosa"
+  },
+  "1360": {
+    "name": "Piegatore della Realtà"
+  },
+  "1361": {
+    "name": "Bracconiere Rinnegato"
+  },
+  "1362": {
+    "name": "Kraken Sacro"
+  },
+  "1363": {
+    "name": "Fenice Sacra"
+  },
+  "1364": {
+    "name": "Camminatombe Salato"
+  },
+  "1365": {
+    "name": "Automa Recuperato"
+  },
+  "1366": {
+    "name": "Vedetta Recuperata"
+  },
+  "1367": {
+    "name": "Automa di Rottame"
+  },
+  "1368": {
+    "name": "Serafino del Settimo Velo"
+  },
+  "1369": {
+    "name": "Cambion Dispettoso"
+  },
+  "1370": {
+    "name": "Tormentatore Dispettoso"
+  },
+  "1371": {
+    "name": "Behemoth della tempesta"
+  },
+  "1372": {
+    "name": "Cambion di Zolfo"
+  },
+  "1373": {
+    "name": "Ondina di Zolfo"
+  },
+  "1374": {
+    "name": "Ombra di Zolfo"
+  },
+  "1375": {
+    "name": "Spiritello di Zolfo"
+  },
+  "1376": {
+    "name": "Camminatombe Sprofondato"
+  },
+  "1377": {
+    "name": "Dio Drago Supremo Usumgallu"
+  },
+  "1378": {
+    "name": "Costrutto Impetuoso"
+  },
+  "1379": {
+    "name": "Elementale Impetuoso"
+  },
+  "1380": {
+    "name": "Silfide Impetuosa"
+  },
+  "1381": {
+    "name": "Silfide di Tempesta"
+  },
+  "1382": {
+    "name": "Fuoco Fatuo di Tempesta"
+  },
+  "1383": {
+    "name": "La Fiamma di Bascape"
+  },
+  "1384": {
+    "name": "Il Pozzo Che Sogna"
+  },
+  "1385": {
+    "name": "Colosso Lucertola del Tuono"
+  },
+  "1386": {
+    "name": "Titano Anaconda"
+  },
+  "1387": {
+    "name": "Gremlin del Crepuscolo"
+  },
+  "1388": {
+    "name": "Folletto del Crepuscolo"
+  },
+  "1389": {
+    "name": "Ombra del Crepuscolo"
   }
 }
