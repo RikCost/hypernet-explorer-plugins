@@ -542,6 +542,10 @@
     const infectiousDays = Math.max(3, CHRONIC(disease) ? 21 : (disease.durationDays || 10));
     const strainRng = _rng(`strain:${disease.id}:${place.key}:${day}`); // i18n-ignore: rng seed
     const strain = EPI.STRAIN_MIN + strainRng.next() * (EPI.STRAIN_MAX - EPI.STRAIN_MIN);
+    const windowDays = Math.max(1, (disease.phases && (disease.phases.window || disease.phases.incubation)) || 5);
+    const isCovert = !!o.covert;
+    const revealDay = o.revealDay != null ? o.revealDay : (isCovert ? day + windowDays : day);
+
     const epidemic = {
       id: `EPI-${String(state.seq).padStart(4, '0')}`,
       diseaseId: disease.id,
@@ -562,19 +566,32 @@
       history: [],
       totals: { cases: 0, dead: 0, recovered: 0, peak: 0, peakDay: day, places: 1 },
       log: [],
+      playerStarted: !!o.playerStarted,
+      covert: isCovert,
+      revealDay,
+      fromParty: !!o.fromParty,
+      partyActors: o.actorId ? [o.actorId] : (Array.isArray(o.partyActors) ? o.partyActors : []),
+      originNpc: o.originNpc || null,
+      notifiedThresholds: Array.isArray(o.notifiedThresholds) ? o.notifiedThresholds : [],
     };
     // A city's index cluster is bigger than a village's: more people were
     // already carrying it by the time anyone filed the first case.
-    const cases = Math.min(place.population,
-      o.cases || Math.round(EPI.SEED_CASES * (1 + place.population / 40000)));
+    const defaultCases = o.playerStarted
+      ? (o.cases || 1)
+      : Math.round(EPI.SEED_CASES * (1 + place.population / 40000));
+    const cases = Math.min(place.population, o.cases || defaultCases);
     const site = _newSite(place, cases, epidemic.id);
     site.sinceDay = day;
     epidemic.sites[place.key] = site;
     epidemic.totals.cases = cases;
     epidemic.totals.peak = cases;
-    epidemic.log.push({ day, key: 'Epidemics.log.firstCases', params: { place: place.key } });
+    if (!isCovert) {
+      epidemic.log.push({ day, key: 'Epidemics.log.firstCases', params: { place: place.key } });
+      _announce(epidemic, place, day);
+    } else {
+      epidemic.log.push({ day, key: 'Epidemics.log.incubation', params: { place: place.key } });
+    }
     state.active.push(epidemic);
-    _announce(epidemic, place, day);
     return epidemic;
   }
 
@@ -701,7 +718,107 @@
         params: { cases: Math.round(epidemic.totals.cases), dead: Math.round(epidemic.totals.dead) },
       });
     }
+    _checkThresholds(epidemic);
     return totalInfected;
+  }
+
+  const THRESHOLDS = [100, 1000, 10000, 100000, 1000000, 10000000];
+
+  function _checkThresholds(epidemic) {
+    if (!epidemic || !epidemic.playerStarted || epidemic.covert) return;
+    epidemic.notifiedThresholds = epidemic.notifiedThresholds || [];
+    const totalCases = Math.round(epidemic.totals.cases || 0);
+    for (const t of THRESHOLDS) {
+      if (totalCases >= t && !epidemic.notifiedThresholds.includes(t)) {
+        epidemic.notifiedThresholds.push(t);
+        _notifyThreshold(epidemic, t);
+      }
+    }
+  }
+
+  function _notifyThreshold(epidemic, threshold) {
+    if (!window.ParchmentToast) return;
+    const disease = DB.byId[epidemic.diseaseId];
+    const diseaseName = (disease && disease.name) || epidemic.diseaseName || _textOf(epidemic.name);
+    const countStr = threshold.toLocaleString ? threshold.toLocaleString() : String(threshold);
+    let msg = T('Epidemics.toast.threshold', {
+      disease: diseaseName,
+      count: countStr,
+    });
+    if (!msg || msg.startsWith('Epidemics.')) {
+      msg = `Outbreak Alert: ${diseaseName} has reached ${countStr} cases!`;
+    }
+    try {
+      window.ParchmentToast.show(msg, {
+        severity: threshold >= 10000 ? 'danger' : 'warning',
+        duration: 280,
+        icon: 177,
+        key: `epi-thresh:${epidemic.id}:${threshold}`,
+      });
+    } catch (e) { /* toasts are optional */ }
+  }
+
+  function startPlayerEpidemic(diseaseId, placeKey, opts) {
+    if (!ensureDb() || !Places.build()) return null;
+    const state = epiState();
+    if (!state) return null;
+    const disease = DB.byId[diseaseId];
+    if (!disease) return null;
+    const place = Places.get(placeKey) || _currentPlace() || Places.list[0];
+    if (!place) return null;
+
+    const day = _dayOf(nowMin());
+    const o = Object.assign({ playerStarted: true }, opts);
+
+    // If an active epidemic of this disease already exists at this place, merge/update it
+    let existing = state.active.find(e => e.diseaseId === diseaseId && e.sites[place.key]);
+    if (existing) {
+      existing.playerStarted = true;
+      if (!o.covert) {
+        existing.covert = false;
+      }
+      if (o.fromParty) {
+        existing.fromParty = true;
+        existing.partyActors = existing.partyActors || [];
+        if (o.actorId && !existing.partyActors.includes(o.actorId)) existing.partyActors.push(o.actorId);
+      }
+      const site = existing.sites[place.key];
+      if (site) {
+        site.infected = Math.max(1, (site.infected || 0) + 1);
+        site.cases = Math.max(1, (site.cases || 0) + 1);
+      }
+      return existing;
+    }
+
+    const ep = _startEpidemic(state, disease, place, day, o);
+    _syncWorldWeb(state, day);
+    return ep;
+  }
+
+  function _onActorEpidemicCured(actor, epidemicId) {
+    const s = epiState();
+    if (!s) return;
+    const epidemic = s.active.find(e => e.id === epidemicId);
+    if (!epidemic) return;
+    if (epidemic.partyActors) {
+      epidemic.partyActors = epidemic.partyActors.filter(id => id !== actor.actorId());
+    }
+    // If this epidemic was started from party, check if anyone else in the party still has it
+    if (epidemic.fromParty) {
+      const partyMembers = (window.$gameParty && $gameParty.members) ? $gameParty.members() : [];
+      const stillCarriedInParty = partyMembers.some(a =>
+        (a._diseases || []).some(d => d.id === epidemic.diseaseId || d.epidemic === epidemicId)
+      );
+      if (!stillCarriedInParty) {
+        // Check if there is any ongoing town spread
+        const totalTownInfected = Object.values(epidemic.sites || {})
+          .reduce((n, site) => n + (site.infected || 0), 0);
+        // If town spread is negligible (e.g. <= 1 case that was just the initial party index case), end it
+        if (totalTownInfected <= 1) {
+          window.EpidemicSystem.end(epidemic.id);
+        }
+      }
+    }
   }
 
   // Where it goes next: mostly the nearest town it has not reached, but travel
@@ -855,6 +972,7 @@
     all() { ensureDb(); return DB.diseases; },
     allConditions() { ensureDb(); return DB.conditions; },
     displayName(id) { const d = this.getDisease(id) || this.getCondition(id); return d ? d.name : id; },
+    startPlayerEpidemic(diseaseId, placeKey, opts) { return startPlayerEpidemic(diseaseId, placeKey, opts); },
 
     // Resolve any stored entry (disease OR condition) to its db object.
     resolve(entry) {
@@ -899,7 +1017,10 @@
         : actor._diseases.filter(e => e.id === id);
       if (id === 'all') { actor._diseases = []; }
       else actor._diseases = actor._diseases.filter(e => e.id !== id);
-      dropped.forEach(e => _grantSkills(actor, DB.byId[e.id], false));
+      dropped.forEach(e => {
+        _grantSkills(actor, DB.byId[e.id], false);
+        if (e.epidemic) _onActorEpidemicCured(actor, e.epidemic);
+      });
       if (actor.refresh) actor.refresh();
     },
 
@@ -976,7 +1097,7 @@
 
     // ── Story conditions ────────────────────────────────────────────────────
     // Conditions nobody catches: they are part of who a character is. Em walks
-    // out of the Solomonic Ritual carrying one (docs/Lore.odt) — the ritual took
+    // out of the Solomonic Ritual carrying one (docs/Lore.odt) - the ritual took
     // 92% of her memories and left a magical potential that keeps growing, which
     // is exactly what the condition says on the Health tab. Re-applied rather
     // than granted once, so it also reaches an Em from a save made before this
@@ -1364,11 +1485,16 @@
 
     // Deliberate transmission (Cough/Spit/Bite). Rolls each disease at full
     // transmission and returns the ids that successfully infected the NPC.
-    deliberateTransmit(profile, diseases) {
+    deliberateTransmit(profile, diseases, placeKey) {
       const hit = [];
+      const place = placeKey || (profile && profile._homeGroupName) || (_currentPlace() ? _currentPlace().key : null);
       for (const d of diseases || []) {
         if (this.npcHasDisease(profile, d.id)) continue;
-        if (Math.random() < d.transmission) { this.infectNpc(profile, d.id); hit.push(d.id); }
+        if (Math.random() < d.transmission) {
+          const ep = startPlayerEpidemic(d.id, place, { covert: false, playerStarted: true, originNpc: profile ? profile.name : null });
+          this.infectNpc(profile, d.id, ep ? ep.id : null);
+          hit.push(d.id);
+        }
       }
       return hit;
     },
@@ -2105,7 +2231,15 @@
       let from = state.lastDay + 1;
       if (day - from > EPI.MAX_CATCHUP_DAYS) from = day - EPI.MAX_CATCHUP_DAYS;
       for (let d = from; d <= day; d++) {
-        for (const epidemic of state.active.slice()) _stepEpidemic(epidemic, d);
+        for (const epidemic of state.active.slice()) {
+          if (epidemic.covert && epidemic.revealDay != null && d >= epidemic.revealDay) {
+            epidemic.covert = false;
+            epidemic.log.push({ day: d, key: 'Epidemics.log.firstCases', params: { place: epidemic.origin } });
+            const placeObj = Places.get(epidemic.origin) || { key: epidemic.origin };
+            _announce(epidemic, placeObj, d);
+          }
+          _stepEpidemic(epidemic, d);
+        }
         const finished = state.active.filter(e => e.status !== 'active');
         if (finished.length) {
           state.active = state.active.filter(e => e.status === 'active');
@@ -2144,19 +2278,25 @@
 
     // ── ledger ─────────────────────────────────────────────────────────────
     state() { return epiState(); },
-    active() { const s = epiState(); return s ? s.active : []; },
+    active() {
+      const s = epiState();
+      if (!s) return [];
+      const currentDay = _dayOf(nowMin());
+      return s.active.filter(e => !e.covert || (e.revealDay != null && currentDay >= e.revealDay));
+    },
+    allActive() { const s = epiState(); return s ? s.active : []; },
     past() { const s = epiState(); return s ? s.past : []; },
     get(id) {
       const s = epiState();
       if (!s) return null;
-      return s.active.find(e => e.id === id) || s.past.find(e => e.id === id) || null;
+      return this.active().find(e => e.id === id) || s.past.find(e => e.id === id) || null;
     },
 
     // Every active outbreak currently burning in a town.
     activeAt(placeKey) {
       const s = epiState();
       if (!s || !placeKey) return [];
-      return s.active.filter(e => {
+      return this.active().filter(e => {
         const site = e.sites[placeKey];
         return site && site.infected >= 1;
       });
@@ -2195,7 +2335,8 @@
       if (!s) return { active: 0, infected: 0, dead: 0, cases: 0, towns: 0, past: 0 };
       let infected = 0, dead = 0, cases = 0;
       const towns = new Set();
-      for (const e of s.active) {
+      const visible = this.active();
+      for (const e of visible) {
         for (const [key, site] of Object.entries(e.sites)) {
           infected += site.infected;
           if (site.infected >= 1) towns.add(key);
@@ -2209,7 +2350,7 @@
         pastCases += e.totals.cases;
       }
       return {
-        active: s.active.length, infected: Math.round(infected), dead: Math.round(dead),
+        active: visible.length, infected: Math.round(infected), dead: Math.round(dead),
         cases: Math.round(cases), towns: towns.size, past: s.past.length,
         // Everything this world has ever recorded, active and closed together.
         totalDead: Math.round(dead + pastDead), totalCases: Math.round(cases + pastCases),
@@ -2222,7 +2363,8 @@
       const s = epiState();
       if (!s) return [];
       const rows = {};
-      for (const e of s.active) {
+      const visible = this.active();
+      for (const e of visible) {
         for (const [key, site] of Object.entries(e.sites)) {
           if (site.infected < 1) continue;
           const row = rows[key] || (rows[key] = { place: key, infected: 0, dead: 0, outbreaks: [] });
@@ -2245,6 +2387,10 @@
     },
 
     // ── manual control (events, debug, the news desk) ───────────────────────
+    startPlayerEpidemic(diseaseId, placeKey, opts) {
+      return startPlayerEpidemic(diseaseId, placeKey, opts);
+    },
+
     ignite(diseaseId, placeKey) {
       if (!ensureDb() || !Places.build()) return null;
       const state = epiState();
@@ -2296,7 +2442,7 @@
     },
 
     _internals: { Places, EPI, epiState, stepEpidemic: _stepEpidemic, startEpidemic: _startEpidemic,
-      seedInitial: _seedInitialEpidemics, dayOf: _dayOf, epidemicPool: _epidemicPool },
+      startPlayerEpidemic, seedInitial: _seedInitialEpidemics, dayOf: _dayOf, epidemicPool: _epidemicPool },
   };
 
   // ── Game_Actor: fold disease/condition param modifiers into paramPlus ──────

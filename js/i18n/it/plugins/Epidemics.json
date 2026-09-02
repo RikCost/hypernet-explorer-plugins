@@ -6,8 +6,13 @@
   "log": {
     "firstCases": "Primi casi registrati a {place}.",
     "reaches": "Raggiunge {place} (da {from}).",
-    "declaredOver": "Dichiarata conclusa. {cases} casi, {dead} morti."
+    "declaredOver": "Dichiarata conclusa. {cases} casi, {dead} morti.",
+    "incubation": "Infezione iniziale in incubazione a {place}."
   },
+  "toast": {
+    "threshold": "Allerta epidemica: {disease} ha raggiunto {count} casi!"
+  },
+  "discovered": "Focolaio di {disease} ufficialmente scoperto a {place}!",
   "news": {
     "hysteria": "{disease} si diffonde a {place}; le autorità invitano alla calma.",
     "medical": "Focolaio di {disease} confermato a {place}. Eurodemics alza il livello di allerta."

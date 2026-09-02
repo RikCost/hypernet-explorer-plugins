@@ -131,7 +131,7 @@
       });
     }
 
-    // --- Rented properties (RealEstateMarket.js — player is a tenant, not the
+    // --- Rented properties (RealEstateMarket.js - player is a tenant, not the
     //     owner; no vault value, just a recurring monthly cost that is charged
     //     on the 1st of each in-game month, or the tenancy is repossessed) ---
     if (re && Array.isArray(re.properties) && Array.isArray(re.rentedProperties)) {
@@ -168,8 +168,8 @@
       stays.forEach(r => {
         const room = r.roomName || T('Assets.ui.room');
         const name = r.placeName ? T('Assets.ui.roomAt', { room: room, place: r.placeName }) : room;
-        const entrance = (r.x != null) ? `X:${r.x} Y:${r.y}` : '—';  // i18n-ignore  coordinate pair
-        const world = (r.worldX != null) ? `${r.worldX},${r.worldY}` : '—';  // i18n-ignore  coordinate pair
+        const entrance = (r.x != null) ? `X:${r.x} Y:${r.y}` : '-';  // i18n-ignore  coordinate pair
+        const world = (r.worldX != null) ? `${r.worldX},${r.worldY}` : '-';  // i18n-ignore  coordinate pair
         assets.push({
           cat: T('Assets.ui.stays'),
           name: name,
@@ -179,7 +179,7 @@
           color: 'var(--text-caption-brown)',
           rental: r,
           details: [
-            { label: T('Assets.ui.location'), val: r.placeName || '—' },
+            { label: T('Assets.ui.location'), val: r.placeName || '-' },
             { label: T('Assets.ui.worldCoordinates'), val: world },
             { label: T('Assets.ui.entrance'), val: entrance },
             { label: T('Assets.ui.mapId'), val: String(r.mapId) },
@@ -207,7 +207,7 @@
             { label: T('Assets.ui.entranceMap'), val: h.mapName },
             { label: T('Assets.ui.coordinates'), val: `X: ${h.x}, Y: ${h.y}` },
             { label: T('Assets.ui.floor'), val: String(h.floor) },
-            { label: T('Assets.ui.mapId'), val: h.mapId != null ? String(h.mapId) : '—' },
+            { label: T('Assets.ui.mapId'), val: h.mapId != null ? String(h.mapId) : '-' },
             { label: T('Assets.ui.vaultValue'), val: euro(h.value) },
             { label: T('Assets.ui.boughtValue'), val: euro(h.value) },
           ],
@@ -216,7 +216,7 @@
     }
 
     // --- Companion residences (a recruited NPC's owned/resided procedural
-    //     house, inherited on join — see NPCSystemParty.registerNPCHouse) ---
+    //     house, inherited on join - see NPCSystemParty.registerNPCHouse) ---
     if ($gameSystem && Array.isArray($gameSystem._npcInheritedHouses)) {
       $gameSystem._npcInheritedHouses.forEach(hh => {
         assets.push({
@@ -227,9 +227,9 @@
           bought: 0,
           color: 'var(--text-forest-green)',
           details: [
-            { label: T('Assets.ui.resident'), val: hh.npcName || '—' },
-            { label: T('Assets.ui.map'), val: hh.mapName || '—' },
-            { label: T('Assets.ui.mapId'), val: hh.mapId != null ? String(hh.mapId) : '—' },
+            { label: T('Assets.ui.resident'), val: hh.npcName || '-' },
+            { label: T('Assets.ui.map'), val: hh.mapName || '-' },
+            { label: T('Assets.ui.mapId'), val: hh.mapId != null ? String(hh.mapId) : '-' },
             { label: T('Assets.ui.vaultValue'), val: euro(hh.value || 0) },
             { label: T('Assets.ui.buildRights'), val: T('Assets.ui.owner') },
           ],
@@ -250,7 +250,7 @@
           bought: c.costBasis > 0 ? c.costBasis : null,
           color: c.color || 'var(--text-text-alt-19)',
           details: [
-            { label: T('Assets.ui.sector'), val: c.sector || '—' },
+            { label: T('Assets.ui.sector'), val: c.sector || '-' },
             { label: T('Assets.ui.shares2'), val: c.sharesOwned.toLocaleString() },
             { label: T('Assets.ui.ownership'), val: `${c.ownershipPct.toFixed(2)}%` },
             { label: T('Assets.ui.unitPrice'), val: euro(c.price * 100) },
@@ -266,7 +266,7 @@
     if (window.AssetRegistry && typeof window.AssetRegistry.getOwnedPlaces === 'function') {
       const places = window.AssetRegistry.getOwnedPlaces() || [];
       places.forEach(p => {
-        const coords = p.base ? `X:${p.base.x} Y:${p.base.y}` : '—';
+        const coords = p.base ? `X:${p.base.x} Y:${p.base.y}` : '-';
         // p.key is the Destinations.json key; the readable name of the place
         // lives in that entry's "name" field.
         const placeName = window.WorkSystem?.destinationName
@@ -767,7 +767,7 @@
       if (!sold) { SoundManager.playBuzzer(); return; }
       SoundManager.playShop();
       const it = isItalian();
-      this.notify(`${T('Assets.ui.sold')} ${sold.animalId} — ${euro(sold.value)}`);
+      this.notify(`${T('Assets.ui.sold')} ${sold.animalId} - ${euro(sold.value)}`);
       this.refreshDOM();
     }
 

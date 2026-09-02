@@ -1064,8 +1064,8 @@
       // top/bottom of the canvas) keeps a displaced bubble on screen.
       //
       // The natural spot wins whenever it is free. Otherwise the candidates are
-      // the slots flush against the bubbles already claimed — directly above or
-      // below one, or alongside one — and the cheapest free candidate wins,
+      // the slots flush against the bubbles already claimed - directly above or
+      // below one, or alongside one - and the cheapest free candidate wins,
       // counting sideways moves as dearer than vertical ones so a bubble stays
       // over its speaker's head where it can and only steps aside in a real
       // crush.

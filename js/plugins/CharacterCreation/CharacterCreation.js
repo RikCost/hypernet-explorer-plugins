@@ -595,7 +595,7 @@
   // No origin begins inside a vehicle any more: the camper and the car are
   // parked out in the world with the party standing beside them (see
   // startVehicleOrigin), so their interiors are somewhere to climb into rather
-  // than somewhere to wake up. Nor does any origin end on world map 315 — the
+  // than somewhere to wake up. Nor does any origin end on world map 315 - the
   // ones that begin "somewhere in the world" begin on the ground of that
   // somewhere (startOnProceduralSquare). The space origin is the one exception
   // to both, and it is not on Earth at all.

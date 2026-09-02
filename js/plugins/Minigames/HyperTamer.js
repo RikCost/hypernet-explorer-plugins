@@ -297,7 +297,7 @@
             size: 1.0,
             mood: 'neutral',
             lastInteraction: null
-            // NB: do not store the live $dataEnemies record here — it bloats saves
+            // NB: do not store the live $dataEnemies record here - it bloats saves
             // and goes stale across DB edits. Resolve via $dataEnemies[petId] on read.
         };
     };

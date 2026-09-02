@@ -461,7 +461,7 @@
         </div>
       `;
 
-      // 5. Level-1 Starting Skills — loadout row layout (matches Starting Items)
+      // 5. Level-1 Starting Skills - loadout row layout (matches Starting Items)
       const lv1SkillsList = [];
       if (classData && classData.learnings) {
         classData.learnings
@@ -601,7 +601,7 @@
       const bustUrl = this._getBustUrl(bustName);
 
       // 8 Core Stats (HP, MP, STR, CON, INT, WIS, DEX, PSI)
-      // Use class lv1 base × trait param rates only — equipment flat bonuses excluded.
+      // Use class lv1 base × trait param rates only - equipment flat bonuses excluded.
       const _dossierStatNoEquip = (paramId, fallback) => {
         if (!classData) return fallback;
         const base = classData.params[paramId][1];

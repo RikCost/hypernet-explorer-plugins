@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc 3D Political Graph v1.1.0 — Interactive 3D Political Compass with Character Creation Gold UI Theme
+ * @plugindesc 3D Political Graph v1.1.0 - Interactive 3D Political Compass with Character Creation Gold UI Theme
  * @author Antigravity
  * @url https://nocoldiz.itch.io/hypernet-explorer
  *

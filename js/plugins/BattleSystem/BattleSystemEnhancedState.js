@@ -500,7 +500,7 @@
             return !enemy || !enemy.isAlive();
         });
 
-        // Shared corpse helper — used for both flee (dead enemies mid-battle)
+        // Shared corpse helper - used for both flee (dead enemies mid-battle)
         // and win (all enemies cleared). An enemy whose HP is still > 0 survived
         // and gets no corpse; only those killed before the battle ended do.
         const dropCorpse = (evMapId, evId, troopIndex) => {

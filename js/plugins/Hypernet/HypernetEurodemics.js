@@ -489,7 +489,7 @@
             active.forEach(epidemic => {
                 const on = epidemic.id === this.selectedId;
                 const chip = this.button(
-                    `${epidemic.diseaseName || ES().nameOf(epidemic)} — ${epidemic.origin}`,
+                    `${epidemic.diseaseName || ES().nameOf(epidemic)} - ${epidemic.origin}`,
                     S.btn + (on ? ' background:#1f6f5c; color:#fff; border-color:#134637; font-weight:bold;' : ''),
                     'ed-pick-' + epidemic.id,
                     () => {

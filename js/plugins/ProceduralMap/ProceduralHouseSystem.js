@@ -1291,8 +1291,8 @@
     const sc = SceneManager._scene;
     if (sc instanceof Scene_Map && typeof sc.startFastTravel === "function") sc.startFastTravel("bus");
   }
-  // SignPark recalls (summons) the vehicle the party last drove — the camper,
-  // the car, the bike or the broom, never the Starship or the Boat — via
+  // SignPark recalls (summons) the vehicle the party last drove - the camper,
+  // the car, the bike or the broom, never the Starship or the Boat - via
   // VehicleSystem's summonLastVehicle plugin command, which says so itself when
   // the party owns no vehicle. No-op if VehicleSystem is absent.
   function recallLastVehicle() {

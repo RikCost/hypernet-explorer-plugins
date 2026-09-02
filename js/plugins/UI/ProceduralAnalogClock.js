@@ -467,7 +467,7 @@
 
         _updateDigital(h24, min, sec) {
             // Only redraw the four 7-segment digits when the displayed value (h:mm)
-            // actually changes — at most once per minute — instead of every frame.
+            // actually changes - at most once per minute - instead of every frame.
             const digitKey = h24 * 100 + min;
             if (digitKey !== this._lastDigitKey) {
                 this._lastDigitKey = digitKey;

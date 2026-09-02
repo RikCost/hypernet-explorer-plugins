@@ -2198,19 +2198,28 @@
     };
 
     Scene_Shop.prototype.getWeaponScaling = function (item) {
-        const attackSkills = item.traits.filter(trait => trait.code === 35);
-        if (attackSkills.length === 0) return 'STR';
-        for (const trait of attackSkills) {
-            const skillId = trait.dataId;
-            switch (skillId) {
-                case 840: return 'DEX';
-                case 841: return 'MIX';
-                case 842: return 'PSI';
-                case 843: return 'INT';
-                case 844: return 'CON';
-                case 845: return 'WIS';
-            }
+        if (!item || !DataManager.isWeapon(item)) return 'STR';
+        const note = (item.note || '');
+        const scales = [];
+        const regex = /<Scale:\s*([^>]+)>/gi;
+        let match;
+        while ((match = regex.exec(note)) !== null) {
+            const parts = match[1].split(',').map(s => s.trim().toUpperCase());
+            scales.push(...parts);
         }
+        if (scales.length === 0 && item.meta && item.meta.Scale) {
+            scales.push(...String(item.meta.Scale).split(',').map(s => s.trim().toUpperCase()));
+        }
+        if (scales.includes('STR') && scales.includes('DEX')) return 'MIX';
+        if (scales.includes('STR') && scales.includes('INT')) return 'ARC';
+        if (scales.includes('MIX')) return 'MIX';
+        if (scales.includes('ARC')) return 'ARC';
+        if (scales.includes('DEX')) return 'DEX';
+        if (scales.includes('INT')) return 'INT';
+        if (scales.includes('WIS')) return 'WIS';
+        if (scales.includes('CON')) return 'CON';
+        if (scales.includes('PSI')) return 'PSI';
+        if (scales.includes('STR')) return 'STR';
         return 'STR';
     };
 

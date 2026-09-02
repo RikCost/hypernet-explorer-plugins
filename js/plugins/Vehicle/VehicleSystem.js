@@ -2835,7 +2835,7 @@
   // NOTE: out-of-fuel movement is blocked by Game_Vehicle.isMapPassable (which
   // returns false for every tile when the tank is empty). We deliberately do NOT
   // block it via Game_Player.canMove, because canMove also gates triggerButtonAction
-  // (the OK/action button) — blocking it there would make the vehicle/travel menu
+  // (the OK/action button) - blocking it there would make the vehicle/travel menu
   // impossible to open while stranded, leaving the player permanently stuck.
 
   /**
@@ -3165,8 +3165,8 @@
   // The vehicle status card
   // ============================================================================
   //
-  // The action menu is a column of verbs — "Refuel", "Repairs", "Start driving"
-  // — and none of them say whether the tank is nearly dry or the brakes are
+  // The action menu is a column of verbs - "Refuel", "Repairs", "Start driving"
+  // - and none of them say whether the tank is nearly dry or the brakes are
   // gone, which is exactly what somebody deciding between them wants to know.
   // The card rides above the choices for as long as they are open and answers
   // both, as the pair of bars the fuel HUD already draws, so the menu reads like
@@ -4525,7 +4525,7 @@
     },
 
     // The vehicle the party is ABOARD, for the party HUD (PartyHud.js): the one
-    // they are at the wheel of, or — on foot inside its cabin — the one whose
+    // they are at the wheel of, or - on foot inside its cabin - the one whose
     // interior map they are standing on (the Camper, the Car and the Starship
     // each have one). Null anywhere else, which is how the HUD knows to take
     // the vehicle row down again the moment they step out.

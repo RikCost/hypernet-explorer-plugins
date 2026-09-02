@@ -4,7 +4,7 @@
 
 /*:
  * @target MZ
- * @plugindesc PetFollowerSystem v1.1.0 — recruit a 4th companion as a pet/follower that trails the party on the map without joining battle.
+ * @plugindesc PetFollowerSystem v1.1.0 - recruit a 4th companion as a pet/follower that trails the party on the map without joining battle.
  * @author Esoteric Heavy Industries
  *
  * @help PetFollowerSystem.js
@@ -125,7 +125,7 @@ window.Game_PetFollower = Game_PetFollower;
     "use strict";
 
     //-------------------------------------------------------------------------
-    // Game_Followers — append the pet slot to the trailing follower chain.
+    // Game_Followers - append the pet slot to the trailing follower chain.
     //-------------------------------------------------------------------------
 
     Game_Followers.prototype.ensurePetFollower = function () {
@@ -163,7 +163,7 @@ window.Game_PetFollower = Game_PetFollower;
     };
 
     //-------------------------------------------------------------------------
-    // window.PetSystem — registry + active-follower management.
+    // window.PetSystem - registry + active-follower management.
     //-------------------------------------------------------------------------
 
     // Same ceiling the name-entry screen uses for actors (AltNameInput.js), so a

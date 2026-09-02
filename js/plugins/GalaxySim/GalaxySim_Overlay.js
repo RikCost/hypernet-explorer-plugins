@@ -231,7 +231,7 @@
         `<div class="gx-row"><span class="gx-k gx-muted">${T('Galaxy.hud.hyperfluxBurn')}</span>` +
         `<span class="gx-v gx-muted" data-role="burn-val">0.01/s</span></div>` +
         `<div class="gx-row"><span class="gx-k gx-muted">${T('Galaxy.hud.eta')}</span>` +
-        `<span class="gx-v gx-muted" data-role="eta-val">—</span></div>` +
+        `<span class="gx-v gx-muted" data-role="eta-val">-</span></div>` +
         `<div class="gx-actions">` +
         `<span class="gx-btn gx-step focusable" tabindex="0" data-action="speed-down">−</span>` +
         `<span class="gx-btn gx-step focusable" tabindex="0" data-action="speed-up">+</span>` +
@@ -245,16 +245,16 @@
       fuel.innerHTML =
         `<div class="gx-fuel-head"><span class="gx-title">${T('Galaxy.hud.fuel')}</span>` +
         `<span class="gx-muted" data-role="fuel-sub">${T('Galaxy.hud.hyperfluxReserve')}</span>` +
-        `<span class="gx-fuel-pct" data-role="hf-pct">—</span></div>` +
+        `<span class="gx-fuel-pct" data-role="hf-pct">-</span></div>` +
         `<div class="gx-fuel-row"><span class="gx-fuel-name">${T('Galaxy.hud.hyperflux')}</span>` +
         `<span class="gx-fuel-bar"><span class="gx-fuel-fill hyperflux" data-role="hf-fill"></span></span>` +
-        `<span class="gx-fuel-val" data-role="hf-val">—</span></div>` +
+        `<span class="gx-fuel-val" data-role="hf-val">-</span></div>` +
         `<div class="gx-fuel-row"><span class="gx-fuel-name">${T('Galaxy.hud.schrD')}</span>` +
         `<span class="gx-sb-pips" data-role="sb-pips"></span>` +
-        `<span class="gx-fuel-val" data-role="sb-val">—</span></div>` +
+        `<span class="gx-fuel-val" data-role="sb-val">-</span></div>` +
         `<div class="gx-fuel-row"><span class="gx-fuel-name">${T('Galaxy.hud.mapFuel')}</span>` +
         `<span class="gx-fuel-bar"><span class="gx-fuel-fill mapfuel" data-role="mf-fill"></span></span>` +
-        `<span class="gx-fuel-val" data-role="mf-val">—</span></div>` +
+        `<span class="gx-fuel-val" data-role="mf-val">-</span></div>` +
         `<div class="gx-refuel-row">` +
         `<span class="gx-btn gx-refuel focusable" tabindex="0" data-action="refuel-auto" ` +
         `data-role="refuel-btn" title="${T('Galaxy.hud.refuelTooltip')}">${T('Galaxy.hud.refuel')}</span>` +
@@ -336,8 +336,8 @@
         `<div class="gx-mine-head"><span class="gx-title" data-role="mine-title">${T('Galaxy.hud.stripMining')}</span>` +
         `<span class="gx-mine-clock" data-role="mine-clock">0:00</span></div>` +
         `<div class="gx-mine-bar"><div class="gx-mine-fill" data-role="mine-fill"></div></div>` +
-        `<div class="gx-row"><span class="gx-k gx-muted" data-role="mine-stat">—</span>` +
-        `<span class="gx-v gx-muted" data-role="mine-fuel">—</span></div>` +
+        `<div class="gx-row"><span class="gx-k gx-muted" data-role="mine-stat">-</span>` +
+        `<span class="gx-v gx-muted" data-role="mine-fuel">-</span></div>` +
         `<div class="gx-mine-log" data-role="mine-log"></div>` +
         `<div class="gx-actions">` +
         `<span class="gx-btn gx-stop focusable" tabindex="0" data-action="mine-stop">${T('Galaxy.hud.cutLasers')}</span>` +
@@ -616,7 +616,7 @@
           ? Math.ceil(etaSeconds) : null;
         const text = secs != null
           ? String(Math.floor(secs / 60)).padStart(2, "0") + ":" + String(secs % 60).padStart(2, "0")
-          : "—";
+          : "-";
         if (text !== this._etaText) {
           this._etaText = text;
           this.els.etaVal.textContent = text;

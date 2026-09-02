@@ -1834,7 +1834,7 @@
        "to": "c"
       }
      ],
-     "emText": "{Something's growing at {place} in a tight spiral that closes inward. It's the only living thing on the entire rock, and it's expanding way too fast for comfort.|You recognize this pattern—it's an aggressive growth enclosing something at the center. Whatever's in the middle, it's definitely trapped.}",
+     "emText": "{Something's growing at {place} in a tight spiral that closes inward. It's the only living thing on the entire rock, and it's expanding way too fast for comfort.|You recognize this pattern-it's an aggressive growth enclosing something at the center. Whatever's in the middle, it's definitely trapped.}",
      "bubba": "Bubba will not step on it. \"It's growed itself inward, sugar. Roba ca se chiude 'ncoppa a quaccosa. Somethin's in there.\""
     },
     "a": {
@@ -9795,7 +9795,7 @@
     "n0": {
      "text": "There is a chess table cemented into the grass at the edge of the meadow, the kind they put in parks, and a game on it {two|three|four} moves from the end.\nThe pieces are wet. They have been wet for a while. Somebody keeps them dusted anyway.\nOn the far side of the table, an old man is asleep in a deckchair with a scarf over his face, and he is either asleep or he is not, and there is a clock beside him that is running.",
      "emText": "A park chess table cemented into a meadow, a game three moves from over, an old man asleep under a scarf with a clock still running beside him.\nThe game is the room. You can see it: the whole meadow is arranged around this position the way a spell is arranged around its last word, and someone has been holding the last word in their mouth for a long time.",
-     "bubba": "Bubba lifts the scarf an inch, replaces it, and gives you a look. \"He's breathin'. Sorta. Uh-huh. Scetate, no' — nah. He ain't wakin'.\"",
+     "bubba": "Bubba lifts the scarf an inch, replaces it, and gives you a look. \"He's breathin'. Sorta. Uh-huh. Scetate, no' - nah. He ain't wakin'.\"",
      "asides": {
       "scholarly": "{member} {is already logging sensor anomalies with an annoyed grunt|scans the alloy and mutters about obsolete manufacturing dates|checks the survey records and complains about missing documentation|notes that the readings make zero thermodynamic sense}",
       "empathetic": "{member} {looks at the wreckage and shakes their head: \"Tough way to go.\"|checks for survivor logs with a quiet sigh|hopes whoever was here got out in time|mutters a quiet condolence for the crew}",
@@ -10905,7 +10905,7 @@
    "start": "n0",
    "nodes": {
     "n0": {
-     "text": "{Sitting on a dusty shelf in the vestry is a butchered Anoki handset with its casing cracked open.|There's an Anoki phone sitting in the back of the vestry, held together with electrical tape.|On a stone ledge behind the altar sits an Anoki phone wired directly into the wall.} {The leyline coil has been ripped out and re-soldered by an amateur.|Someone clearly jury-rigged the charging circuit into the stone masonry.|The battery was removed years ago, but the screen is still glowing.}\n{It starts ringing—not with the standard digital chime, but an annoying, cracked mechanical buzz from inside the plastic.|Suddenly the damn thing starts buzzing with a tinny, rusted bell chime.|Right on cue, it rings with a harsh, broken rattle that makes your teeth ache.}",
+     "text": "{Sitting on a dusty shelf in the vestry is a butchered Anoki handset with its casing cracked open.|There's an Anoki phone sitting in the back of the vestry, held together with electrical tape.|On a stone ledge behind the altar sits an Anoki phone wired directly into the wall.} {The leyline coil has been ripped out and re-soldered by an amateur.|Someone clearly jury-rigged the charging circuit into the stone masonry.|The battery was removed years ago, but the screen is still glowing.}\n{It starts ringing-not with the standard digital chime, but an annoying, cracked mechanical buzz from inside the plastic.|Suddenly the damn thing starts buzzing with a tinny, rusted bell chime.|Right on cue, it rings with a harsh, broken rattle that makes your teeth ache.}",
      "emText": "{Some idiot hacked an Anoki phone to tap into the local leylines, and now it's ringing off the hook.|A jury-rigged phone in a dusty church running on stolen magic. Answering weird calls in creepy vestries is how people end up in body bags.|Nothing good ever comes from a ringing phone with no battery. But of course we're going to pick it up.}",
      "bubba": "Bubba takes three steps back. \"{That's a direct line to someone who owes back taxes, sugar. Leave it ring.|Uh-uh. I don't answer calls from dead priests. Hang that junk up.|If that's a telemarketer from the astral plane, I'm shootin' it.}\"",
      "asides": {
@@ -10958,7 +10958,7 @@
      ]
     },
     "b": {
-     "text": "{You trace the hacked wiring through the plaster—it taps straight into a localized energy conduit with cheap solder and copper pipe.|The back panel comes off, revealing sloppy soldering and a tapped leyline conduit.}\n{Scratched into the inner plastic casing is a name, a date, and a backup phone number.|Someone carved a name and a second contact code onto the circuit board.|There's a secondary number scratched right into the plastic casing.}",
+     "text": "{You trace the hacked wiring through the plaster-it taps straight into a localized energy conduit with cheap solder and copper pipe.|The back panel comes off, revealing sloppy soldering and a tapped leyline conduit.}\n{Scratched into the inner plastic casing is a name, a date, and a backup phone number.|Someone carved a name and a second contact code onto the circuit board.|There's a secondary number scratched right into the plastic casing.}",
      "choices": [
       {
        "text": "{Call the secondary number|Dial the backup contact|Ring the second number|Call the engineer}",

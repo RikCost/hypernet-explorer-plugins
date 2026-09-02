@@ -55,11 +55,11 @@
   "compose": {
     "recipient": "Addressed to",
     "noRecipient": "nobody yet",
-    "addressLine": "{who} — {world}",
+    "addressLine": "{who} - {world}",
     "yourself": "{leader}, that is to say yourself",
     "subject": "Subject",
     "body": "Letter",
-    "blankField": "—",
+    "blankField": "-",
     "wordCount": {
       "one": "1 word",
       "other": "{count} words"
@@ -75,8 +75,8 @@
     "delayYears": "Held back, years",
     "send": "Seal it and send it",
     "confirm": "Press again to send it",
-    "thisWorld": "{world} — this world",
-    "otherWorld": "{world} — another world",
+    "thisWorld": "{world} - this world",
+    "otherWorld": "{world} - another world",
     "noAddresses": "No party has left an address anywhere yet.",
     "nothingToSend": "There is nothing in the bags that can be posted.",
     "noGoods": "no goods",

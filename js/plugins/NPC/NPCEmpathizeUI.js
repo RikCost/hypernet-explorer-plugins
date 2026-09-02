@@ -807,8 +807,8 @@
   // fallback for a project that has not filled them in.
   // i18n-ignore-start: mirrors $dataSystem.weaponTypes / armorTypes, which
   // Hendrix_Localization translates through js/i18n/<lang>/types.json
-  const WTYPE_NAMES = ['—', 'Light', 'Sword', 'Heavy', 'Axe', 'Whip', 'Staff', 'Bow', 'Projectile', 'Gun', 'Claw', 'Glove', 'Spear'];
-  const ATYPE_NAMES = ['—', 'General', 'Magic', 'Light', 'Heavy', 'Small Shield', 'Large Shield'];
+  const WTYPE_NAMES = ['-', 'Light', 'Sword', 'Heavy', 'Axe', 'Whip', 'Staff', 'Bow', 'Projectile', 'Gun', 'Claw', 'Glove', 'Spear'];
+  const ATYPE_NAMES = ['-', 'General', 'Magic', 'Light', 'Heavy', 'Small Shield', 'Large Shield'];
   // i18n-ignore-end
   const _wtypeName = (id) => ($dataSystem?.weaponTypes || [])[id] || WTYPE_NAMES[id] || '?';
   const _atypeName = (id) => ($dataSystem?.armorTypes || [])[id] || ATYPE_NAMES[id] || '?';
@@ -912,7 +912,7 @@
     inner.className = 'npc-empathize-inner';
 
     // Mouse-only close button. Deliberately NOT part of _tabOrder()/_activeArea
-    // or given a tabindex, so it can't be reached by keyboard/gamepad nav —
+    // or given a tabindex, so it can't be reached by keyboard/gamepad nav -
     // Cancel/Escape (and right-click on the backdrop) remain the controller way out.
     const closeBtn = document.createElement('div');
     closeBtn.className   = 'npc-close-btn';
@@ -1183,7 +1183,7 @@
     // Every innerHTML rebuild wipes the npc-content-focused class off the Wiki
     // grid tiles, so re-apply the keyboard/controller focus ring after each
     // render. The NPC-mode path also does this inside its own rAF, but the
-    // entity-page path (_renderEntityInner) did not — cover both here.
+    // entity-page path (_renderEntityInner) did not - cover both here.
     requestAnimationFrame(() => this._updateSelectionHighlight?.());
   };
 
@@ -1320,7 +1320,7 @@
     const TREAT_CLASSES = [3, 9, 41, 51];
 
     // Join gate: party size (3-member cap), plus hiding it once this NPC has
-    // just joined via this panel (_justJoined). No Switch 67 or name-matching —
+    // just joined via this panel (_justJoined). No Switch 67 or name-matching -
     // those caused false negatives that wrongly hid Join.
     // A fallen companion is left behind when a recruit signs on, so the cap
     // counts the travellers still standing (see _travellingPartyCount).
@@ -1328,7 +1328,7 @@
 
     // Recruiting flips the event's self-switch A so the NPC leaves the map. An
     // event with no page gated on self-switch A has nothing to fall through to,
-    // so it would keep standing there as a twin of the party member — don't
+    // so it would keep standing there as a twin of the party member - don't
     // offer Join at all for those.
     // A shop-shift-covered counter also happens to have such a page (a leftover
     // template artifact, never meant for this), but the face on display is a
@@ -1993,14 +1993,14 @@
   // inner → panel body → right panel → chat panel). If any link of that chain
   // ends up with an indefinite height, `flex: 1 + min-height: 0` stops
   // constraining the log: it grows to fit its messages, gets clipped by the
-  // right panel's overflow:hidden, and — because scrollHeight then equals
-  // clientHeight — becomes completely unscrollable. That single failure mode
+  // right panel's overflow:hidden, and - because scrollHeight then equals
+  // clientHeight - becomes completely unscrollable. That single failure mode
   // explains all three symptoms at once (messages cut off, wheel does nothing,
   // dragging the bar does nothing, scrollTop won't move).
   //
   // Measure from `right` (the chat panel's own parent, `.npc-right-panel`)
   // rather than reconstructing its height from `.npc-empathize-inner` minus the
-  // tab bar — that reconstruction silently drifted whenever a border/padding
+  // tab bar - that reconstruction silently drifted whenever a border/padding
   // changed anywhere in between, which is what let the log get sized taller
   // than the space actually visible through `right`'s `overflow: hidden`, i.e.
   // exactly the "nothing to scroll, new lines clipped off the bottom" bug.
@@ -2147,7 +2147,7 @@
     this._chatMO = null;
   };
 
-  // Every offered line wears one colour — the theme's option gold (crimson ink
+  // Every offered line wears one colour - the theme's option gold (crimson ink
   // under Archive Foundation), from --npc-option-fg via .npc-opt-label. The
   // verbs used to be tinted by tone (kind green, cruel red, courting pink),
   // which made a five-colour patchwork of what is really a single menu; the
@@ -2630,7 +2630,7 @@
       }
       if (ideologyName) identHTML += `<div class="npc-ident-row">${_iconSpan(186, 17)}${_wikiLink('ideology', ideology ? ideology.id : '', ideologyName)}</div>`;
       if (faction)      identHTML += `<div class="npc-ident-row">${_iconSpan(faction.iconIndex || 187, 17)}${_wikiLink('faction', _factionDisplayName(faction))}</div>`;
-      identHTML += `<div class="npc-ident-row">${_iconSpan(175, 17)}<span style="color:${moralColor}">${_escapeHtml(moralEntry.label)}</span><span style="opacity:0.75">&nbsp;— ${morality}</span></div>`;
+      identHTML += `<div class="npc-ident-row">${_iconSpan(175, 17)}<span style="color:${moralColor}">${_escapeHtml(moralEntry.label)}</span><span style="opacity:0.75">&nbsp;- ${morality}</span></div>`;
       // Em (Switch 48): where this person stands on the witch who fed the
       // spear. Shown only while she is the one doing the talking.
       const emCtx = this._emCtx?.();
@@ -2849,7 +2849,7 @@
     // repeat them.
 
     return `
-      <div class="npc-profile-name">${_escapeHtml(displayName || '—')}</div>
+      <div class="npc-profile-name">${_escapeHtml(displayName || '-')}</div>
       ${subParts.length ? `<div class="npc-profile-sub">${_escapeHtml(subParts.join(' · '))}</div>` : ''}
       ${badgeHTML}
       ${this._buildPresetHTML(preset, T, lang)}
@@ -2870,13 +2870,13 @@
   // The graph is plain markup, not a canvas. Every earlier version painted it
   // imperatively in a frame callback after the render, and so had to survive the
   // panel being rebuilt underneath it, bust images landing late, and a stale
-  // overlay owning the element — the failure mode being a tab that flashed the
+  // overlay owning the element - the failure mode being a tab that flashed the
   // web once and then sat there as an empty grey rectangle. An inline SVG is
   // part of the same innerHTML as the rest of the tab, so it is simply correct
   // on every render: nothing to schedule, nothing to clear, nothing to redraw
   // when an image finishes loading. The viewBox is sized to the finished
   // layout at 1:1, so the whole web fits at the default zoom and there is
-  // nothing to pan by default — but a crowded roster earns its rings back via
+  // nothing to pan by default - but a crowded roster earns its rings back via
   // the same zoom/pan the SkillMaster atlas uses (SkillMaster.js): the SVG's
   // own pixel size (not its viewBox) is scaled by `webZoom()`, sitting inside
   // a `.npc-web-sizer` box whose CSS size drives `.npc-web-stage`'s native
@@ -4539,11 +4539,11 @@
     const name = String(rawName || '').trim();
     const paren = name.match(/\(([^)]*)\)/);
     if (paren) {
-      const inner = paren[1].replace(/^\s*\d+\s*[-–—:.]?\s*/, '').trim();
+      const inner = paren[1].replace(/^\s*\d+\s*[-–-:.]?\s*/, '').trim();
       if (inner) return spoken(inner);
     }
     // "Teleport - Roma", "Door: Cellar", "Transfer 2 - Docks"
-    const dashed = name.match(/^[A-Za-z]+\s*\d*\s*[-–—:]\s*(.+)$/);
+    const dashed = name.match(/^[A-Za-z]+\s*\d*\s*[-–-:]\s*(.+)$/);
     if (dashed && dashed[1].trim()) return spoken(dashed[1].trim());
     return spoken(name);
   }
@@ -5120,7 +5120,7 @@
       for (const s of view.settlements) {
         const mayor = s.offices?.mayor;
         html += `<div class="npc-ident-row">${_iconSpan(190, 17)}<span>${_escapeHtml(s.group)}</span>${
-          mayor ? `<span style="opacity:0.8">&nbsp;— ${_escapeHtml(T.mayorLbl)}:&nbsp;</span>${_wikiLink('npc', mayor)}` : ''
+          mayor ? `<span style="opacity:0.8">&nbsp;- ${_escapeHtml(T.mayorLbl)}:&nbsp;</span>${_wikiLink('npc', mayor)}` : ''
         }</div>`;
       }
     }
@@ -5145,7 +5145,7 @@
       <div class="npc-life-row">
         <span class="npc-life-time">${_escapeHtml(rec.date)}</span>
         <span><strong>${_escapeHtml(rec.government)}</strong>
-          ${rec.controller !== 'Neutral' ? `— ${_wikiLink('power', rec.controller)}` : `— ${_escapeHtml(T.independent)}`}
+          ${rec.controller !== 'Neutral' ? `- ${_wikiLink('power', rec.controller)}` : `- ${_escapeHtml(T.independent)}`}
           <span style="opacity:0.82">(${_linkify(rec.reason || '')})</span></span>
       </div>`).join('');
     return html;
@@ -5174,7 +5174,7 @@
             <span class="npc-vital-pct" style="width:74px">${r.share}%${r.seats != null ? ` · ${r.seats}` : ''}</span>
           </div>`;
       }
-      if (e.head && e.head !== '—') {
+      if (e.head && e.head !== '-') {
         html += `<div class="npc-ident-row" style="margin-top:2px">${_iconSpan(215, 15)}<span style="opacity:0.85">${_escapeHtml(_headTitle(power))}:</span>&nbsp;${_wikiLink('leader', e.head)}</div>`;
       }
       for (const n of (e.notes || [])) {
@@ -5209,7 +5209,7 @@
         html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.partiesLbl}</div>`;
         for (const p of live.parties) {
           const leader = live.politicians?.[p.leaderId];
-          html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span>${_wikiLink('party', p.id, p.name)}</span><span style="opacity:0.8">&nbsp;— ${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}</span>${
+          html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span>${_wikiLink('party', p.id, p.name)}</span><span style="opacity:0.8">&nbsp;- ${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}</span>${
             leader ? `<span style="opacity:0.8">&nbsp;·&nbsp;</span>${_wikiLink('leader', leader.name)}` : ''
           }</div>`;
         }
@@ -5261,7 +5261,7 @@
       html += headHistory.map(h => `
         <div class="npc-life-row">
           <span class="npc-life-time">${_escapeHtml(h.date)}${h.endDate ? ` → ${_escapeHtml(h.endDate)}` : ''}</span>
-          <span>${_wikiLink('leader', h.name)} <span style="opacity:0.82">(${_escapeHtml(window.NPCPolitics?.accessionLabel?.(h.how) || h.how || '?')})</span>${h.endDate ? '' : ` <span style="color:var(--text-cost-ok)">— ${_escapeHtml(T.currentLeader)}</span>`}</span>
+          <span>${_wikiLink('leader', h.name)} <span style="opacity:0.82">(${_escapeHtml(window.NPCPolitics?.accessionLabel?.(h.how) || h.how || '?')})</span>${h.endDate ? '' : ` <span style="color:var(--text-cost-ok)">- ${_escapeHtml(T.currentLeader)}</span>`}</span>
         </div>`).join('');
     }
 
@@ -5279,7 +5279,7 @@
         <div class="npc-life-row">
           <span class="npc-life-time">${_escapeHtml(`${l.years?.[0] ?? '?'}–${l.years?.[1] ?? '?'}`)}</span>
           <span>${_wikiLink('leader', l.name)}${isDead ? ` <span style="color:var(--text-cost-bad)">✝${deathDate ? ' ' + _escapeHtml(deathDate) : ''}</span>` : ''}
-            <span style="opacity:0.82">— ${_escapeHtml(_leaderIdeology(l))}</span></span>
+            <span style="opacity:0.82">- ${_escapeHtml(_leaderIdeology(l))}</span></span>
         </div>`;
       }).join('');
     }
@@ -5432,7 +5432,7 @@
     if (Array.isArray(data?.params)) {
       const PL = _paramLabels();
       const parts = data.params.map((v, i) => v ? `${PL[i]} +${v}` : null).filter(Boolean);
-      html += `<div class="npc-stats-row">${parts.length ? _escapeHtml(parts.join(' · ')) : '—'}</div>`;
+      html += `<div class="npc-stats-row">${parts.length ? _escapeHtml(parts.join(' · ')) : '-'}</div>`;
     }
     html += `<div class="npc-ident-row" style="margin-top:5px">${_iconSpan(314, 17)}<span>${T.valueLbl}: <strong>${_euros(data?.price)}</strong></span></div>`;
     if (data?.weight) html += _kvRow(208, T.weightLbl, `${data.weight}`);
@@ -5460,7 +5460,7 @@
       <div class="npc-life-row">
         <span class="npc-life-time">${_escapeHtml(h.since || '?')}</span>
         <span>${_linkify(h.holder)}${h.power && h.power !== h.holder ? ` <span style="opacity:0.8">(${_linkify(h.power)})</span>` : ''}
-          <span style="opacity:0.82">— ${_escapeHtml(h.how || '?')}</span>${i === 0 ? ` <span style="color:var(--text-cost-ok)">— ${_escapeHtml(T.currentHolder)}</span>` : ''}</span>
+          <span style="opacity:0.82">- ${_escapeHtml(h.how || '?')}</span>${i === 0 ? ` <span style="color:var(--text-cost-ok)">- ${_escapeHtml(T.currentHolder)}</span>` : ''}</span>
       </div>`).join('');
     return html;
   };
@@ -5484,7 +5484,7 @@
           const isDead = _wikiIsDead(deadList.includes(l.name) || !!deaths[l.name]);
           return `<div class="npc-life-row">
             <span class="npc-life-time">${_escapeHtml(`${l.years?.[0] ?? '?'}–${l.years?.[1] ?? '?'}`)}</span>
-            <span>${_wikiLink('leader', l.name)}${isDead ? ' <span style="color:var(--text-cost-bad)">✝</span>' : ''} <span style="opacity:0.82">— ${_escapeHtml(_leaderIdeology(l))}</span></span>
+            <span>${_wikiLink('leader', l.name)}${isDead ? ' <span style="color:var(--text-cost-bad)">✝</span>' : ''} <span style="opacity:0.82">- ${_escapeHtml(_leaderIdeology(l))}</span></span>
           </div>`;
         }).join('');
       }

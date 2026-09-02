@@ -1492,10 +1492,10 @@
     // Populates a generated interior (house, inn, shop, walk-up
     // floor, skyscraper floor) with NPCs drawn from the surrounding town.
     //
-    // opts.building — the ProceduralHouseSystem descriptor of the building the
+    // opts.building - the ProceduralHouseSystem descriptor of the building the
     //   player walked into. Its residents (assigned by NPCSim.ensureBuildingResidents)
     //   are the ones found at home here at night.
-    // opts.isPublic — the interior belongs to a skyscraper: nobody lives here,
+    // opts.isPublic - the interior belongs to a skyscraper: nobody lives here,
     //   so it draws a busy, fully random crowd from the whole town at any hour
     //   instead of a resident household.
     replacePlayerEventsWithNPCs: (groupName, opts = {}) => {
@@ -4642,7 +4642,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         doorEvt.start();
         // Once an NPC opens a door it stays open: flag it through so RMMZ's
         // collision (eventsXyNt, which skips through events) no longer blocks
-        // anything on that tile — in particular Enemy events won't collide
+        // anything on that tile - in particular Enemy events won't collide
         // with it while chasing.
         doorEvt.setThrough(true);
       } else if (this.event.canPass(this.event.x, this.event.y, dir)) {

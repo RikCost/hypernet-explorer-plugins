@@ -694,6 +694,12 @@
             ? `<span class="sg-occult sg-forbidden">${tagForbidden}</span>`
             : (/<Esoteric>/i.test(note) ? `<span class="sg-occult">${tagEsoteric}</span>` : '');
 
+        const dt = (skill.meta && skill.meta.DamageType) ||
+            (skill.note && (skill.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+        const damageTypeBadge = (dt && String(dt).trim() !== 'None')
+            ? `<span>&middot;</span><span style="color:var(--text-secondary-active, #e5c07b); font-weight:bold;">${String(dt).trim()}</span>`
+            : '';
+
         const rootSizing = opts.popup ? 'flex:1 1 auto; min-height:0;' : 'height:100%;';
         const closeBtnHTML = opts.popup
             ? `<div class="focusable" onclick="SceneManager._scene.dismissSkillDetail()" title="${typeof T === 'function' ? T('SkillMaster.close') : 'Close'}" style="flex:0 0 auto; margin-left:auto; align-self:flex-start; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-secondary-hover-translucent-15); border-radius:50%; color:var(--text-secondary-active, #e5c07b); cursor:pointer; font-size:1.292rem; line-height:1">✕</div>`
@@ -714,6 +720,7 @@
                             <span>MP ${skill.mpCost || 0}</span>
                             <span>&middot;</span>
                             <span>AP ${skill.tpCost || 0}</span>
+                            ${damageTypeBadge}
                             ${occultBadge}
                         </div>
                     </div>

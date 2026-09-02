@@ -371,7 +371,7 @@
         _buildFlatwoodSentinel() {
             const p = this.profile;
             const wood = this._skinMat(p.bodyColor, 0.92);
-            // Wide flat slab body (STEM) — like a standing plank.
+            // Wide flat slab body (STEM) - like a standing plank.
             this.stem = new THREE.Group();
             const slab = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.8, 0.22), wood); slab.position.y = 0.95; this.stem.add(slab);
             // Vertical grain ridges across the face.
@@ -431,7 +431,7 @@
             const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.34, 1.5, 9), char); torso.position.y = 0.85; this.trunk.add(torso);
             // Glowing brimstone cracks (emissive).
             for (let i = 0; i < 8; i++) { const a = this.idRand() * Math.PI * 2, y = 0.4 + this.idRand() * 1.0; const crack = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.22, 0.02), this._mat(p.accent, 1, 0.4, p.accent)); crack.position.set(Math.cos(a) * 0.26, y, Math.sin(a) * 0.26); crack.lookAt(Math.cos(a) * 2, y, Math.sin(a) * 2); crack.rotation.z = this.idRand(); this.trunk.add(crack); }
-            // Dryad face — hollow with smouldering eyes.
+            // Dryad face - hollow with smouldering eyes.
             this._eye(this.trunk, -0.1, 1.3, 0.24, 0.07, p.accent); this._eye(this.trunk, 0.1, 1.3, 0.24, 0.07, p.accent);
             this.bodyGroup.add(this.trunk);
             // Dripping brimstone sap beads.
@@ -623,7 +623,7 @@
             for (let i = 0; i < 4; i++) { const ridge = new THREE.Mesh(new THREE.TorusGeometry(0.15 + i * 0.01, 0.015, 5, 12, Math.PI), this._mat(0x5a4a32, 1, 0.8)); ridge.position.set(0, 0.55 + i * 0.12, 0.08); ridge.rotation.x = Math.PI / 2; this.stalk.add(ridge); }
             this._eye(this.stalk, -0.08, 0.92, 0.17, 0.06, 0x3a2a10); this._eye(this.stalk, 0.08, 0.92, 0.17, 0.06, 0x3a2a10);
             this.bodyGroup.add(this.stalk);
-            // Bulging blistered cap (CAP) — lumpy swollen dome with sac-blisters.
+            // Bulging blistered cap (CAP) - lumpy swollen dome with sac-blisters.
             const capMat = this._mat(0xa89060, 1, 0.8);
             this.cap = new THREE.Group();
             const dome = new THREE.Mesh(new THREE.SphereGeometry(0.46, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.62), capMat); dome.scale.set(1.1, 0.95, 1.1); this.cap.add(dome);
@@ -648,7 +648,7 @@
             const fur = this._mat(p.accent, 1, 0.9);
             for (let i = 0; i < 22; i++) { const a = this.idRand() * Math.PI * 2, y = 0.45 + this.idRand() * 0.95; const rr = 0.38 + this.idRand() * 0.06; const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.2 + this.idRand() * 0.16, 4), fur); tuft.position.set(Math.cos(a) * rr, y, Math.sin(a) * rr * 0.9); tuft.rotation.x = Math.PI; tuft.rotation.z = Math.cos(a) * 0.4; this.stem.add(tuft); }
             this.bodyGroup.add(this.stem);
-            // Slow drowsy sloth face (FLOWER head) — long snout, half-shut eyes.
+            // Slow drowsy sloth face (FLOWER head) - long snout, half-shut eyes.
             this.flower = new THREE.Group();
             const headM = new THREE.Mesh(new THREE.SphereGeometry(0.26, 12, 12), bark); headM.scale.set(0.95, 0.9, 1.1); this.flower.add(headM);
             const snout = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 10), bark); snout.scale.set(0.9, 0.8, 1.2); snout.position.set(0, -0.06, 0.22); this.flower.add(snout);
@@ -668,7 +668,7 @@
         _buildRotwoodEntangler() {
             const p = this.profile;
             const rot = this._skinMat(p.bodyColor, 1.0);
-            // Crooked, hollowed, decaying trunk (STEM) — open rot-cavity in front.
+            // Crooked, hollowed, decaying trunk (STEM) - open rot-cavity in front.
             this.stem = new THREE.Group();
             const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.42, 1.6, 8), rot); torso.position.y = 0.9; this.stem.add(torso);
             const cavity = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), this._mat(0x140e06, 1, 0.7)); cavity.scale.set(1, 1.6, 0.5); cavity.position.set(0, 0.95, 0.3); this.stem.add(cavity);
@@ -695,7 +695,7 @@
         _buildSylvanBarkstalker() {
             const p = this.profile;
             const bark = this._skinMat(p.bodyColor, 0.95);
-            // Slender flattened bark-board body (STEM) — leaf-edged for camouflage.
+            // Slender flattened bark-board body (STEM) - leaf-edged for camouflage.
             this.stem = new THREE.Group();
             const board = new THREE.Mesh(new THREE.BoxGeometry(0.34, 1.7, 0.16), bark); board.position.y = 0.95; this.stem.add(board);
             // Ragged leaf-fringe edges down both sides (camo silhouette breakup).
@@ -710,7 +710,7 @@
             this.flower = new THREE.Group();
             for (let i = 0; i < 8; i++) { const a = this.idRand() * Math.PI * 2; const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), this._mat(p.accent, 0.95, 0.8)); leaf.scale.set(1.8, 0.18, 0.9); leaf.position.set(Math.cos(a) * 0.12, this.idRand() * 0.16, Math.sin(a) * 0.12); leaf.rotation.y = a; this.flower.add(leaf); }
             this.flower.position.set(0, 1.85, 0); this.bodyGroup.add(this.flower);
-            // Very thin elongated vine limbs (VINE_1/2) — twig-like.
+            // Very thin elongated vine limbs (VINE_1/2) - twig-like.
             const twigMat = this._mat(0x4a4a2a, 0.95, 0.9);
             const mkTwigArm = (side) => {
                 const g = new THREE.Group();
@@ -867,7 +867,7 @@
             this.stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 1.8, 12), stalkMat);
             this.stalk.position.y = 0.95; this.bodyGroup.add(this.stalk);
             for (let i = 0; i < 5; i++) { const band = new THREE.Mesh(new THREE.TorusGeometry(0.24 - i * 0.012, 0.03, 8, 16), this._mat(p.accent, 0.9, 0.2, p.accent)); band.position.y = 0.45 + i * 0.3; band.rotation.x = Math.PI / 2; this.bodyGroup.add(band); }
-            // Wide luminous parasol CAP — glowing gilled underside.
+            // Wide luminous parasol CAP - glowing gilled underside.
             const skin = this.buildSkinTexture(this.skinTextureFile);
             const capMat = new THREE.MeshStandardMaterial({ color: p.bodyColor, map: skin, roughness: 0.5, transparent: true, emissive: new THREE.Color(p.accent), emissiveIntensity: 0.35 }); this._materials.push(capMat);
             this.cap = new THREE.Group();
@@ -893,7 +893,7 @@
             this.stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.4, 1.7, 11), stalkMat);
             this.stalk.position.y = 0.9; this.bodyGroup.add(this.stalk);
             const mantle = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.62, 0.5, 14, 1, true), this._mat(0x261e30, 0.9, 0.85)); mantle.position.y = 0.95; this.bodyGroup.add(mantle); this.stalk.add(mantle);
-            // Wide umbrella CAP — very broad shallow dome, dark with acid-pocked pits.
+            // Wide umbrella CAP - very broad shallow dome, dark with acid-pocked pits.
             this.cap = new THREE.Group();
             const umbrella = new THREE.Mesh(new THREE.SphereGeometry(0.85, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.42), this._mat(p.bodyColor, 1, 0.8)); umbrella.scale.set(1.3, 0.55, 1.3); this.cap.add(umbrella);
             // Drooping cap-rim ribs giving the umbrella silhouette.
@@ -914,7 +914,7 @@
         _buildMotivationalSpeakerEP() {
             const p = this.profile;
             const stalkMat = this._skinMat(0xf0e0c0, 0.7);
-            // Confident upright stalk-body (STALK) — a podium-stand torso.
+            // Confident upright stalk-body (STALK) - a podium-stand torso.
             this.stalk = new THREE.Group();
             const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.24, 0.6, 4, 12), stalkMat); torso.position.y = 0.6; this.stalk.add(torso);
             // A pointing raised arm gesture (motivational!).
@@ -930,7 +930,7 @@
             for (let i = 0; i < 5; i++) { const a = -0.7 + (i / 4) * 1.4; const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 0.02), this._mat(0xffffff, 1, 0.3)); tooth.position.set(Math.sin(a) * 0.15, 0.6, 0.27); this.stalk.add(tooth); }
             grin.position.set(0, 0.62, 0); this.stalk.add(grin);
             this.bodyGroup.add(this.stalk);
-            // Podium-like flat-topped CAP — a broad lectern-disc with a glowing rim.
+            // Podium-like flat-topped CAP - a broad lectern-disc with a glowing rim.
             this.cap = new THREE.Group();
             const top = new THREE.Mesh(new THREE.CylinderGeometry(0.66, 0.5, 0.16, 18), this._mat(p.bodyColor, 1, 0.55)); this.cap.add(top);
             const rim = new THREE.Mesh(new THREE.TorusGeometry(0.66, 0.05, 10, 24), this._mat(p.accent, 0.9, 0.2, p.accent)); rim.rotation.x = Math.PI / 2; rim.position.y = -0.04; this.cap.add(rim);
@@ -947,11 +947,11 @@
             this._wireMushroom([arm, fist, thumb, grin, ...brows]);
         }
 
-        // ── Creeping Luminspore: low, sprawling bioluminescent fungus — a flat
+        // ── Creeping Luminspore: low, sprawling bioluminescent fungus - a flat
         //    creeping cap hugging the ground, glowing spore-pods on crawling roots ─
         _buildCreepingLuminspore() {
             const p = this.profile;
-            // Short squat slumped stalk (STALK) — leaning low, not upright.
+            // Short squat slumped stalk (STALK) - leaning low, not upright.
             const stalkMat = this._skinMat(0x3a5a52, 0.7);
             this.stalk = new THREE.Group();
             const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.24, 0.45, 10), stalkMat);
@@ -959,7 +959,7 @@
             // Glowing vein lines crawling up the stalk.
             for (let i = 0; i < 4; i++) { const a = this.idRand() * Math.PI * 2; const vein = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.34, 0.015), this._mat(p.accent, 0.9, 0.2, p.accent)); vein.position.set(Math.cos(a) * 0.18, 0.22, -0.1 + Math.sin(a) * 0.1); vein.rotation.x = 0.5; this.stalk.add(vein); }
             this.bodyGroup.add(this.stalk);
-            // Flat creeping CAP — wide low shelf-fan hugging the ground, glowing rim.
+            // Flat creeping CAP - wide low shelf-fan hugging the ground, glowing rim.
             const skin = this.buildSkinTexture(this.skinTextureFile);
             const capMat = new THREE.MeshStandardMaterial({ color: p.bodyColor, map: skin, roughness: 0.55, transparent: true, emissive: new THREE.Color(p.accent), emissiveIntensity: 0.2 }); this._materials.push(capMat);
             this.cap = new THREE.Group();
@@ -967,7 +967,7 @@
             // Glowing gill-ridges fanning out underneath.
             for (let i = 0; i < 11; i++) { const a = -1.0 + (i / 10) * 2.0; const gill = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.015, 0.015), this._mat(p.accent, 0.85, 0.2, p.accent)); gill.position.set(Math.sin(a) * 0.34, -0.04, 0.36 - Math.abs(a) * 0.05); gill.rotation.y = -a * 1.2; this.cap.add(gill); }
             this.cap.position.set(0, 0.5, 0.18); this.cap.rotation.x = -0.35; this.bodyGroup.add(this.cap);
-            // Crawling ROOTS — long flat tendrils splaying out across the ground.
+            // Crawling ROOTS - long flat tendrils splaying out across the ground.
             this.roots = new THREE.Group();
             const rootMat = this._skinMat(0x2a3a30, 0.95);
             for (let i = 0; i < 6; i++) {
@@ -976,7 +976,7 @@
                 this.roots.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 14, 0.035, 5, false), rootMat));
             }
             this.bodyGroup.add(this.roots);
-            // Glowing SPORE_SACS — luminous pods clustered on the creeping roots.
+            // Glowing SPORE_SACS - luminous pods clustered on the creeping roots.
             this.spores = new THREE.Group();
             for (let i = 0; i < 9; i++) { const a = this.idRand() * Math.PI * 2, rr = 0.3 + this.idRand() * 0.55; const pod = new THREE.Mesh(new THREE.SphereGeometry(0.07 + this.idRand() * 0.04, 9, 9), this._mat(0xc8fff0, 0.9, 0.2, p.accent)); pod.position.set(Math.cos(a) * rr, 0.08 + this.idRand() * 0.04, Math.sin(a) * rr); pod._yb = pod.position.y; this.spores.add(pod); }
             this.bodyGroup.add(this.spores);
@@ -1007,7 +1007,7 @@
                 for (let i = 0; i < 5; i++) { const a = -0.8 + (i / 4) * 1.6; const seg = new THREE.Mesh(new THREE.SphereGeometry(0.025, 6, 6), this._mat(0x100a06, 1, 0.6)); seg.position.set(fx0 + Math.sin(a) * 0.1, fy - 0.16 + Math.cos(a) * 0.05, fz0); this.trunk.add(seg); }
             }
             this.bodyGroup.add(this.trunk);
-            // Drooping willow CROWN — long weeping tendril fronds hanging down.
+            // Drooping willow CROWN - long weeping tendril fronds hanging down.
             this.crown = new THREE.Group();
             const cap = new THREE.Mesh(new THREE.SphereGeometry(0.42, 12, 10), this._mat(0x3a5a3a, 1, 0.85)); cap.scale.set(1.3, 0.7, 1.3); this.crown.add(cap);
             const willowMat = this._mat(0x4a6a44, 1, 0.85);
@@ -1030,15 +1030,15 @@
             this._wireTree();
         }
 
-        // ── Backwards Tree: an upside-down tree — leafy crown buried in the soil,
+        // ── Backwards Tree: an upside-down tree - leafy crown buried in the soil,
         //    bare clawing roots reaching up into the sky ───────────────────────────
         _buildBackwardsTree() {
             const p = this.profile;
             const bark = this._skinMat(p.bodyColor, 1.0);
-            // Inverted TRUNK — fat at the bottom (where the buried crown is), tapering up.
+            // Inverted TRUNK - fat at the bottom (where the buried crown is), tapering up.
             this.trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.18, 1.4, 9), bark);
             this.trunk.position.y = 0.7; this.bodyGroup.add(this.trunk);
-            // Buried leafy CROWN — a half-sunken cluster of foliage at ground level.
+            // Buried leafy CROWN - a half-sunken cluster of foliage at ground level.
             this.crown = new THREE.Group();
             const crownMat = this._mat(p.accent, 1, 0.85);
             const blobs = [[0, 0, 0, 0.42], [-0.34, 0.06, 0.12, 0.32], [0.34, 0.06, -0.1, 0.32], [0.1, -0.06, 0.3, 0.28], [-0.12, -0.02, -0.28, 0.28]];

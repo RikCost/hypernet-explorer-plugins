@@ -1681,8 +1681,8 @@
       });
     }
 
-    // The drawers are ranked by the same table as the tab row — Medical and
-    // Tools first, Materials then Body Parts last — so a category sits in the
+    // The drawers are ranked by the same table as the tab row - Medical and
+    // Tools first, Materials then Body Parts last - so a category sits in the
     // same place whichever view the player is in. The sort is stable, so
     // everything in the middle keeps the order it was built in. Favourites
     // stays above the lot: it is a shelf the player builds, not one the loot

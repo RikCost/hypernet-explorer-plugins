@@ -17,6 +17,12 @@
     const enableSwitching = window.EquipParams.enableSwitching;
     const switchSound     = window.EquipParams.switchSound;
 
+    const escapeHtml = (text) =>
+        String(text === undefined || text === null ? '' : text).replace(
+            /[&<>"']/g,
+            (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+        );
+
     // ── Shared character-switcher hint helper (idempotent across plugins) ──────
     // Shows controller bumper hints (L / R) around a .companion-tabs-row when a
     // gamepad is connected, or a single TAB hint otherwise. Also installs a Tab
@@ -506,7 +512,7 @@
             // original order.
             const prof = window.WeaponProficiency;
             if (prof) {
-                items.sort((a, b) => (prof.isUntrained(actor, a) ? 1 : 0) - (prof.isUntrained(actor, b) ? 1 : 0));
+                items.sort((a, b) => prof.compare(actor, a, b));
             }
         }
         items.unshift({ name: t.noEquip, id: -1, isRemoveOption: true });
@@ -557,22 +563,30 @@
         const holder  = tempActor || actor;
         const held    = window.HandSlots ? window.HandSlots.heldItems(holder)
                                          : [holder.equips()[0], holder.equips()[1]];
-        const weapon1 = held[0];
-        const weapon2 = held[1];
+        const [weapon1, weapon2] = held || [];
+        const getCodes = (s) => {
+            if (!s) return [];
+            if (s === 'MIX') return ['STR', 'DEX'];
+            if (s === 'ARC') return ['STR', 'INT'];
+            return [s];
+        };
+
         const s1 = actor.getWeaponScalingType(weapon1);
         const s2 = actor.getWeaponScalingType(weapon2);
-        const scalingCodes = new Set([s1, s2].filter(c => c && c !== 'MIX'));
+        const scalingCodes = new Set([...getCodes(s1), ...getCodes(s2)]);
         if (scalingCodes.size === 0) scalingCodes.add('STR');
 
         // Proficiency grade (F to S) per scaling code, read off the weapon that
         // earns it. Shown right of the stat's own abbreviation in the grid below.
         const weaponProf = window.WeaponProficiency;
         const codeGradeMap = {};
-        if (weaponProf && s1 && s1 !== 'MIX' && weapon1 && DataManager.isWeapon(weapon1)) {
-            codeGradeMap[s1] = weaponProf.gradeFor(actor, weapon1);
+        if (weaponProf && weapon1 && DataManager.isWeapon(weapon1)) {
+            const grade1 = weaponProf.gradeFor(actor, weapon1);
+            getCodes(s1).forEach(code => { codeGradeMap[code] = grade1; });
         }
-        if (weaponProf && s2 && s2 !== 'MIX' && weapon2 && DataManager.isWeapon(weapon2)) {
-            codeGradeMap[s2] = weaponProf.gradeFor(actor, weapon2);
+        if (weaponProf && weapon2 && DataManager.isWeapon(weapon2)) {
+            const grade2 = weaponProf.gradeFor(actor, weapon2);
+            getCodes(s2).forEach(code => { codeGradeMap[code] = grade2; });
         }
 
         // Base + alchemical stats, interleaved into one 3-column grid: the
@@ -686,6 +700,14 @@
         }
         // Short description (what it does) above the combinatorial lore.
         let loreHTML = '';
+        if (loreItem) {
+            const dt = (loreItem.meta && loreItem.meta.DamageType) ||
+                (loreItem.note && (loreItem.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+            if (dt) {
+                const wtype = DataManager.isWeapon(loreItem) ? ($dataSystem.weaponTypes[loreItem.wtypeId] || '') : '';
+                loreHTML += `<div class="equip-damage-type" style="margin-top:6px;font-size:1.15em;font-family:'Lora',serif;color:var(--text-secondary-active, #e5c07b);"><span style="opacity:0.8;color:var(--text-card-medium, #ddd);">Damage Type:</span> <strong>${escapeHtml(String(dt).trim())}</strong>${wtype ? ` <span style="opacity:0.75;font-size:0.9em;">(${escapeHtml(wtype)})</span>` : ''}</div>`;
+            }
+        }
         if (loreItem && loreItem.description && String(loreItem.description).trim()) {
             let desc = String(loreItem.description).trim();
             if (window.translateText && typeof window.translateText === 'function') desc = window.translateText(desc);
@@ -801,6 +823,8 @@
                             const delta = afterParams[p] - beforeParams[p];
                             if (delta !== 0) paramDesc.push(`${paramNames[p]} ${delta>0?'+':''}${delta}`);
                         }
+                        const itemDt = (item.meta && item.meta.DamageType) || (item.note && (item.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+                        if (itemDt && itemDt !== 'None') paramDesc.unshift(`[${itemDt.trim()}]`);
                         // Non-param traits (element resist, attack element/state,
                         // dual wielding...) don't fit the before/after delta above,
                         // so they're listed as-is, same wording as the backpack tooltip.

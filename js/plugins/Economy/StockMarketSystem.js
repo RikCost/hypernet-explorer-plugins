@@ -1649,11 +1649,11 @@
               <td style="padding:6px 8px; font-weight:bold; color:#0b2f70">${stk.symbol}</td>
               <td style="padding:6px 8px">${stk.name}</td>
               <td style="padding:6px 8px; text-align:right; font-weight:bold">${qty}</td>
-              <td style="padding:6px 8px; text-align:right">${avgCost > 0 ? formatMoney(avgCost) : '—'}</td>
+              <td style="padding:6px 8px; text-align:right">${avgCost > 0 ? formatMoney(avgCost) : '-'}</td>
               <td style="padding:6px 8px; text-align:right">${formatMoney(stk.currentPrice)}</td>
               <td style="padding:6px 8px; text-align:right; font-weight:bold">${formatMoney(currentVal)}</td>
               <td style="padding:6px 8px; text-align:right; font-weight:bold; color:${pnlColor}">
-                ${qty > 0 ? `${pnl >= 0 ? '+' : ''}${formatMoney(pnl)} (${pnlPct.toFixed(1)}%)` : '—'}
+                ${qty > 0 ? `${pnl >= 0 ? '+' : ''}${formatMoney(pnl)} (${pnlPct.toFixed(1)}%)` : '-'}
               </td>
               <td style="padding:6px 8px; text-align:center">
                 <button class="sm-btn-small focusable" data-action="quick-trade" data-stock="${stk.id}">Select</button>
@@ -1747,7 +1747,7 @@
                 <td style="padding:5px 8px; text-align:right">${formatMoney(t.price || t.fillPrice || 0)}</td>
                 <td style="padding:5px 8px; text-align:right; font-weight:bold">${formatMoney(t.total || ((t.shares || 0) * (t.fillPrice || 0)))}</td>
                 <td style="padding:5px 8px; text-align:right; font-weight:bold; color:${pnlColor}">
-                  ${t.side === 'sell' && t.pnl !== undefined ? `${t.pnl >= 0 ? '+' : ''}${formatMoney(t.pnl)}` : '—'}
+                  ${t.side === 'sell' && t.pnl !== undefined ? `${t.pnl >= 0 ? '+' : ''}${formatMoney(t.pnl)}` : '-'}
                 </td>
                 <td style="padding:5px 8px; text-align:center"><span style="color:#27ae60; font-size:11px; font-weight:bold">FILLED</span></td>
               </tr>

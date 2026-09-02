@@ -310,4 +310,203 @@
         }
     };
 
+    // ========================================================================
+    // 10. PIERCING DAMAGE MECHANICS
+    // ========================================================================
+    // Piercing weapons, skills, and spells possess distinctive penetration:
+    //   1. Guard (Status 2 / isGuard): Inflict half of full damage instead of
+    //      heavy guard reduction or 0 damage.
+    //   2. Protect / Substitute (Status 19): If an ally is covered by a
+    //      substitute, the substitute protector takes full damage AND the
+    //      piercing blow punches through to deal half damage to the protected ally.
+    //   3. Divine Shield (Status 32): Piercing attacks ignore Divine Shield
+    //      completely (bypassing its 100% physical evasion and elemental resistance).
+    //   4. Magic Reflection (Status 18): Piercing spells and skills ignore
+    //      magic reflection, striking the target directly without reflecting.
+
+    function isPiercingAction(action) {
+        if (!action) return false;
+        const HC = window.HealthCore;
+        if (HC && typeof HC.getActionDamageType === 'function') {
+            const subject = action.subject ? action.subject() : null;
+            return HC.getActionDamageType(action, subject) === 'Piercing';
+        }
+        const item = typeof action.item === 'function' ? action.item() : null;
+        if (item) {
+            const dt = (item.meta && item.meta.DamageType) ||
+                (item.note && (item.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+            if (dt && String(dt).trim() === 'Piercing') return true;
+        }
+        return false;
+    }
+    BSE.Helpers.isPiercingAction = isPiercingAction;
+
+    // 1. Guard (Status 2): Piercing deals half of full damage
+    const _Game_Action_applyGuard_Piercing = Game_Action.prototype.applyGuard;
+    Game_Action.prototype.applyGuard = function(damage, target) {
+        if (isPiercingAction(this) && damage > 0 && (target.isGuard() || target.isStateAffected(2))) {
+            return damage * 0.5;
+        }
+        return _Game_Action_applyGuard_Piercing.call(this, damage, target);
+    };
+
+    // 2. Magic Reflection (Status 18): Piercing ignores reflection
+    const _Game_Action_itemMrf_Piercing = Game_Action.prototype.itemMrf;
+    Game_Action.prototype.itemMrf = function(target) {
+        if (isPiercingAction(this)) {
+            return 0;
+        }
+        return _Game_Action_itemMrf_Piercing.call(this, target);
+    };
+
+    // 3. Divine Shield (Status 32): Piercing ignores evasion and damage resistance
+    const _Game_Action_itemEva_Piercing = Game_Action.prototype.itemEva;
+    Game_Action.prototype.itemEva = function(target) {
+        if (isPiercingAction(this) && target && target.isStateAffected && target.isStateAffected(32)) {
+            const idx = target._states ? target._states.indexOf(32) : -1;
+            if (idx !== -1) {
+                target._states.splice(idx, 1);
+                const eva = _Game_Action_itemEva_Piercing.call(this, target);
+                target._states.splice(idx, 0, 32);
+                return eva;
+            }
+        }
+        return _Game_Action_itemEva_Piercing.call(this, target);
+    };
+
+    const _Game_Action_makeDamageValue_Piercing = Game_Action.prototype.makeDamageValue;
+    Game_Action.prototype.makeDamageValue = function(target, critical) {
+        let val;
+        if (isPiercingAction(this) && target && target.isStateAffected && target.isStateAffected(32)) {
+            const idx = target._states ? target._states.indexOf(32) : -1;
+            if (idx !== -1) {
+                target._states.splice(idx, 1);
+                val = _Game_Action_makeDamageValue_Piercing.call(this, target, critical);
+                target._states.splice(idx, 0, 32);
+            } else {
+                val = _Game_Action_makeDamageValue_Piercing.call(this, target, critical);
+            }
+        } else {
+            val = _Game_Action_makeDamageValue_Piercing.call(this, target, critical);
+        }
+        if (this._isPiercingPenetration) {
+            val = Math.max(1, Math.round(val * 0.5));
+        }
+        return val;
+    };
+
+    // 4. Protect (Status 19 / Substitute): Piercing hits substitute for full damage and penetrates to protected target for half damage
+    const _BattleManager_invokeNormalAction_Piercing = BattleManager.invokeNormalAction;
+    BattleManager.invokeNormalAction = function(subject, target) {
+        const realTarget = this.applySubstitute(target);
+        if (isPiercingAction(this._action) && realTarget && target && realTarget !== target) {
+            // Apply full damage to the substitute protector
+            this._action.apply(realTarget);
+            this._logWindow.displayActionResults(subject, realTarget);
+
+            // Punch through and apply half damage to the protected ally
+            this._action._isPiercingPenetration = true;
+            this._action.apply(target);
+            this._logWindow.displayActionResults(subject, target);
+            this._action._isPiercingPenetration = false;
+            return;
+        }
+        _BattleManager_invokeNormalAction_Piercing.call(this, subject, target);
+    };
+
+    // ========================================================================
+    // 11. WEAPON SCALING DAMAGE CALCULATION
+    // ========================================================================
+    // Weapons declare their scaling in notes via `<Scale: STAT>` tags
+    // (e.g. `<Scale: STR>`, `<Scale: DEX>`, `<Scale: STR>` + `<Scale: DEX>` for MIX,
+    // `<Scale: PSI>`, `<Scale: INT>`, etc.).
+    // Standard Attack (Skill 1) dynamically reads the weapon's scaling tags to
+    // evaluate damage formula based on the character's corresponding attributes.
+
+    function getWeaponScalingStats(subject) {
+        const weapon = (subject && typeof subject.weapons === 'function' && subject.weapons().length > 0)
+            ? subject.weapons()[0]
+            : null;
+        const note = (weapon && weapon.note) ? weapon.note : (subject && subject.note ? subject.note : '');
+        const scales = [];
+        const regex = /<Scale:\s*([^>]+)>/gi;
+        let match;
+        while ((match = regex.exec(note)) !== null) {
+            const parts = match[1].split(',').map(s => s.trim().toUpperCase());
+            scales.push(...parts);
+        }
+        if (scales.length === 0 && weapon && weapon.meta && weapon.meta.Scale) {
+            scales.push(...String(weapon.meta.Scale).split(',').map(s => s.trim().toUpperCase()));
+        }
+        if (scales.length === 0) {
+            scales.push('STR');
+        }
+        return scales;
+    }
+    BSE.Helpers.getWeaponScalingStats = getWeaponScalingStats;
+
+    const _Game_Action_evalDamageFormula_Scaling = Game_Action.prototype.evalDamageFormula;
+    Game_Action.prototype.evalDamageFormula = function(target) {
+        const item = this.item();
+        if (item && (item.id === 1 || this.isAttack())) {
+            const a = this.subject();
+            const b = target;
+            if (a) {
+                const scales = getWeaponScalingStats(a);
+                let statSum = 0;
+                let isMagicDef = true;
+
+                scales.forEach(st => {
+                    switch (st) {
+                        case 'DEX':
+                        case 'AGI':
+                            statSum += a.agi;
+                            isMagicDef = false;
+                            break;
+                        case 'CON':
+                        case 'DEF':
+                            statSum += a.def;
+                            isMagicDef = false;
+                            break;
+                        case 'INT':
+                        case 'MAT':
+                            statSum += a.mat;
+                            break;
+                        case 'WIS':
+                        case 'MDF':
+                            statSum += a.mdf;
+                            break;
+                        case 'PSI':
+                        case 'LUK':
+                            statSum += a.luk;
+                            isMagicDef = false;
+                            break;
+                        case 'MIX':
+                            statSum += (a.atk + a.agi) / 2;
+                            isMagicDef = false;
+                            break;
+                        case 'ARC':
+                            statSum += (a.atk + a.mat) / 2;
+                            isMagicDef = false;
+                            break;
+                        case 'STR':
+                        case 'ATK':
+                        default:
+                            statSum += a.atk;
+                            isMagicDef = false;
+                            break;
+                    }
+                });
+
+                const attackerStat = statSum / scales.length;
+                const targetDef = (isMagicDef && b) ? b.mdf : ((b && b.def) ? b.def : 0);
+                const level = (typeof a.level === 'number' && Number.isFinite(a.level)) ? a.level : 1;
+                const sign = [3, 4].includes(item.damage.type) ? -1 : 1;
+                const val = Math.max((attackerStat * 9.6) * (1 + level * 0.05) - targetDef * 1.5, 1) * sign;
+                return isNaN(val) ? 0 : val;
+            }
+        }
+        return _Game_Action_evalDamageFormula_Scaling.call(this, target);
+    };
+
 })();

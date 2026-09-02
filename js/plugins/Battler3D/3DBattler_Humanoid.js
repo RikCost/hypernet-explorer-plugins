@@ -308,7 +308,7 @@
         gobm_warlord:      _gob({ scale: 2.9, bodyBulk: 1.28, weapon: 4, gear: ['spikedpauldrons', 'spikes', 'cape'], corpsePaint: 1, blackMetal: 1, hue: [0.30, 0.05], sat: [0.18, 0.08], lit: [0.20, 0.06] }),
         gobm_riotcaster:   _gob({ scale: 2.5, bodyBulk: 1.00, weapon: 6, gear: ['spikes', 'studs'],                corpsePaint: 1, blackMetal: 1, hue: [0.30, 0.05], sat: [0.18, 0.08], lit: [0.22, 0.06] }),
         gobm_shrieker:     _gob({ scale: 2.4, bodyBulk: 0.95, weapon: 0, gear: ['spikes', 'studs'],                corpsePaint: 1, blackMetal: 1, hue: [0.30, 0.05], sat: [0.18, 0.08], lit: [0.22, 0.06] }),
-        // NB: "Goblin Head" (943) intentionally NOT pinned — its name collides
+        // NB: "Goblin Head" (943) intentionally NOT pinned - its name collides
         // (case-insensitively) with the severed-head enemy "Goblin head" (841,
         // Spherical), so it resolves to the plain goblin rig instead.
         // ── Hobgoblins (corpse paint + black metal) ───────────────────────
@@ -1044,7 +1044,7 @@
             this.bellShell = bell;
             this.torso.add(bell);
         }
-        // Glitter Goblin: futuristic chrome plating — visor, antenna, chest core.
+        // Glitter Goblin: futuristic chrome plating - visor, antenna, chest core.
         _gearRobotic() {
             const chrome = this._gmat(0xbfc6cf, 0.25, 0.95);
             const glow = this._gmat(0x22e6ff, 0.2, 0.3, 0x22e6ff);

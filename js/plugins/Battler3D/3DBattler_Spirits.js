@@ -354,7 +354,7 @@
             this.bow.position.set(-0.6, 1.0, 0.2); this.bow.rotation.y = -0.3; this.bodyGroup.add(this.bow);
             // Ghostly arm reaching to the bow.
             this.arm = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.5, 7), this._ghostMat); this.arm.position.set(-0.35, 1.0, 0.15); this.arm.rotation.z = 0.9; this.bodyGroup.add(this.arm);
-            // Lower body trails into wisps — widen them into a tattered skirt.
+            // Lower body trails into wisps - widen them into a tattered skirt.
             this.leftWisp.geometry.dispose(); this.leftWisp.geometry = new THREE.ConeGeometry(0.22, 0.85, 8); this.leftWisp.position.set(-0.22, 0.45, 0); this.leftWisp.rotation.z = 0.25;
             this.rightWisp.geometry.dispose(); this.rightWisp.geometry = new THREE.ConeGeometry(0.22, 0.85, 8); this.rightWisp.position.set(0.22, 0.45, 0); this.rightWisp.rotation.z = -0.25;
             this.face.position.y = 1.15;
@@ -382,7 +382,7 @@
         _buildSpectralWisp() {
             const p = this.profile;
             this._ghostBase({ opacity: 0.55, eyeColor: 0x335577, eyeGlow: p.accent });
-            // Pure glowing orb — drop the tail, shrink the body, add a soft halo.
+            // Pure glowing orb - drop the tail, shrink the body, add a soft halo.
             this.core.children.forEach(c => { c.visible = false; });
             this.core.material = this._mat(p.bodyColor, 0.5, 0.2, p.accent);
             this.core.scale.set(0.85, 0.85, 0.85); this.core.position.y = 0.95;
@@ -402,7 +402,7 @@
             // Hide the cheerful tail/mouth; the body is hidden under the shroud.
             this.core.children.forEach(c => { c.visible = false; });
             this.core.material.opacity = 0.25;
-            this.face.children[2].visible = false; // no mouth — barely visible face
+            this.face.children[2].visible = false; // no mouth - barely visible face
             this.face.position.set(0, 1.0, 0.18); this.face.scale.set(0.85, 0.85, 0.6);
             // The hanging cloak: a tall draped open cone over everything.
             const cloakMat = this._mat(p.bodyColor, 0.55, 0.85);
@@ -563,7 +563,7 @@
             this.core.material = this._mat(p.bodyColor, 0.9, 0.3);
             this.core.children.forEach(c => { c.visible = false; });
             this.core.position.y = 0.95;
-            // Jagged obsidian shards encrusting the body — dark, sharp facets.
+            // Jagged obsidian shards encrusting the body - dark, sharp facets.
             const glassMat = this._mat(0x14101e, 0.95, 0.15);
             this.shards = new THREE.Group();
             for (let i = 0; i < 12; i++) {
@@ -588,7 +588,7 @@
         _buildSentientWound() {
             const p = this.profile;
             this._ghostBase({ opacity: 0.0, eyeColor: 0x000000 });
-            // Hide the friendly base body — this creature is a slit in the air.
+            // Hide the friendly base body - this creature is a slit in the air.
             this.core.visible = false; this.core.children.forEach(c => { c.visible = false; });
             this.leftWisp.visible = true; this.rightWisp.visible = true;
             // CORE = the gash itself: two raw flesh lips meeting in a vertical seam.
@@ -735,6 +735,7 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime, anim = this.currentAnimation;
             let growth = 1.0;
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.8);
@@ -745,10 +746,11 @@
             if (this.leftWisp && this.leftWisp.visible) this.leftWisp.rotation.z = 0.5 + Math.sin(t * 2) * 0.2;
             if (this.rightWisp && this.rightWisp.visible) this.rightWisp.rotation.z = -0.5 - Math.sin(t * 2 + 0.5) * 0.2;
 
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'anxietyelem': {
                     // Constant nervous tremble + darting eyes + dripping sweat.
-                    this.model.position.x = Math.sin(t * (fast ? 30 : 18)) * 0.02 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * (fast ? 30 : 18)) * 0.02 * this.scale;
                     if (this.core) this.core.rotation.z = Math.sin(t * 22) * 0.03;
                     if (this.darts) this.darts.children.forEach((e, i) => { e.position.x = Math.cos(e._a) * 0.6 + Math.sin(t * 9 + i) * 0.08; e.position.y = 0.9 + Math.sin(e._a) * 0.5 + Math.cos(t * 11 + i) * 0.06; });
                     if (this.sweat) this.sweat.children.forEach(s => { s.position.y -= 0.02; if (s.position.y < 0.3) s.position.y = 1.1; });

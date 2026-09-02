@@ -6,8 +6,8 @@
  * @help CustomMainMenuSearch.js
  *
  * Adds a search field above the party cards on the right page of the main menu
- * (UI/CustomMainMenuLayout.js). Typing in it — or clicking the pockets' Search
- * tile, which opens the same page on everything unfiltered — takes over both
+ * (UI/CustomMainMenuLayout.js). Typing in it - or clicking the pockets' Search
+ * tile, which opens the same page on everything unfiltered - takes over both
  * pages:
  *
  *   Left page   the results, under a bar of kind chips, sort keys and range
@@ -41,8 +41,8 @@
  * Keyboard: type to search, Up/Down to walk the results, Enter to run the
  * highlighted result's first action, Escape to clear (again to leave the
  * field). Every key event is stopped at the field, so the menu's own hotkeys
- * never see the typing. With the page open and nothing focused — the tile's
- * way in — the same Up/Down/OK are read from Input instead, so a pad walks the
+ * never see the typing. With the page open and nothing focused - the tile's
+ * way in - the same Up/Down/OK are read from Input instead, so a pad walks the
  * list without ever touching the field.
  *
  * Must be listed AFTER UI/CustomMainMenuLayout.js.
@@ -67,7 +67,7 @@
     // State
     // =========================================================================
     // The query, the kind chips, the sort keys, the category picker and the
-    // range fields all belong to the shared strip (UI/MenuSearchBar.js) — the
+    // range fields all belong to the shared strip (UI/MenuSearchBar.js) - the
     // same one the Skills scene, the Bestiary, the workbench, the forge and the
     // trait picker wear. This page only splits it in two, keeping the field on
     // the right page over the party cards and the filters on the left with the

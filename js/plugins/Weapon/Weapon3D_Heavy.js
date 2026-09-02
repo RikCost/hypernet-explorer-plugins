@@ -2652,7 +2652,7 @@
         rim.position.y = 0.22;
         group.add(rim);
         const boss = new THREE.Mesh(new THREE.SphereGeometry(0.038, this.seg(12, 7), this.seg(8, 5), 0, Math.PI * 2, 0, Math.PI / 2), iron);
-        boss.rotation.x = -Math.PI / 2;
+        boss.rotation.x = Math.PI / 2;
         boss.position.set(0, 0.22, 0.016);
         group.add(boss);
         const bossSpike = new THREE.Mesh(new THREE.ConeGeometry(0.016, 0.07, this.seg(8, 5)), bright);

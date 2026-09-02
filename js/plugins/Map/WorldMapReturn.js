@@ -6676,8 +6676,8 @@
     // different biome tile for every world coordinate. FurnitureSystem stores
     // placed pieces keyed by "map", so without help every proc-map build would
     // share one bucket and leak across coordinates. This provider hands
-    // FurnitureSystem a composite key — biome + world coordinate + underground
-    // depth — so structures and furniture built on the procedural map are
+    // FurnitureSystem a composite key - biome + world coordinate + underground
+    // depth - so structures and furniture built on the procedural map are
     // remembered and restored only at the exact biome/world-coordinate where they
     // were placed. Each piece already stores its own x/y (proc-map coordinates),
     // so the full (biome, worldX, worldY, procX, procY) address is preserved.

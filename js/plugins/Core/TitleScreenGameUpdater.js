@@ -924,9 +924,9 @@
             const FIX = '(hotfix|hot-fix|patch|hf)\\s*[.#]?\\s*(\\d+)?';
             const plain = str.match(new RegExp('^v?' + VERSION + '$', 'i'));
             if (plain) return plain[1];
-            const trailing = str.match(new RegExp('^v?' + VERSION + '\\s*[-–—:,]?\\s*' + FIX + '$', 'i'));
+            const trailing = str.match(new RegExp('^v?' + VERSION + '\\s*[-–-:,]?\\s*' + FIX + '$', 'i'));
             const leading  = trailing ? null
-                : str.match(new RegExp('^' + FIX + '\\s*[-–—:,]?\\s*v?' + VERSION + '$', 'i'));
+                : str.match(new RegExp('^' + FIX + '\\s*[-–-:,]?\\s*v?' + VERSION + '$', 'i'));
             if (trailing) return trailing[1] + ' hotfix' + (trailing[3] ? ' ' + trailing[3] : '');
             if (leading)  return leading[3] + ' hotfix' + (leading[2] ? ' ' + leading[2] : '');
             return null;

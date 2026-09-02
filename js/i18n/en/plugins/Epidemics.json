@@ -6,8 +6,13 @@
   "log": {
     "firstCases": "First cases filed in {place}.",
     "reaches": "Reaches {place} (from {from}).",
-    "declaredOver": "Declared over. {cases} cases, {dead} dead."
+    "declaredOver": "Declared over. {cases} cases, {dead} dead.",
+    "incubation": "Initial infection incubating in {place}."
   },
+  "toast": {
+    "threshold": "Outbreak Alert: {disease} has reached {count} cases!"
+  },
+  "discovered": "Outbreak of {disease} officially discovered in {place}!",
   "news": {
     "hysteria": "{disease} spreads through {place}; officials appeal for calm.",
     "medical": "Outbreak of {disease} confirmed in {place}. Eurodemics raises the alert."

@@ -467,7 +467,7 @@
             return { body, accent, robe, skin };
         }
 
-        // ── Witch: FF8-style sorceress — asymmetric spiked regalia, towering
+        // ── Witch: FF8-style sorceress - asymmetric spiked regalia, towering
         //    fan-collar, clawed hands, ornate horned headdress, floating sigils ─
         _buildWitch() {
             const p = this.profile, pal = this._bossPalette();
@@ -1206,7 +1206,7 @@
     // (Maps an exact enemy name to a model key; existing keys are reused too.)
     //=========================================================================
     const NAMED = {
-        // Cosmic horrors — each now pinned to its own bespoke model.
+        // Cosmic horrors - each now pinned to its own bespoke model.
         el_aiwass: ["Aiwass Messenger"],
         el_annunaki: ["Annunaki Overlord"],
         el_blankemergence: ["Blank Emergence"],
@@ -1241,7 +1241,7 @@
         el_xothnagal: ["Xoth'nagal the Dream-Plague"],
         el_velkorthak: ["Vel'korthak the Reality-Breeder"],
         el_zhothaggur: ["Zhoth'aggur the Silence-Weaver"],
-        // Titans / behemoths — each now pinned to its own bespoke model.
+        // Titans / behemoths - each now pinned to its own bespoke model.
         col_bloodleech: ["Blood Leech Colossus"],
         col_bogbehemoth: ["Bog Behemoth"],
         col_crumbling: ["Crumbling Colossus"],

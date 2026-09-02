@@ -376,7 +376,7 @@
   // UI prints on the Join action and the roll _join() actually makes.
   // Disposition is the only input: neutral (opinion 0) is a coin flip, the curve
   // slides down toward JOIN_MIN as the NPC dislikes the focused party member and
-  // up toward JOIN_MAX as they warm to them. Nothing else — level, class, etc. —
+  // up toward JOIN_MAX as they warm to them. Nothing else - level, class, etc. -
   // moves the odds in either direction; the UI's only other gates on Join
   // (party full, no self-switch-A page to fall through to) are mechanical
   // necessities, not difficulty factors.
@@ -525,7 +525,7 @@
 
   // True when the event has a page gated on self-switch A. Recruiting flips that
   // self-switch so the NPC stops standing on the map, which only works if there
-  // is a page to fall through to — otherwise the recruit stays visible and the
+  // is a page to fall through to - otherwise the recruit stays visible and the
   // player can walk up to a copy of a party member. This inspects the event's
   // static page CONDITIONS, not the runtime self-switch value: an earlier
   // version tested the value itself and wrongly hid Join all over the place.
@@ -1531,8 +1531,8 @@
 
   // ── Fun: the moves that are entertainment, not just company ──────────────
   // Most of the Socialize catalog is contact: it feeds the social meter and
-  // moves an opinion. A few of the options are ENTERTAINMENT — a joke that
-  // lands, a story or a poem that holds the room, gossip worth hearing — and
+  // moves an opinion. A few of the options are ENTERTAINMENT - a joke that
+  // lands, a story or a poem that holds the room, gossip worth hearing - and
   // those pay the Fun (leisure) meter as well, on BOTH sides of the exchange:
   // the party member who performed, and the NPC who was performed to
   // (profile.leisure, the same 0-100 field the society sim drains in
@@ -2924,7 +2924,7 @@
 
       const dz = (tc.diseases || []).map(x => DS && DS.getDisease(x.id)).filter(Boolean);
       let hitIds = [];
-      if (profile && DS && dz.length) hitIds = DS.deliberateTransmit(profile, dz);
+      if (profile && DS && dz.length) hitIds = DS.deliberateTransmit(profile, dz, profile._homeGroupName || null);
 
       // Reputation + faction hit and crime record (assault).
       if (profile) {
@@ -2963,7 +2963,7 @@
       this._render();
     }
 
-    // ── Infecting somebody out of a vial (Infect) ────────────────────────────
+    // ── Deliberate disease transmission (Cough / Spit / Bite) ────────────────
     // The other half of the disease library: Cough/Spit/Bite pass on what the
     // party is already carrying, this opens a sealed vial on somebody. The list
     // is every <DiseaseVial:> item in the pack; with none the action is greyed
@@ -3030,7 +3030,10 @@
           return;
         }
         $gameParty.loseItem(item, 1);
-        DS.infectActor(actor, diseaseId, T.infectSource);
+        const ep = DS.startPlayerEpidemic
+          ? DS.startPlayerEpidemic(diseaseId, null, { fromParty: true, actorId: actor.actorId(), covert: false })
+          : null;
+        DS.infectActor(actor, diseaseId, T.infectSource, ep ? ep.id : null);
         SoundManager.playOk();
         this._infectMode  = false;
         this._joinMessage = { type: 'accept', text: T.infectMember(actor.name(), dzName) };
@@ -3052,9 +3055,17 @@
       // keeps a wasted vial from also being a free one.
       const already = DS.npcHasDisease(profile, diseaseId);
       const immune  = (profile.pastDiseases || []).includes(diseaseId);
-      const took    = !immune && !already && DS.infectNpc(profile, diseaseId);
-
       const unseen = Math.random() * 100 < _infectChance(actor);
+      let ep = null;
+      if (!immune && !already && DS.startPlayerEpidemic) {
+        ep = DS.startPlayerEpidemic(diseaseId, profile._homeGroupName || null, {
+          covert: unseen,
+          playerStarted: true,
+          originNpc: npcName
+        });
+      }
+      const took    = !immune && !already && DS.infectNpc(profile, diseaseId, ep ? ep.id : null);
+
       (profile.eventLog ??= []).push({
         tag: 'crime', desc: unseen ? `covertly infected with ${diseaseId}` : `caught infecting with ${diseaseId}`, // i18n-ignore: event-log record ids
         timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
@@ -4592,7 +4603,7 @@
       }
 
       // joinParty reports whether the NPC actually joined (actor added +
-      // self-switch A set). Only claim success if it really happened — otherwise
+      // self-switch A set). Only claim success if it really happened - otherwise
       // the panel would show "joined!" while the party stayed unchanged.
       if (!joined) {
         SoundManager.playBuzzer();
@@ -4928,7 +4939,7 @@
   // Switch 67 (MultiplayerON) reserves party slots and gates the Join button.
   // It is set live by the multiplayer plugin, but a session that ended abruptly
   // can leave it stuck ON, which then wrongly hides Join in single-player. Force
-  // it OFF on every load — a real multiplayer session re-sets it live, never via
+  // it OFF on every load - a real multiplayer session re-sets it live, never via
   // a loaded save. Both SaveSystem load paths call $gameSystem.onAfterLoad().
   const _Game_System_onAfterLoad = Game_System.prototype.onAfterLoad;
   Game_System.prototype.onAfterLoad = function () {

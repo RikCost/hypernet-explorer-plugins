@@ -655,7 +655,7 @@
 
       // Bridge deck (region 12): arriving on it, by transfer or by load, lands
       // ON the deck, which is what makes the walk-off restriction (canPass)
-      // apply — EXCEPT when the landing tile has no bridge-network neighbour
+      // apply - EXCEPT when the landing tile has no bridge-network neighbour
       // (12, 11 or 5) on any side. A transfer can drop a character on any
       // region-12 tile a map happens to carry, not only the ones a real,
       // fully-painted bridge run connects, and forcing the on-deck state there
@@ -858,7 +858,7 @@
     // takes hunger off the drinker instead of easing it, the way a mouthful of
     // brine actually works on a body. Anywhere else the water is drinkable and
     // eases hunger a little. The whole mouthful is reported through the shared
-    // toast — what was drunk and what it did to the meters — rather than in a
+    // toast - what was drunk and what it did to the meters - rather than in a
     // message box the player has to dismiss for every sip.
     performDrinkWater(character) {
       const isSaltWater = Utils.isSaltWaterHere();
@@ -2272,7 +2272,7 @@
           PluginManager.callCommand(interpreter, "WorldMapReturn", "goDown", {});
         }
 
-        // Hide events on proc map (Ocean biome) except monsters — but only once
+        // Hide events on proc map (Ocean biome) except monsters - but only once
         // the descent has actually been accepted. goDown refuses on its own
         // terms (no diving suit, no lower layer), and hiding the square's events
         // before asking left the party standing on an emptied-looking map.
@@ -2623,7 +2623,7 @@
     // Region 5 <-> Region 11: the bridge-access step and the cliff tile it
     // serves are mutually and unconditionally passable in either direction,
     // whatever the facing. Neither tile's own tileset passability is
-    // consulted (only map bounds and character collision) — checked first so
+    // consulted (only map bounds and character collision) - checked first so
     // it always wins over the general region-5 rule below and the region-11
     // directional cliff rule further down, both of which would otherwise gate
     // this pairing by facing or by the raw (often intentionally blocked) tile.
@@ -2636,7 +2636,7 @@
     // Region 11 <-> Region 12: the cliff tile and the bridge deck it joins
     // are likewise mutually and unconditionally passable in either
     // direction, whatever the facing, with neither tile's own tileset
-    // passability consulted — the bridge branch further down still gates a
+    // passability consulted - the bridge branch further down still gates a
     // bridge-deck walker's OTHER exits (onto arbitrary terrain), but never
     // this pairing.
     if ((currentRegion === 11 && destRegion === 12) || (currentRegion === 12 && destRegion === 11)) {
@@ -2648,7 +2648,7 @@
     // Region 5 is always-passable terrain (bridge-access step / guaranteed path).
     // Leaving it bypasses destination tile passability only toward another
     // marked region of the path network (11 cliff, 12 bridge deck, 5 itself,
-    // 99 water, 13 house spawn) — never region 10 (blocked) and never a plain,
+    // 99 water, 13 house spawn) - never region 10 (blocked) and never a plain,
     // unmarked tile (region 0), whose own tileset passability still applies so
     // region 5 cannot be used to walk into an unpassable wall with no region.
     if (currentRegion === 5 && destRegion !== 10 && destRegion !== 0) {
@@ -2676,7 +2676,7 @@
     if (destRegion === 12 || currentRegion === 12) {
       // While standing ON the bridge deck (on top), the walker may only step
       // onto a bridge-access tile (region 11 or 5) or continue along the deck
-      // (region 12) — never walk straight off it onto arbitrary terrain. This
+      // (region 12) - never walk straight off it onto arbitrary terrain. This
       // holds however the deck was reached, a step or a map transfer included.
       // Passing UNDER the bridge (_onBridge false) is unrestricted so the ground
       // path beneath it stays walkable.
@@ -3018,7 +3018,7 @@
       // Layered bridges (region 12): a character passing UNDER the deck must be
       // hidden by it. The map's deck tiles are painted on the lower tile layer
       // (not "above character" ☆ tiles), so screenZ alone cannot occlude the
-      // sprite — hide it directly while underneath. The party rides the player's
+      // sprite - hide it directly while underneath. The party rides the player's
       // on/under state, matching the screenZ hooks above.
       if (this.visible && this._character && $gamePlayer && !$gamePlayer._onBridge) {
           const c = this._character;

@@ -265,7 +265,7 @@
             const opacity = this.contentsOpacity;
 
             // Hidden case (the common one): only the map-name fade being 0. Avoid
-            // recomputing displayName() and rewriting styles every frame — just
+            // recomputing displayName() and rewriting styles every frame - just
             // hide once on the transition to hidden.
             if (opacity <= 0) {
                 if (this._htmlShown) {

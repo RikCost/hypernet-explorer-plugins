@@ -846,7 +846,7 @@
           }
         }
       } else {
-        // The target is no longer held or alive — clear the stale reference
+        // The target is no longer held or alive - clear the stale reference
         // so the next turn doesn't retry.
         this._wrestleContinueTargetIndex = null;
       }
@@ -901,7 +901,7 @@
   // -------------------------------------------------------------------------
   // Attack: targets a random enemy instead of opening the target picker.
   // The base BattleManager.selectNextCommand also randomises for isAttack(),
-  // so the result is the same — a random alive enemy — without the player
+  // so the result is the same - a random alive enemy - without the player
   // having to pick one manually.
   // -------------------------------------------------------------------------
   Scene_Battle.prototype.commandAttack = function () {

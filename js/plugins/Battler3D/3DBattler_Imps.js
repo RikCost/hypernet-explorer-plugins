@@ -284,6 +284,7 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime, anim = this.currentAnimation;
             let growth = 1.0;
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.8);
@@ -297,6 +298,7 @@
             if (this.leftWing) this.leftWing.rotation.y = 0.5 + Math.sin(t * (fast ? 14 : 7)) * 0.4;
             if (this.rightWing) this.rightWing.rotation.y = -0.5 - Math.sin(t * (fast ? 14 : 7)) * 0.4;
 
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'emberimp': {
                     if (this.flames) this.flames.children.forEach((f, i) => { const s = 1 + Math.sin(t * (fast ? 12 : 7) + i) * 0.4; f.scale.set(s, 1.0 / Math.sqrt(s), s); f.material.emissiveIntensity = (fast ? 1.6 : 0.9) + Math.sin(t * 9 + i) * 0.5; });
@@ -323,7 +325,7 @@
                 }
                 case 'dodgerimp': {
                     // Twitchy dodging side-steps + rising embers.
-                    this.model.position.x = Math.sin(t * (fast ? 11 : 5)) * 0.05 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * (fast ? 11 : 5)) * 0.05 * this.scale;
                     if (this.embers) this.embers.children.forEach(e => { e.position.y += 0.015 + e._t * 0.01; if (e.position.y > 1.9) e.position.y = 0.4; e.material.emissiveIntensity = 0.6 + Math.sin(t * 12 + e._t * 6) * 0.4; });
                     break;
                 }

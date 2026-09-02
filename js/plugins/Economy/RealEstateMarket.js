@@ -148,7 +148,7 @@
 
     // Property types with their characteristics.
     // basePrice indices are 1-5 stars. Stars 1-3 are deliberately steep and
-    // cheap (a 1-star of any type is a near-derelict dump — base capped well
+    // cheap (a 1-star of any type is a near-derelict dump - base capped well
     // under 1000€ even after the ±20% roll in createRandomProperty), while
     // 4-5 star bases are unchanged from the original premium tiers.
     // i18n-ignore-start  property type ids, stored on every property record
@@ -446,7 +446,7 @@
         }
 
         // =====================================================================
-        // Player rentals — the player can move into a property as a tenant
+        // Player rentals - the player can move into a property as a tenant
         // instead of buying it outright, paying a recurring monthly cost. A
         // rented property is not owned, so it cannot also be offered for rent
         // to NPCs (that requires the deed via buyProperty/toggleRentStatus).
@@ -824,7 +824,7 @@
             return true;
         }
 
-        // Grant shares outright (no cash spent) — used by the CEO origin. Sets the
+        // Grant shares outright (no cash spent) - used by the CEO origin. Sets the
         // cost basis to current market value so profit/loss starts at zero.
         giveShares(key, count) {
             const def = this.getCompanyDefs()[key];
@@ -1478,7 +1478,7 @@
             const equityEl = this._dndContainer.querySelector('#re-equity');
             if (equityEl) equityEl.textContent = `€${Math.round(companies.reduce((s, c) => s + c.value, 0) / 100).toLocaleString()}`;
 
-            // Companies list is small — rebuild it each refresh to reflect prices.
+            // Companies list is small - rebuild it each refresh to reflect prices.
             const listEl = this._dndContainer.querySelector('#estate-list');
             if (listEl) listEl.innerHTML = this.buildCompanyListHTML(companies, this._companyIndex);
 
@@ -2061,7 +2061,7 @@
     }
 
     // Month key ("JAN 2001") derived from the day key by dropping the day
-    // token — reuses realEstateDayKey()'s cache instead of re-parsing.
+    // token - reuses realEstateDayKey()'s cache instead of re-parsing.
     function realEstateMonthKey() {
         const dayKey = realEstateDayKey();
         const sp = dayKey.indexOf(' ');

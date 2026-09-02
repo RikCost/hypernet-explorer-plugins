@@ -47,36 +47,36 @@
  *
  * @param levelDampScale
  * @text Level Gap Scale
- * @desc Higher = gentler damping. Gap above the fair gap is divided by this.
+ * @desc Higher = gentler damping. Level gap is divided by this.
  * @type number
- * @default 5
+ * @default 4
  *
  * @param levelDampCurve
  * @text Level Gap Curve
  * @desc Exponent of the damping curve. Above 1 it bites harder as the gap widens.
  * @type number
  * @decimals 2
- * @default 1.6
+ * @default 2.2
  *
  * @param levelDampFloor
  * @text Level Gap Floor
- * @desc Lowest damage multiplier the gap alone can impose (0.06 = 6% damage).
+ * @desc Lowest damage multiplier the gap alone can impose (0.005 = 0.5% damage, chip damage).
  * @type number
- * @decimals 2
- * @default 0.06
+ * @decimals 3
+ * @default 0.005
  *
  * @param levelDampLeverageCap
  * @text Tactical Leverage Cap
- * @desc How much of the damping tactics (crits, weakness, debuffs) can undo at the edge of the fair gap.
+ * @desc Maximum damping reduction tactics (crits, weakness, debuffs) can provide.
  * @type number
  * @decimals 2
- * @default 0.80
+ * @default 0.40
  *
  * @param levelDampLeverageFalloff
  * @text Tactical Leverage Falloff
- * @desc Levels past the fair gap over which tactics lose half their worth. Lower = tactics stop rescuing a hopeless gap sooner.
+ * @desc Levels over which tactics lose half their worth. Lower = tactics stop rescuing a hopeless gap sooner.
  * @type number
- * @default 6
+ * @default 3.5
  *
  * @param levelPressurePerLevel
  * @text Level Pressure Per Level
@@ -448,7 +448,7 @@
  *   2. BattleSystemEnhancedState.js      , Persistent Battles & Rewards
  *   3. BattleSystemEnhancedDeath.js      , Gravestone & Respawn Mechanics
  *   4. BattleSystemEnhancedMechanics.js  , Combat Safety & Level Warnings
- *   5. BattleSystemEnhancedLevelDisplay.js— Map UI & Nameplates
+ *   5. BattleSystemEnhancedLevelDisplay.js- Map UI & Nameplates
  *
  * Terms of Use:
  * Free for use in both commercial and non-commercial projects.
@@ -479,11 +479,11 @@
     BSE.Params.respawnCountryIDVar  = Number(parameters['respawnCountryIDVar'] || 112);
     BSE.Params.levelGapFair         = Number(parameters['levelGapFair'] || 6);
     BSE.Params.levelGapHard         = Number(parameters['levelGapHard'] || 8);
-    BSE.Params.levelDampScale       = Number(parameters['levelDampScale'] || 5);
-    BSE.Params.levelDampCurve       = Number(parameters['levelDampCurve'] || 1.6);
-    BSE.Params.levelDampFloor       = Number(parameters['levelDampFloor'] || 0.06);
-    BSE.Params.levelDampLeverageCap = Number(parameters['levelDampLeverageCap'] || 0.80);
-    BSE.Params.levelDampLeverageFalloff = Number(parameters['levelDampLeverageFalloff'] || 6);
+    BSE.Params.levelDampScale       = Number(parameters['levelDampScale'] || 4);
+    BSE.Params.levelDampCurve       = Number(parameters['levelDampCurve'] || 2.2);
+    BSE.Params.levelDampFloor       = Number(parameters['levelDampFloor'] || 0.005);
+    BSE.Params.levelDampLeverageCap = Number(parameters['levelDampLeverageCap'] || 0.40);
+    BSE.Params.levelDampLeverageFalloff = Number(parameters['levelDampLeverageFalloff'] || 3.5);
     BSE.Params.levelPressurePerLevel    = Number(parameters['levelPressurePerLevel'] || 0.100);
     BSE.Params.levelPressureCap         = Number(parameters['levelPressureCap'] || 2.60);
     BSE.Params.levelPressureOutnumber   = Number(parameters['levelPressureOutnumber'] || 0.45);
@@ -516,8 +516,8 @@
     BSE.Params.dndPaceWeight          = Number(parameters['dndPaceWeight'] || 0.70);
     BSE.Params.dndActorHits           = Number(parameters['dndActorHits'] || 9);
     BSE.Params.dndEnemyHits           = Number(parameters['dndEnemyHits'] || 5);
-    BSE.Params.dndGapPerLevel         = Number(parameters['dndGapPerLevel'] || 0.045);
-    BSE.Params.dndGapCap              = Number(parameters['dndGapCap'] || 2.50);
+    BSE.Params.dndGapPerLevel         = Number(parameters['dndGapPerLevel'] || 0.15);
+    BSE.Params.dndGapCap              = Number(parameters['dndGapCap'] || 6.00);
     BSE.Params.dndContestPerPoint     = Number(parameters['dndContestPerPoint'] || 0.060);
     BSE.Params.dndContestFloor        = Number(parameters['dndContestFloor'] || 0.60);
     BSE.Params.dndContestCeiling      = Number(parameters['dndContestCeiling'] || 1.50);
@@ -979,16 +979,17 @@
         if (!levelGapRulesApply()) return 1;
         const enemyLevel = BSE.Helpers.getBattlerLevel(target);
         if (enemyLevel <= 0) return 1;
-        const fair = BSE.Params.levelGapFair;
-        const behind = enemyLevel - BSE.Helpers.getBattlerLevel(subject) - fair;
-        if (behind <= 0) {
-            return gapLift(BSE.Helpers.getBattlerLevel(subject) - enemyLevel - fair, 0);
+        const actorLevel = BSE.Helpers.getBattlerLevel(subject);
+        const gap = enemyLevel - actorLevel;
+        if (gap <= 0) {
+            // Same or superior level deals normal damage
+            return 1;
         }
-        const damp = gapDamp(behind);
+        const damp = gapDamp(gap);
         const falloff = Math.max(1, BSE.Params.levelDampLeverageFalloff);
-        const cap = BSE.Params.levelDampLeverageCap * Math.pow(0.5, behind / falloff);
+        const cap = BSE.Params.levelDampLeverageCap * Math.pow(0.5, gap / falloff);
         const leverage = BSE.Helpers.tacticalLeverage(subject, target, action, critical) * cap;
-        return damp + (1 - damp) * leverage;
+        return Math.max(BSE.Params.levelDampFloor, damp + (1 - damp) * leverage);
     };
 
     /**
@@ -996,15 +997,12 @@
      * member: the other half of the level gap, and the half that decides
      * whether an over-level fight is dangerous or merely long.
      *
-     * A monster inside the fair gap presses at 1x, exactly as before. Past it
-     * every level is worth levelPressurePerLevel more, and being outnumbered
-     * is worth levelPressureOutnumber of the ratio on top, so a level gap
-     * cannot be answered by bringing more bodies and taking more turns.
+     * A monster at the same level presses at 1x. Outranking the party scales
+     * damage upward per level (levelPressurePerLevel), amplified if outnumbered
+     * (levelPressureOutnumber).
      *
-     * Below the fair gap the same curve runs backwards: a monster the party
-     * has outgrown by more than six levels is damped exactly as the party is
-     * damped against something six levels above them, so the fauna of a place
-     * a party has left behind scratches rather than wounds.
+     * An under-level monster is damped accordingly, so fauna the party has
+     * outgrown deal chip damage.
      */
     BSE.Helpers.levelPressureFactor = function(subject, target) {
         if (!subject || !target) return 1;
@@ -1013,10 +1011,10 @@
         if (!levelGapRulesApply()) return 1;
         const enemyLevel = BSE.Helpers.getBattlerLevel(subject);
         if (enemyLevel <= 0) return 1;
-        const fair = BSE.Params.levelGapFair;
-        const ahead = enemyLevel - BSE.Helpers.getBattlerLevel(target) - fair;
+        const actorLevel = BSE.Helpers.getBattlerLevel(target);
+        const ahead = enemyLevel - actorLevel;
         if (ahead <= 0) {
-            return gapDamp(BSE.Helpers.getBattlerLevel(target) - enemyLevel - fair);
+            return gapDamp(actorLevel - enemyLevel);
         }
         // The headcount widens the gap rather than multiplying on top of it,
         // so an even fight is never changed by it and the extra weight comes
@@ -2519,6 +2517,11 @@
         // HP damage and HP drain: nothing is severed by a heal or a debuff.
         if (!action.checkDamageType || !action.checkDamageType([1, 5])) return false;
         if (!(result.hpDamage > 0)) return false;
+        // Limbs can only be severed by Explosive, Piercing, and Cutting damage.
+        const HC = window.HealthCore;
+        if (HC && typeof HC.attackerCanCut === "function") {
+            if (!HC.attackerCanCut(subject, action)) return false;
+        }
         // The critical hit already did it; there is nothing left to take.
         if (target.isDead && target.isDead()) return false;
         return true;

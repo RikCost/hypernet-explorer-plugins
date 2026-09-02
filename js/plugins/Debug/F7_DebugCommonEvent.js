@@ -114,7 +114,7 @@
     };
     
     // Add custom input handlers.
-    // NOTE: We deliberately do NOT remap keyMapper[33]/[34] (PageUp/PageDown) — doing so
+    // NOTE: We deliberately do NOT remap keyMapper[33]/[34] (PageUp/PageDown) - doing so
     // clobbers MZ's built-in 'pageup'/'pagedown', breaking actor-switching and item paging.
     // The direct keydown listener below sets the 'debug_pageup'/'debug_pagedown' states
     // alongside the built-ins, so both keep working.

@@ -775,6 +775,10 @@
             if (!entry) return false;
             if (!entry.name || entry.name.trim() === '') return false;
             if (!isShopSellable(entry)) return false;
+            // A world without magic has no spellbooks or charms on the shelf,
+            // and a world where magic won never invented the technology
+            // (window.MagicNature is the one answer for both).
+            if (window.MagicNature && !window.MagicNature.allowsData(entry)) return false;
             if (isSkillEntry(entry)) {
                 if (!entry.mpCost) return false;
                 return learnerCandidates(entry).length > 0;
@@ -2127,7 +2131,7 @@
                 `<td class="sb-price">${formatPrice(unit)}</td>` +
                 `<td class="sb-bulk">${Stock.isUnlimited(entry)
                     ? T('Stockbusters.text.perUnitAt', { price: formatPrice(bulkUnit), count: 100 })
-                    : '—'}</td>` +
+                    : '-'}</td>` +
                 `<td>${stock}</td>` +
                 `<td style="font-size:11px;">${formatDelay(listing.endsIn)}</td></tr>`;
         }
@@ -2236,7 +2240,22 @@
         const maxQty = Stock.available(entry);
         html += `<div class="sb-buybox">`;
         html += `<div class="sb-panel"><div class="sb-panel-hd">${T('Stockbusters.text.buyItNow')}</div><div class="sb-panel-bd">`;
+        const dt = (entry.meta && entry.meta.DamageType) ||
+            (entry.note && (entry.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+        let scaleStr = '';
+        if (DataManager.isWeapon(entry)) {
+            const note = entry.note || '';
+            const scales = [];
+            const regex = /<Scale:\s*([^>]+)>/gi;
+            let match;
+            while ((match = regex.exec(note)) !== null) {
+                scales.push(...match[1].split(',').map(s => s.trim().toUpperCase()));
+            }
+            if (scales.length > 0) scaleStr = scales.join(' + ');
+        }
         html += `<table class="sb-kv">` +
+            (dt ? `<tr><td class="k">${T('Inventory.spec.label.damageCategory') || 'Damage Type'}</td><td class="v"><b style="color:#003399;">${escapeHtml(String(dt).trim())}</b></td></tr>` : '') +
+            (scaleStr ? `<tr><td class="k">Scaling</td><td class="v"><b style="color:#b8860b;">${escapeHtml(scaleStr)}</b></td></tr>` : '') +
             `<tr><td class="k">${T('Stockbusters.text.colPrice')}</td><td class="v"><span id="sb-unit" class="sb-price"></span></td></tr>` +
             `<tr><td class="k">${T('Stockbusters.text.perUnit')}</td><td class="v"><span id="sb-each"></span></td></tr>` +
             `<tr><td class="k">${T('Stockbusters.ui.totalCost')}</td><td class="v"><span id="sb-total" class="sb-bigprice"></span></td></tr>` +
@@ -2340,7 +2359,7 @@
             const hit = Pricing.bulkRate(this._qty) === tier.off &&
                 (tier.off > 0 || this._qty < BULK_TIERS[BULK_TIERS.length - 1].min);
             html += `<tr class="${hit ? 'hit' : ''}"><td>${tier.min}+</td>` +
-                `<td>${formatPrice(unit)}</td><td>${tier.off ? '-' + Math.round(tier.off * 100) + '%' : '—'}</td></tr>`;
+                `<td>${formatPrice(unit)}</td><td>${tier.off ? '-' + Math.round(tier.off * 100) + '%' : '-'}</td></tr>`;
         }
         return html;
     };
@@ -2395,7 +2414,7 @@
         set('sb-total', formatPrice(total));
         set('sb-save', saved > 0
             ? T('Stockbusters.text.savedAmount', { amount: formatPrice(saved), percent: Math.round(Pricing.bulkRate(qty) * 100) })
-            : '—');
+            : '-');
         if (!limited) {
             set('sb-eta', formatDelay(DeliveryManager.calculateDeliveryTime(total, qty)));
         }

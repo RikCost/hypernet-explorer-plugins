@@ -482,8 +482,11 @@
     const worldSeed = window.NPCShared.worldSeed();
     const rng = new SeededRng(nameToSeed(eventName + "_equip") ^ (worldSeed >>> 0));
     const hasClass = !!classId;
-    const allWeapons = ($dataWeapons || []).filter(w => w && w.id > 0 && w.name);
-    const allArmors  = ($dataArmors  || []).filter(a => a && a.id > 0 && a.name);
+    // Nobody in a severed world owns an enchanted blade, and nobody in an
+    // unbound one owns technology (window.MagicNature).
+    const _natureOk = (e) => !window.MagicNature || window.MagicNature.allowsData(e);
+    const allWeapons = ($dataWeapons || []).filter(w => w && w.id > 0 && w.name && _natureOk(w));
+    const allArmors  = ($dataArmors  || []).filter(a => a && a.id > 0 && a.name && _natureOk(a));
 
     if (!hasClass) {
       // No class: clothes-category armors, rarely a cheap weapon
@@ -547,10 +550,27 @@
   let _cachedValidItems   = null; // { id, _category }[]
   const _cachedClassLearnings = new Map(); // classId → Set<skillId>
 
+  // The pools depend on the world's magic level, and a world can be loaded
+  // over another one without a restart, so the caches are keyed by it.
+  let _cachedNatureLevel = null;
+  function _natureLevel() {
+    return window.MagicNature ? window.MagicNature.level() : 'normal';
+  }
+  function _checkNatureCaches() {
+    const level = _natureLevel();
+    if (_cachedNatureLevel !== level) {
+      _cachedNatureLevel = level;
+      _cachedBaseSkills = null;
+      _cachedValidItems = null;
+    }
+  }
+
   function _getBaseSkills() {
+    _checkNatureCaches();
     if (!_cachedBaseSkills) {
       _cachedBaseSkills = ($dataSkills || [])
-        .filter(s => s && s.id && s.name)
+        .filter(s => s && s.id && s.name &&
+          (!window.MagicNature || window.MagicNature.allowsData(s)))
         .map(s => {
           const m = (s.note || '').match(/<category:(\w+)>/i);
           return { id: s.id, mpCost: s.mpCost || 0, tpCost: s.tpCost || 0, _category: m ? m[1].toLowerCase() : '' };
@@ -561,9 +581,11 @@
   }
 
   function _getValidItems() {
+    _checkNatureCaches();
     if (!_cachedValidItems) {
       _cachedValidItems = ($dataItems || [])
-        .filter(i => i && i.id > 0 && i.name && i.itypeId === 1)
+        .filter(i => i && i.id > 0 && i.name && i.itypeId === 1 &&
+          (!window.MagicNature || window.MagicNature.allowsData(i)))
         .map(i => {
           const m = (i.note || '').match(/<category:(\w+)>/i);
           return { id: i.id, _category: m ? m[1].toLowerCase() : '' };

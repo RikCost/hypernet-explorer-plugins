@@ -2446,7 +2446,7 @@
     } else if (actor.skillMpCost(skill) > 0) {
       costText = `${actor.skillMpCost(skill)} ${TextManager.mp}`;
     }
-    return costText ? `${skill.name} — ${costText}` : skill.name;
+    return costText ? `${skill.name} - ${costText}` : skill.name;
   }
 
   function _hotbarEntries(actor, skills) {

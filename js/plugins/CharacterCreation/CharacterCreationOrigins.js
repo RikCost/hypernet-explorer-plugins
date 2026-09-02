@@ -86,7 +86,7 @@
       if (/<Forage:/i.test(note)) return false;
       const calories = note.match(/<calories:\s*([\d.]+)>/i);
       if (!calories || Number(calories[1]) < STARTER_FOOD_MIN_CALORIES) return false;
-      // Effect code 21 is "add state" — a food that does that is a mistake
+      // Effect code 21 is "add state" - a food that does that is a mistake
       // waiting to happen on slot 3.
       return !(item.effects || []).some((effect) => effect && effect.code === 21);
     });
@@ -545,27 +545,27 @@
   // Metalworking, Cooking, Alchemy, Electronics) and the Blacksmithing system (Bladesmithing, Tailoring,
   // Leatherworking, Jewelry Making, Gunsmithing, etc.) use.
   const CRAFTING_SPEC_IDS = [
-    20,   // Armor Smithing     (Crafting) — Blacksmithing main
-    321,  // Bladesmithing      (Crafting) — Blacksmithing main
-    40,   // Blacksmithing      (Crafting) — Blacksmithing main
-    102,  // Fabrication        (Crafting) — Thinker main bench
-    807,  // Weaponsmithing     (Crafting) — Thinker weapons
-    58,   // Carpentry          (Crafting) — Thinker lifestyle / building
-    269,  // Tailoring          (Crafting) — Blacksmithing armor
-    157,  // Leatherworking     (Crafting) — Blacksmithing armor
-    176,  // Metalworking       (Crafting) — Thinker tools / building
-    643,  // Jewelry Making     (Crafting) — Blacksmithing accessories
-    616,  // Gunsmithing        (Crafting) — Blacksmithing ranged
-    540,  // CNC Machining      (Crafting) — precision fabrication
-    121,  // Glassblowing       (Crafting) — artisan goods
-    215,  // Pottery            (Crafting) — artisan goods
-    287,  // Upholstery         (Crafting) — furniture
-    460,  // Underwater Welding (Crafting) — advanced fabrication
-    309,  // Alchemy            (Arcana)   — Thinker potions / magic items
-    49,   // Brewing            (Culinary) — Thinker beverages
-    75,   // Cooking            (Culinary) — Thinker food
-    328,  // Campfire Cooking   (Culinary) — survival food
-    98,   // Electronics        (Science)  — Thinker espionage / gadgets
+    20,   // Armor Smithing     (Crafting) - Blacksmithing main
+    321,  // Bladesmithing      (Crafting) - Blacksmithing main
+    40,   // Blacksmithing      (Crafting) - Blacksmithing main
+    102,  // Fabrication        (Crafting) - Thinker main bench
+    807,  // Weaponsmithing     (Crafting) - Thinker weapons
+    58,   // Carpentry          (Crafting) - Thinker lifestyle / building
+    269,  // Tailoring          (Crafting) - Blacksmithing armor
+    157,  // Leatherworking     (Crafting) - Blacksmithing armor
+    176,  // Metalworking       (Crafting) - Thinker tools / building
+    643,  // Jewelry Making     (Crafting) - Blacksmithing accessories
+    616,  // Gunsmithing        (Crafting) - Blacksmithing ranged
+    540,  // CNC Machining      (Crafting) - precision fabrication
+    121,  // Glassblowing       (Crafting) - artisan goods
+    215,  // Pottery            (Crafting) - artisan goods
+    287,  // Upholstery         (Crafting) - furniture
+    460,  // Underwater Welding (Crafting) - advanced fabrication
+    309,  // Alchemy            (Arcana)   - Thinker potions / magic items
+    49,   // Brewing            (Culinary) - Thinker beverages
+    75,   // Cooking            (Culinary) - Thinker food
+    328,  // Campfire Cooking   (Culinary) - survival food
+    98,   // Electronics        (Science)  - Thinker espionage / gadgets
   ];
 
   function startEmptyLotOrigin() {
@@ -586,7 +586,7 @@
   }
 
   // Stranded origin: drop the party on foot on the ground of a RANDOM one of
-  // these hand-picked world squares — remote spots scattered across the map,
+  // these hand-picked world squares - remote spots scattered across the map,
   // with nothing but the castaway kit its loadout lists. Every one of them is a
   // land square (Fields / ForestTropical / Mountain / City); never add an Ocean
   // coordinate here. A square that drifts over water after a world-map repaint
@@ -836,7 +836,7 @@
   // An entry is { id, qty, each }. `each` means "qty per party member", so a
   // trio starts with three times the supplies of a lone wanderer; without it the
   // quantity is flat. Anything in the <category:Tools> family is clamped to a
-  // single copy whatever the party size — three explorers need three ration
+  // single copy whatever the party size - three explorers need three ration
   // packs, not three low orbit pins.
   function materialLoadout(qty) {
     const list = [];
@@ -1117,7 +1117,7 @@
   // --- The origin's own three, on hotbar 4-6 ------------------------------
   // Slots 1-3 are the same everywhere (potion, tonic, food; see
   // giveStarterStaples). Slots 4-6 are where the origin speaks: the three
-  // things from ITS kit that a player of that start reaches for first — the
+  // things from ITS kit that a player of that start reaches for first - the
   // bike for the cyclist, the flashlight and rope for the delver, the escape
   // kit for the wanted.
   //
@@ -1125,7 +1125,7 @@
   // battle" (2), because that is all the favourites bar accepts. This still
   // rules out a few origins' signature objects: the lockpick, the cooking pot,
   // the utensil set and the skeleton key are occasion "never", and the
-  // ballpoint pen and resonance scanner are battle-only — so those origins
+  // ballpoint pen and resonance scanner are battle-only - so those origins
   // field their next-best three instead.
   // Staples are never repeated here; bindOriginFavorites skips anything already
   // sitting on slots 1-3.
@@ -1251,7 +1251,7 @@
       }
       if (problems.length > 0) {
         offenders.push({ origin: symbol, problems });
-        console.warn(`CharacterCreation: ${symbol} favourites — ${problems.join("; ")}`);
+        console.warn(`CharacterCreation: ${symbol} favourites - ${problems.join("; ")}`);
       }
     });
     return offenders;

@@ -670,7 +670,7 @@
                     const cl        = _classifyPart(partDef, savedPart, this._enemyDef, harvestedParts, key);
                     const item      = $dataItems[partDef.itemId];
                     const itemName  = item ? item.name : key;
-                    const rateText  = cl.rate !== null ? `${cl.rate}%` : '—';
+                    const rateText  = cl.rate !== null ? `${cl.rate}%` : '-';
                     const inactive  = (cl.state === 'ruined' || cl.state === 'done') ? 'inactive' : '';
 
                     rowsHTML += `

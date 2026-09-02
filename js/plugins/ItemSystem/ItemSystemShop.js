@@ -342,25 +342,31 @@
   };
 
   Window_ItemDetail.prototype.getWeaponScalingType = function (weapon) {
-    if (!weapon || !DataManager.isWeapon(weapon) || !Array.isArray(weapon.traits)) {
+    if (!weapon || !DataManager.isWeapon(weapon)) {
       return null;
     }
-    const attackSkills = weapon.traits.filter(trait => trait && trait.code === 35);
-    if (attackSkills.length === 0) {
-      return 'STR';
+    const note = (weapon.note || '');
+    const scales = [];
+    const regex = /<Scale:\s*([^>]+)>/gi;
+    let match;
+    while ((match = regex.exec(note)) !== null) {
+      const parts = match[1].split(',').map(s => s.trim().toUpperCase());
+      scales.push(...parts);
     }
-    for (let i = 0; i < attackSkills.length; i++) {
-      const skillId = attackSkills[i].dataId;
-      switch (skillId) {
-        case 840: return 'DEX';
-        case 841: return 'MIX';
-        case 842: return 'PSI';
-        case 843: return 'INT';
-        case 844: return 'CON';
-        case 845: return 'WIS';
-      }
+    if (scales.length === 0 && weapon.meta && weapon.meta.Scale) {
+      scales.push(...String(weapon.meta.Scale).split(',').map(s => s.trim().toUpperCase()));
     }
-    return null;
+    if (scales.includes('STR') && scales.includes('DEX')) return 'MIX';
+    if (scales.includes('STR') && scales.includes('INT')) return 'ARC';
+    if (scales.includes('MIX')) return 'MIX';
+    if (scales.includes('ARC')) return 'ARC';
+    if (scales.includes('DEX')) return 'DEX';
+    if (scales.includes('INT')) return 'INT';
+    if (scales.includes('WIS')) return 'WIS';
+    if (scales.includes('CON')) return 'CON';
+    if (scales.includes('PSI')) return 'PSI';
+    if (scales.includes('STR')) return 'STR';
+    return 'STR';
   };
 
   Window_ItemDetail.prototype.drawItemDetails = function () {
@@ -571,7 +577,7 @@
     currentY = this.drawEquipCompatibility(item, currentY);
 
     // In a shop the price that counts is the one drawMarketPriceInfo has
-    // already printed — what this counter charges today. The database sticker
+    // already printed - what this counter charges today. The database sticker
     // is only worth a line where there is no counter to quote against.
     const price = mods && typeof mods.getModifiedPrice === "function"
       ? safe("getModifiedPrice", () => mods.getModifiedPrice(item), item.price) : item.price;
@@ -1931,6 +1937,18 @@
           }
         }
 
+        let damageTypeBadgeHTML = "";
+        const dt = (selectedItem.meta && selectedItem.meta.DamageType) ||
+            (selectedItem.note && (selectedItem.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+        if (dt) {
+          damageTypeBadgeHTML = `
+            <div class="detail-spec-badge">
+                <span class="badge-lbl">${esc(T('Inventory.spec.label.damageCategory') || 'Damage Type')}</span>
+                <span class="badge-val" style="color:var(--text-secondary-active, #e5c07b); font-weight:bold;">${esc(String(dt).trim())}</span>
+            </div>
+          `;
+        }
+
         let slotBadgeHTML = "";
         if (DataManager.isWeapon(selectedItem) || DataManager.isArmor(selectedItem)) {
           const slotName = translate(equipTypeName(selectedItem.etypeId));
@@ -2279,6 +2297,7 @@
                   </div>
                   ${countBadgesHTML}
                   ${scaleBadgeHTML}
+                  ${damageTypeBadgeHTML}
                   ${slotBadgeHTML}
               </div>
 
@@ -3067,7 +3086,7 @@
   // on the side of the counter the player is standing on, what it would be
   // worth with the indices flat, and how far today's OIL or SOUL price has
   // moved it. The price is the till's own, so the panel is a quote and not an
-  // estimate — a pile of n copies is exactly n times this.
+  // estimate - a pile of n copies is exactly n times this.
   Scene_Shop.prototype.priceQuote = function (item) {
     if (!item) return null;
     const buying = this.isShopBuyMode();
@@ -3196,7 +3215,7 @@
       }
     }
     // The bag is read as categories, alphabetically, with the lines inside each
-    // one in name order — the same shape the shelf is read in. The overlay draws
+    // one in name order - the same shape the shelf is read in. The overlay draws
     // a header per category off this order, so the cursor walks the page the way
     // it looks.
     this._data.sort((a, b) => {
@@ -3243,8 +3262,8 @@
 
   // What the till pays for one copy. It goes through the scene's own
   // sellingPrice() rather than repeating its arithmetic, so every factor that
-  // moves it — Appraising, today's OIL/SOUL index, a passive skill another
-  // plugin wrapped on top — reaches the card and the counter as well as the
+  // moves it - Appraising, today's OIL/SOUL index, a passive skill another
+  // plugin wrapped on top - reaches the card and the counter as well as the
   // receipt. Quoting the sticker here is what had a two-item pile advertised
   // at 2.20 € pay out 5.36 €.
   Scene_Shop.prototype.unitSellPrice = function (item) {
@@ -3597,7 +3616,7 @@
   // The chip row: filtering by category
   //=============================================================================
   // Above each list, one chip per category that side of the counter actually
-  // holds — the shelf's own categories while buying, the party's while selling —
+  // holds - the shelf's own categories while buying, the party's while selling -
   // drawn like the backpack's tabs and read the same way. There is no fixed
   // list: a category with nothing in it has no chip, and the day the bag holds
   // its first one it gets it.
@@ -3739,7 +3758,7 @@
     return groups;
   };
 
-  // Picking a category takes every line in it that can be picked — and, on the
+  // Picking a category takes every line in it that can be picked - and, on the
   // sell side, every copy of each. A second press puts the lot back.
   Scene_Shop.prototype.toggleCategoryCart = function (key, buying) {
     if (!key) return false;

@@ -28,7 +28,7 @@
     "It is raining {upwards, with passive-aggressive politeness,|sideways, in direct defiance of gravity,|pure sarcasm,} and naturally {only over your heads|soaking only your good coat|ruining whatever dignity you had left}.",
     "The sky {cannot commit to a single time zone and keeps cycling through three at once|looks like a broken screensaver from 1998|is currently buffering between afternoon drizzle and apocalyptic twilight}.",
     "There is a brisk wind that smells of {burnt ozone, cheap gin, and bad decisions|unpaid parking tickets and wet asphalt|a dimension that clearly has worse property values than this one}.",
-    "It is {unreasonably, offensively pleasant outside—the kind of weather that precedes an audit|suspiciously idyllic out, meaning something expensive is about to break|a pristine evening, which is frankly insulting given the company}.",
+    "It is {unreasonably, offensively pleasant outside-the kind of weather that precedes an audit|suspiciously idyllic out, meaning something expensive is about to break|a pristine evening, which is frankly insulting given the company}.",
     "Every shadow in the vicinity {points in the wrong direction and refuses to make eye contact|is lagging about three seconds behind the light source|appears to be unionized and on a work slowdown}.",
     "Somewhere just past the horizon, {a thunderstorm is practicing its opening chords|an atmospheric catastrophe is checking its watch|the weather is rehearsing an emergency broadcast}.",
     "The air is {warm, dead still, and heavy with the distinct threat of litigation|so unnaturally quiet you can hear the local leylines weeping|holding its breath, waiting for one of you to say something irrecoverably stupid}."
@@ -2373,7 +2373,7 @@
       "incidents": [
         "A night watchman passes within spitting distance; {she raises a hand, and his lantern light politely declines to illuminate your coordinates|she makes a cat noise so realistic the watchman spends ten minutes trying to pet an empty shadow|she borrows his keys, duplicates three of them with a quick pinch, and slips them back into his pocket}.",
         "One of your pranks accidentally results in {a lonely street-sweeper finding a fifty-dollar bill; she spends three minutes furiously kicking a lamppost in disgust at the accidental charity|a stray dog getting adopted by a baker; she claims it was a strategic failure|two feuding neighbors making amends; she threatens to undo it immediately}.",
-        "She leaves her signature on the scene—{a tiny carved apple in the masonry|a smudge of golden wax under the door handle|a cynical haiku etched into the paint}. \"Archivists,\" she snorts, \"deserve a little overtime too.\""
+        "She leaves her signature on the scene-{a tiny carved apple in the masonry|a smudge of golden wax under the door handle|a cynical haiku etched into the paint}. \"Archivists,\" she snorts, \"deserve a little overtime too.\""
       ]
     },
     "stakeout": {

@@ -16,7 +16,7 @@
 
 /* Lora-Italic.ttf is deliberately NOT registered: the UI never renders italics
    (see the global font-style override below), and declaring the italic file as
-   `font-style: normal, weight 400` — as this block used to — made it win the
+   `font-style: normal, weight 400` - as this block used to - made it win the
    match over Lora-Regular and slanted every ordinary label in the game. */
 
 /* Terminal/card font, also used for the title-screen menu options. Declared with
@@ -2522,7 +2522,7 @@
 }
 
 /* --- Trait card grid ----------------------------------------------------- */
-/* Flat compact rows — no translateY lift so there is no hover-flicker loop
+/* Flat compact rows - no translateY lift so there is no hover-flicker loop
    (card moves out from under pointer → mouseleave → drops back → mouseenter
    → lifts again → repeat). */
 /* Four names across at every width: traits and illnesses are short labels and
@@ -2555,7 +2555,7 @@
     min-width: 0;
 }
 
-/* Flat hover — colour shift only, NO translateY (this is the flicker fix) */
+/* Flat hover - colour shift only, NO translateY (this is the flicker fix) */
 .cc-trait-grid .cc-card-option:hover {
     transform: none;
     border-color: var(--border-focus-hover);
@@ -2634,7 +2634,7 @@
     min-width: 0;
 }
 
-/* Keyboard cursor — outline so it shows on selected (gold-bordered) cards */
+/* Keyboard cursor - outline so it shows on selected (gold-bordered) cards */
 .cc-trait-grid .cc-card-option.highlighted {
     outline: 2px solid var(--border-focus-hover);
     outline-offset: 1px;
@@ -5874,7 +5874,7 @@
 
 /* window.SkillDetails (BattleSystem/CategorizedBattleSkills.js). The Use button
    is never taken away: a skill the character cannot pay for greys out where it
-   stood and still takes the click, which answers with a buzzer — so the hover
+   stood and still takes the click, which answers with a buzzer - so the hover
    is restated here, at a higher specificity than the shared one below, to undo
    its inversion. */
 .inspect-btn.unusable {
@@ -6078,7 +6078,7 @@
 /* Right page: tighter inspect header, meta and action stack.
    NOTE ON SPECIFICITY: the active theme file is re-injected at boot as a
    <style> appended to <head> (GameOptions.applyTheme), so its `.item-inspect
-   .inspect-*` rules land AFTER this file and win every (0,2,0) tie — that is
+   .inspect-*` rules land AFTER this file and win every (0,2,0) tie - that is
    what used to put the lore plate back and shrink the spec rows to 0.86rem.
    The right-page rules below therefore qualify through `.item-inspect` as well
    (0,3,0) so the flat, large-type reading survives whichever theme is live. */
@@ -13406,7 +13406,7 @@
 }
 
 /* The band that opens a category, on either side of the counter. It is a press
-   of its own — it takes the whole category onto the counter — so it carries a
+   of its own - it takes the whole category onto the counter - so it carries a
    box saying how much of it is already there. */
 .shop-cat-header {
     display: flex;
@@ -13598,7 +13598,7 @@
 }
 
 /* Green when the day's index is in the player's favour and red when it is not
-   — which way that runs depends on the side of the counter, so a squeeze on
+   - which way that runs depends on the side of the counter, so a squeeze on
    SOUL reads green on the sell page and red on the buy page. */
 .market-tag.good {
     color: var(--text-cost-ok);
@@ -17327,7 +17327,7 @@ padding: 2px 8px; font-size: 1.368rem;
     }
     /* Every offered line, in the standing verb list and in every submenu, wears
        the one option colour (gold under Omega Tower, crimson ink under Archive
-       Foundation). Only the trailing badges — odds, ♥ deltas, prices — still
+       Foundation). Only the trailing badges - odds, ♥ deltas, prices - still
        carry a colour of their own, since those read as data, not as choices. */
     .npc-chat-action-btn {
       display: inline-flex; align-items: center; gap: 5px;
@@ -17342,7 +17342,7 @@ padding: 2px 8px; font-size: 1.368rem;
     .npc-chat-action-btn .npc-opt-label { color: var(--npc-option-fg, var(--text-primary-hover)); }
     /* A tinted border alone was not enough to find the cursor inside the long
        pickers (Socialize, Court), where every row already carries badges of its
-       own colour — odds, ♥ deltas — and the borders all sit at the same weight.
+       own colour - odds, ♥ deltas - and the borders all sit at the same weight.
        The selected row is therefore inked in: highlighter fill, a solid ring in
        the option colour, bold text and a ▸ in the gutter, so it reads as chosen
        from across the panel rather than on close inspection. Mouse hover shares
@@ -17907,7 +17907,7 @@ padding: 2px 10px;
 
 /* window.CharSwitcher (defined identically by SpecializationMenu.js,
    CustomSceneStatus.js, ItemSystemEquipmentUI.js, CategorizedBattleSkills.js,
-   SkillMaster.js, Health_ProstheticShop.js and Health_BiologicSimulation.js —
+   SkillMaster.js, Health_ProstheticShop.js and Health_BiologicSimulation.js -
    whichever loads first wins). The strip and its L/R prompt used to be injected
    as a <style id="char-switch-hint-styles"> by each of those copies, which meant
    the size the player saw depended on load order: six copies said 0.732rem and
@@ -17951,7 +17951,7 @@ padding: 2px 10px;
     border-bottom: 2px solid var(--border-muted-focus);
 }
 
-/* Specialization badges (window.SpecBadge, SpecializationMenu.js) — chips
+/* Specialization badges (window.SpecBadge, SpecializationMenu.js) - chips
    naming the skill a menu or minigame is training, and the party's tier in it.
    Persistent for as long as that menu is open, unlike a toast. The plugin
    anchors the stack under the open menu's party switcher (or, failing one, in
@@ -17987,7 +17987,7 @@ padding: 2px 10px;
 .spec-badge--t1 .spec-badge-level { color: var(--border-subtle); }
 .spec-badge--t4, .spec-badge--t5 { border-color: var(--text-gold-dark); }
 
-/* Toast stack (ParchmentToast.js) — top-right transient notifications */
+/* Toast stack (ParchmentToast.js) - top-right transient notifications */
 #html-toast-stack {
     position: fixed;
     z-index: 491;

@@ -374,7 +374,7 @@
             const tiers = [[0.42, 0.7, 0.6], [0.34, 0.7, 1.2], [0.24, 0.7, 1.75], [0.14, 0.55, 2.15]];
             for (const [r, h, y] of tiers) { const t = new THREE.Mesh(new THREE.ConeGeometry(r, h, 9), flame); t.position.y = y; this.body.add(t); }
             this.bodyGroup.add(this.body);
-            // ARMS: ember claws — bright flickering tongues thrusting outward.
+            // ARMS: ember claws - bright flickering tongues thrusting outward.
             this.arms = new THREE.Group();
             for (const sx of [-1, 1]) { const a = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.7, 7), this._mat(p.accent, 0.9, 0.3, p.accent)); a.position.set(sx * 0.42, 1.35, 0.1); a.rotation.z = sx * 1.1; a._sx = sx; this.arms.add(a); }
             this.bodyGroup.add(this.arms);
@@ -764,7 +764,7 @@
             this.arms = new THREE.Group();
             for (const sx of [-1, 1]) { const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.24, 1.3, 9), white); upper.position.set(sx * 0.95, 2.0, 0.05); upper.rotation.z = sx * 0.7; this.arms.add(upper); for (let c = 0; c < 3; c++) { const claw = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.7, 6), hot); claw.position.set(sx * 1.45, 2.7 + c * 0.12, (c - 1) * 0.18); claw.rotation.z = sx * (0.4 + c * 0.25); this.arms.add(claw); } }
             this.bodyGroup.add(this.arms);
-            // LEGS: a wide roaring fire base — a broad cone with a flared ember rim.
+            // LEGS: a wide roaring fire base - a broad cone with a flared ember rim.
             this.legs = new THREE.Group();
             const base = new THREE.Mesh(new THREE.ConeGeometry(0.85, 1.1, 14), this._mat(0x9a3000, 0.92, 0.5, 0xff5a00)); base.position.y = 0.55; this.legs.add(base);
             for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; const tongue = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.55, 6), hot); tongue.position.set(Math.cos(a) * 0.72, 0.4, Math.sin(a) * 0.72); tongue.rotation.x = Math.cos(a) * 0.3; tongue.rotation.z = Math.sin(a) * 0.3; this.legs.add(tongue); }
@@ -805,11 +805,11 @@
             this.bodyGroup.add(this.body);
             this._eyeDot(this.body, -0.1, 1.97, 0.22, 0.05, p.accent);
             this._eyeDot(this.body, 0.1, 1.97, 0.22, 0.05, p.accent);
-            // ARMS: ragged ember-claw arms — soot upper with splayed flame talons.
+            // ARMS: ragged ember-claw arms - soot upper with splayed flame talons.
             this.arms = new THREE.Group();
             for (const sx of [-1, 1]) { const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.13, 0.7, 7), soot); upper.position.set(sx * 0.5, 1.35, 0.1); upper.rotation.z = sx * 0.8; this.arms.add(upper); for (let c = 0; c < 3; c++) { const talon = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.45, 5), ember); talon.position.set(sx * 0.78, 1.05 + c * 0.08, (c - 1) * 0.14); talon.rotation.z = sx * (1.2 + c * 0.2); this.arms.add(talon); } }
             this.bodyGroup.add(this.arms);
-            // LEGS: a smouldering debris-pool base — a low charred mound with scattered metal scrap.
+            // LEGS: a smouldering debris-pool base - a low charred mound with scattered metal scrap.
             this.legs = new THREE.Group();
             const pool = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 10), this._mat(0x100c0a, 0.95, 0.8, 0x551800)); pool.position.y = 0.18; pool.scale.set(1.2, 0.45, 1.0); this.legs.add(pool);
             for (let i = 0; i < 5; i++) { const a = (i / 5) * Math.PI * 2; const scrap = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.05, 0.1), metal); scrap.position.set(Math.cos(a) * 0.5, 0.12, Math.sin(a) * 0.4); scrap.rotation.set(0, a, (this.idRand() - 0.5) * 0.6); this.legs.add(scrap); }

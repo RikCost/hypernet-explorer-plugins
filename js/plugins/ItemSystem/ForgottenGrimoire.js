@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Forgotten Grimoire v1.1.0 — learn a spell from 5 random offers (parchment 2-page). [Claude]
+ * @plugindesc Forgotten Grimoire v1.1.0 - learn a spell from 5 random offers (parchment 2-page). [Claude]
  * @author Omni-Lex
  *
  * @help ForgottenGrimoire.js

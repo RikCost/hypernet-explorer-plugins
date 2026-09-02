@@ -42,6 +42,6 @@
   "status": {
     "fuel": "연료",
     "condition": "상태",
-    "broken": "고장됨 — 수리 필요"
+    "broken": "고장됨 - 수리 필요"
   }
 }

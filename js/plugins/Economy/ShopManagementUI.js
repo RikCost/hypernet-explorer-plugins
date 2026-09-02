@@ -455,7 +455,7 @@
       if (!selected) {
         return `<div class="item-inspect--empty">
           <div class="inspect-placeholder-icon"></div>
-          <p class="inspect-placeholder-text">—</p>
+          <p class="inspect-placeholder-text">-</p>
         </div>`;
       }
 

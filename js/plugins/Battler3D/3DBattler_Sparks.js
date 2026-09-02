@@ -172,6 +172,7 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime, anim = this.currentAnimation;
             let growth = 1.0;
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.8);
@@ -179,11 +180,12 @@
             const fast = (anim === 'attack' || anim === 'specialattack');
             if (this.core && this.core.material) this.core.material.emissiveIntensity = 1.0 + Math.sin(t * 5) * 0.5;
 
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'electromagneticghoul': {
                     this.model.position.y = this._baseY + Math.sin(t * 2) * 0.06 * this.scale;
                     // Glitchy jitter.
-                    this.model.position.x = (Math.sin(t * 37) > 0.7 ? 1 : 0) * 0.04 * this.scale;
+                    this.model.position.x = baseX + (Math.sin(t * 37) > 0.7 ? 1 : 0) * 0.04 * this.scale;
                     if (this.larm) this.larm.material.emissiveIntensity = (fast ? 1.5 : 0.8) + Math.sin(t * 20) * 0.6;
                     if (this.rarm) this.rarm.material.emissiveIntensity = (fast ? 1.5 : 0.8) + Math.cos(t * 23) * 0.6;
                     if (this.bars) this.bars.children.forEach(b => { b.material.emissiveIntensity = Math.abs(Math.sin(t * 4 + b._i)) * 1.2; });

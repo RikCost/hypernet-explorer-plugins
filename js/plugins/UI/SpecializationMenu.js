@@ -1363,8 +1363,8 @@
                     </div>`;
             };
 
-            // The page is a flat run of entries — section headings, the odd
-            // note, and one entry per specialization — so the windowed list can
+            // The page is a flat run of entries - section headings, the odd
+            // note, and one entry per specialization - so the windowed list can
             // address it by index without caring which is which
             // (UI/MenuVirtualList.js). `_rowEntry` maps a place in the cursor's
             // own order back to its line, for scrolling onto a row that is not

@@ -871,6 +871,26 @@
             return this.levelFor(actor, weapon) < PROFICIENT_LEVEL;
         },
 
+        // The one ordering every automatic weapon pick uses: what the wielder
+        // can actually use comes first, and only then does raw power decide.
+        // Proficient weapons outrank untrained ones however good the untrained
+        // one looks on paper; inside each group the higher tier wins ties, and
+        // among equals the better performing weapon does.
+        rankFor(actor, weapon) {
+            const level = this.levelFor(actor, weapon);
+            return { proficient: level >= PROFICIENT_LEVEL ? 1 : 0, level };
+        },
+
+        // Negative when `a` should be offered before `b`, so it drops straight
+        // into Array#sort.
+        compare(actor, a, b) {
+            const ra = this.rankFor(actor, a);
+            const rb = this.rankFor(actor, b);
+            if (ra.proficient !== rb.proficient) return rb.proficient - ra.proficient;
+            if (ra.level !== rb.level) return rb.level - ra.level;
+            return 0;
+        },
+
         // Letter grade of the wielder's proficiency with this weapon, F to S.
         gradeFor(actor, weapon) {
             const level = Math.max(1, Math.min(LEVEL_GRADE.length - 1, this.levelFor(actor, weapon)));
@@ -975,15 +995,23 @@
 
         const items = this.slotCandidates(slotId);
         const trained = items.filter(item => !WeaponProficiency.isUntrained(this, item));
+        // Nothing trained in the pack means the character has to make do, and
+        // then the least unfamiliar weapon leads: Beginner before Untrained.
         const pool = trained.length > 0 ? trained : items;
 
         let bestItem = null;
         let bestPerformance = -1000;
         for (const item of pool) {
             const performance = this.calcEquipItemPerformance(item);
-            if (performance > bestPerformance) {
-                bestPerformance = performance;
+            if (!bestItem) {
                 bestItem = item;
+                bestPerformance = performance;
+                continue;
+            }
+            const rank = WeaponProficiency.compare(this, item, bestItem);
+            if (rank < 0 || (rank === 0 && performance > bestPerformance)) {
+                bestItem = item;
+                bestPerformance = performance;
             }
         }
         return bestItem;
@@ -1117,19 +1145,28 @@
 
     Game_Actor.prototype.getWeaponScalingType = function (weapon) {
         if (!weapon || !DataManager.isWeapon(weapon)) return null;
-        const attackSkills = weapon.traits.filter(t => t.code === 35);
-        if (attackSkills.length === 0) return 'STR';
-        for (const skill of attackSkills) {
-            switch (skill.dataId) {
-                case 840: return 'DEX';
-                case 841: return 'MIX';
-                case 842: return 'PSI';
-                case 843: return 'INT';
-                case 844: return 'CON';
-                case 845: return 'WIS';
-            }
+        const note = (weapon.note || '');
+        const scales = [];
+        const regex = /<Scale:\s*([^>]+)>/gi;
+        let match;
+        while ((match = regex.exec(note)) !== null) {
+            const parts = match[1].split(',').map(s => s.trim().toUpperCase());
+            scales.push(...parts);
         }
-        return null;
+        if (scales.length === 0 && weapon.meta && weapon.meta.Scale) {
+            scales.push(...String(weapon.meta.Scale).split(',').map(s => s.trim().toUpperCase()));
+        }
+        if (scales.includes('STR') && scales.includes('DEX')) return 'MIX';
+        if (scales.includes('STR') && scales.includes('INT')) return 'ARC';
+        if (scales.includes('MIX')) return 'MIX';
+        if (scales.includes('ARC')) return 'ARC';
+        if (scales.includes('DEX')) return 'DEX';
+        if (scales.includes('INT')) return 'INT';
+        if (scales.includes('WIS')) return 'WIS';
+        if (scales.includes('CON')) return 'CON';
+        if (scales.includes('PSI')) return 'PSI';
+        if (scales.includes('STR')) return 'STR';
+        return 'STR';
     };
 
     // Expose to UI layer

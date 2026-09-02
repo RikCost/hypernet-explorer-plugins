@@ -340,7 +340,7 @@
     petrodemons: { militarism: .70, commerce: .80, piety: .35, secrecy: .65, chaos: .45, isolation: .50, science: .30, wildness: .60, order: .35 },
     tourists:    { militarism: .05, commerce: .45, piety: .20, secrecy: .10, chaos: .55, isolation: .05, science: .20, wildness: .35, order: .25 },
     // The Kukulkan Ascendancy: a restoration run as a state religion, which
-    // votes like one — pious, ordered, and in no hurry to be understood.
+    // votes like one - pious, ordered, and in no hurry to be understood.
     ascendancy:  { militarism: .70, commerce: .35, piety: .95, secrecy: .55, chaos: .25, isolation: .65, science: .30, wildness: .40, order: .85 },
     // Asia and the Middle East, each voting the way it governs.
     juche:       { militarism: 1.0, commerce: .05, piety: .45, secrecy: .95, chaos: .10, isolation: 1.0, science: .35, wildness: .10, order: 1.0 },
@@ -406,7 +406,7 @@
       });
     });
 
-    // An orphan faction — one with no `parentHyperpower` — is listed in the
+    // An orphan faction - one with no `parentHyperpower` - is listed in the
     // book but holds no chair here: it speaks for no power, nobody may swear to
     // it, and it is counted in no division.
     $gameFactions.getIndependentFactions().forEach((faction) => {

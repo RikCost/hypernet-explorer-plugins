@@ -299,6 +299,10 @@
   // and a hand-picked id does not get it onto a shelf either.
   function isSellableEntry(entry) {
     if (window.ItemSystemUtils && window.ItemSystemUtils.isRestrictedEntry(entry)) return false;
+    // Nor is anything of the wrong nature for this world: a severed world's
+    // shelves hold no charms, an unbound one's hold no technology
+    // (window.MagicNature).
+    if (window.MagicNature && !window.MagicNature.allowsData(entry)) return false;
     return !!(entry && entry.name && !entry.name.trim().startsWith("<"));
   }
 
@@ -372,7 +376,7 @@
 
   // One shelf: staples first, then a draw split between the hand-picked list
   // and the category sweep. `curatedShare` is how much of the draw the list
-  // gets when the shop has both — a bakery leans on its own recipes, a
+  // gets when the shop has both - a bakery leans on its own recipes, a
   // pharmacy on the pharmacopoeia.
   function buildShelf(def, seed) {
     const fixed = fixedEntries(def);
@@ -485,7 +489,7 @@
   //               shop has both lists (default 0.6).
   //   shelf:      [min, max] slots, overriding the usual 6-12.
   //   stockMult:  multiplies the per-item stock rolled by ItemSystemShop.
-  //   artifacts:  'item' | 'weapon' | 'armor' | 'all' — the shop can turn up a
+  //   artifacts:  'item' | 'weapon' | 'armor' | 'all' - the shop can turn up a
   //               rare artifact in its last slot.
   //   dining:     venue that serves prepared food and drink, so a seated player
   //               can order from it remotely (see the remote-ordering section
@@ -1149,7 +1153,8 @@
   const TEACH_OFFER_COUNT = 8;       // how many abilities end up on the shelf
 
   const isRealSkillEntry = s =>
-    s && s.name && !s.name.startsWith("<") && !s.name.startsWith("ESK");
+    s && s.name && !s.name.startsWith("<") && !s.name.startsWith("ESK") &&
+    (!window.MagicNature || window.MagicNature.allowsData(s));
 
   const prettifySchool = s => String(s || "").replace(/([a-z])([A-Z])/g, "$1 $2");
 
@@ -1196,7 +1201,7 @@
     return cache[cacheKey];
   }
 
-  // Abilities already bought here today stay bought — tracked on $gameSystem so
+  // Abilities already bought here today stay bought - tracked on $gameSystem so
   // it survives saves, and keyed by date so tomorrow's stock is clean.
   function soldRecord(mode, cacheKey) {
     if (!$gameSystem._dailyTeachShopSold) $gameSystem._dailyTeachShopSold = {};

@@ -187,7 +187,7 @@
 
     function logEntry(level, args, explicitStack) {
         // Skip stack capture and arg stringification entirely when file
-        // logging is unavailable — the entry would be dropped anyway.
+        // logging is unavailable - the entry would be dropped anyway.
         if (!isFileLoggingEnabled()) return;
         const message = Array.prototype.map.call(args, formatArg).join(' ');
         const stack = explicitStack || captureStack();

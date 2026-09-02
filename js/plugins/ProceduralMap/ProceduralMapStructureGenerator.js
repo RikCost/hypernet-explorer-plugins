@@ -2271,7 +2271,7 @@
     //     on the impassable north wall faces that front a room, so they cannot
     //     affect pathing at all. Sewers always drip Drain fixtures here.
     // Grid (multi-tile) feature variants are supported too, so props like the
-    // 2x2 Drain and the 2-tall Torch — which have no single-tile variant — are
+    // 2x2 Drain and the 2-tall Torch - which have no single-tile variant - are
     // actually placed instead of being silently skipped.
     // Ground and wall features are what the place is BUILT of, so they are
     // never dealt out as props on top of it. The list covers every feature any

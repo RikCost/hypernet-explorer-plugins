@@ -2258,7 +2258,7 @@
       // old global variables) and mark this creature as portrayed by an existing
       // species rather than by a custom-built model ("sprite"), so no CC3DModel
       // config is looked up for it. The portrait itself is still the species'
-      // procedural 3D model — the very one previewed on this step — with the
+      // procedural 3D model - the very one previewed on this step - with the
       // battler image only standing in when no model resolves.
       const battlerActor = $gameActors.actor(this._targetActorId);
       if (battlerActor) {

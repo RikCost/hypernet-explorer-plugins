@@ -263,6 +263,14 @@
                     specs.push({ label: T("SkillsMenu.magicSystem.label"), val: T.has(key) ? T(key) : String(system).trim() });
                 }
 
+                if (!skill.damage || !(skill.damage.type > 0)) {
+                    const dt = (skill.meta && skill.meta.DamageType) ||
+                        (skill.note && (skill.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+                    if (dt) {
+                        specs.push({ label: T("SkillsMenu.spec.label.damageCategory") || "Damage Type", val: String(dt).trim() });
+                    }
+                }
+
                 // The base stat the skill wants, and what the reader brings to
                 // it (window.SkillStatReq, BattleSystemEnhanced.js). Nothing is
                 // barred by falling short: the skill is still learned, still
@@ -350,6 +358,11 @@
             const damageSpecsOf = (skill, actor) => {
                 const specs = [];
                 if (!skill || !skill.damage || !(skill.damage.type > 0)) return specs;
+                const damageCategory = (skill.meta && skill.meta.DamageType) ||
+                    (skill.note && (skill.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+                if (damageCategory) {
+                    specs.push({ label: T("SkillsMenu.spec.label.damageCategory") || "Damage Type", val: String(damageCategory).trim() });
+                }
                 specs.push({ label: T("Inventory.spec.label.damageType"), val: damageTypeName(skill.damage.type) });
                 if (skill.damage.elementId > 0) {
                     specs.push({ label: T("Inventory.spec.label.attackElement"), val: ($dataSystem.elements || [])[skill.damage.elementId] || T("Inventory.spec.none") });

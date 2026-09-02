@@ -92,8 +92,8 @@
   },
   "magicalNotes": {
     "normal": "",
-    "severed": "On the night of 31 December 2000 the three pillars of the Mages' Guild performed the Ritual of Solomon, and Thatcher's traditionalists carried the vote: the source code of magic was rewritten to keep the whole of it inside the Guild, and outside those few halls it simply never happened. Nothing magical exists anywhere: no spell, no charm, no enchanted blade, no creature that runs on it, no face that only a spell could wear. Shops do not stock it, crates do not hold it, and there is no MP bar because there is nothing to spend it on. What your party is given at creation is theirs regardless.",
-    "unbound": "On the night of 31 December 2000 the three pillars of the Mages' Guild performed the Ritual of Solomon, and Crowley's side carried it: rather than narrow the flow they opened it all the way, unstoppering every leyline at once until nothing at all was left ordinary. Every weapon is enchanted, every illness is a curse, and every creature that walks is a thing that should not. Shops sell nothing mundane and no plain steel is ever found. What your party is given at creation is theirs regardless."
+    "severed": "Magic has been stripped from the world. Spells, enchanted items, and magical creatures no longer appear, and the MP bar is removed. The party retains only what they are given at creation.",
+    "unbound": "Magic runs wild across the world. Weapons are enchanted, illnesses are curses, and creatures mutate from raw ley energy. Shops and loot contain no ordinary gear."
   },
   "magicalLocked": "Chosen once, at creation, and independent of the timeline: any combination of the two is a world you can make."
 }

@@ -158,7 +158,24 @@
         const loreText = loreOf(selectedItem, itemType);
 
         const generalSpecs = [];
-        if (isWeapon) { generalSpecs.push({ label: T('Inventory.spec.label.weaponType'), val: $dataSystem.weaponTypes[selectedItem.wtypeId] || T('Inventory.spec.label.weaponFallback') }); }
+        if (isWeapon) {
+          generalSpecs.push({ label: T('Inventory.spec.label.weaponType'), val: $dataSystem.weaponTypes[selectedItem.wtypeId] || T('Inventory.spec.label.weaponFallback') });
+          const dt = (selectedItem.meta && selectedItem.meta.DamageType) ||
+              (selectedItem.note && (selectedItem.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+          if (dt) {
+            generalSpecs.push({ label: T('Inventory.spec.label.damageCategory') || 'Damage Type', val: String(dt).trim() });
+          }
+          const note = selectedItem.note || '';
+          const scales = [];
+          const regex = /<Scale:\s*([^>]+)>/gi;
+          let match;
+          while ((match = regex.exec(note)) !== null) {
+            scales.push(...match[1].split(',').map(s => s.trim().toUpperCase()));
+          }
+          if (scales.length > 0) {
+            generalSpecs.push({ label: 'Scaling', val: scales.join(' + ') });
+          }
+        }
         else if (isArmor) {
           generalSpecs.push({ label: T('Inventory.spec.label.armorType'), val: $dataSystem.armorTypes[selectedItem.atypeId] || T('Inventory.spec.label.armorFallback') });
           generalSpecs.push({ label: T('Inventory.spec.label.equipSlot'), val: $dataSystem.equipTypes[selectedItem.etypeId] || T('Inventory.spec.label.slotFallback') });
@@ -166,6 +183,11 @@
           generalSpecs.push({ label: T('Inventory.spec.label.consumable'), val: selectedItem.consumable ? T('Inventory.spec.yes') : T('Inventory.spec.no') });
           generalSpecs.push({ label: T('Inventory.spec.label.occasion'),   val: getOccasionName(selectedItem.occasion) });
           generalSpecs.push({ label: T('Inventory.spec.label.scope'),      val: getScopeName(selectedItem.scope) });
+          const dt = (selectedItem.meta && selectedItem.meta.DamageType) ||
+              (selectedItem.note && (selectedItem.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+          if (dt && dt !== 'None' && !(selectedItem.damage && selectedItem.damage.type > 0)) {
+            generalSpecs.push({ label: T('Inventory.spec.label.damageCategory') || 'Damage Type', val: String(dt).trim() });
+          }
         }
 
         const paramSpecs = [];
@@ -186,6 +208,11 @@
 
         const damageSpecs = [];
         if (selectedItem.damage && selectedItem.damage.type > 0) {
+          const dt = (selectedItem.meta && selectedItem.meta.DamageType) ||
+              (selectedItem.note && (selectedItem.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+          if (dt) {
+            damageSpecs.push({ label: T('Inventory.spec.label.damageCategory') || 'Damage Type', val: String(dt).trim() });
+          }
           damageSpecs.push({ label: T('Inventory.spec.label.damageType'), val: getDamageTypeName(selectedItem.damage.type) });
           if (selectedItem.damage.elementId > 0) damageSpecs.push({ label: T('Inventory.spec.label.attackElement'), val: $dataSystem.elements[selectedItem.damage.elementId] || T('Inventory.spec.noneValue') });
           const formula = selectedItem.damage.formula ? selectedItem.damage.formula.trim() : '';
@@ -233,7 +260,7 @@
               let name = inner; let val = '';
               if (colonIdx !== -1) { name = inner.substring(0, colonIdx).trim(); val = inner.substring(colonIdx+1).trim(); }
               const nl = name.toLowerCase();
-              if (nl === 'movement' || nl === 'weight' || nl === 'category' || nl === 'uncraftable') return;
+              if (nl === 'movement' || nl === 'weight' || nl === 'category' || nl === 'uncraftable' || nl === 'damagetype') return;
               if (nl === 'needrestore') return; // rendered as its own "Needs Restored" section below
               // <Medicine:>, <Cures:> and <Treats:> are already rendered as
               // their own "Medicine" section above (getMedicineInfo); listing
@@ -761,7 +788,7 @@
       this._dndContainer.innerHTML = `<div class="book-spread inspect-pockets">${leftPageHTML}${rightPageHTML}</div>`;
     } else {
       // In-place update: tabs. The row itself is only rebuilt when the set of
-      // categories changes — using the last of something takes its tab away —
+      // categories changes - using the last of something takes its tab away -
       // and otherwise just has its active and focused marks moved.
       const tabsKey = categories.join('|');
       const tabsContainer = leftPageContainer.querySelector('.backpack-tabs');

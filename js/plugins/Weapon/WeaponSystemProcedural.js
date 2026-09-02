@@ -2064,6 +2064,14 @@ var WeaponSystemProcedural = {
     // reads at while the forearm runs on past the bottom edge of the screen,
     // rather than a held weapon's grip simply floating at the anchor.
     if (weapon.unarmedArchetype) return 2.10;
+    // Shields sit compactly in the off-hand corner rather than towering over
+    // the whole combat arena.
+    if (weapon.shieldArmorId || weapon.id === 166) {
+      const grams = this.weightOf(weapon);
+      if (grams < 1600) return 0.28;
+      if (grams >= 3500) return 0.44;
+      return 0.35;
+    }
     switch (weapon.wtypeId) {
       case 1:  return 0.62; // Light (dagger)
       case 2:  return 0.89; // Sword
@@ -2108,7 +2116,7 @@ var WeaponSystemProcedural = {
     if (weapon.unarmedArchetype) return { x: 12, y: -10, z: -8 };
     // A shield rests across the body with its face turned out, angled just
     // enough to read as a plate rather than an edge.
-    if (weapon.shieldArmorId) return { x: -6, y: -22, z: 4 };
+    if (weapon.shieldArmorId || weapon.id === 166) return { x: -6, y: -22, z: 4 };
     switch (weapon.wtypeId || 1) {
       case 1: return { x: 0, y: 0, z: -20 };   // Light (dagger)
       case 2: return { x: 0, y: 0, z: -15 };   // Sword
@@ -2230,7 +2238,8 @@ var WeaponSystemProcedural = {
     // forearm-length off the top of the frame instead of keeping the fist in
     // place. A small fixed nudge is enough to seat it where a held weapon's
     // working end would be.
-    if (weapon.unarmedArchetype) return { x: 30, y: -30 };
+    if (weapon.unarmedArchetype || weapon.wtypeId === 11) return { x: 80, y: -30 };
+    if (weapon.shieldArmorId || weapon.id === 166) return { x: -20, y: -10 };
     // A melee weapon is carried, not floated: its grip runs off the bottom edge
     // and only the working end rises into the lower frame. A procedural model
     // grows about its own centre, so how far down it is pushed is a share of
@@ -2247,6 +2256,12 @@ var WeaponSystemProcedural = {
    */
   idleSway(weapon, idleMs) {
     const freq = idleMs * 0.0025;
+    if (weapon && (weapon.shieldArmorId || weapon.id === 166)) {
+      return {
+        dx: Math.cos(freq * 0.4) * 2.2, dy: Math.sin(freq * 0.8) * 3.0,
+        drz: Math.sin(freq * 0.4) * 0.009, drx: Math.cos(freq * 0.8) * 0.007
+      };
+    }
     const t = weapon ? (weapon.wtypeId || 1) : 1;
     if (t === 9) {
       return {

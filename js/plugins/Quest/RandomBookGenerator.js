@@ -200,13 +200,13 @@
     // never changes, so a second look is a re-read, and a message box that could
     // be mashed would be the cheapest leisure in the game. What has been read is
     // remembered in the save, capped so a long game cannot grow the file without
-    // bound — forgetting the oldest few hundred readings only means a statue
+    // bound - forgetting the oldest few hundred readings only means a statue
     // somebody read a very long time ago is worth reading again.
     const READING_FUN = 20;
     const READING_MEMORY = 500;
 
     // What identifies the thing being read: the event it hangs on where there is
-    // one, and otherwise where the reader is standing — which is what the text
+    // one, and otherwise where the reader is standing - which is what the text
     // itself is seeded off, so the key changes exactly when the reading does.
     function readingKey(kind, id) {
         const mapId = $gameMap ? $gameMap.mapId() : 0;
@@ -1406,8 +1406,8 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
         // For anything that borrows the generators above to put a reading in
         // front of the player itself (the procedural map's shelves and statues):
         // the same one-off Fun the plugin's own message boxes pay. `id` is
-        // whatever identifies that particular thing on that map — an event id, a
-        // tile — so the same shelf read twice pays once.
+        // whatever identifies that particular thing on that map - an event id, a
+        // tile - so the same shelf read twice pays once.
         payReadingFun: (kind, id) => payReadingFun(kind, id),
     };
 

@@ -1099,6 +1099,7 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime, anim = this.currentAnimation;
             let growth = 1.0;
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.8);
@@ -1109,13 +1110,14 @@
             // Default leg scuttle for the walkers.
             if (!flyer) this._legs.forEach((lg, i) => { if (lg.visible) lg.rotation.x = Math.sin(t * (fast ? 9 : 4) + i * 1.1) * 0.18; });
 
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'discobeetle': {
                     this._discoMats.forEach((m, i) => { const hue = (t * 0.4 + i * 0.07) % 1; m.color.setHSL(hue, 1.0, 0.6); m.emissive.setHSL(hue, 1.0, 0.4); m.emissiveIntensity = 0.6 + Math.sin(t * 6 + i) * 0.4; });
                     if (this.carapace) this.carapace.rotation.y = t * 1.3;
                     if (this.rays) { this.rays.rotation.y = -t * 1.6; this.rays.children.forEach((r, i) => { const hue = (t * 0.5 + i * 0.16) % 1; r.material.color.setHSL(hue, 1, 0.6); r.material.emissive.setHSL(hue, 1, 0.5); }); }
                     this.model.rotation.z = Math.sin(t * 4) * 0.12;       // boogie
-                    this.model.position.x = Math.sin(t * 2) * 0.06 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 2) * 0.06 * this.scale;
                     this._legs.forEach((lg, i) => { if (lg.visible) lg.rotation.x = Math.sin(t * 8 + i) * 0.32; });
                     if (this.head) this.head.rotation.z = Math.sin(t * 4 + 1) * 0.16;
                     break;

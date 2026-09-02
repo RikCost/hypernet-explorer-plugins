@@ -907,8 +907,8 @@
 
             // 4. Render Left Page List Viewport, as a window onto the lines
             // rather than the whole shelf (UI/MenuVirtualList.js). Each line is
-            // a closure, so the work a row costs — reading its recipe, counting
-            // what the sack holds — is only paid for the rows on screen. Clicks
+            // a closure, so the work a row costs - reading its recipe, counting
+            // what the sack holds - is only paid for the rows on screen. Clicks
             // are read off the spread by delegation, so a row swapped in
             // mid-scroll needs no wiring of its own.
             const listViewport = spread.querySelector(".list-viewport");

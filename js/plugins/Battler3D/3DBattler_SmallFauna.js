@@ -302,6 +302,7 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime, anim = this.currentAnimation;
             let growth = 1.0;
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.8);
@@ -309,6 +310,7 @@
             const fast = (anim === 'attack' || anim === 'specialattack');
             this.model.position.y = this._baseY + Math.sin(t * 1.5) * 0.02 * this.scale;
 
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'boghatchling':
                 case 'gardenfrog': {
@@ -333,7 +335,7 @@
                     [this.clawL, this.clawR].forEach((c, i) => { if (c && c._upper) c._upper.rotation.x = -1.2 - (fast ? Math.abs(Math.sin(t * 9 + i)) : Math.abs(Math.sin(t * 2 + i))) * 0.5; });
                     if (this.antennae) this.antennae.rotation.z = Math.sin(t * 2) * 0.06;
                     [this.frontLeg, this.rearLeg, ...(this._legsExtra || [])].forEach((lg, i) => { if (lg) lg.rotation.z = (lg._side || 1) * 1.1 + Math.sin(t * (fast ? 8 : 4) + i) * 0.18; });
-                    if (this.variant === 'tidecrab') this.model.position.x = Math.sin(t * 1.5) * 0.04 * this.scale; // sidle
+                    if (this.variant === 'tidecrab') this.model.position.x = baseX + Math.sin(t * 1.5) * 0.04 * this.scale; // sidle
                     break;
                 }
                 case 'desertscorpion': {

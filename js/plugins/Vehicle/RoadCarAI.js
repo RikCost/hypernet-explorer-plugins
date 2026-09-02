@@ -1015,7 +1015,7 @@
     const free = (d) => carCanEnter(ev, nx(d), ny(d), d);
 
     const straightRoad = roadDir(cur);
-    // Turn options never include reversing — cars only ever go forward or bend.
+    // Turn options never include reversing - cars only ever go forward or bend.
     const turns = perpDirs(cur).filter(roadDir);
     const freeTurns = turns.filter(free);
 
@@ -1048,7 +1048,7 @@
     if (freeTurns.length) return takeTurn();
     if (turns.length) return null;               // a turn exists but is blocked -> wait
 
-    // Nothing ahead and no turn — genuine dead end. Recycle to a border spawn
+    // Nothing ahead and no turn - genuine dead end. Recycle to a border spawn
     // rather than reversing back the way we came.
     return RESPAWN;
   }

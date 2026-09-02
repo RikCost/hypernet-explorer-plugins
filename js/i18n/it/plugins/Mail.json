@@ -55,11 +55,11 @@
   "compose": {
     "recipient": "Indirizzata a",
     "noRecipient": "ancora a nessuno",
-    "addressLine": "{who} — {world}",
+    "addressLine": "{who} - {world}",
     "yourself": "{leader}, ovvero te stesso",
     "subject": "Oggetto",
     "body": "Lettera",
-    "blankField": "—",
+    "blankField": "-",
     "wordCount": {
       "one": "1 parola",
       "other": "{count} parole"
@@ -75,8 +75,8 @@
     "delayYears": "Trattenuta, anni",
     "send": "Sigilla e spedisci",
     "confirm": "Premi ancora per spedirla",
-    "thisWorld": "{world} — questo mondo",
-    "otherWorld": "{world} — un altro mondo",
+    "thisWorld": "{world} - questo mondo",
+    "otherWorld": "{world} - un altro mondo",
     "noAddresses": "Nessuna compagnia ha ancora lasciato un recapito da nessuna parte.",
     "nothingToSend": "Nelle borse non c'è nulla che si possa spedire.",
     "noGoods": "nessuna merce",

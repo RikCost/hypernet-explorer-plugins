@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Item Hotbar v1.0.0 — favourite usable items on the same quick bar the battle system uses, on the map and in the backpack.
+ * @plugindesc Item Hotbar v1.0.0 - favourite usable items on the same quick bar the battle system uses, on the map and in the backpack.
  * @author Omni-Lex
  * @help ItemSystemHotbar.js
  *
@@ -172,7 +172,7 @@
     /**
      * Use the slot's item from the map. An item that wants to know who it is
      * for asks on the spot, over the map, rather than throwing the backpack
-     * open — and does not ask at all when the party is one person, since the
+     * open - and does not ask at all when the party is one person, since the
      * answer is already known; everything else is used where the player
      * stands. Either way the use itself is window.ItemUse's, the same code the
      * backpack uses.
@@ -395,8 +395,8 @@
 
   // The bar and the target card are HTML, not Window_Selectable, so nothing
   // takes the OK press off the input state the way updateInputData() does for a
-  // real window. Everything the map reads later in the same frame — the door in
-  // front of the player, the swim/dive/drink prompt on the water it faces —
+  // real window. Everything the map reads later in the same frame - the door in
+  // front of the player, the swim/dive/drink prompt on the water it faces -
   // would otherwise answer the very press that used the item.
   function spendOkPress() {
     _suppressActionFrame = Graphics.frameCount;

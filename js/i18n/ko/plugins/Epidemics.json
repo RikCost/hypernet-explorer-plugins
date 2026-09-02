@@ -6,8 +6,13 @@
   "log": {
     "firstCases": "",
     "reaches": "",
-    "declaredOver": ""
+    "declaredOver": "",
+    "incubation": ""
   },
+  "toast": {
+    "threshold": ""
+  },
+  "discovered": "",
   "news": {
     "hysteria": "",
     "medical": ""

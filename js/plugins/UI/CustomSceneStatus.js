@@ -1880,9 +1880,9 @@
     // talk menu, a summon, or a protagonist in monster form. Their portrait is
     // the creature itself, never a bust or a walking sprite.
     //
-    // Both tests are rewritten every time a slot is filled — the monster-form
+    // Both tests are rewritten every time a slot is filled - the monster-form
     // switch (77/78/79) by every character-creation path, "sprite" by the three
-    // monster paths alone — so a person built into a slot that once held a
+    // monster paths alone - so a person built into a slot that once held a
     // creature is never mistaken for one. `_isCreatureActor` is deliberately NOT
     // consulted: nothing ever clears it, so it outlives the creature that set it.
     function isMonsterPortraitActor(actor) {
@@ -1922,8 +1922,8 @@
 
         // Creature / monster form: the actor carries the battler image of the
         // species it was built from. That species is ALWAYS shown as its
-        // procedural 3D model — the same model previewed when the battler was
-        // picked — so the flat enemy image (and any bust left on the slot by a
+        // procedural 3D model - the same model previewed when the battler was
+        // picked - so the flat enemy image (and any bust left on the slot by a
         // previous occupant) never stands in for it. The 2D battler art is only
         // the fallback for a species no archetype resolves for.
         if (battlerField && typeof battlerField === 'string' && isMonsterPortraitActor(actor)) {
@@ -1931,7 +1931,7 @@
             // (ensureCreatureModel stamps one the moment it becomes a creature),
             // parts, colours and proportions the player may have hand-edited in
             // the 3D Studio. That sculpture is what portrays it here, never the
-            // bare species template — the stock archetype rebuild below is only
+            // bare species template - the stock archetype rebuild below is only
             // for a monster with no such record (a battle-recruited enemy that
             // never went through the wizard).
             if (window.CC3DModel && window.CC3DModel.isAvailable && window.CC3DModel.isAvailable()) {
@@ -1958,7 +1958,7 @@
         }
 
         // Humanoids: the portrait style is an exclusive choice made at character
-        // creation and stored on the actor — EITHER a drawn bust OR a 3D model.
+        // creation and stored on the actor - EITHER a drawn bust OR a 3D model.
         // "bust" renders flat art even when a stale 3D config is still around.
         // An unset value (characters made before the choice existed) keeps the
         // old behaviour of preferring the 3D model when one resolves.

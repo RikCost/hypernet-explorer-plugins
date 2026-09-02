@@ -423,7 +423,7 @@
   }
 
   // Apply damage to an enemy body part
-  function applyDamageToBodyPart(enemy, partKey, damage, isTargeted) {
+  function applyDamageToBodyPart(enemy, partKey, damage, isTargeted, action) {
     try {
       if (!enemy || !enemy._bodyParts) {
         console.error(
@@ -477,9 +477,8 @@
         if (canBeDestroyed) {
           // A part only leaves the body when the archetype says it can come off
           // AND the blow that finished it cuts (HealthCore.attackerCanCut: an
-          // edge, a claw or a bullet). A mace, a staff or a whip breaks it where
-          // it is: the model keeps the limb, bloodied, and the log says so.
-          var cut = !!basePart.canCutoff && partCutByAttacker();
+          // edge, a bullet, or explosive/piercing/cutting damage).
+          var cut = !!basePart.canCutoff && partCutByAttacker(null, action);
           if (cut) part.destroyed = true;
           else part.broken = true;
           handleDestroyedBodyPart(enemy, partKey, cut);
@@ -504,8 +503,7 @@
 
   /**
    * Whether the blow being struck can take a part off a body. Health_Core owns
-   * the weapon-type table (only Light, Sword, Axe, Gun, Claw and Spear cut); a
-   * monster mauling another monster with no weapon never severs.
+   * the attack damage type check (Limb can cut only by Explosive, Piercing and Cutting damage).
    */
   /**
    * A part that is done: taken off the body (destroyed) or ruined where it
@@ -516,10 +514,10 @@
     return !!part && (part.destroyed || part.broken);
   }
 
-  function partCutByAttacker() {
+  function partCutByAttacker(attacker, action) {
     var HC = window.HealthCore;
     if (!HC || typeof HC.attackerCanCut !== "function") return true;
-    return HC.attackerCanCut();
+    return HC.attackerCanCut(attacker, action);
   }
 
   // Apply stat effect for a destroyed part
@@ -840,8 +838,7 @@
 
   // Apply limb damage to enemy
   // Apply limb damage to enemy
-  // Apply limb damage to enemy - FIXED VERSION
-  function applyLimbDamage(enemy, damage, elementalType) {
+  function applyLimbDamage(enemy, damage, elementalType, action) {
     try {
       if (!enemy) return;
 
@@ -853,60 +850,96 @@
         $gameTemp = {};
       }
 
-      // Get a random hit location
-      var hitLocation = getRandomHitLocation(enemy);
-      if (!hitLocation || !hitLocation.key) {
-        console.error("Failed to get hit location for enemy: " + enemy.name());
-        return;
-      }
+      const HC = window.HealthCore;
+      const damageType = HC && HC.getActionDamageType ? HC.getActionDamageType(action, action && action.subject ? action.subject() : null) : 'Blunt';
+      const isMultiPart = (damageType === 'Area' || damageType === 'Explosive');
 
-      var partKey = hitLocation.key;
-      enemy._lastHitPart = partKey;
-      // Durable copy for blood/effect plugins: the 3D battler clears _lastHitPart
-      // once it has flashed the limb, but the blood spray (fired a few frames
-      // later) still needs to know which part was struck.
-      enemy._fxLastHitPart = partKey;
-      // Bump the hit sequence so battle-animation FX can detect a fresh impact
-      // and (re)lock the Effekseer effect onto this exact part.
-      enemy._fxHitSeq = (enemy._fxHitSeq || 0) + 1;
-      if (!enemy._bodyParts[partKey]) {
-        console.error(
-          "Body part not found: " + partKey + " for enemy: " + enemy.name()
-        );
-        return;
-      }
+      if (isMultiPart) {
+        // Area and Explosive: spread damage to multiple enemy body parts
+        var livingKeys = [];
+        for (var k in enemy._bodyParts) {
+          if (!partFinished(enemy._bodyParts[k])) livingKeys.push(k);
+        }
+        if (livingKeys.length === 0) livingKeys = Object.keys(enemy._bodyParts);
 
-      var part = enemy._bodyParts[partKey];
-      enemy._lastHitPartName = part ? part.name : partKey;
-      var isTargeted = hitLocation.targeted || false;
+        var count = Math.min(livingKeys.length, Math.floor(Math.random() * 3) + 2); // 2 to 4 parts
+        var shuffled = livingKeys.slice().sort(function () { return 0.5 - Math.random(); });
+        var partsToHit = shuffled.slice(0, count);
 
-      // Show hit location in battle log if enabled
-      if (showHitLocation && $gameParty.inBattle()) {
-        if (isTargeted) {
-          // Show precise strike message for targeted hits
-          $gameTemp.hitLocationMessage = T('HealthMonsters.preciseStrike', { part: part.name });
-        } else if ($gameTemp.targetMissMessage) {
-          // Show the miss message if a targeted attack missed
-          $gameTemp.hitLocationMessage = $gameTemp.targetMissMessage;
-          $gameTemp.targetMissMessage = null; // Clear the message after use
-        } else {
-          // Default hit message
+        var primaryKey = partsToHit[0];
+        enemy._lastHitPart = primaryKey;
+        enemy._fxLastHitPart = primaryKey;
+        enemy._fxHitSeq = (enemy._fxHitSeq || 0) + 1;
+        var primaryPart = enemy._bodyParts[primaryKey];
+        enemy._lastHitPartName = primaryPart ? primaryPart.name : primaryKey;
+
+        if (showHitLocation && $gameParty.inBattle()) {
           $gameTemp.hitLocationMessage = T('HealthMonsters.partWasHit', {
-            enemy: enemy.name(), part: part.name,
+            enemy: enemy.name(), part: enemy._lastHitPartName,
           });
         }
-      }
 
-      // Apply damage to the part
-      applyDamageToBodyPart(enemy, partKey, damage, isTargeted);
+        var damagePerPart = Math.floor(damage / partsToHit.length);
+        var totalApplied = 0;
+        partsToHit.forEach(function (pk) {
+          totalApplied += applyDamageToBodyPart(enemy, pk, damagePerPart, false, action);
+        });
+        var remainder = damage - totalApplied;
+        if (remainder > 0 && partsToHit.length > 0) {
+          applyDamageToBodyPart(enemy, partsToHit[0], remainder, false, action);
+        }
 
-      // Store the elemental type for displaying the correct message later
-      $gameTemp.lastElementalType = elementalType;
+        $gameTemp.lastElementalType = elementalType;
+      } else {
+        // Piercing, Cutting, Blunt, Abstract, etc.: hit JUST ONE body part
+        var hitLocation = getRandomHitLocation(enemy);
+        if (!hitLocation || !hitLocation.key) {
+          console.error("Failed to get hit location for enemy: " + enemy.name());
+          return;
+        }
 
-      // Reset targeted body part after use
-      if (isTargeted) {
-        $gameTemp.targetedBodyPart = null;
-        $gameTemp.targetedBodyPartEnemy = null;
+        var partKey = hitLocation.key;
+        enemy._lastHitPart = partKey;
+        // Durable copy for blood/effect plugins
+        enemy._fxLastHitPart = partKey;
+        // Bump the hit sequence
+        enemy._fxHitSeq = (enemy._fxHitSeq || 0) + 1;
+        if (!enemy._bodyParts[partKey]) {
+          console.error(
+            "Body part not found: " + partKey + " for enemy: " + enemy.name()
+          );
+          return;
+        }
+
+        var part = enemy._bodyParts[partKey];
+        enemy._lastHitPartName = part ? part.name : partKey;
+        var isTargeted = hitLocation.targeted || false;
+
+        // Show hit location in battle log if enabled
+        if (showHitLocation && $gameParty.inBattle()) {
+          if (isTargeted) {
+            $gameTemp.hitLocationMessage = T('HealthMonsters.preciseStrike', { part: part.name });
+          } else if ($gameTemp.targetMissMessage) {
+            $gameTemp.hitLocationMessage = $gameTemp.targetMissMessage;
+            $gameTemp.targetMissMessage = null;
+          } else {
+            $gameTemp.hitLocationMessage = T('HealthMonsters.partWasHit', {
+              enemy: enemy.name(), part: part.name,
+            });
+          }
+        }
+
+        // Apply damage to the part
+        applyDamageToBodyPart(enemy, partKey, damage, isTargeted, action);
+
+        // Store the elemental type for displaying the correct message later
+        $gameTemp.lastElementalType = elementalType;
+
+        // Reset targeted body part after use
+        if (isTargeted) {
+          $gameTemp.targetedBodyPart = null;
+          $gameTemp.targetedBodyPartEnemy = null;
+        }
       }
     } catch (e) {
       console.error(e.stack);
@@ -960,7 +993,7 @@
       // Store elemental type for later use
       $gameTemp.lastElementalType = elementalType;
 
-      applyLimbDamage(target, value);
+      applyLimbDamage(target, value, elementalType, this);
     }
   };
 
@@ -1759,7 +1792,7 @@
   // 4) Every time we apply limb damage, snapshot & save
   function saveLimbData() {
     const key = limbDataKey();
-    if (!key) return; // non-instanced battle (random encounter, arena, ...) — don't persist
+    if (!key) return; // non-instanced battle (random encounter, arena, ...) - don't persist
     if (!$gameSystem._troopLimbData) $gameSystem._troopLimbData = {};
     // deep‐clone each enemy._bodyParts; an enemy with no anatomy yet stores null
     // (JsonEx.makeDeepCopy(undefined) throws on the JSON.parse)
@@ -1772,14 +1805,8 @@
 
   // Monkey-patch the existing applyDamageToBodyPart function
   const _orig_applyDamage = applyDamageToBodyPart;
-  applyDamageToBodyPart = function (enemy, partKey, damage, isTargeted) {
-    const result = _orig_applyDamage.call(
-      this,
-      enemy,
-      partKey,
-      damage,
-      isTargeted
-    );
+  applyDamageToBodyPart = function (enemy, partKey, damage, isTargeted, action) {
+    const result = _orig_applyDamage.apply(this, arguments);
     saveLimbData();
     return result;
   };
@@ -1870,7 +1897,7 @@
       "Impact/bfh1_hit_01", "Impact/bfh1_hit_03", "Impact/bfh1_hit_06",
       "Impact/bfh1_hit_10",
     ],
-    // A finisher connects — bigger impact
+    // A finisher connects - bigger impact
     finisherHit: [
       "Impact/crack01_mp3", "Impact/crack03_mp3", "Impact/crack05_mp3",
       "Impact/bfh1_breaking_01", "Impact/bfh1_breaking_03",

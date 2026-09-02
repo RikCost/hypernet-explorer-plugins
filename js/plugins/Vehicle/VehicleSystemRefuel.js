@@ -389,7 +389,7 @@
 
     // Ensure the #refuel-container DOM node is removed on any scene teardown
     // (e.g. a map transfer while the refuel window is open), not just on manual
-    // exit/cancel — otherwise it orphans into the next scene.
+    // exit/cancel - otherwise it orphans into the next scene.
     const _Scene_Map_terminate_refuel = Scene_Map.prototype.terminate;
     Scene_Map.prototype.terminate = function () {
         if (this._refuelEl) { this._rfClose(); }

@@ -762,7 +762,7 @@
         // Selection changed: re-render so cost badges and blocked states update.
         this.mountGrid();
       } else {
-        // Cursor moved: patch classes only — no DOM rebuild, no listener loss.
+        // Cursor moved: patch classes only - no DOM rebuild, no listener loss.
         this.patchCardClasses();
       }
       if (scrollToCursor && this._keyboardCursor) {
@@ -949,7 +949,7 @@
       }).join("") : `<span class="ts-summary-empty">${t("noSkills")}</span>`;
     }
 
-    // "Confirm these traits?" — yes or no, nothing else.
+    // "Confirm these traits?" - yes or no, nothing else.
     renderPrompt() {
       const layer = this._el.prompt;
       if (this._confirmYes === null) {
@@ -1343,7 +1343,7 @@
       const api = window.DiseaseSystem;
       if (!api || !api.infectActor) return;
       // Everything that is caught, runs a course and answers to a treatment
-      // now lives in the illness library and is picked here — Possession and
+      // now lives in the illness library and is picked here - Possession and
       // Lycanthropy among them, which spent a while masquerading as traits.
       // Whatever a disease grants (skills, param deltas) comes from the library
       // too, so nothing on this path is folded into paramPlus.

@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Procedural Terrain Interactions v1.2.0 — press the action button facing a terrain feature on the procedural map to Fell / Mine / Pick Up / Dismantle it; walk into a structure entrance (StairsDown cellars, StairsUp temples, Cave dens, Grates, Hatches) to enter it. Removals are stored in the world folder so every savegame in the same world keeps them gone.
+ * @plugindesc Procedural Terrain Interactions v1.2.0 - press the action button facing a terrain feature on the procedural map to Fell / Mine / Pick Up / Dismantle it; walk into a structure entrance (StairsDown cellars, StairsUp temples, Cave dens, Grates, Hatches) to enter it. Removals are stored in the world folder so every savegame in the same world keeps them gone.
  * @author Hypernet
  *
  * @help
@@ -43,7 +43,7 @@
  * Removals are persisted to the active world's folder (save/worlds/<name>/
  * terrain.json) keyed by the composite proc-map key (biome + world coordinate
  * + underground depth), so a feature dismantled in one savegame stays gone for
- * every other savegame that visits the same world tile — and it will not be
+ * every other savegame that visits the same world tile - and it will not be
  * re-placed when the map regenerates.
  *
  * That includes scenery stamped by a PREFAB (an authored map dropped onto the
@@ -1493,7 +1493,7 @@
       const title = RBG.generateTitle(rng);
       const author = typeof RBG.generateAuthor === "function" ? RBG.generateAuthor(rng) : "";
       const description = typeof RBG.generateDescription === "function" ? RBG.generateDescription(rng) : "";
-      const heading = author ? `"${title}" — ${author}` : `"${title}"`;
+      const heading = author ? `"${title}" - ${author}` : `"${title}"`;
       showLoreMessage(description ? [heading, description] : [heading]);
       // Reading it is worth the same one-off Fun as a book read off an event.
       if (typeof RBG.payReadingFun === "function") RBG.payReadingFun("book", `${t.x},${t.y}`);  // i18n-ignore  reading-log id

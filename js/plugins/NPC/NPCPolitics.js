@@ -360,7 +360,7 @@
   // ==========================================================================
   //
   // EVERY party in the world lives in js/db/WorldGen/Parties.json, filed under
-  // the nation it stands in — there is no such thing as a hyperpower's own
+  // the nation it stands in - there is no such thing as a hyperpower's own
   // party. A power's bench is the parties of the nations it holds, its home
   // nation's among them and weighted (see syncPowerParties, HOME_BENCH_WEIGHT);
   // a nation runs its own assembly out of exactly the same list.
@@ -368,7 +368,7 @@
   // Nobody votes outside their own nation: an NPC's ballot holds the parties of
   // the country their hometown stands in (Destinations.json `country`) and
   // nothing else. A nation with no roster at all leaves its citizens with no
-  // party, which is a real answer — see nearestPartyId and collectNpcBallots.
+  // party, which is a real answer - see nearestPartyId and collectNpcBallots.
   const NATIONAL_PARTIES = {};
   function addNationalParty(country, party) {
     if (!country || !party || !party.name) return;
@@ -724,7 +724,7 @@
   // Everyone the book of leaders (Leaders.json, through HistorySimulator) has
   // standing for this polity right now: somebody of one of its nations, whose
   // years cover the date, who is not already seated here, and who does not hold
-  // the moral office — a guide governs nothing.
+  // the moral office - a guide governs nothing.
   function historicalCandidates(power, nowMinute) {
     const HM = window.HistoryManager;
     if (!HM || typeof HM.listLeaderRecords !== "function") return [];
@@ -908,7 +908,7 @@
   }
 
   // A power that holds no ground and takes no part in the world's affairs
-  // (Hyperpowers.json "secluded" — the Gods). It seats its own bench and
+  // (Hyperpowers.json "secluded" - the Gods). It seats its own bench and
   // nobody else's, whatever nation happens to name it as its faction.
   function isSecludedPower(powerName) {
     const book = window.WorldGen?.Hyperpowers?.hyperpowers || {};
@@ -945,7 +945,7 @@
 
   // A NATION is a polity exactly as a hyperpower is: its own parties, its own
   // assembly, its own head of state, elected, deposed, scandalised and buried by
-  // the same machinery. What it does not have is a foreign policy — the bloc
+  // the same machinery. What it does not have is a foreign policy - the bloc
   // above it has that. A nation under an authoritarian power inherits its
   // rigging and something of its politics, which is what being held by it means.
   // A bloc's assembly is mostly its capital's own politics: seven seats in ten
@@ -979,7 +979,7 @@
 
   // Who holds a nation right now: the world simulation's answer first, the
   // country table's second. A `faction` in Countries.json counts as much as a
-  // `controller` — a nation that names a hyperpower is part of it from day one.
+  // `controller` - a nation that names a hyperpower is part of it from day one.
   function controllerOfCountry(countryName) {
     const sim = window.HistoryManager?.getNationState?.(countryName);
     if (sim && sim.controller && sim.controller !== "Neutral") return sim.controller;
@@ -1060,7 +1060,7 @@
 
     // The bench: every party of every nation this power holds, its own seat's
     // among them (syncPowerParties). Nothing is invented for a power that holds
-    // real ground — the assembly is made of the nations in it.
+    // real ground - the assembly is made of the nations in it.
     syncPowerParties(state, power, nowMinute);
 
     // Elite electorate for conclave/plenum systems
@@ -1119,7 +1119,7 @@
 
   // Every government in the world: the blocs and the nations inside them. Both
   // hold elections, both bury heads of state, both are simulated by the same
-  // pass — see catchUp.
+  // pass - see catchUp.
   function allPolities(state) {
     return Object.values(state.powers).concat(Object.values(state.nations || {}));
   }
@@ -1514,8 +1514,8 @@
       recordHead(power, minute, head, "elected");
       power.termStartMinute = minute;
       record.winnerPartyId = winnerParty?.id ?? null;
-      record.winner = winnerParty?.name ?? "—";
-      record.head = head?.name ?? "—";
+      record.winner = winnerParty?.name ?? "-";
+      record.head = head?.name ?? "-";
       power.state.legitimacy = clamp(Math.round(40 + (record.results?.[0]?.share ?? 50) * 0.45), 0, 100);
       power.state.unrest = clamp(power.state.unrest - 12, 0, 100);
     },
@@ -1543,7 +1543,7 @@
     pushElection(power, record);
     if (!opts.historical) {
       pushPowerEvent(power, minute, "election",
-        record.head !== "—" ? "Politics.event.electionWithHead" : "Politics.event.election",
+        record.head !== "-" ? "Politics.event.electionWithHead" : "Politics.event.election",
         { election: labelOf(power), winner: record.winner, head: record.head, title: powerLabel(power, "headTitle") });
       // Losing voters may carry a grudge against the winner.
       for (const [npcName, identity] of Object.entries(state.identities)) {
@@ -1857,8 +1857,8 @@
       const own = power.parties.filter(p => p.country === country);
       if (own.length) return own;
     }
-    // Somebody with no nation of their own — an alien serving an off-world
-    // power — reads that power's own bench, which is filed under its name.
+    // Somebody with no nation of their own - an alien serving an off-world
+    // power - reads that power's own bench, which is filed under its name.
     return power.parties.filter(p => !p.country || p.country === power.name);
   }
 
@@ -1885,15 +1885,15 @@
   }
 
   // Every party that stands in a power's assembly: the lists of every nation it
-  // holds, and its home nation's whether or not it is currently holding it —
+  // holds, and its home nation's whether or not it is currently holding it -
   // losing the capital does not dissolve the parties that sit in it.
   function syncPowerParties(state, power, nowMinute) {
     if (!power) return;
     const nations = new Set(power.memberCountries || []);
     if (power.homeNation) nations.add(power.homeNation);
     for (const nation of nations) ensureCountryParties(power, nation, nowMinute);
-    // A power that holds no ground on this planet — the Gods, the Tourists,
-    // the Dargos — keeps its bench under its OWN name in Parties.json. Nothing
+    // A power that holds no ground on this planet - the Gods, the Tourists,
+    // the Dargos - keeps its bench under its OWN name in Parties.json. Nothing
     // here composes a party: every party in the world is written down.
     if (!power.parties.length) ensureCountryParties(power, power.name, nowMinute);
   }
@@ -2351,7 +2351,7 @@
     }));
     lines.push(T("Politics.report.ruling", {
       partyKind: powerLabel(power, "partyKind"),
-      party: ruling?.name ?? "—",
+      party: ruling?.name ?? "-",
       partners: power.coalition.length > 1
         ? " " + T.n("Politics.report.coalitionPartners", power.coalition.length - 1, { n: power.coalition.length - 1 })
         : "",

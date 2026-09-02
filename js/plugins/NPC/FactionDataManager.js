@@ -1274,8 +1274,8 @@ Game_Factions.prototype._rollAccord = function (rng) {
 };
 
 // A branch's own line on one power, drifted off whatever its parent signed.
-// Most of the row is inherited — a branch that agreed with its government about
-// nothing would not still be one of its branches — so roughly a third of the
+// Most of the row is inherited - a branch that agreed with its government about
+// nothing would not still be one of its branches - so roughly a third of the
 // columns move, and only rarely by the two steps that make a real break.
 Game_Factions.prototype._driftAccord = function (rng, base) {
   const roll = rng.next();
@@ -1361,7 +1361,7 @@ Game_Factions.prototype.getFactionAccord = function (factionId, hyperpowerId) {
 
 // Every accord one list entry holds, one per hyperpower, in the powers' own
 // order. A power is not listed against itself; a BRANCH is listed against its
-// own parent, because that line is the interesting one — a branch that has
+// own parent, because that line is the interesting one - a branch that has
 // drifted off its government's row can be reading it as hostile.
 Game_Factions.prototype.getAccordsFor = function (record) {
   if (!record) return [];
@@ -1794,7 +1794,7 @@ Scene_FactionStatus.prototype.getFactionList = function () {
 
   const rankOf = (row) => (rank.has(row) ? rank.get(row) : Infinity);
   // A power stands where its OWN name puts it. Only a power the query filtered
-  // out — kept solely as the header of children that matched — is slotted by
+  // out - kept solely as the header of children that matched - is slotted by
   // the first of those children instead.
   const groupRank = (group) =>
     rank.has(group)
@@ -1991,7 +1991,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
 
     // The two offices a power holds: who governs it, and who it answers to.
     // The moral guide is drawn from a fixed set (Leaders.json `moralGuide`) and
-    // succeeds by that power's own rule — a crown by descent, a papacy by
+    // succeeds by that power's own rule - a crown by descent, a papacy by
     // conclave, the Archive's by seniority (HistorySimulator).
     let officesHTML = "";
     if (isPower && window.HistoryManager) {

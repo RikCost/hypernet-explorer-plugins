@@ -25,8 +25,8 @@
  *
  * In practice the individual menus take the field and plain name / weight /
  * price ordering, and nothing else: a per-menu page is for finding one row in a
- * long list, not for interrogating it. The advanced half — kind chips, the
- * category picker and the numeric ranges — belongs to the main menu's search
+ * long list, not for interrogating it. The advanced half - kind chips, the
+ * category picker and the numeric ranges - belongs to the main menu's search
  * page (UI/CustomMainMenuSearch.js), which searches everything at once and is
  * the only place worth narrowing that hard.
  *

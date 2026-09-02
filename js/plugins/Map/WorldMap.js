@@ -1676,7 +1676,7 @@
                     (function(row, col) {
                         const tb = Bitmap.load(`img/worldmap/bologna/row-${row}-column-${col}.jpg`);
                         tb.addLoadListener(() => {
-                            // Cache cleared while this tile was loading — drop stale blits.
+                            // Cache cleared while this tile was loading - drop stale blits.
                             if (fullscreenBitmap !== target) return;
                             const dx = (col - BOLOGNA_COL_MIN) * BOLOGNA_CELL_PX;
                             const dy = (row - BOLOGNA_ROW_MIN) * BOLOGNA_CELL_PX;

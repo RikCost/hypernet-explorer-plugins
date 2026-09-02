@@ -417,7 +417,7 @@
     // The century is written a day at a time. Everything that used to be rolled
     // once a month keeps its old odds by being divided by the length of one:
     // MONTHLY(x) is "x per month, asked every day". The random-event strand is
-    // the exception — it is the chronicle itself, and is set here rather than
+    // the exception - it is the chronicle itself, and is set here rather than
     // derived, at roughly twenty entries a year with several of them landing on
     // one day.
     const DAYS_PER_MONTH = 30.44;
@@ -425,7 +425,7 @@
 
     // The date a record is stamped with, in LOCAL time. toISOString() answers in
     // UTC, which stamps a January morning with the previous December's date
-    // anywhere west of Greenwich — invisible while everything was dated to the
+    // anywhere west of Greenwich - invisible while everything was dated to the
     // month, and a day off once records carry days.
     const dayStr = (date) =>
         `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -961,7 +961,7 @@
             // the same day as anything else. Now every day is rolled, and a day
             // can carry several entries: the rates below are per-day versions of
             // the old per-month ones (DAY_RATE), so the passes that were monthly
-            // still land about as often as they did — they just land on a real
+            // still land about as often as they did - they just land on a real
             // date. The exception is the random-event strand, which is what a
             // chronicle is mostly made of, and which is deliberately much denser
             // than it was.
@@ -1023,7 +1023,7 @@
 
         // However the century went, it ends here. Petrus II is on the throne of
         // Peter, Thatcher is in Downing Street, Clinton has the Free States and
-        // Bush has the Seaboard — the world every savegame opens into is written
+        // Bush has the Seaboard - the world every savegame opens into is written
         // against those four, so the last pass of the simulation seats them and
         // marks them protected, which keeps them there for the live chronicle
         // that runs on afterwards.
@@ -1171,9 +1171,9 @@
         // A hyperpower that holds ground on one continent has no business on
         // another: Britannia never annexes a nation of North America, and the
         // Kukulkan Ascendancy never turns up in a Soviet story. A power whose
-        // region is not one of the regions the nations themselves carry — the
+        // region is not one of the regions the nations themselves carry - the
         // global orders (Mages Guild, Archive Foundation, the Collective) and
-        // the off-world visitors (The Tourists, The Dargos) — is unconfined,
+        // the off-world visitors (The Tourists, The Dargos) - is unconfined,
         // which is exactly what being global means. All of it is read from
         // Hyperpowers.json "region" and Countries.json "region".
 
@@ -1213,7 +1213,7 @@
         // A power that keeps to itself. The Gods hold no ground, take no
         // nation and share no event with anybody: whatever they are doing, they
         // are doing it to each other. The one traffic between heaven and the
-        // world is an artifact — see mayTradeArtifacts.
+        // world is an artifact - see mayTradeArtifacts.
         isSecludedPower(power) {
             return ((this._currentHyperpowers || {})[power] || {}).secluded === true;
         }
@@ -1555,7 +1555,7 @@
 
         // Whoever a power can put in office right now: its own roster, plus the
         // roster of every nation it currently holds. A conquered nation hands
-        // its political class to its conqueror — take Persia and its ministers
+        // its political class to its conqueror - take Persia and its ministers
         // are yours to seat; lose it and they go back to being Persia's problem.
         // A leader's nation is `country` in Leaders.json.
         leaderPoolFor(power) {
@@ -1580,8 +1580,8 @@
         // The moral guide is ONE person, named in Leaders.json (`moralGuide:
         // true`) and never anybody else: a power answers to a face that is
         // written down, not to whoever an election threw up. It is chosen once,
-        // from the power's own book — its holy track first, its own roster
-        // second — and it holds the office for the whole century. Nothing
+        // from the power's own book - its holy track first, its own roster
+        // second - and it holds the office for the whole century. Nothing
         // deposes it and no succession replaces it: a power whose guide dies is
         // still a power that answers to them.
         //
@@ -1595,7 +1595,7 @@
         // own kind of answer.
 
         // Everyone this power may raise to its moral office: its own roster and
-        // its second track, never a leader borrowed from a conquered nation —
+        // its second track, never a leader borrowed from a conquered nation -
         // a crown is not something you inherit by invasion.
         moralPoolFor(power) {
             const hp = this._currentHyperpowers[power] || {};
@@ -1612,7 +1612,7 @@
             const pool = this.moralPoolFor(power);
             // The holy track outranks the ordinary roster: a power that keeps
             // one is telling you where its authority comes from. Within the
-            // field it is the earliest of them — the figure the power was
+            // field it is the earliest of them - the figure the power was
             // built around, not whoever a die happened to land on. Britannia
             // answers to the crown it started the century under, the Guild to
             // the magus who founded it.

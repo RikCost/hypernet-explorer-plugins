@@ -787,12 +787,14 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime, anim = this.currentAnimation;
             let growth = 1.0;
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.6);
             this.applyModelScale(growth);
             const fast = (anim === 'attack' || anim === 'specialattack');
 
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'shark': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.6) * 0.06 * this.scale;
@@ -803,7 +805,7 @@
                     break;
                 }
                 case 'reeffish': {
-                    this.model.position.x = Math.sin(t * 2.2) * 0.04 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 2.2) * 0.04 * this.scale;
                     this.model.position.y = this._baseY + Math.sin(t * 3) * 0.05 * this.scale;
                     if (this.tailFin && this.tailFin.visible) this.tailFin.rotation.y = Math.sin(t * (fast ? 16 : 9)) * 0.5;
                     break;
@@ -855,7 +857,7 @@
                 case 'puffer':
                 case 'parrotfish':
                 case 'guppy': {
-                    this.model.position.x = Math.sin(t * 2.2) * 0.03 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 2.2) * 0.03 * this.scale;
                     this.model.position.y = this._baseY + Math.sin(t * 3) * 0.05 * this.scale;
                     if (this.tailFin && this.tailFin.visible) this.tailFin.rotation.y = Math.sin(t * (fast ? 16 : 9)) * 0.5;
                     break;

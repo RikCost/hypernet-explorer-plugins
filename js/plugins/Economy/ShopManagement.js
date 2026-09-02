@@ -935,7 +935,7 @@
   });
 
   // NOTE: The earlier "openShopManagement" registration that referenced a bare
-  // (undefined) Scene_ShopManagement was dead — the window-guarded registration
+  // (undefined) Scene_ShopManagement was dead - the window-guarded registration
   // below overwrote it. Removed to avoid the latent ReferenceError.
 
   PluginManager.registerCommand(pluginName, "closeShopPermanently", (args) => {

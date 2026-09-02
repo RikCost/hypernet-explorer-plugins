@@ -214,7 +214,7 @@
             this._htmlEl = el;
             document.body.appendChild(el);
             // Position only depends on the canvas geometry, which changes on
-            // window/fullscreen resize — reposition then instead of every frame.
+            // window/fullscreen resize - reposition then instead of every frame.
             this._onResize = () => this._syncPos();
             window.addEventListener('resize', this._onResize);
             this.refresh();

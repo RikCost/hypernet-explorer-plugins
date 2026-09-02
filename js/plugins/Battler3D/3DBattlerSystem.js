@@ -686,7 +686,7 @@
         // Once the battler is slain, drive every material's opacity to 0 over
         // DEATH_FADE_TIME then hide the model. Mirrors
         // ProceduralBattler3D.applyDeathFade so GLB-backed battlers (which have
-        // no procedural fade) still fade off on death — whether killed by HP
+        // no procedural fade) still fade off on death - whether killed by HP
         // loss or a lethal hit to a vital body part. Idempotent: startDeathFade
         // is safe to call every frame from the death hooks.
         startDeathFade() {
@@ -810,6 +810,8 @@
             // after losing both legs. See _updateProne / _applyProne.
             this._proneT = 0;
             this._proneBaseY = null;
+            this._baseX = null;
+            this._baseY = null;
 
             // Two seeded RNG streams:
             //   idRand  - keyed to the MONSTER ID only, so every enemy id of an
@@ -2675,7 +2677,7 @@
 
             // Frame pacing: only redraw the (fill-rate-heavy) 3D pass up to maxFps.
             // animTime still advances by real elapsed time via the clock delta, so
-            // poses keep correct timing — we just rasterize + re-upload the texture
+            // poses keep correct timing - we just rasterize + re-upload the texture
             // fewer times (roughly half the cost at 30fps vs a 60fps game loop).
             this._minFrameMs = config.maxFps > 0 ? (1000 / config.maxFps) : 0;
             this._lastRenderMs = 0;
@@ -3696,7 +3698,7 @@
             const centerOffset = box.isEmpty() ? 0 : (box.max.x + box.min.x) / 2 - root.position.x;
             // Apply a z-depth stagger so overlapping enemies are always distinct.
             root.position.z = zSlot * ENEMY_SPREAD_Z_STEP;
-            row.push({ root, width, centerOffset });
+            row.push({ root, width, centerOffset, battlerModel });
             zSlot++;
         }
 
@@ -3715,12 +3717,14 @@
             for (const e of row) {
                 const center = (cursor + e.width / 2) * squeeze;
                 e.root.position.x = center - e.centerOffset;
+                if (e.battlerModel) e.battlerModel._baseX = e.root.position.x;
                 cursor += e.width + gap;
             }
             debugLog(`Spread ${row.length} enemy models over ${(span * squeeze).toFixed(2)} units`);
         } else if (row.length === 1) {
             // Single enemy: reset z depth to 0 and centre on screen.
             row[0].root.position.z = 0;
+            if (row[0].battlerModel) row[0].battlerModel._baseX = row[0].root.position.x;
         }
 
         // Drop the shadow catcher onto the lowest pair of feet on the field and

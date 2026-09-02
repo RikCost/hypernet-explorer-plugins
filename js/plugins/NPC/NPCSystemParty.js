@@ -437,7 +437,7 @@
 
     // If the NPC owns/resides in a procedural house (NPCSociety home assignment),
     // record it so the Assets pockets lists it and FurnitureSystem allows building
-    // inside that house's interior template. Keyed by the interior map id — the
+    // inside that house's interior template. Keyed by the interior map id - the
     // home is an abstract template assignment, not a placed entrance, so the
     // interior mapId is the only concrete hook available.
     function registerNPCHouse(eventName) {

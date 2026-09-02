@@ -1558,7 +1558,7 @@
         }
     };
 
-    // Balanced mode: the single boss for a proc map — a troop above the top of
+    // Balanced mode: the single boss for a proc map - a troop above the top of
     // the roaming band, capped at level 100. Seeded on the world tile so the
     // boss is stable for a given procedural map.
     BSE.Helpers.getBalancedBossTroop = function(targetBiome, partyLevel) {

@@ -2017,7 +2017,7 @@
           bio.brainActivity.waves.theta += 10; // Increased theta waves (confusion)
         }
         // Head magicalActivity lives on leyVeins.meridians, not brainActivity.regions
-        // (regions has no 'head' key — the old path threw every tick).
+        // (regions has no 'head' key - the old path threw every tick).
         if (bio.leyVeins && bio.leyVeins.meridians.head) {
           bio.leyVeins.meridians.head.magicalActivity = Math.max(
             40,
@@ -2106,7 +2106,7 @@
           bio.brainActivity.waves.beta += 20; // Chaotic brain activity
         }
         // Head magicalActivity lives on leyVeins.meridians, not brainActivity.regions
-        // (regions has no 'head' key — the old path threw every tick).
+        // (regions has no 'head' key - the old path threw every tick).
         if (bio.leyVeins && bio.leyVeins.meridians.head) {
           bio.leyVeins.meridians.head.magicalActivity = Math.max(
             30,
@@ -2828,8 +2828,8 @@
   // ── Buying a course of medicine ────────────────────────────────────────────
   // Only a named illness can be shopped for: nobody hands over a course of
   // drugs for something they have not identified. Each row offers the one
-  // remedy a doctor would actually reach for — neither the cheapest, weakest
-  // dose nor the priciest one, the middle-priced cure on the shelf — priced
+  // remedy a doctor would actually reach for - neither the cheapest, weakest
+  // dose nor the priciest one, the middle-priced cure on the shelf - priced
   // for however many doses are still missing from the pack.
   const CURE_MANAGE_STOCK_DAYS = 14; // a fortnight's stock for an illness only managed, never cured
 

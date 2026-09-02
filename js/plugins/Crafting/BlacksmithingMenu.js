@@ -879,8 +879,8 @@
             }
         }
 
-        // The list is a flat run of lines — its heading, then either the trades
-        // or one row per piece — mounted in a window, so a smith with the whole
+        // The list is a flat run of lines - its heading, then either the trades
+        // or one row per piece - mounted in a window, so a smith with the whole
         // catalogue open only ever builds the rows on screen
         // (UI/MenuVirtualList.js). Row clicks are read off the spread by
         // delegation (onSpreadClick), so a row swapped in mid-scroll needs no

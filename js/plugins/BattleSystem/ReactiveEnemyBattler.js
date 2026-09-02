@@ -415,7 +415,7 @@
                     this._charSprite.setFrame(pattern * pw, row * ph, pw, ph);
                 }
 
-                // Constant scale — assign only once.
+                // Constant scale - assign only once.
                 if (this._charSprite.scale.x !== 9.0) {
                     this._charSprite.scale.x = 9.0; // 3x bigger
                     this._charSprite.scale.y = 9.0;

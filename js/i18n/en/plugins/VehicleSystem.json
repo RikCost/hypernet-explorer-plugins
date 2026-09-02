@@ -48,6 +48,6 @@
   "status": {
     "fuel": "Fuel",
     "condition": "Condition",
-    "broken": "Out of order — needs repairs"
+    "broken": "Out of order - needs repairs"
   }
 }

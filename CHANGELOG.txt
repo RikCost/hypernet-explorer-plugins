@@ -1,15 +1,26 @@
+0.5.2a
+
+- reworked eurodemics to keep track of player started epidemics: plateal infection or party member being infected will get registered, convert infection will have to wait the windoow period of the disease before being tracked-
+- player started epidemics now spread on their own when time passes
+- reassigned monster spawn list for omega tower dungeon 
+- increase enemy euro reward by 10
+- buffed enemy exp to have a smooth progress curve
+- added rule of height lore in help section
+- world magic setting now filters shops, npc gear and loot so you don't fine magical item in mundane world
+- equip optimize prioritizes proficient weapons over stronger untrained ones
+- added damage types and help menu voice with details: Explosive, Piercing, Area, Cutting, Abstract, Blunt, None.
+- reworked damage scaling formula
+
 0.5.1a 
 
-- enemy levels rebalanced onto a 1 to 100 scale
-- no weapon bank draws the swing1 to swing8 knocks
+- enemy levels capped at 100 and every floor's encounters re-themed, removed plus 100 enemies
 - weapon trails, ranged shot sounds and sound volumes reworked
-- damage numbers drawn as sharp html and linger longer
-- character creation archetype list is alphabetical
+- damage numbers drawn as  html and stays longer
+- character creation archetype list is now alphabetical
 - pepperbox no longer tumbles when shooting
 - restored original weapon sounds
-- party hud names equipped gear in battletest, uncut name line
 - body parts break or get cut off depending on the weapon
-- swing1 to swing8 are real whooshing swings
+- swing1 to swing8 are now procedural whooshing swings made with brown noise
 - title badge reads the version off the changelog itself
 - real estate is a hypernet app, bigger share lots when trading
 - battle test party matches troop level with randomized skills and gear

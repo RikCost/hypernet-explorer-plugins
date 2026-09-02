@@ -92,8 +92,8 @@
   },
   "magicalNotes": {
     "normal": "",
-    "severed": "La notte del 31 dicembre 2000 i tre pilastri della Gilda dei Maghi hanno compiuto il Rituale di Salomone, e i tradizionalisti della Thatcher hanno avuto la meglio: il codice sorgente della magia è stato riscritto per tenerla tutta dentro la Gilda, e fuori da quelle poche sale non è mai esistita. Non esiste nulla di magico: nessun incantesimo, nessun amuleto, nessuna lama incantata, nessuna creatura che ne viva, nessun volto che solo un incantesimo potrebbe portare. I negozi non la vendono, le casse non la contengono, e non c'è barra MP perché non c'è nulla su cui spenderla. Ciò che il gruppo riceve alla creazione resta suo comunque.",
-    "unbound": "La notte del 31 dicembre 2000 i tre pilastri della Gilda dei Maghi hanno compiuto il Rituale di Salomone, e ha avuto la meglio la parte di Crowley: invece di restringere il flusso lo hanno aperto fino in fondo, stappando tutte le linee di ley insieme finché non è rimasto più nulla di ordinario. Ogni arma è incantata, ogni malattia è una maledizione e ogni creatura che cammina è qualcosa che non dovrebbe. I negozi non vendono nulla di mondano e non si trova mai acciaio semplice. Ciò che il gruppo riceve alla creazione resta suo comunque."
+    "severed": "La magia è stata cancellata dal mondo. Incantesimi, oggetti incantati e creature magiche non compaiono più, e la barra MP è rimossa. Il gruppo mantiene solo ciò che riceve alla creazione.",
+    "unbound": "La magia dilaga in tutto il mondo. Le armi sono incantate, le malattie sono maledizioni e le creature mutano per l'energia delle linee di ley. Negozi e bottini non contengono equipaggiamento ordinario."
   },
   "magicalLocked": "Scelta una sola volta, alla creazione, e indipendente dalla linea temporale: qualsiasi combinazione delle due è un mondo che puoi creare."
 }

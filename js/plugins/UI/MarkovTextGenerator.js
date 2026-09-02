@@ -577,7 +577,7 @@
 
         generateText(minLength = 10, maxLength = 50) {
 
-            // No usable source text (e.g. missing translation for this database) — nothing to generate.
+            // No usable source text (e.g. missing translation for this database) - nothing to generate.
             if (this.startSequences.length === 0) {
                 return '';
             }

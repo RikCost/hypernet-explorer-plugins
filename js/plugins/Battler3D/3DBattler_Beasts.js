@@ -2462,6 +2462,7 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime, anim = this.currentAnimation;
             let growth = 1.0;
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.7);
@@ -2506,6 +2507,7 @@
             }
 
             // Per-variant flavour (kept off model.rotation.x, which the base owns).
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'bear':
                     if (fast) this.model.position.y += Math.max(0, Math.sin(Math.min(t * 6, Math.PI))) * 0.18 * this.scale;
@@ -2537,13 +2539,13 @@
                 case 'spikeyporcupine':
                 case 'plaguerattus':
                 case 'rodent': {
-                    this.model.position.x = Math.sin(t * 9) * 0.03 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 9) * 0.03 * this.scale;
                     if (this.head && this.head.visible) this.head.rotation.z = Math.sin(t * 7) * 0.08;
                     break;
                 }
                 case 'caffeinatedsquirrel':
                     // Espresso jitters: violent twitch on every axis.
-                    this.model.position.x = Math.sin(t * 28) * 0.05 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 28) * 0.05 * this.scale;
                     this.model.position.y = this._baseY + Math.abs(Math.sin(t * 22)) * 0.04 * this.scale;
                     if (this.head && this.head.visible) { this.head.rotation.z = Math.sin(t * 24) * 0.18; this.head.rotation.x = Math.sin(t * 19) * 0.12; }
                     if (this.tail && this.tail.visible) this.tail.rotation.x = -0.35 + Math.sin(t * 16) * 0.2;
@@ -2557,7 +2559,7 @@
                     // Heads writhe out of sync; the swarm never stills.
                     if (this.head && this.head.visible) this.head.rotation.z = Math.sin(t * 7) * 0.08;
                     if (this._extraHeads) this._extraHeads.forEach((h, i) => { if (h.visible) { h.rotation.z = Math.sin(t * (3 + i) + i * 1.6) * 0.18; h.rotation.x = Math.sin(t * 2.4 + i) * 0.1; } });
-                    this.model.position.x = Math.sin(t * 5) * 0.02 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 5) * 0.02 * this.scale;
                     break;
                 case 'molerodent':
                 case 'tunnelingmole':
@@ -2567,7 +2569,7 @@
                     break;
                 case 'icelemming':
                     // Trembles harder as it nears its explosive end.
-                    this.model.position.x = Math.sin(t * 30) * (fast ? 0.06 : 0.03) * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 30) * (fast ? 0.06 : 0.03) * this.scale;
                     this.model.rotation.z = Math.sin(t * 26) * 0.05;
                     break;
                 case 'chromaticmanticore':

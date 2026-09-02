@@ -13,8 +13,8 @@
  * the rows the scroller can actually show are in the DOM, and scrolling swaps
  * them.
  *
- * A host hands over the two things it already had — how many rows there are,
- * and the markup for row N — and gets its own scroll box back:
+ * A host hands over the two things it already had - how many rows there are,
+ * and the markup for row N - and gets its own scroll box back:
  *
  *     window.MenuVirtualList.render(listBox, {
  *         key: this._tab + '|' + bar.query,   // resets measurements
@@ -39,7 +39,7 @@
  * one-line rows and two-line rows freely. Grid scrollers (.backpack-grid and
  * friends) keep their columns: the window inherits the container's track count
  * and gaps, and windowing happens a grid-row at a time. A row that spans the
- * whole width in such a grid — a group heading between the pockets — says so
+ * whole width in such a grid - a group heading between the pockets - says so
  * with `fullWidth: idx => ...`, so it is given a line of its own and the cards
  * after it stay in the column they were laid out in.
  *
@@ -81,7 +81,7 @@
 
     // Deal the rows into lines the way the browser will lay them out: `columns`
     // of them to a line, except where the host says a row takes the full width.
-    // Everything downstream — measuring, scrolling, windowing — works in lines.
+    // Everything downstream - measuring, scrolling, windowing - works in lines.
     function relayout(st) {
         const lines = [];
         const lineOf = [];

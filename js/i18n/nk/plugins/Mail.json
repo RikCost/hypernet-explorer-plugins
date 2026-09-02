@@ -55,11 +55,11 @@
   "compose": {
     "recipient": "ADDRESSED TA",
     "noRecipient": "NOBODY YET",
-    "addressLine": "{who} — {world}",
+    "addressLine": "{who} - {world}",
     "yourself": "{leader}, DAT IZ TA SAY YOURSELF",
     "subject": "SUBJECT",
     "body": "LETTER",
-    "blankField": "—",
+    "blankField": "-",
     "wordCount": {
       "one": "1 WORD",
       "other": "{count} WORDS"
@@ -75,8 +75,8 @@
     "delayYears": "HELD BACK, YEARS",
     "send": "SEAL IT AN' SEND IT",
     "confirm": "PRESS AGAIN TA SEND IT",
-    "thisWorld": "{world} — DIS WORLD",
-    "otherWorld": "{world} — ANOTHER WORLD",
+    "thisWorld": "{world} - DIS WORLD",
+    "otherWorld": "{world} - ANOTHER WORLD",
     "noAddresses": "NO PARTY HAB LEFT AN ADDRESS ANYWHERE YET!",
     "nothingToSend": "DERE IZ NOTHIN' IN DA BAGS DAT CAN BE POSTED!",
     "noGoods": "NO GOODS",

@@ -42,6 +42,6 @@
   "status": {
     "fuel": "Carburant",
     "condition": "État",
-    "broken": "Hors service — réparations nécessaires"
+    "broken": "Hors service - réparations nécessaires"
   }
 }

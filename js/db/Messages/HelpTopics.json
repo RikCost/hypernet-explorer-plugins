@@ -495,6 +495,14 @@
     "description": "HelpTopics.combatBodyParts.description",
     "image": ""
   },
+  "combatDamageTypes": {
+    "type": "mechanic",
+    "group": "combat",
+    "order": 5045,
+    "title": "HelpTopics.combatDamageTypes.title",
+    "description": "HelpTopics.combatDamageTypes.description",
+    "image": ""
+  },
   "combatWrestle": {
     "type": "mechanic",
     "group": "combat",
@@ -2184,6 +2192,13 @@
     "group": "lore",
     "title": "HelpLore.alagaddaCityOfMasks.title",
     "description": "HelpLore.alagaddaCityOfMasks.description",
+    "image": ""
+  },
+  "ruleOfHeight": {
+    "type": "lore",
+    "group": "lore",
+    "title": "HelpLore.ruleOfHeight.title",
+    "description": "HelpLore.ruleOfHeight.description",
     "image": ""
   }
 }

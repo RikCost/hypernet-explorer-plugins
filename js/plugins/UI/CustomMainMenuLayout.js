@@ -2085,7 +2085,7 @@
                     <div class="commands-grid mainmenu-32">
             `;
 
-            // 1. Return to World Map — planetside the same row opens the
+            // 1. Return to World Map - planetside the same row opens the
             // landing-site picker instead (see WorldMapReturn's commandWorldMap).
             // ...unless the party is out in the 3D world, where this row is the
             // way back in even though the map underneath is 315 (inVoxelWorld).

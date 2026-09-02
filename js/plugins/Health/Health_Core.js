@@ -353,22 +353,39 @@
   // ===========================================================================
   // What a weapon does to a body part
   // ===========================================================================
-  //
-  // A mace does not take an arm off. Only an edge or a bullet parts a limb from
-  // a body: Light (1), Sword (2), Axe (4), Gun (9), Claw (10) and Spear (12).
-  // Every other weapon type - Heavy, Whip, Staff, Bow, Projectile, Glove - and
-  // bare hands leave the part attached and merely broken. This is the one
-  // answer to "does this blow cut", read by the monster anatomy as well.
-  const CUTTING_WEAPON_TYPES = [1, 2, 4, 9, 10, 12];
+  // What an attack does to a body part:
+  // Limb can cut only by Explosive, Piercing and Cutting damage.
+  // Blunt, Area, Abstract, None cannot sever limbs.
+  // ===========================================================================
+  const CUTTING_DAMAGE_TYPES = ["Explosive", "Piercing", "Cutting"];
 
-  function attackerCanCut(subject) {
-    const s = subject || (window.BattleManager ? BattleManager._subject : null);
-    if (!s || typeof s.weapons !== "function") return false;
-    const weapons = s.weapons() || [];
-    for (const w of weapons) {
-      if (w && CUTTING_WEAPON_TYPES.includes(w.wtypeId)) return true;
+  function getActionDamageType(action, subject) {
+    if (action) {
+      const item = typeof action.item === "function" ? action.item() : (action._item ? action.item() : null);
+      if (item) {
+        const dt = (item.meta && item.meta.DamageType) ||
+          (item.note && (item.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+        if (dt) return String(dt).trim();
+      }
     }
-    return false;
+    const s = subject || (action && action.subject ? action.subject() : (window.BattleManager ? BattleManager._subject : null));
+    if (s && typeof s.weapons === "function") {
+      const weapons = s.weapons() || [];
+      for (const w of weapons) {
+        if (w) {
+          const wdt = (w.meta && w.meta.DamageType) ||
+            (w.note && (w.note.match(/<DamageType:\s*([^>]+)>/i) || [])[1]);
+          if (wdt) return String(wdt).trim();
+        }
+      }
+    }
+    return "Blunt";
+  }
+
+  function attackerCanCut(subject, action) {
+    const act = action || (window.BattleManager ? BattleManager._action : null);
+    const dt = getActionDamageType(act, subject);
+    return CUTTING_DAMAGE_TYPES.includes(dt);
   }
 
   /**
@@ -1429,9 +1446,10 @@
    * half the time it only breaks it where it stands (brokenMsg, the smaller
    * penalty). A part the archetype says cannot come off is never cut.
    */
-  function rollPartCutoff(actor, partKey, part) {
+  function rollPartCutoff(actor, partKey, part, action) {
     if (!isBloodAndOil()) return false;
     if (!partCanCutoff(actor, partKey, part)) return false;
+    if (!attackerCanCut(null, action)) return false;
     return Math.random() < 0.5;
   }
 
@@ -1560,7 +1578,7 @@
   }
 
   // Calculate damage to a body part
-  function applyDamageToBodyPart(actor, partKey, damage) {
+  function applyDamageToBodyPart(actor, partKey, damage, action) {
     var part = actor._bodyParts[partKey];
 
     if (!part || part.damaged) return 0;
@@ -1583,7 +1601,7 @@
         part.damaged = true;
         // Decided before the wound is announced: the log prints the archetype's
         // msg for a part that comes off and its brokenMsg for one that stays.
-        part._cutOff = !part.vital && rollPartCutoff(actor, partKey, part);
+        part._cutOff = !part.vital && rollPartCutoff(actor, partKey, part, action);
         handleDamagedBodyPart(actor, partKey);
 
         // --- Blood and Oil mode check ---
@@ -1833,45 +1851,68 @@
   }
 
   // Apply damage to actor with limb damage system
-  function applyLimbDamage(actor, damage) {
+  function applyLimbDamage(actor, damage, action) {
     if (!actor._bodyParts) initializeBodyParts(actor);
 
-    // Get a random hit location
-    var hitLocation = getRandomHitLocation();
+    const damageType = getActionDamageType(action, action && action.subject ? action.subject() : null);
+    const isMultiPart = (damageType === 'Area' || damageType === 'Explosive');
 
-    // Select 1-3 random body parts to damage
-    var partsToHit = selectRandomBodyParts(
-      hitLocation,
-      Math.floor(Math.random() * 3) + 1
-    );
-
-    var primaryPartKey = (partsToHit && partsToHit.length > 0) ? partsToHit[0] : (hitLocation && hitLocation.parts ? hitLocation.parts[0] : null);
-    actor._lastHitPart = primaryPartKey;
-    if (primaryPartKey && actor._bodyParts && actor._bodyParts[primaryPartKey]) {
-      actor._lastHitPartName = actor._bodyParts[primaryPartKey].name;
-    } else {
-      actor._lastHitPartName = '';
-    }
-
-    // Distribute damage among the selected parts
-    var totalDamageApplied = 0;
-    var damagePerPart = Math.floor(damage / partsToHit.length);
-
-    partsToHit.forEach(function (partKey) {
-      totalDamageApplied += applyDamageToBodyPart(
-        actor,
-        partKey,
-        damagePerPart
+    if (isMultiPart) {
+      // Area and Explosive: spread damage to multiple body parts
+      var hitLocation = getRandomHitLocation();
+      var partsToHit = selectRandomBodyParts(
+        hitLocation,
+        Math.floor(Math.random() * 3) + 2
       );
-    });
+      if (!partsToHit || partsToHit.length === 0) {
+        var allKeys = Object.keys(actor._bodyParts).filter(k => actor._bodyParts[k] && !actor._bodyParts[k].damaged);
+        if (allKeys.length === 0) allKeys = Object.keys(actor._bodyParts);
+        partsToHit = allKeys.slice(0, 3);
+      }
 
-    // Apply any remaining damage to the main part of the hit location
-    var remainingDamage = damage - totalDamageApplied;
-    if (remainingDamage > 0) {
-      applyDamageToBodyPart(actor, hitLocation.parts[0], remainingDamage);
+      var primaryPartKey = (partsToHit && partsToHit.length > 0) ? partsToHit[0] : (hitLocation && hitLocation.parts ? hitLocation.parts[0] : null);
+      actor._lastHitPart = primaryPartKey;
+      if (primaryPartKey && actor._bodyParts && actor._bodyParts[primaryPartKey]) {
+        actor._lastHitPartName = actor._bodyParts[primaryPartKey].name;
+      } else {
+        actor._lastHitPartName = '';
+      }
+
+      var totalDamageApplied = 0;
+      var damagePerPart = Math.floor(damage / partsToHit.length);
+
+      partsToHit.forEach(function (partKey) {
+        totalDamageApplied += applyDamageToBodyPart(
+          actor,
+          partKey,
+          damagePerPart,
+          action
+        );
+      });
+
+      var remainingDamage = damage - totalDamageApplied;
+      if (remainingDamage > 0 && partsToHit.length > 0) {
+        applyDamageToBodyPart(actor, partsToHit[0], remainingDamage, action);
+      }
+    } else {
+      // Piercing, Cutting, Blunt, Abstract, etc.: hit JUST ONE body part
+      var hitLocation = getRandomHitLocation();
+      var partsToHit = selectRandomBodyParts(hitLocation, 1);
+      var partKey = (partsToHit && partsToHit.length > 0) ? partsToHit[0] : (hitLocation && hitLocation.parts ? hitLocation.parts[0] : null);
+      if (!partKey) {
+        var allKeys = Object.keys(actor._bodyParts);
+        partKey = allKeys[Math.floor(Math.random() * allKeys.length)];
+      }
+
+      actor._lastHitPart = partKey;
+      if (partKey && actor._bodyParts && actor._bodyParts[partKey]) {
+        actor._lastHitPartName = actor._bodyParts[partKey].name;
+      } else {
+        actor._lastHitPartName = '';
+      }
+
+      applyDamageToBodyPart(actor, partKey, damage, action);
     }
-
-    // We no longer show hit location in battlelog
   }
 
   // Heal body parts function - used by healing items/spells
@@ -2621,7 +2662,7 @@
 
     // Apply limb damage system to all actors
     if (target.isActor() && value > 0) {
-      applyLimbDamage(target, value);
+      applyLimbDamage(target, value, this);
 
       // Check if HP is zero or less and restore body parts if so
       if (target.hp <= 0) {
@@ -2795,7 +2836,9 @@
   // Does the blow being struck cut? Read by the monster anatomy so a mace
   // breaks a limb where a sword takes it off.
   window.HealthCore.attackerCanCut = attackerCanCut;
-  window.HealthCore.CUTTING_WEAPON_TYPES = CUTTING_WEAPON_TYPES;
+  window.HealthCore.getActionDamageType = getActionDamageType;
+  window.HealthCore.CUTTING_DAMAGE_TYPES = CUTTING_DAMAGE_TYPES;
+  window.HealthCore.CUTTING_WEAPON_TYPES = CUTTING_DAMAGE_TYPES;
   // What a part's penalty is worth broken (false) versus taken off (true).
   window.HealthCore.statEffectAmount = statEffectAmount;
   // A creature's parts are its stats; a person's are not (character creation and

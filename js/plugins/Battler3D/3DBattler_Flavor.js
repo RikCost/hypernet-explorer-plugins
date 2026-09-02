@@ -2558,6 +2558,7 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime, anim = this.currentAnimation;
             let growth = 1.0;
             if (anim === 'spawn') growth = Math.min(1.0, t / 0.8);
@@ -2569,6 +2570,7 @@
             const floats = (this.variant === 'origami' || this.variant === 'mask' || this.variant === 'paperwork' || this.variant === 'sawblade' || this.variant === 'tidesculptor' || this.variant === 'obsidianvisionary' || this.variant === 'ochrejelly' || this.variant === 'enchantress' || this.variant === 'embersprite' || this.variant === 'frostelemental' || this.variant === 'giantjellyfish' || this.variant === 'fluxlingfurret' || this.variant === 'glimmershrimp' || this.variant === 'insectswarm' || this.variant === 'marshwraith' || this.variant === 'reaganite' || this.variant === 'seraphicemissary' || this.variant === 'shadowstalker' || this.variant === 'shadowwraith' || this.variant === 'stoneguardian' || this.variant === 'stormbanshee' || this.variant === 'thundersprite');
             this.model.position.y = this._baseY + Math.sin(t * 1.3) * (floats ? 0.09 : 0.03) * this.scale;
 
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'gunburger': {
                     if (this.head) this.head.rotation.y = Math.sin(t * (fast ? 5 : 1.4)) * 0.3; // surveillance scan
@@ -2577,7 +2579,7 @@
                     break;
                 }
                 case 'sushisnail': {
-                    this.model.position.x = Math.sin(t * 0.6) * 0.02 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 0.6) * 0.02 * this.scale;
                     if (this.t1) this.t1.rotation.z = Math.sin(t * 1.5) * 0.2;
                     if (this.t2) this.t2.rotation.z = -Math.sin(t * 1.5 + 0.5) * 0.2;
                     break;
@@ -2796,7 +2798,7 @@
                     if (this.clawL && this.clawL._upper) this.clawL._upper.rotation.z = -this.clawL._s * Math.PI / 2 - snap;
                     if (this.clawR && this.clawR._upper) this.clawR._upper.rotation.z = -this.clawR._s * Math.PI / 2 - snap * 0.6;
                     if (this.antennae) this.antennae.rotation.z = Math.sin(t * 2) * 0.08;
-                    this.model.position.x = Math.sin(t * 1.4) * 0.03 * this.scale; // sidle
+                    this.model.position.x = baseX + Math.sin(t * 1.4) * 0.03 * this.scale; // sidle
                     break;
                 }
                 case 'glimmershrimp': {
@@ -2890,7 +2892,7 @@
                 }
                 case 'monstrousbadger': {
                     if (this.head) this.head.rotation.x = (fast ? Math.abs(Math.sin(t * 7)) * 0.3 : Math.sin(t * 1.6) * 0.06) - 0.05;
-                    this.model.position.x = Math.sin(t * 0.7) * 0.02 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 0.7) * 0.02 * this.scale;
                     if (this.tail) this.tail.rotation.z = Math.sin(t * 2) * 0.2;
                     break;
                 }
@@ -3009,7 +3011,7 @@
                 case 'swampcrocodile': {
                     if (this.head) this.head.children.forEach(c => { if (c.position.y < -0.05) c.rotation.x = (fast ? Math.abs(Math.sin(t * 8)) : Math.abs(Math.sin(t * 1.5))) * 0.3; }); // jaw chomp on lower parts
                     if (this.tail) this.tail.children.forEach((s, i) => { s.position.z = Math.sin(t * (fast ? 5 : 2) - i * 0.5) * 0.12; });
-                    this.model.position.x = Math.sin(t * 0.6) * 0.02 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 0.6) * 0.02 * this.scale;
                     break;
                 }
                 case 'tarantula': {
@@ -3022,7 +3024,7 @@
                     if (this.sparks) this.sparks.forEach((sp, i) => { const ang = sp._a + t * (fast ? 5 : 2.5); sp.position.set(Math.cos(ang) * sp._r, sp._h + Math.sin(t * 3 + i) * 0.1, Math.sin(ang) * sp._r); });
                     if (this.core) { this.core.rotation.y = t * 3; if (this.core.material) this.core.material.emissiveIntensity = (fast ? 1.8 : 0.9) + Math.sin(t * 14) * 0.6; }
                     [this.leftArm, this.rightArm, this.leftLeg, this.rightLeg].forEach((l, i) => { if (l) l.rotation.z = Math.sin(t * (fast ? 12 : 6) + i) * 0.3; });
-                    this.model.position.x = Math.sin(t * 2.2) * 0.04 * this.scale; // darting
+                    this.model.position.x = baseX + Math.sin(t * 2.2) * 0.04 * this.scale; // darting
                     break;
                 }
             }

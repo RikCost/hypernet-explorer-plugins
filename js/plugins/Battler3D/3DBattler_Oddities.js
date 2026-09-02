@@ -3223,7 +3223,7 @@
             ];
         }
 
-        // Ophanim: a biblically-accurate angel — interlocking eye-studded wheels
+        // Ophanim: a biblically-accurate angel - interlocking eye-studded wheels
         // around a fiery core, ringed by a band of unblinking eyes.
         _buildOphanim() {
             const p = this.profile;
@@ -3243,7 +3243,7 @@
             // central fiery core
             this.core = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), this._mat(p.accent, 0.85, 0.2, p.accent));
             this.core.position.y = 1.3; this.bodyGroup.add(this.core);
-            // EYE_RING — band of larger eyes orbiting the core
+            // EYE_RING - band of larger eyes orbiting the core
             this.eyeRing = new THREE.Group();
             for (let e = 0; e < 10; e++) { const a = e / 10 * Math.PI * 2; this._eye(this.eyeRing, Math.cos(a) * 0.36, Math.sin(a) * 0.36, 0.12, 0.07, 0xffffff); }
             this.eyeRing.position.y = 1.3; this.bodyGroup.add(this.eyeRing);
@@ -4033,18 +4033,18 @@
     reg('ritualsentinel',    { aliases: ['ritualsentinel'],    scale: S.ritualsentinel.scale,    weapon: 0, create: make });
     reg('rubbler',           { aliases: ['rubbler'],           scale: S.rubbler.scale,           weapon: 0, create: make });
     reg('sacredphoenix',     { aliases: ['sacredphoenix'],     scale: S.sacredphoenix.scale,     weapon: 0, create: make });
-    // Batch 17 (IDs 692-716) — all reuse existing variant builders.
+    // Batch 17 (IDs 692-716) - all reuse existing variant builders.
     reg('scrapforged',       { aliases: ['scrapforged'],       scale: S.scrapforged.scale,       weapon: 0, create: make });
     // shadowbat / sonicmoltendrakebat are canonically registered by 3DBattler_Winged.js.
     // Registering them here would silently shadow that family, so they are intentionally omitted.
     // Batch 18 (IDs 718-749).
     reg('spineshade',        { aliases: ['spineshade'],        scale: S.spineshade.scale,        weapon: 0, create: make });
-    // Batch 19 (IDs 751-769) — all reuse existing variant builders.
+    // Batch 19 (IDs 751-769) - all reuse existing variant builders.
     reg('totemadept',        { aliases: ['totemadept'],        scale: S.totemadept.scale,        weapon: 0, create: make });
-    // Batch 20 (IDs 770-815) — all reuse existing variant builders.
+    // Batch 20 (IDs 770-815) - all reuse existing variant builders.
     reg('brimstonebehemutt', { aliases: ['brimstonebehemutt'], scale: S.brimstonebehemutt.scale, weapon: 0, create: make });
     reg('cognitivebacteria', { aliases: ['cognitivebacteria'], scale: S.cognitivebacteria.scale, weapon: 0, create: make });
-    // Batch 21 (IDs 823-862) — all reuse existing variant builders.
+    // Batch 21 (IDs 823-862) - all reuse existing variant builders.
     reg('dumpsterhead',      { aliases: ['dumpsterhead'],      scale: S.dumpsterhead.scale,      weapon: 0, create: make });
     reg('gildedguardian',    { aliases: ['gildedguardian'],    scale: S.gildedguardian.scale,    weapon: 0, create: make });
     reg('mindshield',        { aliases: ['mindshield'],        scale: S.mindshield.scale,        weapon: 0, create: make });
@@ -4053,32 +4053,32 @@
     reg('plagueheap',        { aliases: ['plagueheap'],        scale: S.plagueheap.scale,        weapon: 0, create: make });
     reg('realitywarper',     { aliases: ['realitywarper'],     scale: S.realitywarper.scale,     weapon: 0, create: make });
     reg('shardmaw',          { aliases: ['shardmaw'],          scale: S.shardmaw.scale,          weapon: 0, create: make });
-    // Batch 23 (IDs 913-950) — all reuse existing variant builders.
+    // Batch 23 (IDs 913-950) - all reuse existing variant builders.
     reg('totemicprotector',  { aliases: ['totemicprotector'],  scale: S.totemicprotector.scale,  weapon: 0, create: make });
     reg('waridol',           { aliases: ['waridol'],           scale: S.waridol.scale,           weapon: 0, create: make });
-    // Batch 24 (IDs 954-1002) — all reuse existing variant builders.
+    // Batch 24 (IDs 954-1002) - all reuse existing variant builders.
     reg('totemicoverlord',   { aliases: ['totemicoverlord'],   scale: S.totemicoverlord.scale,   weapon: 0, create: make });
     // xylomantiflorous is canonically registered by 3DBattler_Flora.js; omitted here to avoid shadowing it.
     reg('crystalgiant',      { aliases: ['crystalgiant'],      scale: S.crystalgiant.scale,      weapon: 0, create: make });
-    // Batch 25 (IDs 1005-1037) — all reuse existing variant builders.
+    // Batch 25 (IDs 1005-1037) - all reuse existing variant builders.
     reg('identitythief',     { aliases: ['identitythief'],     scale: S.identitythief.scale,     weapon: 0, create: make });
-    // Batch 26 (IDs 1039-1053) — all reuse existing variant builders.
+    // Batch 26 (IDs 1039-1053) - all reuse existing variant builders.
     reg('mathematicseater',  { aliases: ['mathematicseater'],  scale: S.mathematicseater.scale,  weapon: 0, create: make });
     reg('quantumfluctuationep',{ aliases: ['quantumfluctuationep'], scale: S.quantumfluctuationep.scale, weapon: 0, create: make });
     reg('temporalbarnacle',  { aliases: ['temporalbarnacle'],  scale: S.temporalbarnacle.scale,  weapon: 0, create: make });
-    // Batch 27 (IDs 1054-1090) — all reuse existing variant builders.
+    // Batch 27 (IDs 1054-1090) - all reuse existing variant builders.
     reg('totemofsins',       { aliases: ['totemofsins'],       scale: S.totemofsins.scale,       weapon: 0, create: make });
     reg('whisperingdoor',    { aliases: ['whisperingdoor'],    scale: S.whisperingdoor.scale,    weapon: 0, create: make });
-    // Batch 28 (IDs 1091-1124) — ophanim is a new builder, the rest reuse.
+    // Batch 28 (IDs 1091-1124) - ophanim is a new builder, the rest reuse.
     reg('obsidianhellhound', { aliases: ['obsidianhellhound'], scale: S.obsidianhellhound.scale, weapon: 0, create: make });
     // ophanim is canonically registered by 3DBattler_Exotic.js (with aliases ophan/thronebearer);
     // omitted here so those aliases are not lost to a shadowing overwrite.
     reg('abortionmimic',     { aliases: ['abortionmimic'],     scale: S.abortionmimic.scale,     weapon: 0, create: make });
     reg('diamondmimicep',    { aliases: ['diamondmimicep'],    scale: S.diamondmimicep.scale,    weapon: 0, create: make });
-    // Batch 29 (IDs 1124-1358) — all reuse existing variant builders.
+    // Batch 29 (IDs 1124-1358) - all reuse existing variant builders.
     reg('pyroclastphoenix',  { aliases: ['pyroclastphoenix'],  scale: S.pyroclastphoenix.scale,  weapon: 0, create: make });
     // dragonofwisdomenki is canonically registered by 3DBattler_Draconic.js; omitted here to avoid shadowing it.
-    // Final batch (IDs 1450-1547) — remaining slimes/elementals (1 new: sacredelemental).
+    // Final batch (IDs 1450-1547) - remaining slimes/elementals (1 new: sacredelemental).
     ['crystallinebroodthing','gelatinousdronebug','bloateddronebug','gelatinousmirespawn','bloatedgel','glitteringbroodthing','quiveringlarva','crystallineglob','bloatedmold','chitteringpudding','acidicmirespawn','skitteringmold','causticmirespawn','causticcarapace','twitchingdronebug','brackishpudding','chitteringhuskbeetle','iridescentcrawler','bloatedcarapace','raginggeist','obsidianelemental','cracklinganimus','obsidiananimus','frozenmonolith','cracklingrevenant','frozenconstruct','frozensentinel','glacialgeist','cracklingeffigy','petrifiedsylph','ragingsentinel','surgingconstruct','cracklingelemental','surgingelemental','petrifiedmonolith','quartzcolossusspawn','quartzgeist'].forEach(k => reg(k, { aliases: [k], scale: S[k].scale, weapon: 0, create: make }));
     // QA fixes: seahorse, fish-school, and de-hijacked procedural slimes.
     ['goldenseahorse','pregseahorse','sardineschool','twitchingpudding','moltenglob','swarmingbroodthing','crystallinecarapace','causticlarva','glitteringcrawler','chitteringmirespawn','bloatedglob','brackishooze','bloatedooze','moltenmold','gelatinousglob','twitchingooze','sludgycrawler','swarmingswarmling','crystallinedronebug','quiveringcarapace','acidiclarva','quiveringhivemind','crystallinelarva','crystallinegel','quiveringbroodthing','swarmingmirespawn','gelatinoushuskbeetle'].forEach(k => reg(k, { aliases: [k], scale: S[k].scale, weapon: 0, create: make }));

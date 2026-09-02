@@ -1810,7 +1810,7 @@
     };
 
     Spriteset_Battle.prototype.getDrawInterval = function () {
-        // Minimum interval of 2 (30Hz pattern animation) — redrawing these
+        // Minimum interval of 2 (30Hz pattern animation) - redrawing these
         // full-canvas patterns every single frame was pure churn for no visible
         // gain. Slower patterns keep their higher intervals.
         const intervals = {

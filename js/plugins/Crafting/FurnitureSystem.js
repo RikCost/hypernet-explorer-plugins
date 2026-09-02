@@ -264,8 +264,8 @@
         // The procedural world map never permits building.
         if ($gameMap && $gameMap.mapId() === 315) return false;
         // Procedural biome map: a composite (per-world-coordinate) furniture key
-        // means building here is coordinate-aware — remembered and restored per
-        // world coordinate — so it is allowed despite the base map's template
+        // means building here is coordinate-aware - remembered and restored per
+        // world coordinate - so it is allowed despite the base map's template
         // <BuildRights: Disabled> note.
         const key = furnitureMapKey();
         if (typeof key === 'string' && $gameMap && key !== String($gameMap.mapId())) {
@@ -275,7 +275,7 @@
         if (rights === 'Disabled') return false; // i18n-ignore: build-rights id
         // Free, and Owner land the party does not own: the builder opens either
         // way. Building on somebody else's floor is no longer refused, it is a
-        // crime — see isIllegalBuildHere / chargeIllegalBuild below.
+        // crime - see isIllegalBuildHere / chargeIllegalBuild below.
         return true;
     }
 
@@ -352,7 +352,7 @@
     // coordinate, so keying by its map id alone would make furniture built at one
     // world coordinate leak into every other. A provider registered on
     // window.FurnitureSystem.mapKeyProvider (see WorldMapReturn.js) returns
-    // a composite key — biome + world coordinate — so pieces are remembered and
+    // a composite key - biome + world coordinate - so pieces are remembered and
     // restored only at the world coordinate + biome where they were built. The
     // per-piece x/y (proc-map coordinates) are already stored on each placement.
     function furnitureMapKey() {
@@ -1418,7 +1418,7 @@
                 }
 
                 if (cat === CAT_DECORATIONS) {
-                    // Placeable anywhere — no terrain restriction.
+                    // Placeable anywhere - no terrain restriction.
                 } else if (cat === CAT_CARPETS) {
                     // Floor decor: every tile must be a walkable floor, never a wall.
                     if (terrainTag === 4) return false;
@@ -1581,7 +1581,7 @@
         placeFurnitureByCategory.call(this, 'entertainment', 1, 7000);
     };
 
-    // Every open (non-wall, non-blocked) floor tile — carpets and free-standing
+    // Every open (non-wall, non-blocked) floor tile - carpets and free-standing
     // decorations want the middle of the room, not just tiles hugging a wall.
     function findOpenFloorTiles() {
         const tiles = [];
@@ -1915,7 +1915,7 @@
     // compute a shape. computeAutotileTileId() below derives it from the four
     // real shipped rendering tables (Tilemap.FLOOR_AUTOTILE_TABLE / WALL_ /
     // WATERFALL_AUTOTILE_TABLE in js/rmmz_core.js), reading which of the four
-    // cardinal neighbours (N/E/S/W) also hold a same-kind tile — straight
+    // cardinal neighbours (N/E/S/W) also hold a same-kind tile - straight
     // edges, corners, T-junctions and islands all render correctly.
     //
     // Each table entry is the 4 quadrants [topLeft, topRight, bottomLeft,
@@ -1924,9 +1924,9 @@
     // border on that side, i.e. that side is OPEN (no same-kind neighbour):
     //   west  open <-> topLeft.x === 0        east  open <-> topRight.x === 3
     //   north open <-> topLeft.y === openN    south open <-> bottomLeft.y === openS
-    // The tables disagree on the row markers — the floor/blob table borders
+    // The tables disagree on the row markers - the floor/blob table borders
     // north at y 2 and south at y 5, the 16-entry wall table at y 0 and y 3,
-    // and the 4-entry waterfall table has no north/south at all — so those
+    // and the 4-entry waterfall table has no north/south at all - so those
     // rows are passed in per table rather than assumed. Getting this wrong is
     // not a subtle mis-corner: it silently resolves the FILLED interior of a
     // region to a corner-notch shape, so a solid block of wall tiles up tiles
@@ -2029,7 +2029,7 @@
     // ── Ceiling always stands on a wall ───────────────────────────────────────
     // An A4 autotile sheet packs each wall material as a PAIR of kinds: a
     // "top" (the flat roof of the wall mass, kind % 16 < 8, blended with the
-    // floor table) and, exactly 8 kinds later, the matching "side" — the
+    // floor table) and, exactly 8 kinds later, the matching "side" - the
     // vertical face you actually see (kind % 16 >= 8, blended with the wall
     // table). That pairing is a fixed engine convention, not a per-tileset
     // choice (Tilemap.isWallTopTile / isWallSideTile).
@@ -2037,7 +2037,7 @@
     // A ceiling with nothing under it reads as a slab floating in mid air, so
     // placing one always puts its own face on the tile below. Returns the
     // matching side kind, or -1 when `kind` is not a ceiling at all (A3, a
-    // terrain kind, or an A4 side kind — those stand on their own).
+    // terrain kind, or an A4 side kind - those stand on their own).
     function ceilingSideKind(kind) {
         const sample = Tilemap.makeAutotileId(kind, 0);
         if (!Tilemap.isTileA4(sample) || (kind % 16) >= 8) return -1;
@@ -2045,7 +2045,7 @@
     }
 
     // Is there already something under (x, y) that can carry a ceiling? Any
-    // placed wall/terrain autotile counts — including another ceiling tile of
+    // placed wall/terrain autotile counts - including another ceiling tile of
     // the same mass, which carries its own face further down.
     function hasWallUnder(x, y) {
         const below = findPlacedTileRecordAt(x, y + 1);
@@ -2105,7 +2105,7 @@
     // specifically the "fully connected" (surrounded on all 4 sides) variant,
     // whose 4 render quadrants are always contiguous (verified against the
     // real FLOOR_/WALL_AUTOTILE_TABLE data), so it is always exactly one
-    // whole source tile — no quadrant compositing needed, unlike a live
+    // whole source tile - no quadrant compositing needed, unlike a live
     // neighbour-blended tile.
     function autotileSheetBaseXY(kind) {
         const tx = kind % 8, ty = Math.floor(kind / 8);
@@ -2235,13 +2235,13 @@
     }
 
     // Any placed record (wall/terrain/feature) sitting at (x,y) on the
-    // current map, or null. Doors are excluded — they are events, not tiles.
+    // current map, or null. Doors are excluded - they are events, not tiles.
     function findPlacedTileRecordAt(x, y) {
         const list = $gameSystem.getMapTiles(furnitureMapKey());
         return list.find(t => t.x === x && t.y === y && t.kind !== 'door') || null;
     }
 
-    // Wall and Terrain may override each other (or themselves) — placing one
+    // Wall and Terrain may override each other (or themselves) - placing one
     // where the other already sits silently replaces it. Features never
     // override anything, and nothing overrides a Feature or a Door.
     function canPlaceTileAt(x, y, kind) {
@@ -2444,7 +2444,7 @@
             return {
                 id, name: entry.name, width: 1, height: 1, category: 'House', rotatable: false,
                 // Dual cost: Construct mode pays the (large) material cost,
-                // Purchase mode pays gold — same duality as ordinary furniture,
+                // Purchase mode pays gold - same duality as ordinary furniture,
                 // handled automatically by getFurnitureCost/getFurniturePrice.
                 __specialCost: entry.materialCost, __specialGoldPrice: entry.price, __placeKind: 'door',
                 __poolName: entry.poolName, __houseMapId: entry.mapId, __doorType: entry.doorType,
@@ -2635,7 +2635,7 @@
         // Re-apply BEFORE the tilemap is built (and before the original call
         // chain, which on the procedural map also re-injects/regenerates
         // $dataMap), so placed walls/terrain/features are guaranteed to be
-        // painted into the FINAL $dataMap the live Tilemap actually reads —
+        // painted into the FINAL $dataMap the live Tilemap actually reads -
         // not an earlier snapshot that a later Game_Map.setup-time step (proc
         // biome injection, prefab placement, ...) goes on to replace.
         applyPlacedTilesToMap();
@@ -3183,7 +3183,7 @@
 
             // Custom dropdown (a native <select> popup does not render reliably
             // over the WebGL game canvas in nw.js/Electron, so we build our own).
-            // Only the Buildables tab uses it — the other 4 tabs are flat lists.
+            // Only the Buildables tab uses it - the other 4 tabs are flat lists.
             let catBarHTML = '';
             // Escaped once, out of the markup, so the attribute value is not a
             // literal the scanner has to reason about.
@@ -3219,7 +3219,7 @@
                 </div>`;
             }
 
-            // Materials strip — read from the real party inventory
+            // Materials strip - read from the real party inventory
             const matEntries = Object.keys(MATERIALS)
                 .map(id => [id, getMaterialCount(id)])
                 .filter(([, q]) => q > 0);
@@ -3630,7 +3630,7 @@
             return this._selId || null;
         }
 
-        // Flat id list in the current tab's display order — used to cycle the
+        // Flat id list in the current tab's display order - used to cycle the
         // armed piece with L1/R1 or the scrollwheel while aiming on the map.
         getOrderedIds() {
             return Array.from(this.container.querySelectorAll('.fbuild-card')).map(c => c.dataset.id);
@@ -3941,7 +3941,7 @@
         this._fbGrid.bitmap = new Bitmap(width, height);
         this._fbGrid.opacity = Math.min(GRID_OPACITY, 90);
         // z must be strictly above the tilemap's lower layer (z=0), otherwise the
-        // grid ties with the ground on z and the sort falls back to y — once the
+        // grid ties with the ground on z and the sort falls back to y - once the
         // map scrolls down (displayY>0) the grid's y goes negative, sorting it
         // BEHIND the ground tiles and making it vanish. A small positive z keeps
         // it drawn over the floor at all times, still below furniture/characters.
@@ -4125,7 +4125,7 @@
 
     // Buys a live animal and stands it on the tile. Payment is always money
     // (never materials) and ownership is handed to AnimalGrowthSystem, which
-    // stores it against the current map key so it is still there next visit —
+    // stores it against the current map key so it is still there next visit -
     // on ordinary maps and at a procedural world coordinate alike. Selling it
     // again, collecting its produce or turning it into a pet all happen from
     // the Assets menu.
@@ -4177,7 +4177,7 @@
 
     // Deletes every furniture piece, wall, terrain tile, feature and door
     // built on the current map (via this system), refunding materials for
-    // each — the "Delete All" panel button.
+    // each - the "Delete All" panel button.
     Scene_Map.prototype.clearAllPlacements = function () {
         const mapKey = furnitureMapKey();
         // Everything torn down here is reported in a single popup at the end,

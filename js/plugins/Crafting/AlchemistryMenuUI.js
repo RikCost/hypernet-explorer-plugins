@@ -837,9 +837,9 @@
         }
         const project = A.project(idx);
         const label = T('Alchemistry.projectName', { n: idx + 1 });
-        if (A.isRunning(project)) return `${label} — ${t.processing}`;
-        if (A.isEmpty(project))   return `${label} — ${t.benchEmpty}`;
-        return `${label} — ${tn(project.name)}`;
+        if (A.isRunning(project)) return `${label} - ${t.processing}`;
+        if (A.isEmpty(project))   return `${label} - ${t.benchEmpty}`;
+        return `${label} - ${tn(project.name)}`;
     };
 
     Scene_Alchemistry.prototype.syncModal = function () {
@@ -863,7 +863,7 @@
             return node;
         });
         if (!count) {
-            setText(nodes[0], '—');
+            setText(nodes[0], '-');
             nodes[0].style.opacity = '0.6';
             nodes[0].classList.remove('selected');
         } else {

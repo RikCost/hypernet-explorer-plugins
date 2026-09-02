@@ -455,7 +455,7 @@
             const feather = this._mat(p.wingColor, 1.0, 0.9);
             const inner   = this._innerMat(0x2c1013);
 
-            // BODY: the bird's own skin, everted — a back-faced shell whose wet
+            // BODY: the bird's own skin, everted - a back-faced shell whose wet
             // interior is all that is left facing the world.
             this.body = new THREE.Mesh(new THREE.SphereGeometry(R, 16, 14), inner);
             this.body.scale.set(1, p.bodyTall, 1); this.body.position.y = bodyY;

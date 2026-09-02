@@ -1890,6 +1890,7 @@
 
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
+            if (this._baseX === null) this._baseX = this.model.position.x;
             const t = this.animTime;
             const anim = this.currentAnimation;
             let growth = 1.0;
@@ -1903,6 +1904,7 @@
             const hitJolt = anim === 'hit' ? Math.sin(t * 26) * Math.exp(-t * 6) * 0.18 : 0;
             this.model.rotation.z = hitJolt;
 
+            const baseX = this._baseX !== null ? this._baseX : this.model.position.x;
             switch (this.variant) {
                 case 'fish': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.6) * 0.1 * this.scale;
@@ -1941,7 +1943,7 @@
                     break;
                 }
                 case 'snail': {
-                    this.model.position.x = Math.sin(t * 0.6) * 0.02 * this.scale;
+                    this.model.position.x = baseX + Math.sin(t * 0.6) * 0.02 * this.scale;
                     if (this.t1 && this.t1.visible) this.t1.rotation.z = Math.sin(t * 1.5) * 0.2;
                     if (this.t2 && this.t2.visible) this.t2.rotation.z = -Math.sin(t * 1.5 + 0.5) * 0.2;
                     break;

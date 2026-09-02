@@ -518,6 +518,12 @@
     if (window.NPCLifeSim?.catchUp) {
       try { window.NPCLifeSim.catchUp(currentTime); } catch (_) {}
     }
+    if (window.EpidemicSystem?.catchUp) {
+      try { window.EpidemicSystem.catchUp(currentTime); } catch (_) {}
+    }
+    if (window.DiseaseSystem?.runDaily) {
+      try { window.DiseaseSystem.runDaily(); } catch (_) {}
+    }
 
     updateGameDateVariable();
     return currentTime;
