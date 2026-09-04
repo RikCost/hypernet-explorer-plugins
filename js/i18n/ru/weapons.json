@@ -1,70 +1,70 @@
 {
   "1": {
-    "name": "",
+    "name": "Короткий меч",
     "description": ""
   },
   "2": {
-    "name": "",
+    "name": "Длинный меч",
     "description": ""
   },
   "3": {
-    "name": "",
+    "name": "Фальшион",
     "description": ""
   },
   "4": {
-    "name": "",
+    "name": "Мифриловый меч",
     "description": ""
   },
   "5": {
-    "name": "",
+    "name": "Драконий клинок",
     "description": ""
   },
   "6": {
-    "name": "",
+    "name": "Векторная пушка",
     "description": ""
   },
   "7": {
-    "name": "",
+    "name": "Деревянный посох",
     "description": ""
   },
   "8": {
-    "name": "",
+    "name": "Волшебная палочка",
     "description": ""
   },
   "9": {
-    "name": "",
+    "name": "Силовая палочка",
     "description": ""
   },
   "10": {
-    "name": "",
+    "name": "Мифриловый жезл",
     "description": ""
   },
   "11": {
-    "name": "",
+    "name": "Драконий посох",
     "description": ""
   },
   "12": {
-    "name": "",
+    "name": "Дробовик Буббы",
     "description": ""
   },
   "13": {
-    "name": "",
+    "name": "Каменный цеп",
     "description": ""
   },
   "14": {
-    "name": "",
+    "name": "Бронзовый цеп",
     "description": ""
   },
   "15": {
-    "name": "",
+    "name": "Моргенштерн",
     "description": ""
   },
   "16": {
-    "name": "",
+    "name": "Мифриловый цеп",
     "description": ""
   },
   "17": {
-    "name": "",
+    "name": "Драконий цеп",
     "description": ""
   },
   "18": {
@@ -72,23 +72,23 @@
     "description": ""
   },
   "19": {
-    "name": "",
+    "name": "Ручной топор",
     "description": ""
   },
   "20": {
-    "name": "",
+    "name": "Боевой топор",
     "description": ""
   },
   "21": {
-    "name": "",
+    "name": "Бердыш",
     "description": ""
   },
   "22": {
-    "name": "",
+    "name": "Мифриловый топор",
     "description": ""
   },
   "23": {
-    "name": "",
+    "name": "Драконий топор",
     "description": ""
   },
   "24": {
@@ -96,11 +96,11 @@
     "description": ""
   },
   "25": {
-    "name": "",
+    "name": "Короткое копьё",
     "description": ""
   },
   "26": {
-    "name": "",
+    "name": "Длинное копьё",
     "description": ""
   },
   "27": {
@@ -108,11 +108,11 @@
     "description": ""
   },
   "28": {
-    "name": "",
+    "name": "Мифриловое копьё",
     "description": ""
   },
   "29": {
-    "name": "",
+    "name": "Драконье копьё",
     "description": ""
   },
   "30": {
@@ -124,19 +124,19 @@
     "description": ""
   },
   "32": {
-    "name": "",
+    "name": "Багх-накха",
     "description": ""
   },
   "33": {
-    "name": "",
+    "name": "Железный коготь",
     "description": ""
   },
   "34": {
-    "name": "",
+    "name": "Мифриловый коготь",
     "description": ""
   },
   "35": {
-    "name": "",
+    "name": "Драконий коготь",
     "description": ""
   },
   "36": {
@@ -144,23 +144,23 @@
     "description": ""
   },
   "37": {
-    "name": "",
+    "name": "Короткий лук",
     "description": ""
   },
   "38": {
-    "name": "",
+    "name": "Длинный лук",
     "description": ""
   },
   "39": {
-    "name": "",
+    "name": "Арбалет",
     "description": ""
   },
   "40": {
-    "name": "",
+    "name": "Мифриловый лук",
     "description": ""
   },
   "41": {
-    "name": "",
+    "name": "Драконий лук",
     "description": ""
   },
   "42": {
@@ -172,19 +172,19 @@
     "description": ""
   },
   "44": {
-    "name": "",
+    "name": "Кинжал",
     "description": ""
   },
   "45": {
-    "name": "",
+    "name": "Мачете",
     "description": ""
   },
   "46": {
-    "name": "",
+    "name": "Мифриловый кинжал",
     "description": ""
   },
   "47": {
-    "name": "",
+    "name": "Драконий кинжал",
     "description": ""
   },
   "48": {
@@ -200,7 +200,7 @@
     "description": ""
   },
   "51": {
-    "name": "",
+    "name": "Меч бронзового века",
     "description": ""
   },
   "52": {
@@ -208,7 +208,7 @@
     "description": ""
   },
   "53": {
-    "name": "",
+    "name": "Цвайхендер",
     "description": ""
   },
   "54": {
@@ -216,15 +216,15 @@
     "description": ""
   },
   "55": {
-    "name": "",
+    "name": "Катана",
     "description": ""
   },
   "56": {
-    "name": "",
+    "name": "Рунический клинок",
     "description": ""
   },
   "57": {
-    "name": "",
+    "name": "Клинок теневой стали",
     "description": ""
   },
   "58": {
@@ -236,43 +236,43 @@
     "description": ""
   },
   "60": {
-    "name": "",
+    "name": "Штурмовая винтовка",
     "description": ""
   },
   "61": {
-    "name": "",
+    "name": "Снайперская винтовка",
     "description": ""
   },
   "62": {
-    "name": "",
+    "name": "Пистолет-пулемёт",
     "description": ""
   },
   "63": {
-    "name": "",
+    "name": "Бумеранг",
     "description": ""
   },
   "64": {
-    "name": "",
+    "name": "Праща",
     "description": ""
   },
   "65": {
-    "name": "",
+    "name": "Копьё дори",
     "description": ""
   },
   "66": {
-    "name": "",
+    "name": "Боевая дубина",
     "description": ""
   },
   "67": {
-    "name": "",
+    "name": "Хопеш",
     "description": ""
   },
   "68": {
-    "name": "",
+    "name": "Боевой молот",
     "description": ""
   },
   "69": {
-    "name": "",
+    "name": "Полэкс",
     "description": ""
   },
   "70": {
@@ -280,419 +280,419 @@
     "description": ""
   },
   "71": {
-    "name": "",
+    "name": "Сеть гладиатора",
     "description": ""
   },
   "72": {
-    "name": "",
+    "name": "Катар",
     "description": ""
   },
   "73": {
-    "name": "",
+    "name": "Боевой нож",
     "description": ""
   },
   "74": {
-    "name": "",
+    "name": "Блочный лук",
     "description": ""
   },
   "75": {
-    "name": "",
+    "name": "Тяжёлый пулемёт",
     "description": ""
   },
   "76": {
-    "name": "",
+    "name": "РПГ",
     "description": ""
   },
   "77": {
-    "name": "",
+    "name": "Кастет",
     "description": ""
   },
   "78": {
-    "name": "",
+    "name": "Плазменная винтовка",
     "description": ""
   },
   "79": {
-    "name": "",
+    "name": "Энергетический клинок",
     "description": ""
   },
   "80": {
-    "name": "",
+    "name": "Звуковая перчатка",
     "description": ""
   },
   "81": {
-    "name": "",
+    "name": "Лазерная винтовка",
     "description": ""
   },
   "82": {
-    "name": "",
+    "name": "Гравитационная дробилка",
     "description": ""
   },
   "83": {
-    "name": "",
+    "name": "Клинок песни пламени",
     "description": ""
   },
   "84": {
-    "name": "",
+    "name": "Кромка пустоты",
     "description": ""
   },
   "85": {
-    "name": "",
+    "name": "Посох мирового древа",
     "description": ""
   },
   "86": {
-    "name": "",
+    "name": "Эфирный лук",
     "description": ""
   },
   "87": {
-    "name": "",
+    "name": "Терновый хлыст",
     "description": ""
   },
   "88": {
-    "name": "",
+    "name": "Летающая кольцевая цепь",
     "description": ""
   },
   "89": {
-    "name": "",
+    "name": "Уруми",
     "description": ""
   },
   "90": {
-    "name": "",
+    "name": "Трёхсекционный посох",
     "description": ""
   },
   "91": {
-    "name": "",
+    "name": "Ножи оленьи рога",
     "description": ""
   },
   "92": {
-    "name": "",
+    "name": "Ядовитая духовая трубка",
     "description": ""
   },
   "93": {
-    "name": "",
+    "name": "Киберпушка",
     "description": ""
   },
   "94": {
-    "name": "",
+    "name": "Нейрокогти",
     "description": ""
   },
   "95": {
-    "name": "",
+    "name": "Микроракетный комплекс",
     "description": ""
   },
   "96": {
-    "name": "",
+    "name": "Полиморфный арсенал",
     "description": ""
   },
   "97": {
-    "name": "",
+    "name": "Оптико-лучевая система",
     "description": ""
   },
   "98": {
-    "name": "",
+    "name": "Посох зовущего гром",
     "description": ""
   },
   "99": {
-    "name": "",
+    "name": "Меч вечного пламени",
     "description": ""
   },
   "100": {
-    "name": "",
+    "name": "Лук обморожения",
     "description": ""
   },
   "101": {
-    "name": "",
+    "name": "Сотрясающий землю молот",
     "description": ""
   },
   "102": {
-    "name": "",
+    "name": "Трезубец бури",
     "description": ""
   },
   "103": {
-    "name": "",
+    "name": "Экскалибур",
     "description": ""
   },
   "104": {
-    "name": "",
+    "name": "Мьёльнир",
     "description": ""
   },
   "105": {
-    "name": "",
+    "name": "Измерительный резак",
     "description": ""
   },
   "106": {
-    "name": "",
+    "name": "Божественные когти",
     "description": ""
   },
   "107": {
-    "name": "",
+    "name": "Посох вечности",
     "description": ""
   },
   "108": {
-    "name": "",
+    "name": "Вольтово лезвие",
     "description": ""
   },
   "109": {
-    "name": "",
+    "name": "Взрывной арбалет",
     "description": ""
   },
   "110": {
-    "name": "",
+    "name": "Светящиеся кукри",
     "description": ""
   },
   "111": {
-    "name": "",
+    "name": "Клинок драконьей чешуи",
     "description": ""
   },
   "112": {
-    "name": "",
+    "name": "Парализатор",
     "description": ""
   },
   "113": {
-    "name": "",
+    "name": "Ветвь Иггдрасиля",
     "description": ""
   },
   "114": {
-    "name": "",
+    "name": "Астральная сабля",
     "description": ""
   },
   "115": {
-    "name": "",
+    "name": "Адамантиновые кулаки",
     "description": ""
   },
   "116": {
-    "name": "",
+    "name": "Разделяющийся сюрикен",
     "description": ""
   },
   "117": {
-    "name": "",
+    "name": "Железная тонфа",
     "description": ""
   },
   "118": {
-    "name": "",
+    "name": "Тренировочные нунчаку",
     "description": ""
   },
   "119": {
-    "name": "",
+    "name": "Стальные нунчаку",
     "description": ""
   },
   "120": {
-    "name": "",
+    "name": "Четырёхсекционный посох",
     "description": ""
   },
   "121": {
-    "name": "",
+    "name": "Железные кастеты",
     "description": ""
   },
   "122": {
-    "name": "",
+    "name": "Мифриловые ударные перчатки",
     "description": ""
   },
   "123": {
-    "name": "",
+    "name": "Перчатки мастера",
     "description": ""
   },
   "124": {
-    "name": "",
+    "name": "Стальной стул",
     "description": ""
   },
   "125": {
-    "name": "",
+    "name": "Разборный стол",
     "description": ""
   },
   "126": {
-    "name": "",
+    "name": "Тяжёлая цепь",
     "description": ""
   },
   "127": {
-    "name": "",
+    "name": "Кольцевой колокол",
     "description": ""
   },
   "128": {
-    "name": "",
+    "name": "Стальная лестница",
     "description": ""
   },
   "129": {
-    "name": "",
+    "name": "Чемпионский пояс",
     "description": ""
   },
   "130": {
-    "name": "",
+    "name": "Синай",
     "description": ""
   },
   "131": {
-    "name": "",
+    "name": "Парные саи",
     "description": ""
   },
   "132": {
-    "name": "",
+    "name": "Гибкий посох",
     "description": ""
   },
   "133": {
-    "name": "",
+    "name": "Наручи",
     "description": ""
   },
   "134": {
-    "name": "",
+    "name": "Рука-нож",
     "description": ""
   },
   "135": {
-    "name": "",
+    "name": "Летающие удары ногами",
     "description": ""
   },
   "136": {
-    "name": "",
+    "name": "Железный человек",
     "description": ""
   },
   "137": {
-    "name": "",
+    "name": "Кэндо-боккэн",
     "description": ""
   },
   "138": {
-    "name": "",
+    "name": "Тэкко-каги",
     "description": ""
   },
   "139": {
-    "name": "",
+    "name": "Верёвка с крюком",
     "description": ""
   },
   "140": {
-    "name": "",
+    "name": "Крышка мусорного бака",
     "description": ""
   },
   "141": {
-    "name": "",
+    "name": "Кремнёвый пистолет",
     "description": ""
   },
   "142": {
-    "name": "",
+    "name": "Мушкет",
     "description": ""
   },
   "143": {
-    "name": "",
+    "name": "Капсюльный револьвер",
     "description": ""
   },
   "144": {
-    "name": "",
+    "name": "Винтовка рычажного действия",
     "description": ""
   },
   "145": {
-    "name": "",
+    "name": "Двуствольный дробовик",
     "description": ""
   },
   "146": {
-    "name": "",
+    "name": "Пулемёт Гатлинга",
     "description": ""
   },
   "147": {
-    "name": "",
+    "name": "Мушкетон",
     "description": ""
   },
   "148": {
-    "name": "",
+    "name": "Дуэльный пистолет",
     "description": ""
   },
   "149": {
-    "name": "",
+    "name": "Винтовка продольного действия",
     "description": ""
   },
   "150": {
-    "name": "",
+    "name": "Шестизарядник",
     "description": ""
   },
   "151": {
-    "name": "",
+    "name": "Пистолет 9мм",
     "description": ""
   },
   "152": {
-    "name": "",
+    "name": "Компактный ПП",
     "description": ""
   },
   "153": {
-    "name": "",
+    "name": "Револьвер Магнум",
     "description": ""
   },
   "154": {
-    "name": "",
+    "name": "Боевой дробовик",
     "description": ""
   },
   "155": {
-    "name": "",
+    "name": "Винтовка булл-пап",
     "description": ""
   },
   "156": {
-    "name": "",
+    "name": "Марксманская винтовка",
     "description": ""
   },
   "157": {
-    "name": "",
+    "name": "Ручной пулемёт",
     "description": ""
   },
   "158": {
-    "name": "",
+    "name": "Персональное оружие самообороны",
     "description": ""
   },
   "159": {
-    "name": "",
+    "name": "Крупнокалиберная винтовка",
     "description": ""
   },
   "160": {
-    "name": "",
+    "name": "Одноразовая ракета",
     "description": ""
   },
   "161": {
-    "name": "",
+    "name": "Спортивный пистолет",
     "description": ""
   },
   "162": {
-    "name": "",
+    "name": "Умный гранатомёт",
     "description": ""
   },
   "163": {
-    "name": "",
+    "name": "Тактический дробовик",
     "description": ""
   },
   "164": {
-    "name": "",
+    "name": "Точная винтовка",
     "description": ""
   },
   "165": {
-    "name": "",
+    "name": "Крупнокалиберный пулемёт",
     "description": ""
   },
   "166": {
-    "name": "",
+    "name": "Миниган",
     "description": ""
   },
   "167": {
-    "name": "",
+    "name": "Двуствольный пистолет",
     "description": ""
   },
   "168": {
-    "name": "",
+    "name": "Тактический карабин",
     "description": ""
   },
   "169": {
-    "name": "",
+    "name": "Тяжёлый снайпер",
     "description": ""
   },
   "170": {
-    "name": "",
+    "name": "Тактический арбалет",
     "description": ""
   },
   "171": {
-    "name": "",
+    "name": "Каменный топор",
     "description": ""
   },
   "172": {
-    "name": "",
+    "name": "Деревянная дубина",
     "description": ""
   },
   "173": {
-    "name": "",
+    "name": "Костяной кинжал",
     "description": ""
   },
   "174": {
-    "name": "",
+    "name": "Метательная палка",
     "description": ""
   },
   "175": {
@@ -700,75 +700,75 @@
     "description": ""
   },
   "176": {
-    "name": "",
+    "name": "Обсидиановый клинок",
     "description": ""
   },
   "177": {
-    "name": "",
+    "name": "Сеть ретиария",
     "description": ""
   },
   "178": {
-    "name": "",
+    "name": "Месопотамский меч",
     "description": ""
   },
   "179": {
-    "name": "",
+    "name": "Шумерское копьё",
     "description": ""
   },
   "180": {
-    "name": "",
+    "name": "Египетский топор",
     "description": ""
   },
   "181": {
-    "name": "",
+    "name": "Дротик атлатля",
     "description": ""
   },
   "182": {
-    "name": "",
+    "name": "Волоконная праща",
     "description": ""
   },
   "183": {
-    "name": "",
+    "name": "Дубина с каменными шипами",
     "description": ""
   },
   "184": {
-    "name": "",
+    "name": "Дубина из акульих зубов",
     "description": ""
   },
   "185": {
-    "name": "",
+    "name": "Макуауитль",
     "description": ""
   },
   "186": {
-    "name": "",
+    "name": "Бола",
     "description": ""
   },
   "187": {
-    "name": "",
+    "name": "Дубина мере",
     "description": ""
   },
   "188": {
-    "name": "",
+    "name": "Гладиус",
     "description": ""
   },
   "189": {
-    "name": "",
+    "name": "Пилум",
     "description": ""
   },
   "190": {
-    "name": "",
+    "name": "Шамшир",
     "description": ""
   },
   "191": {
-    "name": "",
+    "name": "Композитный лук",
     "description": ""
   },
   "192": {
-    "name": "",
+    "name": "Средневековый цеп",
     "description": ""
   },
   "193": {
-    "name": "",
+    "name": "Дубинка",
     "description": ""
   },
   "194": {
@@ -784,19 +784,19 @@
     "description": ""
   },
   "197": {
-    "name": "",
+    "name": "Люцернский молот",
     "description": ""
   },
   "198": {
-    "name": "",
+    "name": "Чо-ко-ну",
     "description": ""
   },
   "199": {
-    "name": "",
+    "name": "Нагината",
     "description": ""
   },
   "200": {
-    "name": "",
+    "name": "Кастеты",
     "description": ""
   },
   "201": {
