@@ -2958,5 +2958,529 @@
   "740": {
     "name": "Костюм антрополога-наблюдателя",
     "description": "Полевое снаряжение для изучения первобытных культур."
+  },
+  "741": {
+    "name": "",
+    "description": ""
+  },
+  "742": {
+    "name": "",
+    "description": ""
+  },
+  "743": {
+    "name": "",
+    "description": ""
+  },
+  "744": {
+    "name": "",
+    "description": ""
+  },
+  "745": {
+    "name": "",
+    "description": ""
+  },
+  "746": {
+    "name": "",
+    "description": ""
+  },
+  "747": {
+    "name": "",
+    "description": ""
+  },
+  "748": {
+    "name": "",
+    "description": ""
+  },
+  "759": {
+    "name": "",
+    "description": ""
+  },
+  "760": {
+    "name": "",
+    "description": ""
+  },
+  "761": {
+    "name": "",
+    "description": ""
+  },
+  "762": {
+    "name": "",
+    "description": ""
+  },
+  "763": {
+    "name": "",
+    "description": ""
+  },
+  "764": {
+    "name": "",
+    "description": ""
+  },
+  "765": {
+    "name": "",
+    "description": ""
+  },
+  "766": {
+    "name": "",
+    "description": ""
+  },
+  "767": {
+    "name": "",
+    "description": ""
+  },
+  "768": {
+    "name": "",
+    "description": ""
+  },
+  "769": {
+    "name": "",
+    "description": ""
+  },
+  "770": {
+    "name": "",
+    "description": ""
+  },
+  "771": {
+    "name": "",
+    "description": ""
+  },
+  "772": {
+    "name": "",
+    "description": ""
+  },
+  "773": {
+    "name": "",
+    "description": ""
+  },
+  "774": {
+    "name": "",
+    "description": ""
+  },
+  "775": {
+    "name": "",
+    "description": ""
+  },
+  "776": {
+    "name": "",
+    "description": ""
+  },
+  "777": {
+    "name": "",
+    "description": ""
+  },
+  "778": {
+    "name": "",
+    "description": ""
+  },
+  "779": {
+    "name": "",
+    "description": ""
+  },
+  "780": {
+    "name": "",
+    "description": ""
+  },
+  "781": {
+    "name": "",
+    "description": ""
+  },
+  "782": {
+    "name": "",
+    "description": ""
+  },
+  "783": {
+    "name": "",
+    "description": ""
+  },
+  "784": {
+    "name": "",
+    "description": ""
+  },
+  "785": {
+    "name": "",
+    "description": ""
+  },
+  "786": {
+    "name": "",
+    "description": ""
+  },
+  "787": {
+    "name": "",
+    "description": ""
+  },
+  "788": {
+    "name": "",
+    "description": ""
+  },
+  "789": {
+    "name": "",
+    "description": ""
+  },
+  "790": {
+    "name": "",
+    "description": ""
+  },
+  "791": {
+    "name": "",
+    "description": ""
+  },
+  "792": {
+    "name": "",
+    "description": ""
+  },
+  "793": {
+    "name": "",
+    "description": ""
+  },
+  "794": {
+    "name": "",
+    "description": ""
+  },
+  "795": {
+    "name": "",
+    "description": ""
+  },
+  "796": {
+    "name": "",
+    "description": ""
+  },
+  "797": {
+    "name": "",
+    "description": ""
+  },
+  "798": {
+    "name": "",
+    "description": ""
+  },
+  "799": {
+    "name": "",
+    "description": ""
+  },
+  "800": {
+    "name": "",
+    "description": ""
+  },
+  "801": {
+    "name": "",
+    "description": ""
+  },
+  "802": {
+    "name": "",
+    "description": ""
+  },
+  "803": {
+    "name": "",
+    "description": ""
+  },
+  "804": {
+    "name": "",
+    "description": ""
+  },
+  "805": {
+    "name": "",
+    "description": ""
+  },
+  "806": {
+    "name": "",
+    "description": ""
+  },
+  "807": {
+    "name": "",
+    "description": ""
+  },
+  "808": {
+    "name": "",
+    "description": ""
+  },
+  "809": {
+    "name": "",
+    "description": ""
+  },
+  "810": {
+    "name": "",
+    "description": ""
+  },
+  "811": {
+    "name": "",
+    "description": ""
+  },
+  "812": {
+    "name": "",
+    "description": ""
+  },
+  "813": {
+    "name": "",
+    "description": ""
+  },
+  "814": {
+    "name": "",
+    "description": ""
+  },
+  "815": {
+    "name": "",
+    "description": ""
+  },
+  "816": {
+    "name": "",
+    "description": ""
+  },
+  "817": {
+    "name": "",
+    "description": ""
+  },
+  "818": {
+    "name": "",
+    "description": ""
+  },
+  "819": {
+    "name": "",
+    "description": ""
+  },
+  "820": {
+    "name": "",
+    "description": ""
+  },
+  "821": {
+    "name": "",
+    "description": ""
+  },
+  "822": {
+    "name": "",
+    "description": ""
+  },
+  "823": {
+    "name": "",
+    "description": ""
+  },
+  "824": {
+    "name": "",
+    "description": ""
+  },
+  "825": {
+    "name": "",
+    "description": ""
+  },
+  "826": {
+    "name": "",
+    "description": ""
+  },
+  "827": {
+    "name": "",
+    "description": ""
+  },
+  "828": {
+    "name": "",
+    "description": ""
+  },
+  "829": {
+    "name": "",
+    "description": ""
+  },
+  "830": {
+    "name": "",
+    "description": ""
+  },
+  "831": {
+    "name": "",
+    "description": ""
+  },
+  "832": {
+    "name": "",
+    "description": ""
+  },
+  "833": {
+    "name": "",
+    "description": ""
+  },
+  "834": {
+    "name": "",
+    "description": ""
+  },
+  "835": {
+    "name": "",
+    "description": ""
+  },
+  "836": {
+    "name": "",
+    "description": ""
+  },
+  "837": {
+    "name": "",
+    "description": ""
+  },
+  "838": {
+    "name": "",
+    "description": ""
+  },
+  "839": {
+    "name": "",
+    "description": ""
+  },
+  "840": {
+    "name": "",
+    "description": ""
+  },
+  "841": {
+    "name": "",
+    "description": ""
+  },
+  "842": {
+    "name": "",
+    "description": ""
+  },
+  "843": {
+    "name": "",
+    "description": ""
+  },
+  "844": {
+    "name": "",
+    "description": ""
+  },
+  "845": {
+    "name": "",
+    "description": ""
+  },
+  "846": {
+    "name": "",
+    "description": ""
+  },
+  "847": {
+    "name": "",
+    "description": ""
+  },
+  "848": {
+    "name": "",
+    "description": ""
+  },
+  "849": {
+    "name": "",
+    "description": ""
+  },
+  "850": {
+    "name": "",
+    "description": ""
+  },
+  "851": {
+    "name": "",
+    "description": ""
+  },
+  "852": {
+    "name": "",
+    "description": ""
+  },
+  "853": {
+    "name": "",
+    "description": ""
+  },
+  "854": {
+    "name": "",
+    "description": ""
+  },
+  "855": {
+    "name": "",
+    "description": ""
+  },
+  "856": {
+    "name": "",
+    "description": ""
+  },
+  "857": {
+    "name": "",
+    "description": ""
+  },
+  "858": {
+    "name": "",
+    "description": ""
+  },
+  "859": {
+    "name": "",
+    "description": ""
+  },
+  "860": {
+    "name": "",
+    "description": ""
+  },
+  "861": {
+    "name": "",
+    "description": ""
+  },
+  "862": {
+    "name": "",
+    "description": ""
+  },
+  "863": {
+    "name": "",
+    "description": ""
+  },
+  "864": {
+    "name": "",
+    "description": ""
+  },
+  "865": {
+    "name": "",
+    "description": ""
+  },
+  "866": {
+    "name": "",
+    "description": ""
+  },
+  "867": {
+    "name": "",
+    "description": ""
+  },
+  "868": {
+    "name": "",
+    "description": ""
+  },
+  "869": {
+    "name": "",
+    "description": ""
+  },
+  "870": {
+    "name": "",
+    "description": ""
+  },
+  "871": {
+    "name": "",
+    "description": ""
+  },
+  "872": {
+    "name": "",
+    "description": ""
+  },
+  "873": {
+    "name": "",
+    "description": ""
+  },
+  "874": {
+    "name": "",
+    "description": ""
+  },
+  "875": {
+    "name": "",
+    "description": ""
+  },
+  "876": {
+    "name": "",
+    "description": ""
+  },
+  "877": {
+    "name": "",
+    "description": ""
+  },
+  "878": {
+    "name": "",
+    "description": ""
+  },
+  "879": {
+    "name": "",
+    "description": ""
+  },
+  "880": {
+    "name": "",
+    "description": ""
+  },
+  "881": {
+    "name": "",
+    "description": ""
   }
 }

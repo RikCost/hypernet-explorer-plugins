@@ -1328,6 +1328,345 @@
           "name": "Ведущий учёный"
         }
       }
+    },
+    "greywanderers": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "snapshottourist": {
+          "name": ""
+        },
+        "itineraryguide": {
+          "name": ""
+        },
+        "souvenirhunter": {
+          "name": ""
+        },
+        "shutterwarden": {
+          "name": ""
+        }
+      }
+    },
+    "crimsonanalyzers": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "fieldsampler": {
+          "name": ""
+        },
+        "katanasurgeon": {
+          "name": ""
+        },
+        "specimenwarden": {
+          "name": ""
+        },
+        "chiefvivisector": {
+          "name": ""
+        }
+      }
+    },
+    "palewarpers": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "psinovice": {
+          "name": ""
+        },
+        "mindfolder": {
+          "name": ""
+        },
+        "spacefolder": {
+          "name": ""
+        },
+        "warpchoir": {
+          "name": ""
+        }
+      }
+    },
+    "dargosembassy": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "embassyclerk": {
+          "name": ""
+        },
+        "pranksman": {
+          "name": ""
+        },
+        "punchlineregent": {
+          "name": ""
+        }
+      }
+    },
+    "gandanorder": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "noviceofthelamp": {
+          "name": ""
+        },
+        "gandanchanter": {
+          "name": ""
+        },
+        "prayerwheelguard": {
+          "name": ""
+        },
+        "illuminedadept": {
+          "name": ""
+        },
+        "banneroftheeighthsky": {
+          "name": ""
+        },
+        "abbotmilitant": {
+          "name": ""
+        }
+      }
+    },
+    "steppebanners": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "hordeoutrider": {
+          "name": ""
+        },
+        "hornbowrider": {
+          "name": ""
+        },
+        "felttentsergeant": {
+          "name": ""
+        },
+        "keshigguard": {
+          "name": ""
+        },
+        "khansfalconer": {
+          "name": ""
+        },
+        "standardbearerofthegobi": {
+          "name": ""
+        }
+      }
+    },
+    "sanhedringuard": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "templewatchman": {
+          "name": ""
+        },
+        "sealbearer": {
+          "name": ""
+        },
+        "levitesharpshooter": {
+          "name": ""
+        },
+        "nasisescort": {
+          "name": ""
+        },
+        "brazenpillarguard": {
+          "name": ""
+        },
+        "cherubimoperator": {
+          "name": ""
+        }
+      }
+    },
+    "shemhamphorasch": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "nameclerk": {
+          "name": ""
+        },
+        "bindingscribe": {
+          "name": ""
+        },
+        "ringbearer": {
+          "name": ""
+        },
+        "seventytwomaster": {
+          "name": ""
+        },
+        "brasspotwarden": {
+          "name": ""
+        }
+      }
+    },
+    "concessionguard": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "pipelinewatch": {
+          "name": ""
+        },
+        "derrickmarksman": {
+          "name": ""
+        },
+        "refinerysergeant": {
+          "name": ""
+        },
+        "concessionenforcer": {
+          "name": ""
+        },
+        "wellheadcaptain": {
+          "name": ""
+        },
+        "flarelightsniper": {
+          "name": ""
+        }
+      }
+    },
+    "deepcontractors": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "signatorydeacon": {
+          "name": ""
+        },
+        "crudehandler": {
+          "name": ""
+        },
+        "bargainkeeper": {
+          "name": ""
+        },
+        "deepwellcaller": {
+          "name": ""
+        },
+        "contractdemonherd": {
+          "name": ""
+        }
+      }
+    },
+    "pasdaranorder": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "basijvolunteer": {
+          "name": ""
+        },
+        "pasdaranrifleman": {
+          "name": ""
+        },
+        "qudsoperative": {
+          "name": ""
+        },
+        "missilecrewman": {
+          "name": ""
+        },
+        "guardiancommander": {
+          "name": ""
+        }
+      }
+    },
+    "hawzascholars": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "seminarian": {
+          "name": ""
+        },
+        "jurisprudent": {
+          "name": ""
+        },
+        "fatwaclerk": {
+          "name": ""
+        },
+        "hawzaphysician": {
+          "name": ""
+        },
+        "marjascounsel": {
+          "name": ""
+        }
+      }
+    },
+    "rashtrasevaks": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "sevakvolunteer": {
+          "name": ""
+        },
+        "lathisergeant": {
+          "name": ""
+        },
+        "dhanushmarksman": {
+          "name": ""
+        },
+        "rashtrasubhedar": {
+          "name": ""
+        },
+        "chakrastandardbearer": {
+          "name": ""
+        },
+        "mahasenapati": {
+          "name": ""
+        }
+      }
+    },
+    "mathacircle": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "brahmacharin": {
+          "name": ""
+        },
+        "vedicreciter": {
+          "name": ""
+        },
+        "acharyasaide": {
+          "name": ""
+        },
+        "yajnakeeper": {
+          "name": ""
+        },
+        "mathaphysician": {
+          "name": ""
+        }
+      }
+    },
+    "cordilleracorps": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "conscriptofthesouth": {
+          "name": ""
+        },
+        "andeanranger": {
+          "name": ""
+        },
+        "cordillerasapper": {
+          "name": ""
+        },
+        "mountainartillerist": {
+          "name": ""
+        },
+        "longsouthcaptain": {
+          "name": ""
+        },
+        "valdiviasgrenadier": {
+          "name": ""
+        }
+      }
+    },
+    "australnavy": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "channelpilot": {
+          "name": ""
+        },
+        "straitmarine": {
+          "name": ""
+        },
+        "icewatermate": {
+          "name": ""
+        },
+        "australgunner": {
+          "name": ""
+        },
+        "commodoreofthefjords": {
+          "name": ""
+        }
+      }
     }
   }
 }

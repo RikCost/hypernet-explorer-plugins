@@ -130,7 +130,11 @@
         "GlassRain": "",
         "CompassFailure": "",
         "AnimalCouncil": "",
-        "NameTheft": ""
+        "NameTheft": "",
+        "PetrodemonAttack": "",
+        "PetrodemonSwarm": "",
+        "PetrodemonWellBreach": "",
+        "PetrodemonPact": ""
       },
       "occult": {
         "grimoire recovered": "",
@@ -150,7 +154,11 @@
         "astrological decree": "",
         "spirit binding": "",
         "occult academy founded": "",
-        "forbidden translation": ""
+        "forbidden translation": "",
+        "mass sacrifice": "",
+        "heart offering": "",
+        "sacrificial procession": "",
+        "temple reconsecrated": ""
       },
       "scientific": {
         "polar expedition": "",
@@ -272,7 +280,11 @@
   },
   "leader": {
     "unknown": "",
-    "unknownIdeology": "Неизвестно"
+    "unknownIdeology": "Неизвестно",
+    "bio": "",
+    "bioReign": "",
+    "bioNoNation": "",
+    "bioNoNationReign": ""
   },
   "government": {
     "Theocracy": "",
@@ -317,7 +329,16 @@
     "1978-10": "",
     "1981-05": "",
     "1992-01": "",
-    "2001-09": ""
+    "2001-09": "",
+    "1900-04": "",
+    "1918-03": "",
+    "1961-09": "",
+    "1978-12": "",
+    "1996-01": "",
+    "1999-07": "",
+    "1999-12": "",
+    "2001-12": "",
+    "2000-12": ""
   },
   "artifactDescription": "",
   "artifactName": {
@@ -379,7 +400,9 @@
     "dawn": "",
     "independence": "",
     "annexation": "",
-    "conquest": ""
+    "conquest": "",
+    "declaredIndependence": "",
+    "declaredPower": ""
   },
   "conquest": {
     "independence": "",
@@ -445,6 +468,64 @@
     "continue": "Продолжить",
     "artifactBadge": "АРТЕФАКТ",
     "military": "",
-    "economy": ""
+    "economy": "",
+    "archiveTitle": "",
+    "dateLbl": "",
+    "typeLbl": "",
+    "consequences": "",
+    "noDelta": "",
+    "noRecords": "",
+    "hyperpowersBalance": "",
+    "showCanonOnly": "",
+    "showAllEvents": ""
+  },
+  "assembly": {
+    "motion": "",
+    "graveMotion": "",
+    "unattendedMotion": "",
+    "unattendedGraveMotion": ""
+  },
+  "battle": {
+    "bossSlain": "",
+    "petrodemonSlain": ""
+  },
+  "party": {
+    "wipe": "",
+    "wipeAt": ""
+  },
+  "category": {
+    "artifact": "",
+    "conquest": "",
+    "criminal": "",
+    "diplomatic": "",
+    "disaster": "",
+    "economic": "",
+    "epidemic": "",
+    "internal": "",
+    "military": "",
+    "npc_life": "",
+    "occult": "",
+    "paranormal": "",
+    "peace": "",
+    "political": "",
+    "royal": "",
+    "scientific": "",
+    "social": "",
+    "war": ""
+  },
+  "founding": {
+    "independence": "",
+    "declared": "",
+    "byPower": {
+      "Northpoint Army": {
+        "independence": "",
+        "declared": ""
+      }
+    }
+  },
+  "leaderLore": {
+    "mario_draghi": "",
+    "aaron_swartz": "",
+    "friedrich_hayek": ""
   }
 }

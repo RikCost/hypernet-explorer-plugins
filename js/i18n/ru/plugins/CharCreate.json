@@ -1007,5 +1007,6 @@
     "Андрогенный",
     "Сильно андрогенный"
   ],
-  "hormoneReadout": "тестостерон {tLow}–{tHigh}, эстроген {eLow}–{eHigh}"
+  "hormoneReadout": "тестостерон {tLow}–{tHigh}, эстроген {eLow}–{eHigh}",
+  "noTalentsSpent": ""
 }

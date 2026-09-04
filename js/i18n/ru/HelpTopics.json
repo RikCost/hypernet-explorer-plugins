@@ -203,6 +203,1024 @@
     "combatDamageTypes": {
       "title": "",
       "description": ""
+    },
+    "controlsMoving": {
+      "title": "",
+      "description": ""
+    },
+    "controlsMenus": {
+      "title": "",
+      "description": ""
+    },
+    "controlsMouse": {
+      "title": "",
+      "description": ""
+    },
+    "controlsGamepad": {
+      "title": "",
+      "description": ""
+    },
+    "controlsRemap": {
+      "title": "",
+      "description": ""
+    },
+    "controlsScreen": {
+      "title": "",
+      "description": ""
+    },
+    "controlsSearch": {
+      "title": "",
+      "description": ""
+    },
+    "savingGame": {
+      "title": "",
+      "description": ""
+    },
+    "worldsFolders": {
+      "title": "",
+      "description": ""
+    },
+    "optionsMenu": {
+      "title": "",
+      "description": ""
+    },
+    "modsUpdates": {
+      "title": "",
+      "description": ""
+    },
+    "partyBasics": {
+      "title": "",
+      "description": ""
+    },
+    "partyCreation": {
+      "title": "",
+      "description": ""
+    },
+    "partyClasses": {
+      "title": "",
+      "description": ""
+    },
+    "partyTraits": {
+      "title": "",
+      "description": ""
+    },
+    "partyAttributes": {
+      "title": "",
+      "description": ""
+    },
+    "partyCreatures": {
+      "title": "",
+      "description": ""
+    },
+    "partyPortraits": {
+      "title": "",
+      "description": ""
+    },
+    "partyRecruiting": {
+      "title": "",
+      "description": ""
+    },
+    "partyPets": {
+      "title": "",
+      "description": ""
+    },
+    "partyReproduction": {
+      "title": "",
+      "description": ""
+    },
+    "partyDeath": {
+      "title": "",
+      "description": ""
+    },
+    "partyBanterPage": {
+      "title": "",
+      "description": ""
+    },
+    "partyAutoIdle": {
+      "title": "",
+      "description": ""
+    },
+    "progressLevels": {
+      "title": "",
+      "description": ""
+    },
+    "progressKnowledge": {
+      "title": "",
+      "description": ""
+    },
+    "progressAtlas": {
+      "title": "",
+      "description": ""
+    },
+    "progressTraining": {
+      "title": "",
+      "description": ""
+    },
+    "progressSpecializations": {
+      "title": "",
+      "description": ""
+    },
+    "progressPassives": {
+      "title": "",
+      "description": ""
+    },
+    "progressLoadout": {
+      "title": "",
+      "description": ""
+    },
+    "progressFusion": {
+      "title": "",
+      "description": ""
+    },
+    "progressGrimoires": {
+      "title": "",
+      "description": ""
+    },
+    "progressBladeSeeds": {
+      "title": "",
+      "description": ""
+    },
+    "gearSlots": {
+      "title": "",
+      "description": ""
+    },
+    "gearProficiency": {
+      "title": "",
+      "description": ""
+    },
+    "gearScaling": {
+      "title": "",
+      "description": ""
+    },
+    "gearArmor": {
+      "title": "",
+      "description": ""
+    },
+    "gearModifiers": {
+      "title": "",
+      "description": ""
+    },
+    "gearWeight": {
+      "title": "",
+      "description": ""
+    },
+    "gearBackpack": {
+      "title": "",
+      "description": ""
+    },
+    "gearArtifacts": {
+      "title": "",
+      "description": ""
+    },
+    "gearContainers": {
+      "title": "",
+      "description": ""
+    },
+    "gearRarity": {
+      "title": "",
+      "description": ""
+    },
+    "needsOverview": {
+      "title": "",
+      "description": ""
+    },
+    "needsHunger": {
+      "title": "",
+      "description": ""
+    },
+    "needsSleep": {
+      "title": "",
+      "description": ""
+    },
+    "needsHygiene": {
+      "title": "",
+      "description": ""
+    },
+    "needsSocial": {
+      "title": "",
+      "description": ""
+    },
+    "needsLeisure": {
+      "title": "",
+      "description": ""
+    },
+    "needsAddiction": {
+      "title": "",
+      "description": ""
+    },
+    "bodyParts": {
+      "title": "",
+      "description": ""
+    },
+    "bodyBiologics": {
+      "title": "",
+      "description": ""
+    },
+    "healthDiseases": {
+      "title": "",
+      "description": ""
+    },
+    "healthEpidemics": {
+      "title": "",
+      "description": ""
+    },
+    "healthSurgery": {
+      "title": "",
+      "description": ""
+    },
+    "healthAugments": {
+      "title": "",
+      "description": ""
+    },
+    "healthWeatherBody": {
+      "title": "",
+      "description": ""
+    },
+    "combatBasics": {
+      "title": "",
+      "description": ""
+    },
+    "combatCommands": {
+      "title": "",
+      "description": ""
+    },
+    "combatAP": {
+      "title": "",
+      "description": ""
+    },
+    "combatBodyParts": {
+      "title": "",
+      "description": ""
+    },
+    "combatWrestle": {
+      "title": "",
+      "description": ""
+    },
+    "combatTalk": {
+      "title": "",
+      "description": ""
+    },
+    "combatEnemyLevels": {
+      "title": "",
+      "description": ""
+    },
+    "combatMovementAI": {
+      "title": "",
+      "description": ""
+    },
+    "combatSafety": {
+      "title": "",
+      "description": ""
+    },
+    "combatModes": {
+      "title": "",
+      "description": ""
+    },
+    "combatMapBattle": {
+      "title": "",
+      "description": ""
+    },
+    "combatCards": {
+      "title": "",
+      "description": ""
+    },
+    "combatSummons": {
+      "title": "",
+      "description": ""
+    },
+    "combatArena": {
+      "title": "",
+      "description": ""
+    },
+    "combatBulletHell": {
+      "title": "",
+      "description": ""
+    },
+    "combatSpirits": {
+      "title": "",
+      "description": ""
+    },
+    "combatMimic": {
+      "title": "",
+      "description": ""
+    },
+    "combatThrow": {
+      "title": "",
+      "description": ""
+    },
+    "combatCorpses": {
+      "title": "",
+      "description": ""
+    },
+    "elementsOverview": {
+      "title": "",
+      "description": ""
+    },
+    "elementPhysical": {
+      "title": "",
+      "description": ""
+    },
+    "elementFire": {
+      "title": "",
+      "description": ""
+    },
+    "elementIce": {
+      "title": "",
+      "description": ""
+    },
+    "elementThunder": {
+      "title": "",
+      "description": ""
+    },
+    "elementWater": {
+      "title": "",
+      "description": ""
+    },
+    "elementWind": {
+      "title": "",
+      "description": ""
+    },
+    "elementSacred": {
+      "title": "",
+      "description": ""
+    },
+    "elementCursed": {
+      "title": "",
+      "description": ""
+    },
+    "worldMapPage": {
+      "title": "",
+      "description": ""
+    },
+    "worldProcedural": {
+      "title": "",
+      "description": ""
+    },
+    "worldBiomes": {
+      "title": "",
+      "description": ""
+    },
+    "worldStructures": {
+      "title": "",
+      "description": ""
+    },
+    "worldHouses": {
+      "title": "",
+      "description": ""
+    },
+    "worldTerrain": {
+      "title": "",
+      "description": ""
+    },
+    "worldDungeon": {
+      "title": "",
+      "description": ""
+    },
+    "worldPuzzles": {
+      "title": "",
+      "description": ""
+    },
+    "worldFog": {
+      "title": "",
+      "description": ""
+    },
+    "worldDigging": {
+      "title": "",
+      "description": ""
+    },
+    "worldMovement": {
+      "title": "",
+      "description": ""
+    },
+    "worldWeather": {
+      "title": "",
+      "description": ""
+    },
+    "worldDreams": {
+      "title": "",
+      "description": ""
+    },
+    "worldAdventures": {
+      "title": "",
+      "description": ""
+    },
+    "worldBologna": {
+      "title": "",
+      "description": ""
+    },
+    "worldPlatformer": {
+      "title": "",
+      "description": ""
+    },
+    "worldFlying": {
+      "title": "",
+      "description": ""
+    },
+    "worldConnections": {
+      "title": "",
+      "description": ""
+    },
+    "worldTreasure": {
+      "title": "",
+      "description": ""
+    },
+    "worldTechTree": {
+      "title": "",
+      "description": ""
+    },
+    "travelOverview": {
+      "title": "",
+      "description": ""
+    },
+    "travelModes": {
+      "title": "",
+      "description": ""
+    },
+    "vehiclesOverview": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleCamper": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleCar": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleBike": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleBroom": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleBoat": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleStarship": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleFuel": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleRepair": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleUpgrades": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleCrew": {
+      "title": "",
+      "description": ""
+    },
+    "vehicleDriving": {
+      "title": "",
+      "description": ""
+    },
+    "roadTraffic": {
+      "title": "",
+      "description": ""
+    },
+    "peopleOverview": {
+      "title": "",
+      "description": ""
+    },
+    "peopleEmpathize": {
+      "title": "",
+      "description": ""
+    },
+    "peopleOpinion": {
+      "title": "",
+      "description": ""
+    },
+    "peopleLives": {
+      "title": "",
+      "description": ""
+    },
+    "peopleTalking": {
+      "title": "",
+      "description": ""
+    },
+    "peopleSettlements": {
+      "title": "",
+      "description": ""
+    },
+    "peoplePolitics": {
+      "title": "",
+      "description": ""
+    },
+    "peopleFactions": {
+      "title": "",
+      "description": ""
+    },
+    "peopleONU": {
+      "title": "",
+      "description": ""
+    },
+    "lawCrime": {
+      "title": "",
+      "description": ""
+    },
+    "lawPolice": {
+      "title": "",
+      "description": ""
+    },
+    "lawTrial": {
+      "title": "",
+      "description": ""
+    },
+    "lawPrison": {
+      "title": "",
+      "description": ""
+    },
+    "lawEris": {
+      "title": "",
+      "description": ""
+    },
+    "societyMail": {
+      "title": "",
+      "description": ""
+    },
+    "societyNews": {
+      "title": "",
+      "description": ""
+    },
+    "societyDiary": {
+      "title": "",
+      "description": ""
+    },
+    "societyTopics": {
+      "title": "",
+      "description": ""
+    },
+    "societyArmy": {
+      "title": "",
+      "description": ""
+    },
+    "societyMultiplayer": {
+      "title": "",
+      "description": ""
+    },
+    "societyHistory": {
+      "title": "",
+      "description": ""
+    },
+    "econMoney": {
+      "title": "",
+      "description": ""
+    },
+    "econShops": {
+      "title": "",
+      "description": ""
+    },
+    "econStealing": {
+      "title": "",
+      "description": ""
+    },
+    "econBank": {
+      "title": "",
+      "description": ""
+    },
+    "econStocks": {
+      "title": "",
+      "description": ""
+    },
+    "econProperty": {
+      "title": "",
+      "description": ""
+    },
+    "econShopOwning": {
+      "title": "",
+      "description": ""
+    },
+    "econWork": {
+      "title": "",
+      "description": ""
+    },
+    "econQuests": {
+      "title": "",
+      "description": ""
+    },
+    "econNotices": {
+      "title": "",
+      "description": ""
+    },
+    "econVending": {
+      "title": "",
+      "description": ""
+    },
+    "craftThinker": {
+      "title": "",
+      "description": ""
+    },
+    "craftForge": {
+      "title": "",
+      "description": ""
+    },
+    "craftAlchemy": {
+      "title": "",
+      "description": ""
+    },
+    "craftCooking": {
+      "title": "",
+      "description": ""
+    },
+    "craftBrewing": {
+      "title": "",
+      "description": ""
+    },
+    "craftFurniture": {
+      "title": "",
+      "description": ""
+    },
+    "craftPlants": {
+      "title": "",
+      "description": ""
+    },
+    "craftAnimals": {
+      "title": "",
+      "description": ""
+    },
+    "craftApiary": {
+      "title": "",
+      "description": ""
+    },
+    "craftArtifacts": {
+      "title": "",
+      "description": ""
+    },
+    "craftLoot": {
+      "title": "",
+      "description": ""
+    },
+    "craftContainers": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyOverview": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyTravel": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyShip": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyLanding": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyAnomalies": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyBodies": {
+      "title": "",
+      "description": ""
+    },
+    "galaxyPatrons": {
+      "title": "",
+      "description": ""
+    },
+    "galaxySky": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetOS": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetBrowser": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetMyComputer": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetNotepad": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetControlPanel": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetTVGuide": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetObjectIndex": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetNeuroPolice": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetEurodemics": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetArtifactAnalyzer": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetTokenExchange": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetPhone": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetTV": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetRadio": {
+      "title": "",
+      "description": ""
+    },
+    "hypernetMusic": {
+      "title": "",
+      "description": ""
+    },
+    "gamesOverview": {
+      "title": "",
+      "description": ""
+    },
+    "gamesArcade": {
+      "title": "",
+      "description": ""
+    },
+    "gamesBowling": {
+      "title": "",
+      "description": ""
+    },
+    "gamesPool": {
+      "title": "",
+      "description": ""
+    },
+    "gamesBasketball": {
+      "title": "",
+      "description": ""
+    },
+    "gamesChess": {
+      "title": "",
+      "description": ""
+    },
+    "gamesFishing": {
+      "title": "",
+      "description": ""
+    },
+    "gamesSurfing": {
+      "title": "",
+      "description": ""
+    },
+    "gamesShooting": {
+      "title": "",
+      "description": ""
+    },
+    "gamesHorseRace": {
+      "title": "",
+      "description": ""
+    },
+    "gamesTournament": {
+      "title": "",
+      "description": ""
+    },
+    "gamesGambling": {
+      "title": "",
+      "description": ""
+    },
+    "gamesPiano": {
+      "title": "",
+      "description": ""
+    },
+    "gamesLockpick": {
+      "title": "",
+      "description": ""
+    },
+    "gamesHyperTamer": {
+      "title": "",
+      "description": ""
+    },
+    "gamesCards": {
+      "title": "",
+      "description": ""
+    },
+    "gamesRaman": {
+      "title": "",
+      "description": ""
+    },
+    "gamesPeriodic": {
+      "title": "",
+      "description": ""
+    },
+    "topicHardwareStore": {
+      "title": "",
+      "description": ""
+    },
+    "topicEsotericHeavyParticles": {
+      "title": "",
+      "description": ""
+    },
+    "topicCERN": {
+      "title": "",
+      "description": ""
+    },
+    "immortal": {
+      "title": "",
+      "description": ""
+    },
+    "poison": {
+      "title": "",
+      "description": ""
+    },
+    "rage": {
+      "title": "",
+      "description": ""
+    },
+    "freeze": {
+      "title": "",
+      "description": ""
+    },
+    "paralysis": {
+      "title": "",
+      "description": ""
+    },
+    "lockedOn": {
+      "title": "",
+      "description": ""
+    },
+    "hpRegeneration": {
+      "title": "",
+      "description": ""
+    },
+    "mpRegeneration": {
+      "title": "",
+      "description": ""
+    },
+    "apRegeneration": {
+      "title": "",
+      "description": ""
+    },
+    "magicReflection": {
+      "title": "",
+      "description": ""
+    },
+    "protect": {
+      "title": "",
+      "description": ""
+    },
+    "provoke": {
+      "title": "",
+      "description": ""
+    },
+    "hide": {
+      "title": "",
+      "description": ""
+    },
+    "counterAttack": {
+      "title": "",
+      "description": ""
+    },
+    "statusAilmentBlock": {
+      "title": "",
+      "description": ""
+    },
+    "inspired": {
+      "title": "",
+      "description": ""
+    },
+    "hot": {
+      "title": "",
+      "description": ""
+    },
+    "divineShield": {
+      "title": "",
+      "description": ""
+    },
+    "deathMark": {
+      "title": "",
+      "description": ""
+    },
+    "perfectFocus": {
+      "title": "",
+      "description": ""
+    },
+    "ethereal": {
+      "title": "",
+      "description": ""
+    },
+    "lifeLink": {
+      "title": "",
+      "description": ""
+    },
+    "nausea": {
+      "title": "",
+      "description": ""
+    },
+    "drunk": {
+      "title": "",
+      "description": ""
+    },
+    "infected": {
+      "title": "",
+      "description": ""
+    },
+    "floating": {
+      "title": "",
+      "description": ""
+    },
+    "invisible": {
+      "title": "",
+      "description": ""
+    },
+    "oily": {
+      "title": "",
+      "description": ""
+    },
+    "dodge": {
+      "title": "",
+      "description": ""
+    },
+    "withdrawal": {
+      "title": "",
+      "description": ""
+    },
+    "grappled": {
+      "title": "",
+      "description": ""
+    },
+    "pinned": {
+      "title": "",
+      "description": ""
+    },
+    "guardBroken": {
+      "title": "",
+      "description": ""
+    },
+    "winded": {
+      "title": "",
+      "description": ""
+    },
+    "comboReady": {
+      "title": "",
+      "description": ""
+    },
+    "vitalExposed": {
+      "title": "",
+      "description": ""
+    },
+    "rootedStance": {
+      "title": "",
+      "description": ""
+    },
+    "flowState": {
+      "title": "",
+      "description": ""
+    },
+    "chiBurn": {
+      "title": "",
+      "description": ""
+    },
+    "concussed": {
+      "title": "",
+      "description": ""
     }
+  },
+  "HelpGroups": {
+    "controls": "",
+    "party": "",
+    "progress": "",
+    "gear": "",
+    "needs": "",
+    "combat": "",
+    "states": "",
+    "elements": "",
+    "world": "",
+    "travel": "",
+    "society": "",
+    "economy": "",
+    "crafting": "",
+    "galaxy": "",
+    "hypernet": "",
+    "minigames": "",
+    "topics": "",
+    "lore": "",
+    "diseases": "",
+    "history": ""
   }
 }

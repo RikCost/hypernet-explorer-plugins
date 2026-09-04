@@ -1,3 +1,17 @@
 {
- "placeholder":"Введите имя...","ui":{"soulIndex":"ИНДЕКС ДУШИ","cognition":"СОЗНАНИЕ","matrix":"МАТРИЦА","stable":"СТАБИЛЬНОСТЬ","synchronizeIdentity":"СИНХРОНИЗИРОВАТЬ ЛИЧНОСТЬ","uppercase":"ВЕРХНИЙ РЕГИСТР","lowercase":"нижний регистр","symbols":"СИМВОЛЫ","abort":"ОТМЕНА","default":"ПО УМОЛЧАНИЮ","confirm":"ПОДТВЕРДИТЬ","backspace":"BACKSPACE"}
+  "placeholder": "Введите имя...",
+  "ui": {
+    "soulIndex": "ИНДЕКС ДУШИ",
+    "cognition": "СОЗНАНИЕ",
+    "matrix": "МАТРИЦА",
+    "stable": "СТАБИЛЬНОСТЬ",
+    "synchronizeIdentity": "СИНХРОНИЗИРОВАТЬ ЛИЧНОСТЬ",
+    "uppercase": "ВЕРХНИЙ РЕГИСТР",
+    "lowercase": "нижний регистр",
+    "symbols": "СИМВОЛЫ",
+    "abort": "ОТМЕНА",
+    "default": "ПО УМОЛЧАНИЮ",
+    "confirm": "ПОДТВЕРДИТЬ",
+    "backspace": "BACKSPACE"
+  }
 }

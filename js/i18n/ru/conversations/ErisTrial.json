@@ -2094,7 +2094,11 @@
     "lawyerEscortedOut": "",
     "bubbaBountyWaived": "",
     "impartialityScore": "",
-    "emDeathSentence": ""
+    "emDeathSentence": "",
+    "prisonTimeRemaining": "",
+    "prisonDays": "",
+    "prisonSleepButton": "",
+    "erisName": ""
   },
   "log": {
     "acquittal": "",

@@ -199,6 +199,1030 @@
     "petro": {
       "title": "",
       "description": ""
+    },
+    "controls_moving_around": {
+      "title": "",
+      "description": ""
+    },
+    "controls_menu_hotkeys": {
+      "title": "",
+      "description": ""
+    },
+    "controls_mouse": {
+      "title": "",
+      "description": ""
+    },
+    "controls_controller": {
+      "title": "",
+      "description": ""
+    },
+    "controls_remapping": {
+      "title": "",
+      "description": ""
+    },
+    "what_is_on_the_screen": {
+      "title": "",
+      "description": ""
+    },
+    "searching_inside_menus": {
+      "title": "",
+      "description": ""
+    },
+    "saving,_autosave_and_quicksaves": {
+      "title": "",
+      "description": ""
+    },
+    "worlds_and_savegames": {
+      "title": "",
+      "description": ""
+    },
+    "options": {
+      "title": "",
+      "description": ""
+    },
+    "mods_and_updates": {
+      "title": "",
+      "description": ""
+    },
+    "the_party": {
+      "title": "",
+      "description": ""
+    },
+    "making_your_characters": {
+      "title": "",
+      "description": ""
+    },
+    "classes": {
+      "title": "",
+      "description": ""
+    },
+    "traits": {
+      "title": "",
+      "description": ""
+    },
+    "attributes": {
+      "title": "",
+      "description": ""
+    },
+    "playing_a_creature": {
+      "title": "",
+      "description": ""
+    },
+    "portraits_and_3d_models": {
+      "title": "",
+      "description": ""
+    },
+    "recruiting_people": {
+      "title": "",
+      "description": ""
+    },
+    "pets,_followers_and_children": {
+      "title": "",
+      "description": ""
+    },
+    "reproduction_and_pregnancy": {
+      "title": "",
+      "description": ""
+    },
+    "death,_gravestones_and_permadeath": {
+      "title": "",
+      "description": ""
+    },
+    "what_your_companions_say": {
+      "title": "",
+      "description": ""
+    },
+    "the_auto_explorer": {
+      "title": "",
+      "description": ""
+    },
+    "levels_and_experience": {
+      "title": "",
+      "description": ""
+    },
+    "knowledge_points": {
+      "title": "",
+      "description": ""
+    },
+    "the_atlas_of_circles": {
+      "title": "",
+      "description": ""
+    },
+    "training_and_progression": {
+      "title": "",
+      "description": ""
+    },
+    "specializations": {
+      "title": "",
+      "description": ""
+    },
+    "class_passives": {
+      "title": "",
+      "description": ""
+    },
+    "the_nine_skill_slots": {
+      "title": "",
+      "description": ""
+    },
+    "fusing_spells": {
+      "title": "",
+      "description": ""
+    },
+    "grimoires_and_skill_books": {
+      "title": "",
+      "description": ""
+    },
+    "equipment_hands_and_slots": {
+      "title": "",
+      "description": ""
+    },
+    "weapon_proficiency": {
+      "title": "",
+      "description": ""
+    },
+    "what_a_weapon_scales_on": {
+      "title": "",
+      "description": ""
+    },
+    "armour_and_derived_stats": {
+      "title": "",
+      "description": ""
+    },
+    "modifiers_on_gear": {
+      "title": "",
+      "description": ""
+    },
+    "weight_and_encumbrance": {
+      "title": "",
+      "description": ""
+    },
+    "the_backpack": {
+      "title": "",
+      "description": ""
+    },
+    "artifacts": {
+      "title": "",
+      "description": ""
+    },
+    "containers_and_storage": {
+      "title": "",
+      "description": ""
+    },
+    "loot_and_rarity": {
+      "title": "",
+      "description": ""
+    },
+    "the_five_needs": {
+      "title": "",
+      "description": ""
+    },
+    "hunger_and_nutrition": {
+      "title": "",
+      "description": ""
+    },
+    "sleep,_rest_and_time_awake": {
+      "title": "",
+      "description": ""
+    },
+    "hygiene,_and_what_it_costs_you": {
+      "title": "",
+      "description": ""
+    },
+    "company": {
+      "title": "",
+      "description": ""
+    },
+    "fun": {
+      "title": "",
+      "description": ""
+    },
+    "cravings_and_withdrawal": {
+      "title": "",
+      "description": ""
+    },
+    "limbs_and_organs": {
+      "title": "",
+      "description": ""
+    },
+    "biologics": {
+      "title": "",
+      "description": ""
+    },
+    "diseases": {
+      "title": "",
+      "description": ""
+    },
+    "epidemics": {
+      "title": "",
+      "description": ""
+    },
+    "clinics,_prosthetics_and_field_surgery": {
+      "title": "",
+      "description": ""
+    },
+    "augments": {
+      "title": "",
+      "description": ""
+    },
+    "weather,_temperature_and_the_body": {
+      "title": "",
+      "description": ""
+    },
+    "how_a_fight_starts": {
+      "title": "",
+      "description": ""
+    },
+    "the_battle_commands": {
+      "title": "",
+      "description": ""
+    },
+    "mp_and_ap": {
+      "title": "",
+      "description": ""
+    },
+    "hitting_what_you_aim_at": {
+      "title": "",
+      "description": ""
+    },
+    "wrestling": {
+      "title": "",
+      "description": ""
+    },
+    "talking_to_monsters": {
+      "title": "",
+      "description": ""
+    },
+    "enemy_levels_and_where_they_live": {
+      "title": "",
+      "description": ""
+    },
+    "how_monsters_behave": {
+      "title": "",
+      "description": ""
+    },
+    "danger_warnings_and_surviving_a_blow": {
+      "title": "",
+      "description": ""
+    },
+    "difficulty_and_combat_modes": {
+      "title": "",
+      "description": ""
+    },
+    "map_battle_mode": {
+      "title": "",
+      "description": ""
+    },
+    "card_combat": {
+      "title": "",
+      "description": ""
+    },
+    "summons": {
+      "title": "",
+      "description": ""
+    },
+    "the_arena": {
+      "title": "",
+      "description": ""
+    },
+    "bullet_hell_sequences": {
+      "title": "",
+      "description": ""
+    },
+    "spirit_battlers": {
+      "title": "",
+      "description": ""
+    },
+    "mimicry": {
+      "title": "",
+      "description": ""
+    },
+    "throwing_things": {
+      "title": "",
+      "description": ""
+    },
+    "corpses,_rewards_and_cooldowns": {
+      "title": "",
+      "description": ""
+    },
+    "elements_how_they_work": {
+      "title": "",
+      "description": ""
+    },
+    "element_physical": {
+      "title": "",
+      "description": ""
+    },
+    "element_fire": {
+      "title": "",
+      "description": ""
+    },
+    "element_ice": {
+      "title": "",
+      "description": ""
+    },
+    "element_thunder": {
+      "title": "",
+      "description": ""
+    },
+    "element_water": {
+      "title": "",
+      "description": ""
+    },
+    "element_petro": {
+      "title": "",
+      "description": ""
+    },
+    "element_wind": {
+      "title": "",
+      "description": ""
+    },
+    "element_sacred": {
+      "title": "",
+      "description": ""
+    },
+    "element_cursed": {
+      "title": "",
+      "description": ""
+    },
+    "the_world_map": {
+      "title": "",
+      "description": ""
+    },
+    "procedural_maps": {
+      "title": "",
+      "description": ""
+    },
+    "biomes": {
+      "title": "",
+      "description": ""
+    },
+    "structures_under_the_map": {
+      "title": "",
+      "description": ""
+    },
+    "houses,_inns_and_shops": {
+      "title": "",
+      "description": ""
+    },
+    "working_the_terrain": {
+      "title": "",
+      "description": ""
+    },
+    "the_dungeon_and_the_tower": {
+      "title": "",
+      "description": ""
+    },
+    "puzzles": {
+      "title": "",
+      "description": ""
+    },
+    "digging_and_secret_doors": {
+      "title": "",
+      "description": ""
+    },
+    "water,_climbing_and_bridges": {
+      "title": "",
+      "description": ""
+    },
+    "weather,_time_and_seasons": {
+      "title": "",
+      "description": ""
+    },
+    "dreams": {
+      "title": "",
+      "description": ""
+    },
+    "adventures_on_the_map": {
+      "title": "",
+      "description": ""
+    },
+    "bologna": {
+      "title": "",
+      "description": ""
+    },
+    "platformer_maps": {
+      "title": "",
+      "description": ""
+    },
+    "flying": {
+      "title": "",
+      "description": ""
+    },
+    "the_map_of_maps": {
+      "title": "",
+      "description": ""
+    },
+    "chests_and_treasure_rooms": {
+      "title": "",
+      "description": ""
+    },
+    "research_and_discovery": {
+      "title": "",
+      "description": ""
+    },
+    "fast_travel": {
+      "title": "",
+      "description": ""
+    },
+    "the_thirty_ways_to_travel": {
+      "title": "",
+      "description": ""
+    },
+    "owning_a_vehicle": {
+      "title": "",
+      "description": ""
+    },
+    "vehicle_the_camper": {
+      "title": "",
+      "description": ""
+    },
+    "vehicle_the_car": {
+      "title": "",
+      "description": ""
+    },
+    "vehicle_the_bike": {
+      "title": "",
+      "description": ""
+    },
+    "vehicle_the_flying_broom": {
+      "title": "",
+      "description": ""
+    },
+    "vehicle_the_boat": {
+      "title": "",
+      "description": ""
+    },
+    "vehicle_the_starship": {
+      "title": "",
+      "description": ""
+    },
+    "fuel": {
+      "title": "",
+      "description": ""
+    },
+    "vehicle_damage_and_repair": {
+      "title": "",
+      "description": ""
+    },
+    "the_workshop": {
+      "title": "",
+      "description": ""
+    },
+    "the_crew": {
+      "title": "",
+      "description": ""
+    },
+    "driving_in_3d": {
+      "title": "",
+      "description": ""
+    },
+    "traffic,_roadkill_and_theft": {
+      "title": "",
+      "description": ""
+    },
+    "people_are_real_here": {
+      "title": "",
+      "description": ""
+    },
+    "the_empathize_panel": {
+      "title": "",
+      "description": ""
+    },
+    "how_somebody_decides_what_they_think_of_you": {
+      "title": "",
+      "description": ""
+    },
+    "people_have_lives": {
+      "title": "",
+      "description": ""
+    },
+    "what_people_say_to_each_other": {
+      "title": "",
+      "description": ""
+    },
+    "settlements_and_what_happens_to_them": {
+      "title": "",
+      "description": ""
+    },
+    "politics": {
+      "title": "",
+      "description": ""
+    },
+    "factions_and_reputation": {
+      "title": "",
+      "description": ""
+    },
+    "the_assembly": {
+      "title": "",
+      "description": ""
+    },
+    "crime_and_bounty": {
+      "title": "",
+      "description": ""
+    },
+    "the_police_portal": {
+      "title": "",
+      "description": ""
+    },
+    "the_trial": {
+      "title": "",
+      "description": ""
+    },
+    "sentences_and_prison": {
+      "title": "",
+      "description": ""
+    },
+    "dating_eris": {
+      "title": "",
+      "description": ""
+    },
+    "the_post": {
+      "title": "",
+      "description": ""
+    },
+    "the_news": {
+      "title": "",
+      "description": ""
+    },
+    "the_party_diary": {
+      "title": "",
+      "description": ""
+    },
+    "conversation_topics": {
+      "title": "",
+      "description": ""
+    },
+    "armies": {
+      "title": "",
+      "description": ""
+    },
+    "multiplayer": {
+      "title": "",
+      "description": ""
+    },
+    "the_century_behind_you": {
+      "title": "",
+      "description": ""
+    },
+    "money": {
+      "title": "",
+      "description": ""
+    },
+    "shops": {
+      "title": "",
+      "description": ""
+    },
+    "stealing": {
+      "title": "",
+      "description": ""
+    },
+    "banking_and_loans": {
+      "title": "",
+      "description": ""
+    },
+    "the_stock_market": {
+      "title": "",
+      "description": ""
+    },
+    "real_estate": {
+      "title": "",
+      "description": ""
+    },
+    "owning_a_shop": {
+      "title": "",
+      "description": ""
+    },
+    "work": {
+      "title": "",
+      "description": ""
+    },
+    "quests": {
+      "title": "",
+      "description": ""
+    },
+    "reading_a_notice": {
+      "title": "",
+      "description": ""
+    },
+    "arcade_tokens": {
+      "title": "",
+      "description": ""
+    },
+    "the_workbench": {
+      "title": "",
+      "description": ""
+    },
+    "the_forge": {
+      "title": "",
+      "description": ""
+    },
+    "alchemistry": {
+      "title": "",
+      "description": ""
+    },
+    "cooking": {
+      "title": "",
+      "description": ""
+    },
+    "brewing": {
+      "title": "",
+      "description": ""
+    },
+    "building_and_furniture": {
+      "title": "",
+      "description": ""
+    },
+    "farming": {
+      "title": "",
+      "description": ""
+    },
+    "animals": {
+      "title": "",
+      "description": ""
+    },
+    "beekeeping": {
+      "title": "",
+      "description": ""
+    },
+    "procedural_artifacts": {
+      "title": "",
+      "description": ""
+    },
+    "how_loot_is_rolled": {
+      "title": "",
+      "description": ""
+    },
+    "containers": {
+      "title": "",
+      "description": ""
+    },
+    "the_star_map": {
+      "title": "",
+      "description": ""
+    },
+    "travelling_between_stars": {
+      "title": "",
+      "description": ""
+    },
+    "your_starship": {
+      "title": "",
+      "description": ""
+    },
+    "landing": {
+      "title": "",
+      "description": ""
+    },
+    "anomalies": {
+      "title": "",
+      "description": ""
+    },
+    "what_is_out_there": {
+      "title": "",
+      "description": ""
+    },
+    "patron_worlds": {
+      "title": "",
+      "description": ""
+    },
+    "the_night_sky": {
+      "title": "",
+      "description": ""
+    },
+    "the_hypernet_desktop": {
+      "title": "",
+      "description": ""
+    },
+    "app_hypernet_explorer": {
+      "title": "",
+      "description": ""
+    },
+    "app_my_computer": {
+      "title": "",
+      "description": ""
+    },
+    "app_notepad": {
+      "title": "",
+      "description": ""
+    },
+    "app_control_panel": {
+      "title": "",
+      "description": ""
+    },
+    "app_tv_guide": {
+      "title": "",
+      "description": ""
+    },
+    "app_the_object_index": {
+      "title": "",
+      "description": ""
+    },
+    "app_npolice": {
+      "title": "",
+      "description": ""
+    },
+    "app_eurodemics": {
+      "title": "",
+      "description": ""
+    },
+    "app_artifact_analyzer": {
+      "title": "",
+      "description": ""
+    },
+    "app_token_exchange": {
+      "title": "",
+      "description": ""
+    },
+    "the_hexphone": {
+      "title": "",
+      "description": ""
+    },
+    "television": {
+      "title": "",
+      "description": ""
+    },
+    "the_radio": {
+      "title": "",
+      "description": ""
+    },
+    "music_and_sound": {
+      "title": "",
+      "description": ""
+    },
+    "diversions": {
+      "title": "",
+      "description": ""
+    },
+    "the_arcade_cabinet": {
+      "title": "",
+      "description": ""
+    },
+    "bowling": {
+      "title": "",
+      "description": ""
+    },
+    "pool": {
+      "title": "",
+      "description": ""
+    },
+    "basketball": {
+      "title": "",
+      "description": ""
+    },
+    "chess": {
+      "title": "",
+      "description": ""
+    },
+    "fishing": {
+      "title": "",
+      "description": ""
+    },
+    "surfing": {
+      "title": "",
+      "description": ""
+    },
+    "the_shooting_range": {
+      "title": "",
+      "description": ""
+    },
+    "the_horse_race": {
+      "title": "",
+      "description": ""
+    },
+    "the_monster_tournament": {
+      "title": "",
+      "description": ""
+    },
+    "slots,_scratch_cards_and_tarot": {
+      "title": "",
+      "description": ""
+    },
+    "the_piano": {
+      "title": "",
+      "description": ""
+    },
+    "hypertamer": {
+      "title": "",
+      "description": ""
+    },
+    "the_card_game": {
+      "title": "",
+      "description": ""
+    },
+    "the_raman_scanner": {
+      "title": "",
+      "description": ""
+    },
+    "the_periodic_table": {
+      "title": "",
+      "description": ""
+    },
+    "hardware_store": {
+      "title": "",
+      "description": ""
+    },
+    "esoteric_heavy_particles": {
+      "title": "",
+      "description": ""
+    },
+    "cern": {
+      "title": "",
+      "description": ""
+    },
+    "state_shadow_veil": {
+      "title": "",
+      "description": ""
+    },
+    "state_immortal": {
+      "title": "",
+      "description": ""
+    },
+    "state_poison": {
+      "title": "",
+      "description": ""
+    },
+    "state_rage": {
+      "title": "",
+      "description": ""
+    },
+    "state_freeze": {
+      "title": "",
+      "description": ""
+    },
+    "state_paralysis": {
+      "title": "",
+      "description": ""
+    },
+    "state_locked_on": {
+      "title": "",
+      "description": ""
+    },
+    "state_hp_regeneration": {
+      "title": "",
+      "description": ""
+    },
+    "state_mp_regeneration": {
+      "title": "",
+      "description": ""
+    },
+    "state_ap_regeneration": {
+      "title": "",
+      "description": ""
+    },
+    "state_magic_reflection": {
+      "title": "",
+      "description": ""
+    },
+    "state_protect": {
+      "title": "",
+      "description": ""
+    },
+    "state_provoke": {
+      "title": "",
+      "description": ""
+    },
+    "state_hide": {
+      "title": "",
+      "description": ""
+    },
+    "state_counter_attack": {
+      "title": "",
+      "description": ""
+    },
+    "state_status_ailment_block": {
+      "title": "",
+      "description": ""
+    },
+    "state_inspired": {
+      "title": "",
+      "description": ""
+    },
+    "state_hot": {
+      "title": "",
+      "description": ""
+    },
+    "state_divine_shield": {
+      "title": "",
+      "description": ""
+    },
+    "state_death_mark": {
+      "title": "",
+      "description": ""
+    },
+    "state_perfect_focus": {
+      "title": "",
+      "description": ""
+    },
+    "state_ethereal": {
+      "title": "",
+      "description": ""
+    },
+    "state_life_link": {
+      "title": "",
+      "description": ""
+    },
+    "state_nausea": {
+      "title": "",
+      "description": ""
+    },
+    "state_drunk": {
+      "title": "",
+      "description": ""
+    },
+    "state_infected": {
+      "title": "",
+      "description": ""
+    },
+    "state_floating": {
+      "title": "",
+      "description": ""
+    },
+    "state_invisible": {
+      "title": "",
+      "description": ""
+    },
+    "state_oily": {
+      "title": "",
+      "description": ""
+    },
+    "state_dodge": {
+      "title": "",
+      "description": ""
+    },
+    "state_withdrawal": {
+      "title": "",
+      "description": ""
+    },
+    "state_grappled": {
+      "title": "",
+      "description": ""
+    },
+    "state_pinned": {
+      "title": "",
+      "description": ""
+    },
+    "state_guard_broken": {
+      "title": "",
+      "description": ""
+    },
+    "state_winded": {
+      "title": "",
+      "description": ""
+    },
+    "state_combo_ready": {
+      "title": "",
+      "description": ""
+    },
+    "state_vital_exposed": {
+      "title": "",
+      "description": ""
+    },
+    "state_rooted_stance": {
+      "title": "",
+      "description": ""
+    },
+    "state_flow_state": {
+      "title": "",
+      "description": ""
+    },
+    "state_chi_burn": {
+      "title": "",
+      "description": ""
+    },
+    "state_concussed": {
+      "title": "",
+      "description": ""
+    },
+    "lore_the_squishing": {
+      "title": "",
+      "description": ""
+    },
+    "lore_the_rule_of_80": {
+      "title": "",
+      "description": ""
+    },
+    "lore_the_encompassing_road": {
+      "title": "",
+      "description": ""
+    },
+    "lore_the_mages_guild": {
+      "title": "",
+      "description": ""
+    },
+    "lore_hypercapitalist_collective": {
+      "title": "",
+      "description": ""
+    },
+    "lore_em,_the_memory_witch": {
+      "title": "",
+      "description": ""
+    },
+    "lore_camelcase_magic": {
+      "title": "",
+      "description": ""
+    },
+    "lore_alagadda,_city_of_masks": {
+      "title": "",
+      "description": ""
     }
   }
 }
