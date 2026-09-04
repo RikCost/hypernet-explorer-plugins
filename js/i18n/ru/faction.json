@@ -1330,341 +1330,341 @@
       }
     },
     "greywanderers": {
-      "name": "",
+      "name": "Серые странники",
       "description": "",
       "troops": {
         "snapshottourist": {
-          "name": ""
+          "name": "Турист-моментальщик"
         },
         "itineraryguide": {
-          "name": ""
+          "name": "Гид-маршрутник"
         },
         "souvenirhunter": {
-          "name": ""
+          "name": "Охотник за сувенирами"
         },
         "shutterwarden": {
-          "name": ""
+          "name": "Страж затвора"
         }
       }
     },
     "crimsonanalyzers": {
-      "name": "",
+      "name": "Багряные аналитики",
       "description": "",
       "troops": {
         "fieldsampler": {
-          "name": ""
+          "name": "Пробоотборщик на месте"
         },
         "katanasurgeon": {
-          "name": ""
+          "name": "Хирург с катаной"
         },
         "specimenwarden": {
-          "name": ""
+          "name": "Смотритель образцов"
         },
         "chiefvivisector": {
-          "name": ""
+          "name": "Верховный вивисектор"
         }
       }
     },
     "palewarpers": {
-      "name": "",
+      "name": "Бледные искривители",
       "description": "",
       "troops": {
         "psinovice": {
-          "name": ""
+          "name": "Пси-новичок"
         },
         "mindfolder": {
-          "name": ""
+          "name": "Сгибатель разума"
         },
         "spacefolder": {
-          "name": ""
+          "name": "Сгибатель пространства"
         },
         "warpchoir": {
-          "name": ""
+          "name": "Хор искривления"
         }
       }
     },
     "dargosembassy": {
-      "name": "",
+      "name": "Посольство Даргосов",
       "description": "",
       "troops": {
         "embassyclerk": {
-          "name": ""
+          "name": "Клерк посольства"
         },
         "pranksman": {
-          "name": ""
+          "name": "Розыгрышник"
         },
         "punchlineregent": {
-          "name": ""
+          "name": "Регент панчлайна"
         }
       }
     },
     "gandanorder": {
-      "name": "",
+      "name": "Орден Ганды",
       "description": "",
       "troops": {
         "noviceofthelamp": {
-          "name": ""
+          "name": "Новичок лампы"
         },
         "gandanchanter": {
-          "name": ""
+          "name": "Кантор Ганды"
         },
         "prayerwheelguard": {
-          "name": ""
+          "name": "Страж молитвенного колеса"
         },
         "illuminedadept": {
-          "name": ""
+          "name": "Просветлённый адепт"
         },
         "banneroftheeighthsky": {
-          "name": ""
+          "name": "Знамя восьмого неба"
         },
         "abbotmilitant": {
-          "name": ""
+          "name": "Воинствующий аббат"
         }
       }
     },
     "steppebanners": {
-      "name": "",
+      "name": "Степные знамёна",
       "description": "",
       "troops": {
         "hordeoutrider": {
-          "name": ""
+          "name": "Разведчик орды"
         },
         "hornbowrider": {
-          "name": ""
+          "name": "Всадник рогового лука"
         },
         "felttentsergeant": {
-          "name": ""
+          "name": "Сержант войлочной юрты"
         },
         "keshigguard": {
-          "name": ""
+          "name": "Страж кешиг"
         },
         "khansfalconer": {
-          "name": ""
+          "name": "Сокольничий хана"
         },
         "standardbearerofthegobi": {
-          "name": ""
+          "name": "Знаменосец Гоби"
         }
       }
     },
     "sanhedringuard": {
-      "name": "",
+      "name": "Стража синедриона",
       "description": "",
       "troops": {
         "templewatchman": {
-          "name": ""
+          "name": "Храмовый страж"
         },
         "sealbearer": {
-          "name": ""
+          "name": "Хранитель печати"
         },
         "levitesharpshooter": {
-          "name": ""
+          "name": "Левитский снайпер"
         },
         "nasisescort": {
-          "name": ""
+          "name": "Эскорт наси"
         },
         "brazenpillarguard": {
-          "name": ""
+          "name": "Страж медного столпа"
         },
         "cherubimoperator": {
-          "name": ""
+          "name": "Оператор херувима"
         }
       }
     },
     "shemhamphorasch": {
-      "name": "",
+      "name": "Писцы разделённого имени",
       "description": "",
       "troops": {
         "nameclerk": {
-          "name": ""
+          "name": "Клерк имён"
         },
         "bindingscribe": {
-          "name": ""
+          "name": "Писец-связыватель"
         },
         "ringbearer": {
-          "name": ""
+          "name": "Кольценосец"
         },
         "seventytwomaster": {
-          "name": ""
+          "name": "Мастер семидесяти двух"
         },
         "brasspotwarden": {
-          "name": ""
+          "name": "Страж медного котла"
         }
       }
     },
     "concessionguard": {
-      "name": "",
+      "name": "Стража концессий",
       "description": "",
       "troops": {
         "pipelinewatch": {
-          "name": ""
+          "name": "Дозор трубопровода"
         },
         "derrickmarksman": {
-          "name": ""
+          "name": "Меткий стрелок вышки"
         },
         "refinerysergeant": {
-          "name": ""
+          "name": "Сержант нефтеперегонки"
         },
         "concessionenforcer": {
-          "name": ""
+          "name": "Исполнитель концессии"
         },
         "wellheadcaptain": {
-          "name": ""
+          "name": "Капитан устья скважины"
         },
         "flarelightsniper": {
-          "name": ""
+          "name": "Снайпер факельного света"
         }
       }
     },
     "deepcontractors": {
-      "name": "",
+      "name": "Глубинные подрядчики",
       "description": "",
       "troops": {
         "signatorydeacon": {
-          "name": ""
+          "name": "Дьякон-подписант"
         },
         "crudehandler": {
-          "name": ""
+          "name": "Обработчик сырой нефти"
         },
         "bargainkeeper": {
-          "name": ""
+          "name": "Хранитель сделок"
         },
         "deepwellcaller": {
-          "name": ""
+          "name": "Призыватель глубоких скважин"
         },
         "contractdemonherd": {
-          "name": ""
+          "name": "Пастырь контрактных демонов"
         }
       }
     },
     "pasdaranorder": {
-      "name": "",
+      "name": "Бессмертная стража",
       "description": "",
       "troops": {
         "basijvolunteer": {
-          "name": ""
+          "name": "Доброволец басидж"
         },
         "pasdaranrifleman": {
-          "name": ""
+          "name": "Стражник-винтовщик"
         },
         "qudsoperative": {
-          "name": ""
+          "name": "Оперативник Кудс"
         },
         "missilecrewman": {
-          "name": ""
+          "name": "Ракетчик"
         },
         "guardiancommander": {
-          "name": ""
+          "name": "Командир бессмертных"
         }
       }
     },
     "hawzascholars": {
-      "name": "",
+      "name": "Академия Хаузы",
       "description": "",
       "troops": {
         "seminarian": {
-          "name": ""
+          "name": "Академик"
         },
         "jurisprudent": {
-          "name": ""
+          "name": "Придворный юрист"
         },
         "fatwaclerk": {
-          "name": ""
+          "name": "Клерк канцелярии"
         },
         "hawzaphysician": {
-          "name": ""
+          "name": "Придворный лекарь"
         },
         "marjascounsel": {
-          "name": ""
+          "name": "Советник трона"
         }
       }
     },
     "rashtrasevaks": {
-      "name": "",
+      "name": "Служители Раштры",
       "description": "",
       "troops": {
         "sevakvolunteer": {
-          "name": ""
+          "name": "Доброволец-служитель"
         },
         "lathisergeant": {
-          "name": ""
+          "name": "Сержант с латхи"
         },
         "dhanushmarksman": {
-          "name": ""
+          "name": "Меткий стрелок дхануша"
         },
         "rashtrasubhedar": {
-          "name": ""
+          "name": "Субхедар Раштры"
         },
         "chakrastandardbearer": {
-          "name": ""
+          "name": "Знаменосец чакры"
         },
         "mahasenapati": {
-          "name": ""
+          "name": "Махасенапати"
         }
       }
     },
     "mathacircle": {
-      "name": "",
+      "name": "Круг Матхи",
       "description": "",
       "troops": {
         "brahmacharin": {
-          "name": ""
+          "name": "Брахмачарин"
         },
         "vedicreciter": {
-          "name": ""
+          "name": "Чтец вед"
         },
         "acharyasaide": {
-          "name": ""
+          "name": "Помощник ачарьи"
         },
         "yajnakeeper": {
-          "name": ""
+          "name": "Хранитель яджны"
         },
         "mathaphysician": {
-          "name": ""
+          "name": "Лекарь Матхи"
         }
       }
     },
     "cordilleracorps": {
-      "name": "",
+      "name": "Кордильерский корпус",
       "description": "",
       "troops": {
         "conscriptofthesouth": {
-          "name": ""
+          "name": "Южный новобранец"
         },
         "andeanranger": {
-          "name": ""
+          "name": "Андийский егерь"
         },
         "cordillerasapper": {
-          "name": ""
+          "name": "Кордильерский сапёр"
         },
         "mountainartillerist": {
-          "name": ""
+          "name": "Горный артиллерист"
         },
         "longsouthcaptain": {
-          "name": ""
+          "name": "Капитан Юга Длинного"
         },
         "valdiviasgrenadier": {
-          "name": ""
+          "name": "Гренадер Вальдивии"
         }
       }
     },
     "australnavy": {
-      "name": "",
+      "name": "Австралийская флотилия",
       "description": "",
       "troops": {
         "channelpilot": {
-          "name": ""
+          "name": "Лоцман пролива"
         },
         "straitmarine": {
-          "name": ""
+          "name": "Морпех пролива"
         },
         "icewatermate": {
-          "name": ""
+          "name": "Матрос ледяных вод"
         },
         "australgunner": {
-          "name": ""
+          "name": "Австралийский канонир"
         },
         "commodoreofthefjords": {
-          "name": ""
+          "name": "Коммодор фьордов"
         }
       }
     }

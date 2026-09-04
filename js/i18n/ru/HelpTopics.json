@@ -1,4 +1,26 @@
 {
+  "HelpGroups": {
+    "controls": "Управление",
+    "party": "Отряд",
+    "progress": "Развитие",
+    "gear": "Снаряжение",
+    "needs": "Здоровье",
+    "combat": "Бой",
+    "states": "Состояния",
+    "elements": "Стихии",
+    "world": "Мир",
+    "travel": "Путешествия",
+    "society": "Общество",
+    "economy": "Экономика",
+    "crafting": "Изготовление",
+    "galaxy": "Галактика",
+    "hypernet": "Гиперсеть",
+    "minigames": "Развлечения",
+    "topics": "Темы",
+    "lore": "История мира",
+    "diseases": "Болезни",
+    "history": "Хроника"
+  },
   "HelpTopics": {
     "squishing": {
       "title": "",
@@ -133,1094 +155,1072 @@
       "description": ""
     },
     "arcaneSurge": {
-      "title": "",
+      "title": "Состояние: арканный всплеск",
       "description": ""
     },
     "berserk": {
-      "title": "",
+      "title": "Состояние: берсерк",
       "description": ""
     },
     "bleeding": {
-      "title": "",
+      "title": "Состояние: кровотечение",
       "description": ""
     },
     "blind": {
-      "title": "",
+      "title": "Состояние: слепота",
       "description": ""
     },
     "burned": {
-      "title": "",
+      "title": "Состояние: ожог",
       "description": ""
     },
     "charm": {
-      "title": "",
+      "title": "Состояние: очарование",
       "description": ""
     },
     "cold": {
-      "title": "",
+      "title": "Состояние: холод",
       "description": ""
     },
     "confusion": {
-      "title": "",
+      "title": "Состояние: замешательство",
       "description": ""
     },
     "shadow": {
-      "title": "",
+      "title": "Состояние: теневая завеса",
       "description": ""
     },
     "silence": {
-      "title": "",
+      "title": "Состояние: молчание",
       "description": ""
     },
     "sleep": {
-      "title": "",
+      "title": "Состояние: сон",
       "description": ""
     },
     "static": {
-      "title": "",
+      "title": "Состояние: статика",
       "description": ""
     },
     "stun": {
-      "title": "",
+      "title": "Состояние: оглушение",
       "description": ""
     },
     "unbalanced": {
-      "title": "",
+      "title": "Состояние: потеря равновесия",
       "description": ""
     },
     "vulnerability": {
-      "title": "",
+      "title": "Состояние: уязвимость",
       "description": ""
     },
     "wet": {
-      "title": "",
+      "title": "Состояние: мокрый",
       "description": ""
     },
     "petro": {
-      "title": "",
+      "title": "Стихия: нефть",
       "description": ""
     },
     "combatDamageTypes": {
-      "title": "",
+      "title": "Типы урона и механика пробития",
       "description": ""
     },
     "controlsMoving": {
-      "title": "",
+      "title": "Управление: передвижение",
       "description": ""
     },
     "controlsMenus": {
-      "title": "",
+      "title": "Управление: горячие клавиши меню",
       "description": ""
     },
     "controlsMouse": {
-      "title": "",
+      "title": "Управление: мышь",
       "description": ""
     },
     "controlsGamepad": {
-      "title": "",
+      "title": "Управление: геймпад",
       "description": ""
     },
     "controlsRemap": {
-      "title": "",
+      "title": "Управление: переназначение",
       "description": ""
     },
     "controlsScreen": {
-      "title": "",
+      "title": "Что на экране",
       "description": ""
     },
     "controlsSearch": {
-      "title": "",
+      "title": "Поиск внутри меню",
       "description": ""
     },
     "savingGame": {
-      "title": "",
+      "title": "Сохранения, автосохранение и быстрые сохранения",
       "description": ""
     },
     "worldsFolders": {
-      "title": "",
+      "title": "Миры и сохранения",
       "description": ""
     },
     "optionsMenu": {
-      "title": "",
+      "title": "Настройки",
       "description": ""
     },
     "modsUpdates": {
-      "title": "",
+      "title": "Моды и обновления",
       "description": ""
     },
     "partyBasics": {
-      "title": "",
+      "title": "Отряд",
       "description": ""
     },
     "partyCreation": {
-      "title": "",
+      "title": "Создание персонажей",
       "description": ""
     },
     "partyClasses": {
-      "title": "",
+      "title": "Классы",
       "description": ""
     },
     "partyTraits": {
-      "title": "",
+      "title": "Черты",
       "description": ""
     },
     "partyAttributes": {
-      "title": "",
+      "title": "Атрибуты",
       "description": ""
     },
     "partyCreatures": {
-      "title": "",
+      "title": "Игра за существо",
       "description": ""
     },
     "partyPortraits": {
-      "title": "",
+      "title": "Портреты и 3D-модели",
       "description": ""
     },
     "partyRecruiting": {
-      "title": "",
+      "title": "Вербовка людей",
       "description": ""
     },
     "partyPets": {
-      "title": "",
+      "title": "Питомцы, последователи и дети",
       "description": ""
     },
     "partyReproduction": {
-      "title": "",
+      "title": "Размножение и беременность",
       "description": ""
     },
     "partyDeath": {
-      "title": "",
+      "title": "Смерть, надгробия и перманентная смерть",
       "description": ""
     },
     "partyBanterPage": {
-      "title": "",
+      "title": "Что говорят ваши спутники",
       "description": ""
     },
     "partyAutoIdle": {
-      "title": "",
+      "title": "Автономный исследователь",
       "description": ""
     },
     "progressLevels": {
-      "title": "",
+      "title": "Уровни и опыт",
       "description": ""
     },
     "progressKnowledge": {
-      "title": "",
+      "title": "Очки знаний",
       "description": ""
     },
     "progressAtlas": {
-      "title": "",
+      "title": "Атлас кругов",
       "description": ""
     },
     "progressTraining": {
-      "title": "",
+      "title": "Обучение и прогресс",
       "description": ""
     },
     "progressSpecializations": {
-      "title": "",
+      "title": "Специализации",
       "description": ""
     },
     "progressPassives": {
-      "title": "",
+      "title": "Пассивки класса",
       "description": ""
     },
     "progressLoadout": {
-      "title": "",
+      "title": "Девять слотов навыков",
       "description": ""
     },
     "progressFusion": {
-      "title": "",
+      "title": "Слияние заклинаний",
       "description": ""
     },
     "progressGrimoires": {
-      "title": "",
+      "title": "Гримуары и книги навыков",
       "description": ""
     },
     "progressBladeSeeds": {
-      "title": "",
+      "title": "Семена клинков",
       "description": ""
     },
     "gearSlots": {
-      "title": "",
+      "title": "Снаряжение: руки и слоты",
       "description": ""
     },
     "gearProficiency": {
-      "title": "",
+      "title": "Владение оружием",
       "description": ""
     },
     "gearScaling": {
-      "title": "",
+      "title": "От чего масштабируется оружие",
       "description": ""
     },
     "gearArmor": {
-      "title": "",
+      "title": "Броня и производные параметры",
       "description": ""
     },
     "gearModifiers": {
-      "title": "",
+      "title": "Модификаторы на снаряжении",
       "description": ""
     },
     "gearWeight": {
-      "title": "",
+      "title": "Вес и перенос",
       "description": ""
     },
     "gearBackpack": {
-      "title": "",
+      "title": "Рюкзак",
       "description": ""
     },
     "gearArtifacts": {
-      "title": "",
+      "title": "Артефакты",
       "description": ""
     },
     "gearContainers": {
-      "title": "",
+      "title": "Контейнеры и хранилища",
       "description": ""
     },
     "gearRarity": {
-      "title": "",
+      "title": "Лут и редкость",
       "description": ""
     },
     "needsOverview": {
-      "title": "",
+      "title": "Пять потребностей",
       "description": ""
     },
     "needsHunger": {
-      "title": "",
+      "title": "Голод и питание",
       "description": ""
     },
     "needsSleep": {
-      "title": "",
+      "title": "Сон, отдых и время без сна",
       "description": ""
     },
     "needsHygiene": {
-      "title": "",
+      "title": "Гигиена и чем она вам обходится",
       "description": ""
     },
     "needsSocial": {
-      "title": "",
+      "title": "Общение",
       "description": ""
     },
     "needsLeisure": {
-      "title": "",
+      "title": "Развлечение",
       "description": ""
     },
     "needsAddiction": {
-      "title": "",
+      "title": "Тяга и ломка",
       "description": ""
     },
     "bodyParts": {
-      "title": "",
+      "title": "Конечности и органы",
       "description": ""
     },
     "bodyBiologics": {
-      "title": "",
+      "title": "Биология",
       "description": ""
     },
     "healthDiseases": {
-      "title": "",
+      "title": "Болезни",
       "description": ""
     },
     "healthEpidemics": {
-      "title": "",
+      "title": "Эпидемии",
       "description": ""
     },
     "healthSurgery": {
-      "title": "",
+      "title": "Клиники, протезы и полевая хирургия",
       "description": ""
     },
     "healthAugments": {
-      "title": "",
+      "title": "Аугменты",
       "description": ""
     },
     "healthWeatherBody": {
-      "title": "",
+      "title": "Погода, время и тело",
       "description": ""
     },
     "combatBasics": {
-      "title": "",
+      "title": "Как начинается бой",
       "description": ""
     },
     "combatCommands": {
-      "title": "",
+      "title": "Боевые команды",
       "description": ""
     },
     "combatAP": {
-      "title": "",
+      "title": "МП и АП",
       "description": ""
     },
     "combatBodyParts": {
-      "title": "",
+      "title": "Попадание туда, куда целишься",
       "description": ""
     },
     "combatWrestle": {
-      "title": "",
+      "title": "Борьба",
       "description": ""
     },
     "combatTalk": {
-      "title": "",
+      "title": "Разговор с монстрами",
       "description": ""
     },
     "combatEnemyLevels": {
-      "title": "",
+      "title": "Уровни врагов и где они живут",
       "description": ""
     },
     "combatMovementAI": {
-      "title": "",
+      "title": "Как ведут себя монстры",
       "description": ""
     },
     "combatSafety": {
-      "title": "",
+      "title": "Предупреждения об опасности и выживание после удара",
       "description": ""
     },
     "combatModes": {
-      "title": "",
+      "title": "Сложность и режимы боя",
       "description": ""
     },
     "combatMapBattle": {
-      "title": "",
+      "title": "Режим боя на карте",
       "description": ""
     },
     "combatCards": {
-      "title": "",
+      "title": "Карточный бой",
       "description": ""
     },
     "combatSummons": {
-      "title": "",
+      "title": "Призывы",
       "description": ""
     },
     "combatArena": {
-      "title": "",
+      "title": "Арена",
       "description": ""
     },
     "combatBulletHell": {
-      "title": "",
+      "title": "Буллет-хелл-секвенсы",
       "description": ""
     },
     "combatSpirits": {
-      "title": "",
+      "title": "Духовные бойцы",
       "description": ""
     },
     "combatMimic": {
-      "title": "",
+      "title": "Мимикрия",
       "description": ""
     },
     "combatThrow": {
-      "title": "",
+      "title": "Бросок вещей",
       "description": ""
     },
     "combatCorpses": {
-      "title": "",
+      "title": "Трупы, награды и перезарядки",
       "description": ""
     },
     "elementsOverview": {
-      "title": "",
+      "title": "Стихии: как они работают",
       "description": ""
     },
     "elementPhysical": {
-      "title": "",
+      "title": "Стихия: физическая",
       "description": ""
     },
     "elementFire": {
-      "title": "",
+      "title": "Стихия: огонь",
       "description": ""
     },
     "elementIce": {
-      "title": "",
+      "title": "Стихия: лёд",
       "description": ""
     },
     "elementThunder": {
-      "title": "",
+      "title": "Стихия: молния",
       "description": ""
     },
     "elementWater": {
-      "title": "",
+      "title": "Стихия: вода",
       "description": ""
     },
     "elementWind": {
-      "title": "",
+      "title": "Стихия: ветер",
       "description": ""
     },
     "elementSacred": {
-      "title": "",
+      "title": "Стихия: сакральная",
       "description": ""
     },
     "elementCursed": {
-      "title": "",
+      "title": "Стихия: проклятая",
       "description": ""
     },
     "worldMapPage": {
-      "title": "",
+      "title": "Карта мира",
       "description": ""
     },
     "worldProcedural": {
-      "title": "",
+      "title": "Процедурные карты",
       "description": ""
     },
     "worldBiomes": {
-      "title": "",
+      "title": "Биомы",
       "description": ""
     },
     "worldStructures": {
-      "title": "",
+      "title": "Постройки под картой",
       "description": ""
     },
     "worldHouses": {
-      "title": "",
+      "title": "Дома, постоялые дворы и магазины",
       "description": ""
     },
     "worldTerrain": {
-      "title": "",
+      "title": "Работа с местностью",
       "description": ""
     },
     "worldDungeon": {
-      "title": "",
+      "title": "Подземелье и башня",
       "description": ""
     },
     "worldPuzzles": {
-      "title": "",
+      "title": "Головоломки",
       "description": ""
     },
     "worldFog": {
-      "title": "",
+      "title": "Туман войны",
       "description": ""
     },
     "worldDigging": {
-      "title": "",
+      "title": "Копание и секретные двери",
       "description": ""
     },
     "worldMovement": {
-      "title": "",
+      "title": "Вода, лазание и мосты",
       "description": ""
     },
     "worldWeather": {
-      "title": "",
+      "title": "Погода, время и сезоны",
       "description": ""
     },
     "worldDreams": {
-      "title": "",
+      "title": "Сны",
       "description": ""
     },
     "worldAdventures": {
-      "title": "",
+      "title": "Приключения на карте",
       "description": ""
     },
     "worldBologna": {
-      "title": "",
+      "title": "Болонья",
       "description": ""
     },
     "worldPlatformer": {
-      "title": "",
+      "title": "Платформенные карты",
       "description": ""
     },
     "worldFlying": {
-      "title": "",
+      "title": "Полёт",
       "description": ""
     },
     "worldConnections": {
-      "title": "",
+      "title": "Карта карт",
       "description": ""
     },
     "worldTreasure": {
-      "title": "",
+      "title": "Сундуки и сокровищницы",
       "description": ""
     },
     "worldTechTree": {
-      "title": "",
+      "title": "Исследования и открытия",
       "description": ""
     },
     "travelOverview": {
-      "title": "",
+      "title": "Быстрое путешествие",
       "description": ""
     },
     "travelModes": {
-      "title": "",
+      "title": "Тридцать способов путешествовать",
       "description": ""
     },
     "vehiclesOverview": {
-      "title": "",
+      "title": "Владение транспортом",
       "description": ""
     },
     "vehicleCamper": {
-      "title": "",
+      "title": "Транспорт: кемпер",
       "description": ""
     },
     "vehicleCar": {
-      "title": "",
+      "title": "Транспорт: машина",
       "description": ""
     },
     "vehicleBike": {
-      "title": "",
+      "title": "Транспорт: велосипед",
       "description": ""
     },
     "vehicleBroom": {
-      "title": "",
+      "title": "Транспорт: летающая метла",
       "description": ""
     },
     "vehicleBoat": {
-      "title": "",
+      "title": "Транспорт: лодка",
       "description": ""
     },
     "vehicleStarship": {
-      "title": "",
+      "title": "Транспорт: звездолёт",
       "description": ""
     },
     "vehicleFuel": {
-      "title": "",
+      "title": "Топливо",
       "description": ""
     },
     "vehicleRepair": {
-      "title": "",
+      "title": "Повреждения и ремонт транспорта",
       "description": ""
     },
     "vehicleUpgrades": {
-      "title": "",
+      "title": "Мастерская",
       "description": ""
     },
     "vehicleCrew": {
-      "title": "",
+      "title": "Экипаж",
       "description": ""
     },
     "vehicleDriving": {
-      "title": "",
+      "title": "Вождение в 3D",
       "description": ""
     },
     "roadTraffic": {
-      "title": "",
+      "title": "Движение, сбитые и кражи",
       "description": ""
     },
     "peopleOverview": {
-      "title": "",
+      "title": "Здесь люди настоящие",
       "description": ""
     },
     "peopleEmpathize": {
-      "title": "",
+      "title": "Панель «Сопереживания»",
       "description": ""
     },
     "peopleOpinion": {
-      "title": "",
+      "title": "Как решается мнение о вас",
       "description": ""
     },
     "peopleLives": {
-      "title": "",
+      "title": "У людей есть жизнь",
       "description": ""
     },
     "peopleTalking": {
-      "title": "",
+      "title": "Что люди говорят друг другу",
       "description": ""
     },
     "peopleSettlements": {
-      "title": "",
+      "title": "Поселения и что с ними происходит",
       "description": ""
     },
     "peoplePolitics": {
-      "title": "",
+      "title": "Политика",
       "description": ""
     },
     "peopleFactions": {
-      "title": "",
+      "title": "Фракции и репутация",
       "description": ""
     },
     "peopleONU": {
-      "title": "",
+      "title": "Ассамблея",
       "description": ""
     },
     "lawCrime": {
-      "title": "",
+      "title": "Преступность и награды",
       "description": ""
     },
     "lawPolice": {
-      "title": "",
+      "title": "Портал полиции",
       "description": ""
     },
     "lawTrial": {
-      "title": "",
+      "title": "Суд",
       "description": ""
     },
     "lawPrison": {
-      "title": "",
+      "title": "Приговоры и тюрьма",
       "description": ""
     },
     "lawEris": {
-      "title": "",
+      "title": "Отношения с Эрис",
       "description": ""
     },
     "societyMail": {
-      "title": "",
+      "title": "Почта",
       "description": ""
     },
     "societyNews": {
-      "title": "",
+      "title": "Новости",
       "description": ""
     },
     "societyDiary": {
-      "title": "",
+      "title": "Дневник отряда",
       "description": ""
     },
     "societyTopics": {
-      "title": "",
+      "title": "Темы разговоров",
       "description": ""
     },
     "societyArmy": {
-      "title": "",
+      "title": "Армии",
       "description": ""
     },
     "societyMultiplayer": {
-      "title": "",
+      "title": "Сетевая игра",
       "description": ""
     },
     "societyHistory": {
-      "title": "",
+      "title": "Столетие за вашей спиной",
       "description": ""
     },
     "econMoney": {
-      "title": "",
+      "title": "Деньги",
       "description": ""
     },
     "econShops": {
-      "title": "",
+      "title": "Магазины",
       "description": ""
     },
     "econStealing": {
-      "title": "",
+      "title": "Кражи",
       "description": ""
     },
     "econBank": {
-      "title": "",
+      "title": "Банки и займы",
       "description": ""
     },
     "econStocks": {
-      "title": "",
+      "title": "Фондовый рынок",
       "description": ""
     },
     "econProperty": {
-      "title": "",
+      "title": "Недвижимость",
       "description": ""
     },
     "econShopOwning": {
-      "title": "",
+      "title": "Владение магазином",
       "description": ""
     },
     "econWork": {
-      "title": "",
+      "title": "Работа",
       "description": ""
     },
     "econQuests": {
-      "title": "",
+      "title": "Задания",
       "description": ""
     },
     "econNotices": {
-      "title": "",
+      "title": "Чтение объявления",
       "description": ""
     },
     "econVending": {
-      "title": "",
+      "title": "Аркадные жетоны",
       "description": ""
     },
     "craftThinker": {
-      "title": "",
+      "title": "Верстак",
       "description": ""
     },
     "craftForge": {
-      "title": "",
+      "title": "Кузня",
       "description": ""
     },
     "craftAlchemy": {
-      "title": "",
+      "title": "Алхимия",
       "description": ""
     },
     "craftCooking": {
-      "title": "",
+      "title": "Готовка",
       "description": ""
     },
     "craftBrewing": {
-      "title": "",
+      "title": "Варка",
       "description": ""
     },
     "craftFurniture": {
-      "title": "",
+      "title": "Строительство и мебель",
       "description": ""
     },
     "craftPlants": {
-      "title": "",
+      "title": "Фермерство",
       "description": ""
     },
     "craftAnimals": {
-      "title": "",
+      "title": "Животные",
       "description": ""
     },
     "craftApiary": {
-      "title": "",
+      "title": "Пчеловодство",
       "description": ""
     },
     "craftArtifacts": {
-      "title": "",
+      "title": "Процедурные артефакты",
       "description": ""
     },
     "craftLoot": {
-      "title": "",
+      "title": "Как бросается лут",
       "description": ""
     },
     "craftContainers": {
-      "title": "",
+      "title": "Контейнеры",
       "description": ""
     },
     "galaxyOverview": {
-      "title": "",
+      "title": "Звёздная карта",
       "description": ""
     },
     "galaxyTravel": {
-      "title": "",
+      "title": "Путешествия между звёздами",
       "description": ""
     },
     "galaxyShip": {
-      "title": "",
+      "title": "Ваш звездолёт",
       "description": ""
     },
     "galaxyLanding": {
-      "title": "",
+      "title": "Посадка",
       "description": ""
     },
     "galaxyAnomalies": {
-      "title": "",
+      "title": "Аномалии",
       "description": ""
     },
     "galaxyBodies": {
-      "title": "",
+      "title": "Что там есть",
       "description": ""
     },
     "galaxyPatrons": {
-      "title": "",
+      "title": "Миры покровителей",
       "description": ""
     },
     "galaxySky": {
-      "title": "",
+      "title": "Ночное небо",
       "description": ""
     },
     "hypernetOS": {
-      "title": "",
+      "title": "Рабочий стол Гиперсети",
       "description": ""
     },
     "hypernetBrowser": {
-      "title": "",
+      "title": "Приложение: Hypernet Explorer",
       "description": ""
     },
     "hypernetMyComputer": {
-      "title": "",
+      "title": "Приложение: My Computer",
       "description": ""
     },
     "hypernetNotepad": {
-      "title": "",
+      "title": "Приложение: Notepad",
       "description": ""
     },
     "hypernetControlPanel": {
-      "title": "",
+      "title": "Приложение: Control Panel",
       "description": ""
     },
     "hypernetTVGuide": {
-      "title": "",
+      "title": "Приложение: TV Guide",
       "description": ""
     },
     "hypernetObjectIndex": {
-      "title": "",
+      "title": "Приложение: Object Index",
       "description": ""
     },
     "hypernetNeuroPolice": {
-      "title": "",
+      "title": "Приложение: N€police",
       "description": ""
     },
     "hypernetEurodemics": {
-      "title": "",
+      "title": "Приложение: Eurodemics",
       "description": ""
     },
     "hypernetArtifactAnalyzer": {
-      "title": "",
+      "title": "Приложение: Artifact Analyzer",
       "description": ""
     },
     "hypernetTokenExchange": {
-      "title": "",
+      "title": "Приложение: Token Exchange",
       "description": ""
     },
     "hypernetPhone": {
-      "title": "",
+      "title": "Гексателефон",
       "description": ""
     },
     "hypernetTV": {
-      "title": "",
+      "title": "Телевидение",
       "description": ""
     },
     "hypernetRadio": {
-      "title": "",
+      "title": "Радио",
       "description": ""
     },
     "hypernetMusic": {
-      "title": "",
+      "title": "Музыка и звук",
       "description": ""
     },
     "gamesOverview": {
-      "title": "",
+      "title": "Развлечения",
       "description": ""
     },
     "gamesArcade": {
-      "title": "",
+      "title": "Аркадный автомат",
       "description": ""
     },
     "gamesBowling": {
-      "title": "",
+      "title": "Боулинг",
       "description": ""
     },
     "gamesPool": {
-      "title": "",
+      "title": "Бильярд",
       "description": ""
     },
     "gamesBasketball": {
-      "title": "",
+      "title": "Баскетбол",
       "description": ""
     },
     "gamesChess": {
-      "title": "",
+      "title": "Шахматы",
       "description": ""
     },
     "gamesFishing": {
-      "title": "",
+      "title": "Рыбалка",
       "description": ""
     },
     "gamesSurfing": {
-      "title": "",
+      "title": "Сёрфинг",
       "description": ""
     },
     "gamesShooting": {
-      "title": "",
+      "title": "Тир",
       "description": ""
     },
     "gamesHorseRace": {
-      "title": "",
+      "title": "Скачки",
       "description": ""
     },
     "gamesTournament": {
-      "title": "",
+      "title": "Турнир монстров",
       "description": ""
     },
     "gamesGambling": {
-      "title": "",
+      "title": "Автоматы, моментальные лотереи и таро",
       "description": ""
     },
     "gamesPiano": {
-      "title": "",
+      "title": "Пианино",
       "description": ""
     },
     "gamesLockpick": {
-      "title": "",
+      "title": "Вскрытие замков",
       "description": ""
     },
     "gamesHyperTamer": {
-      "title": "",
+      "title": "HyperTamer",
       "description": ""
     },
     "gamesCards": {
-      "title": "",
+      "title": "Карточная игра",
       "description": ""
     },
     "gamesRaman": {
-      "title": "",
+      "title": "Рамановский сканер",
       "description": ""
     },
     "gamesPeriodic": {
-      "title": "",
+      "title": "Периодическая таблица",
       "description": ""
     },
     "topicHardwareStore": {
-      "title": "",
+      "title": "Магазин стройматериалов",
       "description": ""
     },
     "topicEsotericHeavyParticles": {
-      "title": "",
+      "title": "Эзотерические тяжёлые частицы",
       "description": ""
     },
     "topicCERN": {
-      "title": "",
+      "title": "ЦЕРН",
       "description": ""
     },
     "immortal": {
-      "title": "",
+      "title": "Состояние: бессмертие",
       "description": ""
     },
     "poison": {
-      "title": "",
+      "title": "Состояние: отравление",
       "description": ""
     },
     "rage": {
-      "title": "",
+      "title": "Состояние: ярость",
       "description": ""
     },
     "freeze": {
-      "title": "",
+      "title": "Состояние: заморозка",
       "description": ""
     },
     "paralysis": {
-      "title": "",
+      "title": "Состояние: паралич",
       "description": ""
     },
     "lockedOn": {
-      "title": "",
+      "title": "Состояние: наведение",
       "description": ""
     },
     "hpRegeneration": {
-      "title": "",
+      "title": "Состояние: регенерация ХП",
       "description": ""
     },
     "mpRegeneration": {
-      "title": "",
+      "title": "Состояние: регенерация МП",
       "description": ""
     },
     "apRegeneration": {
-      "title": "",
+      "title": "Состояние: регенерация АП",
       "description": ""
     },
     "magicReflection": {
-      "title": "",
+      "title": "Состояние: отражение магии",
       "description": ""
     },
     "protect": {
-      "title": "",
+      "title": "Состояние: защита",
       "description": ""
     },
     "provoke": {
-      "title": "",
+      "title": "Состояние: провокация",
       "description": ""
     },
     "hide": {
-      "title": "",
+      "title": "Состояние: скрытие",
       "description": ""
     },
     "counterAttack": {
-      "title": "",
+      "title": "Состояние: контратака",
       "description": ""
     },
     "statusAilmentBlock": {
-      "title": "",
+      "title": "Состояние: блокирование недугов",
       "description": ""
     },
     "inspired": {
-      "title": "",
+      "title": "Состояние: воодушевление",
       "description": ""
     },
     "hot": {
-      "title": "",
+      "title": "Состояние: горячий",
       "description": ""
     },
     "divineShield": {
-      "title": "",
+      "title": "Состояние: божественный щит",
       "description": ""
     },
     "deathMark": {
-      "title": "",
+      "title": "Состояние: метка смерти",
       "description": ""
     },
     "perfectFocus": {
-      "title": "",
+      "title": "Состояние: идеальный фокус",
       "description": ""
     },
     "ethereal": {
-      "title": "",
+      "title": "Состояние: эфирный",
       "description": ""
     },
     "lifeLink": {
-      "title": "",
+      "title": "Состояние: связь жизни",
       "description": ""
     },
     "nausea": {
-      "title": "",
+      "title": "Состояние: тошнота",
       "description": ""
     },
     "drunk": {
-      "title": "",
+      "title": "Состояние: опьянение",
       "description": ""
     },
     "infected": {
-      "title": "",
+      "title": "Состояние: заражение",
       "description": ""
     },
     "floating": {
-      "title": "",
+      "title": "Состояние: левитация",
       "description": ""
     },
     "invisible": {
-      "title": "",
+      "title": "Состояние: невидимость",
       "description": ""
     },
     "oily": {
-      "title": "",
+      "title": "Состояние: нефтяной",
       "description": ""
     },
     "dodge": {
-      "title": "",
+      "title": "Состояние: уворот",
       "description": ""
     },
     "withdrawal": {
-      "title": "",
+      "title": "Состояние: ломка",
       "description": ""
     },
     "grappled": {
-      "title": "",
+      "title": "Состояние: захват",
       "description": ""
     },
     "pinned": {
-      "title": "",
+      "title": "Состояние: прижат",
       "description": ""
     },
     "guardBroken": {
-      "title": "",
+      "title": "Состояние: сломанная защита",
       "description": ""
     },
     "winded": {
-      "title": "",
+      "title": "Состояние: одышка",
       "description": ""
     },
     "comboReady": {
-      "title": "",
+      "title": "Состояние: комбо готово",
       "description": ""
     },
     "vitalExposed": {
-      "title": "",
+      "title": "Состояние: открытая уязвимость",
       "description": ""
     },
     "rootedStance": {
-      "title": "",
+      "title": "Состояние: закреплённая стойка",
       "description": ""
     },
     "flowState": {
-      "title": "",
+      "title": "Состояние: поток",
       "description": ""
     },
     "chiBurn": {
-      "title": "",
+      "title": "Состояние: выжженная ци",
       "description": ""
     },
     "concussed": {
-      "title": "",
+      "title": "Состояние: сотрясение",
       "description": ""
     }
-  },
-  "HelpGroups": {
-    "controls": "Управление",
-    "party": "Отряд",
-    "progress": "Развитие",
-    "gear": "Снаряжение",
-    "needs": "Здоровье",
-    "combat": "Бой",
-    "states": "Состояния",
-    "elements": "Стихии",
-    "world": "Мир",
-    "travel": "Путешествия",
-    "society": "Общество",
-    "economy": "Экономика",
-    "crafting": "Изготовление",
-    "galaxy": "Галактика",
-    "hypernet": "Гиперсеть",
-    "minigames": "Развлечения",
-    "topics": "Темы",
-    "lore": "История мира",
-    "diseases": "Болезни",
-    "history": "Хроника"
   }
 }
