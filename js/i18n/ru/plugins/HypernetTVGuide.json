@@ -1,15 +1,4 @@
 {
-  "title": "",
-  "status": "",
-  "noSignal": "",
-  "endOfTransmission": "",
-  "narrator": "",
-  "format": "",
-  "tone": "",
-  "cast": "",
-  "watch": "",
-  "programs": "",
-  "noPrograms": "",
-  "transmission": "",
-  "tuneInHint": ""
+ "title":"TV Guide","status":"Каналов: {channels}  |  Карта студии {map}  |  Ежедневных слотов: {slots}","noSignal":"Нет сигнала передачи. (RandomTVTransmissionGenerator не загружен?)","endOfTransmission":"— конец передачи —","narrator":"Диктор","format":"Формат:","tone":"Тон:","cast":"В ролях:","watch":"▶ Смотреть","programs":"Программы","noPrograms":"Программ не запланировано.","transmission":"Передача","tuneInHint":"Выберите программу выше, чтобы настроиться.",
+ "channel":{"history":{"name":"Канал «История эпох»"},"news":{"name":"Темпоральные новости 24/7"},"chaos":{"name":"Компания хаотического вещания"},"kitchen":{"name":"Алхимическая кухня"},"kids":{"name":"Театр «Аллея памяти»"},"latenight":{"name":"Полночь на дороге"},"faith":{"name":"Час веры Аноки"},"shopping":{"name":"Гиперкапиталистическая торговая сеть"},"mediahex":{"name":"Медиахекс"}}
 }

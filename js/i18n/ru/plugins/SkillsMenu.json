@@ -1,84 +1,24 @@
 {
-  "title": "Навыки",
-  "back": "Назад",
-  "unit": {
-    "ap": "АП"
-  },
-  "cost": {
-    "mp": "",
-    "ap": ""
-  },
-  "discipline": {
-    "basic": "",
-    "standard": ""
-  },
-  "section": {
-    "damage": "",
-    "skillEffects": "",
-    "classifications": ""
-  },
-  "role": {
-    "offensive": {
-      "name": "",
-      "description": ""
-    },
-    "healing": {
-      "name": "",
-      "description": ""
-    },
-    "support": {
-      "name": "Поддержка",
-      "description": ""
-    }
-  },
-  "cmd": {
-    "levelUp": "",
-    "use": "Использовать",
-    "cancel": "",
-    "carry": "",
-    "bench": ""
-  },
-  "action": {
-    "useSkill": "",
-    "carry": "",
-    "bench": "",
-    "back": ""
-  },
-  "info": {
-    "type": "Тип:",
-    "scale": "",
-    "basic": "Нормальный",
-    "none": "Нет",
-    "effect": "",
-    "hpDmg": "",
-    "mpDmg": "",
-    "hpHeal": "",
-    "mpHeal": "",
-    "hpDrain": "",
-    "mpDrain": "",
-    "buffs": "",
-    "debuffs": "",
-    "state": "Состояние"
-  },
-  "target": {
-    "title": "",
-    "prompt": "",
-    "allCompanions": ""
-  },
-  "empty": {
-    "title": "",
-    "hint": "",
-    "section": "",
-    "category": ""
-  },
-  "loadout": {
-    "skills": "",
-    "magic": "",
-    "count": "{group} {n}/{max}",
-    "carried": "",
-    "benched": "",
-    "always": "",
-    "hint": "",
-    "full": ""
-  }
+ "title": "Навыки",
+ "back": "Назад",
+ "unit": {"ap": "АП", "mp": "МП"},
+ "cost": {"mp": "{n} МП", "ap": "{n} АП"},
+ "battle": {"more": "Ещё... ({count})", "back": "Назад", "none": "Нет навыков для применения"},
+ "discipline": {"basic": "Базовая дисциплина", "standard": "Обычная дисциплина"},
+ "section": {"damage": "Урон", "skillEffects": "Эффекты навыков", "training": "Обучение"},
+ "role": {
+  "offensive": {"name": "Атакующие", "description": "Навыки, наносящие урон.\nСокрушайте врагов."},
+  "healing": {"name": "Исцеление", "description": "Восстанавливают ХП и лечат недуги.\nПомогают вам и союзникам."},
+  "support": {"name": "Поддержка", "description": "Усиления, ослабления и полезные эффекты.\nМеняют ход сражения."}
+ },
+ "cmd": {"levelUp": "Повысить уровень", "allSkills": "Все навыки", "use": "Использовать", "cancel": "Отмена", "carry": "Синхронизировать", "bench": "Отменить синхронизацию", "basic": "Базовые", "esoteric": "Эзотерические"},
+ "action": {"useSkill": "[ Использовать навык ]", "carry": "[ Синхронизировать ]", "bench": "[ Отменить синхронизацию ]", "back": "[ Назад ]"},
+ "info": {"type": "Тип:", "scale": "Масштабирование:", "basic": "Базовый", "none": "Нет", "effect": "Эффект:", "hpDmg": "Урон ХП", "mpDmg": "Урон МП", "hpHeal": "Восстановление ХП", "mpHeal": "Восстановление МП", "hpDrain": "Похищение ХП", "mpDrain": "Похищение МП", "buffs": "Усиления", "debuffs": "Ослабления", "state": "Состояние"},
+ "target": {"title": "Цель — спутник", "prompt": "Подготовка навыка «{skill}». Выберите спутника-цель:", "allCompanions": "Все участники отряда"},
+ "empty": {"title": "Дополнение гримуара", "hint": "Выберите навык в списке слева, чтобы изучить его стихийное масштабирование, стоимость применения и алхимические действия.", "section": "В этом разделе нет каталогизированных навыков.", "category": "В этой категории нет каталогизированных навыков."},
+ "spec": {"statMet": "{value} (условие выполнено)", "statShort": "{value} ({percent}% до ошибки)", "trains": "Обучает", "bonus": "Бонус навыка", "label": {"damage": "Урон", "statReq": "Требуется", "statHeld": "Базовый параметр", "grantedBy": "Источник", "range": "Дальность"}, "range": {"tiles": {"one": "{count} клетка", "other": "{count} клеток"}, "unlimited": "Везде"}},
+ "loadout": {"skills": "Навыки", "magic": "Магия", "count": "{group} {n}/{max}", "carried": "Синхронизировано", "benched": "Не синхронизировано", "always": "Всегда", "hint": "Shift синхронизирует или отменяет синхронизацию выбранного навыка", "full": "Набор «{group}» заполнен ({max} синхронизировано). Сначала отмените синхронизацию одного навыка.", "best": "Лучшие", "random": "Случайные", "bestApplied": "Синхронизированы {n} самых полезных навыков.", "randomApplied": "Синхронизировано случайных навыков: {n}."},
+ "tag": {"field": "Поле"},
+ "magicSystem": {"label": "Система магии", "Arcane": "Аркана", "Sacred": "Сакральная", "Sympathetic": "Симпатическая", "Dimensional": "Измеренческая", "Psionics": "Псионика", "Technomagic": "Техномагия", "Pataphysic": "Патафизика", "Natural": "Природная", "Thermodynamics": "Термодинамика", "Ritual": "Ритуальная"},
+ "searchPlaceholder": "Поиск навыков…"
 }
