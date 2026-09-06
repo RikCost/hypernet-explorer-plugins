@@ -1,27 +1,27 @@
 {
   "moodLabels": {
-    "playful": "",
-    "romantic": "",
-    "chaotic": "",
-    "nervous": "",
-    "confident": "",
-    "caring": "",
-    "guilty": "",
-    "crazed": "",
-    "psychedOut": "",
-    "solipsist": "",
-    "eldritch": "",
-    "melancholy": "",
-    "smug": "",
-    "paranoid": "",
-    "prophetic": "",
-    "bored": ""
+    "playful": "Игривое",
+    "romantic": "Романтичное",
+    "chaotic": "Хаотичное",
+    "nervous": "Нервное",
+    "confident": "Уверенное",
+    "caring": "Заботливое",
+    "guilty": "Виноватое",
+    "crazed": "Обезумевшее",
+    "psychedOut": "Под кайфом",
+    "solipsist": "Высоко на солипсизме",
+    "eldritch": "ЭЛДРИЧЕСКОЕ",
+    "melancholy": "Меланхоличное",
+    "smug": "Самодовольное",
+    "paranoid": "Параноидальное",
+    "prophetic": "Пророческое",
+    "bored": "Скучающее"
   },
   "traitLabels": {
-    "romantic": "",
-    "chaotic": "",
-    "thoughtful": "",
-    "bold": ""
+    "romantic": "Романтик",
+    "chaotic": "Хаотик",
+    "thoughtful": "Мыслитель",
+    "bold": "Смелый"
   },
   "dateWeather": [
     "",
@@ -691,36 +691,28 @@
   },
   "genderTerms": {
     "1": {
-      "they": "",
-      "them": "",
-      "their": "",
-      "theyre": "",
-      "address": "",
-      "formal": ""
+      "they": "он",
+      "them": "его",
+      "their": "его",
+      "theyre": "он",
+      "address": "красавчик",
+      "formal": "сэр"
     },
     "2": {
-      "they": "",
-      "them": "",
-      "their": "",
-      "theyre": "",
-      "address": "",
-      "formal": ""
+      "they": "она",
+      "them": "её",
+      "their": "её",
+      "theyre": "она",
+      "address": "красавица",
+      "formal": "мадам"
     },
     "3": {
-      "they": "",
-      "them": "",
-      "their": "",
-      "theyre": "",
-      "address": "",
-      "formal": ""
-    },
-    "4": {
-      "they": "",
-      "them": "",
-      "their": "",
-      "theyre": "",
-      "address": "",
-      "formal": ""
+      "they": "оно",
+      "them": "его",
+      "their": "его",
+      "theyre": "оно",
+      "address": "диво",
+      "formal": "уважаемый"
     }
   },
   "biomes": {
@@ -2882,15 +2874,15 @@
     }
   },
   "toneLabels": {
-    "serious": "",
-    "normal": "",
-    "bonkers": ""
+    "serious": "Искреннее",
+    "normal": "Капризное",
+    "bonkers": "Безумное"
   },
   "hud": {
-    "tone": "",
-    "you": "",
-    "her": "",
-    "bpm": ""
+    "tone": "Сегодня",
+    "you": "Ваш пульс",
+    "her": "Её пульс",
+    "bpm": "уд/мин"
   },
   "toneIntros": {
     "serious": [
@@ -3581,10 +3573,10 @@
     "endNote": ""
   },
   "sandbox": {
-    "menu": "",
-    "mood": "",
-    "moodRandom": "",
-    "here": "",
-    "random": ""
+    "menu": "Свидание с Эрис",
+    "mood": "Настроение: {mood}",
+    "moodRandom": "выпало на ночь",
+    "here": "Здесь: {biome}",
+    "random": "Где-то наугад"
   }
 }
