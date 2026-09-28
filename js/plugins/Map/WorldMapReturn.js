@@ -334,8 +334,19 @@
         }
 
         updateCharacterSprite($gamePlayer, shouldDive);
+        // A hidden follower is hidden BY its blank sheet, so it is never dressed
+        // here: the story Bubba follower answers actor() with Bubba even while he
+        // sits in the party, and dressing it stood a second Bubba on the tile the
+        // party arrived at.
         const followers = $gamePlayer.followers()._data || [];
-        followers.forEach(follower => { if (follower) updateCharacterSprite(follower, shouldDive); });
+        followers.forEach(follower => {
+            if (!follower) return;
+            if (typeof follower.isVisible === 'function' && !follower.isVisible()) {
+                if (window.DivingSprite) window.DivingSprite.clear(follower);
+                return;
+            }
+            updateCharacterSprite(follower, shouldDive);
+        });
     }
 
     function updateCharacterSprite(character, shouldDive) {
@@ -6777,7 +6788,9 @@
     }
 
     // The name of the world square at (wx, wy), or '' when nothing is known.
-    function worldSquareName(wx, wy) {
+    // `strict` refuses the current map's biome as a guess: that fallback only
+    // describes the square the party is standing on, never an arbitrary one.
+    function worldSquareName(wx, wy, strict) {
         const named = window.WorldGen && window.WorldGen.HardcodedBiomeNames;
         const hardcoded = named ? named[`${wx},${wy}`] : null;
         if (hardcoded) return hardcoded;
@@ -6795,7 +6808,7 @@
             // needs a loaded map: a caller between maps just gets no biome.
             try { biome = $gameSystem.getBiomeFromCache(wx, wy) || ''; } catch (e) { biome = ''; }
         }
-        if ((!biome || biome === 'Unknown') && $gameSystem && $gameSystem._procGenData) {
+        if ((!biome || biome === 'Unknown') && $gameSystem && $gameSystem._procGenData && !strict) {
             biome = $gameSystem._procGenData.currentBiome || '';
         }
         if (biome === 'Unknown') biome = '';
@@ -6804,6 +6817,37 @@
         // vertical") that is layout, not a place.
         biome = biome.replace(/^(Road|River)\s+.*$/, '$1');  // i18n-ignore  biome ids
         return window.BiomeNames.display(biome);
+    }
+
+    // True when the biome cache can answer for a square without a loaded world
+    // map. Off map 315 with no cache, getBiomeFromCache would answer "Fields"
+    // for every square, which is a guess dressed up as a fact.
+    function biomeCacheReady() {
+        const pgd = $gameSystem && $gameSystem._procGenData;
+        const cache = pgd && pgd.biomeCoordinateCache;
+        if (cache && Object.keys(cache).length > 0) return true;
+        return !!($gameMap && $gameMap.mapId && $gameMap.mapId() === worldMapId);
+    }
+
+    // "Fields at (48 132)": how every world coordinate is shown to the player.
+    // The name is the square's own (a named place, else its biome); a square
+    // nothing is known about still prints its bare pair.
+    function squareLabel(wx, wy) {
+        const x = Math.round(Number(wx));
+        const y = Math.round(Number(wy));
+        if (!isFinite(x) || !isFinite(y)) return '';
+        let name = '';
+        try {
+            const pw = playerWorldCoords();
+            const here = !!(pw && pw.x === x && pw.y === y);
+            const named = window.WorldGen && window.WorldGen.HardcodedBiomeNames;
+            if (here || (named && named[`${x},${y}`]) || biomeCacheReady()) {
+                name = localizeName(worldSquareName(x, y, !here));
+            }
+        } catch (e) { name = ''; }
+        return name
+            ? T('WorldMapReturn.squareAt', { place: name, x: x, y: y })
+            : T('WorldMapReturn.squareBare', { x: x, y: y });
     }
 
     // mapId is the map a record was made on; coords are the world coordinates it
@@ -6816,7 +6860,7 @@
             const wx = (coords && coords.x != null) ? Number(coords.x) : (vars ? vars.value(VAR_WORLD_X) | 0 : 0);
             const wy = (coords && coords.y != null) ? Number(coords.y) : (vars ? vars.value(VAR_WORLD_Y) | 0 : 0);
             const name = localizeName(worldSquareName(wx, wy)) || T('WorldMapReturn.wilderness');
-            return `${name} (${wx},${wy})`;  // i18n-ignore  coordinate pair
+            return T('WorldMapReturn.squareAt', { place: name, x: wx, y: wy });
         }
         const info = (typeof $dataMapInfos !== 'undefined' && $dataMapInfos) ? $dataMapInfos[id] : null;
         const raw = (info && info.name) ? String(info.name).replace(/^\d+\s*-\s*/, '') : '';
@@ -7095,9 +7139,9 @@
             ? ' ' + T('WorldMapReturn.underground', { depth: loc.layer })
             : '';
         // On the world map the tile IS the square, so it is printed once.
-        if (loc.mapId === worldMapId) return `${name} (${loc.x},${loc.y})`;  // i18n-ignore  coordinate pair
+        if (loc.mapId === worldMapId) return T('WorldMapReturn.squareAt', { place: name, x: loc.x, y: loc.y });
         if (loc.mapId === procMapId) {
-            return `${name} (${loc.worldX},${loc.worldY})${depth} ${T('WorldMapReturn.atTile', { x: loc.x, y: loc.y })}`;
+            return `${T('WorldMapReturn.squareAt', { place: name, x: loc.worldX, y: loc.worldY })}${depth} ${T('WorldMapReturn.atTile', { x: loc.x, y: loc.y })}`;
         }
         return `${name} ${T('WorldMapReturn.atTile', { x: loc.x, y: loc.y })}`;
     }
@@ -8076,6 +8120,8 @@
         // "ProceduralRoom" everywhere. Pass the world coordinates the record
         // was made at, or omit them for the party's current square.
         placeName,
+        // "Fields at (48 132)": the one way a world coordinate is printed.
+        squareLabel,
         currentPlaceName() { return placeName($gameMap ? $gameMap.mapId() : 0); },
         // Re-apply the current map's biome ambience/music. Exposed so plugins
         // that move the player without a normal map load (the procedural house
@@ -8222,6 +8268,9 @@
         locationName,
         describeLocation,
         placeName,
+        // "Fields at (48 132)": every world coordinate shown to the player goes
+        // through this, never a bare "(x, y)" of its own.
+        squareLabel,
 
         // --- after the impact ---
         // Has Earth been struck out (switch 199)? Anything that would send the

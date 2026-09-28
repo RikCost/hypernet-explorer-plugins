@@ -142,7 +142,7 @@
     let currentMapState = permanentMinimap ? 1 : 0;
 
     // Interactive Zoom Variables
-    let zoomScale = 0.06; // minZoom() replaces it on open: the sheet opens fully zoomed out
+    let zoomScale = 0.06; // openZoom() replaces it on open: the sheet opens zoomed in on the party
     let panX = 0;
     let panY = 0;
     let isDragging = false;
@@ -453,28 +453,23 @@
             if (focusTileHint) {
                 focusOverride = { x: focusTileHint.x, y: focusTileHint.y };
                 resetZoom();
-            } else if (isBolognaView() || isOffEarthView()) {
-                // The world picture is not the sheet on screen here: centring on
-                // its 12288px frame pushes the Bologna grid or a landing grid
-                // clean off the screen, and a scene rebuild re-runs this. Those
-                // sheets are centred and scaled by their own view instead.
-                resetZoom();
             } else {
-                // Center the map initially for fullscreen mode
-                panX = (Graphics.width - worldMapBitmap.width) / 2;
-                panY = (Graphics.height - worldMapBitmap.height) / 2;
+                // Every sheet opens on the party. Centring on the raw picture
+                // frame ignored the zoom, so the first open in a scene drew the
+                // world sheet parked off the top-left corner of the screen.
+                resetZoom();
             }
             refreshWorldMapDisplay();
         });
     }
 
-    // Zoom bounds for the fullscreen map. The map opens fully zoomed out, so the
-    // whole world is on screen before the player zooms in on anything.
+    // Zoom bounds for the fullscreen map. Zooming out ends with the whole sheet
+    // on screen; the world sheet opens zoomed in on the party (openZoom).
     // The floor is not one number: the world sheet is 12288px square, the
     // Bologna grid is 2304x3584 and an alien landing grid is smaller again, so
     // a floor tuned to the world sheet draws the other two as a stamp in the
     // middle of the screen with no room left to enlarge them. Every sheet gets
-    // the scale that fits IT on screen, which is also the scale it opens at.
+    // the scale that fits IT on screen as its floor.
     const WORLD_MIN_ZOOM = 0.06;   // low enough that the whole world sheet fits
     const MAX_ZOOM = 8.0;
 
@@ -509,8 +504,22 @@
         return Math.min(MAX_ZOOM, Math.max(WORLD_MIN_ZOOM, fit));
     }
 
+    // How many world squares fit across the screen when the world sheet opens:
+    // close enough to read the country round the party, wide enough to see
+    // where the roads out of it go.
+    const WORLD_OPEN_SQUARES = 48;
+
+    // The scale a sheet opens at. The world sheet opens zoomed in on the party;
+    // Bologna and a landing grid open fitted, since they are small enough to
+    // read whole.
+    function openZoom() {
+        if (fullscreenSheetSize()) return minZoom();
+        const fit = Graphics.width / (WORLD_OPEN_SQUARES * WORLD_SHEET_PX / WORLD_TILES);
+        return Math.min(MAX_ZOOM, Math.max(minZoom(), fit));
+    }
+
     function resetZoom() {
-        zoomScale = minZoom();
+        zoomScale = openZoom();
         centerOnCurrentCoordinates();
     }
 
@@ -3234,7 +3243,7 @@
         }
         chromeReadoutEl.style.display = 'block';
         chromeReadoutEl.innerHTML =
-            `<div class="wm-read-head">${escapeSheet(T('WorldMap.read.square', { x: square.x, y: square.y }))}</div>` +
+            `<div class="wm-read-head">${escapeSheet(T('WorldMap.read.square', { place: window.WorldMapTransfer.squareLabel(square.x, square.y) }))}</div>` +
             rows + (action ? `<div class="wm-read-action">${escapeSheet(action)}</div>` : '') +
             // The two buttons share one row: they are the same kind of thing
             // done to the same square, so they read as a pair and not a stack.
@@ -3282,7 +3291,7 @@
         if (window.Controller && Controller.usingPad && Controller.usingPad() &&
             typeof Controller.textEntry === 'function') {
             Controller.textEntry({
-                title: T('WorldMap.note.title', { x: x, y: y }),
+                title: T('WorldMap.note.title', { place: window.WorldMapTransfer.squareLabel(x, y) }),
                 value: existing ? existing.text : '',
                 max: 120,
                 onCommit: (value) => commitNote(String(value || '')),
@@ -3295,7 +3304,7 @@
         el.innerHTML = `
             <div class="ui-panel wm-note-box">
                 <div class="page-header-bar">
-                    <h2 class="title">${escapeSheet(T('WorldMap.note.title', { x: x, y: y }))}</h2>
+                    <h2 class="title">${escapeSheet(T('WorldMap.note.title', { place: window.WorldMapTransfer.squareLabel(x, y) }))}</h2>
                 </div>
                 <div class="wm-note-place">${escapeSheet(
                     squareReadout(x, y).map(l => l.value).join(' - '))}</div>
@@ -3510,7 +3519,7 @@
             </div>
             <div class="wm-preview-bar">
                 <span class="wm-preview-title">${escapeSheet(
-                    T('WorldMap.preview.title', { x: wx, y: wy }))}</span>
+                    T('WorldMap.preview.title', { place: window.WorldMapTransfer.squareLabel(wx, wy) }))}</span>
                 <span class="wm-preview-note">${escapeSheet(T('WorldMap.preview.notKept'))}</span>
                 <div class="inspect-btn inspect-btn--secondary focusable" data-wm-preview="close">${
                     escapeSheet(T('WorldMap.preview.close'))}</div>

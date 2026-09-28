@@ -547,6 +547,17 @@
         this._commandWindow.setHandler('wiki', this.commandWiki.bind(this));
         this._commandWindow.setHandler('titleMusic', this.commandTitleMusic.bind(this));
         this._commandWindow.setHandler('exitGame', this.commandExitGame.bind(this));
+        // Every command but the music picker leaves the title or replaces the
+        // $game* objects (new game, load, story, sandbox), so the Eris camera
+        // saves the sandbox slot and lets go of them first.
+        const callHandler = this._commandWindow.callHandler;
+        this._commandWindow.callHandler = (symbol) => {
+            if (symbol !== 'titleMusic' && this._erisCameraBg) {
+                this._erisCameraBg.dispose();
+                this._erisCameraBg = null;
+            }
+            return callHandler.call(this._commandWindow, symbol);
+        };
         const ww = Graphics.width * toPct(windowWidthPct);
         const wx = Graphics.width * toPct(windowXOffsetPct) - ww / 2;
 
@@ -570,23 +581,16 @@
     // database carries, so a new game begins on the intro train.
     const EXPLORE_START = { mapId: 557, x: 13, y: 5, dir: 2 };
 
-    // A new party, like a new story, builds its own world when the folder is
-    // still empty, so a first-time player never has to pass through the Worlds
-    // screen before playing.
+    // A new party needs a world already standing: with an empty world folder
+    // the entry is greyed out and the player makes one from the Worlds screen.
     Scene_Title.prototype.commandNewGame = function () {
-        this._commandWindow.close();
-        this.fadeOutAll();
-        if (!hasActiveWorld()) {
-            createDefaultWorld().then(() => {
-                this.startExploreRun();
-            }).catch(e => {
-                console.error('[Titlescreen] World creation failed', e);
-                SoundManager.playBuzzer();
-                this._commandWindow.open();
-                this.startFadeIn(this.slowFadeSpeed(), false);
-            });
+        if (!newPartyAvailable()) {
+            SoundManager.playBuzzer();
+            this._commandWindow.activate();
             return;
         }
+        this._commandWindow.close();
+        this.fadeOutAll();
         this.startExploreRun();
     };
 
@@ -685,17 +689,6 @@
         }
         this._commandWindow.close();
         this.fadeOutAll();
-        if (!hasActiveWorld()) {
-            createDefaultWorld().then(() => {
-                this.startStoryRun();
-            }).catch(e => {
-                console.error('[Titlescreen] Story world creation failed', e);
-                SoundManager.playBuzzer();
-                this._commandWindow.open();
-                this.startFadeIn(this.slowFadeSpeed(), false);
-            });
-            return;
-        }
         this.startStoryRun();
     };
 
@@ -722,7 +715,66 @@
         if (!storyModeAvailable() || !window.StoryModeStart.usesTutorialMap()) {
             $gameSystem._pendingStoryModeCreation = true;
         }
+        skipStoryStartNight();
         $gamePlayer.reserveTransfer(landing.mapId, landing.x, landing.y, landing.dir || 2, 0);
+        // The square the game actually starts on is the one creation hands the
+        // story to, which the wizard reads back from StoryModeStart (today the
+        // same landing, and stated so it stays right if the two ever part).
+        const start = (window.StoryModeStart && window.StoryModeStart.creationLanding)
+            ? window.StoryModeStart.creationLanding()
+            : landing;
+        stampStoryModeRespawn(start);
+    }
+
+    // A story never opens in the dark. setupNewGame has already put the run on
+    // the world clock, so a world that stands at night is simulated forward to
+    // the next 11:00 before the first step, the way a night's sleep would.
+    const STORY_NIGHT_START_HOUR = 20;
+    const STORY_NIGHT_END_HOUR = 6;
+    const STORY_WAKE_MINUTE_OF_DAY = 11 * 60;
+    // Minute 0 of the game clock is 10:00 (TimeDateSystem.getDateTimeFromMinutes).
+    const CLOCK_EPOCH_MINUTE_OF_DAY = 10 * 60;
+
+    function storyStartNightSkipMinutes(totalMinutes) {
+        const minuteOfDay = (((CLOCK_EPOCH_MINUTE_OF_DAY + (Number(totalMinutes) || 0)) % 1440) + 1440) % 1440;
+        const hour = Math.floor(minuteOfDay / 60);
+        if (hour < STORY_NIGHT_START_HOUR && hour >= STORY_NIGHT_END_HOUR) return 0;
+        return (STORY_WAKE_MINUTE_OF_DAY - minuteOfDay + 1440) % 1440;
+    }
+
+    function skipStoryStartNight() {
+        const TDS = window.TimeDateSystem;
+        if (!TDS || !TDS.getGameTimeMinutes || !TDS.passTime) return;
+        const skip = storyStartNightSkipMinutes(TDS.getGameTimeMinutes());
+        if (skip > 0) TDS.passTime(skip, { drain: false });
+    }
+
+    window.StoryStartNightSkip = { minutes: storyStartNightSkipMinutes };
+
+    // The story's first respawn is where the story begins. BattleSystemEnhanced
+    // reads Variables 25/26/27 (plus the "a respawn was actually set" flag) when
+    // a death asks where to put the party back, and the story mode used to skip
+    // writing them, so a death fell through to a hardcoded square instead of the
+    // square the run opened on. Stamping the landing here means the party wakes
+    // where they set out - until a camp or the setRespawnPoint command gives
+    // them another point to wake at.
+    function stampStoryModeRespawn(landing) {
+        if (!landing || !(landing.mapId > 0)) return;
+        if (typeof $gameVariables === "undefined" || !$gameVariables) return;
+        // The core owns the ids (BattleSystemEnhanced.js, Params); the small
+        // window.BSE export does not carry them, so ask the namespace itself and
+        // fall back to the documented 25/26/27.
+        const core = window.BattleSystemEnhanced || {};
+        const P = core.Params || {};
+        $gameVariables.setValue(P.respawnMapVar || 25, landing.mapId);
+        $gameVariables.setValue(P.respawnXVar || 26, landing.x);
+        $gameVariables.setValue(P.respawnYVar || 27, landing.y);
+        if (typeof $gameSystem !== "undefined" && $gameSystem) {
+            // An authored tile: there is no procedural square to put back, and
+            // any wild camp the party had set is no longer where they wake.
+            $gameSystem._respawnProcSurface = null;
+            $gameSystem._respawnPointSet = true;
+        }
     }
 
     Scene_Title.prototype.createStoryModeWindow = function () {
@@ -803,6 +855,20 @@
     };
 
     Scene_Title.prototype.commandSandboxGame = function () {
+        setupSandboxGame();
+
+        // Sandbox always starts on the Disk of Discord (map 1421) at 9,9, the
+        // same destination as the sandbox menu's "Go to Disk of Discord".
+        $gamePlayer.reserveTransfer(1421, 9, 9, 2, 0);
+
+        this._commandWindow.close();
+        this.fadeOutAll();
+        SceneManager.goto(Scene_Map);
+    };
+
+    // A fresh sandbox party, shared by the Sandbox command and the Eris camera
+    // (which creates the sandbox slot when there is none yet to play).
+    function setupSandboxGame() {
         DataManager.setupNewGame();
         $gameSystem._isSandboxMode = true;
 
@@ -820,15 +886,7 @@
             eris.recoverAll();
         }
         $gameVariables.setValue(29, $gameParty.size()); // party member count
-
-        // Sandbox always starts on the Disk of Discord (map 1421) at 9,9, the
-        // same destination as the sandbox menu's "Go to Disk of Discord".
-        $gamePlayer.reserveTransfer(1421, 9, 9, 2, 0);
-
-        this._commandWindow.close();
-        this.fadeOutAll();
-        SceneManager.goto(Scene_Map);
-    };
+    }
 
     // Minigames: a free-play arcade reachable straight from the title. Opens the
     // minigame picker (Scene_MinigameList); each game returns to that list.
@@ -1754,17 +1812,15 @@
     // Nothing that continues a game can run without a world to put it in: the
     // history, the people, the dungeon and the savegame all live in the world
     // folder. With an empty world folder Reconnect and Sandbox are greyed out
-    // until one is made; New party and New story stay open and build one of
-    // their own. The minigame arcade runs on its own throwaway context and
+    // until one is made, and so are New party and Story mode. The minigame arcade runs on its own throwaway context and
     // stays playable regardless.
     function hasActiveWorld() {
         return !!(window.WorldManager && window.WorldManager.activeWorldName);
     }
 
-    // New party makes its own world when there is none, exactly as New story
-    // does, so the entry is open as long as the world layer is loaded.
+    // New party needs a world already standing; it never makes one of its own.
     function newPartyAvailable() {
-        return !!window.WorldManager;
+        return hasActiveWorld();
     }
 
     // Whether there is any save at all (autosave, playthrough slot or
@@ -1789,8 +1845,6 @@
         } else if (this.isContinueEnabled()) {
             this.selectSymbol('continue');
         } else if (newPartyAvailable()) {
-            // With no world yet this is still the entry to land on: New party
-            // makes one for itself.
             this.selectSymbol('newGame');
         } else if (storyModeAvailable()) {
             this.selectSymbol('storymode');
@@ -1799,12 +1853,11 @@
         }
     };
 
-    // Story mode runs in every world. It used to be gated on the canon one
-    // (2001, ordinary population, ordinary magic) and greyed out everywhere
-    // else; now the world it is begun in only decides WHERE it begins, which is
-    // what storyModeLanding() answers below.
+    // Story mode runs in every world, but needs one already standing: with an
+    // empty world folder it is greyed out. The world it is begun in only
+    // decides WHERE it begins, which is what storyModeLanding() answers below.
     function storyModeAvailable() {
-        return !!window.WorldManager;
+        return hasActiveWorld();
     }
 
     // --- Where the story begins ---------------------------------------------
@@ -5734,6 +5787,399 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     }
 
     // -------------------------------------------------------------------------
+    // Eris Camera: the sandbox savegame played live behind the title. Eris is
+    // put down on a random passable tile of any map with a display name and
+    // walked by the Auto Idle Explorer; the player has no say in it. Whatever
+    // she picks up, learns or levels is written back to the sandbox slot on a
+    // timer, when the background changes, and before any title command swaps
+    // the $game* objects out from under her.
+    //
+    // How it renders: a real Scene_Map (the subclass below) is built, made
+    // ready and started by hand, and kept as a child of the title scene, so
+    // the title's own stage draws the map under the logo and the menu. Each
+    // frame the camera ticks it with SceneManager._scene pointed at it, so
+    // every map plugin sees the map it expects, while scene changes, audio,
+    // toasts and the player's input are held away from it for that tick.
+    // -------------------------------------------------------------------------
+    const ErisCam = { ticking: false, guarded: false };
+    const ERIS_SAVE_FRAMES = 3600;   // a minute between autosaves
+    const ERIS_SPAWN_TRIES = 40;
+    const ERIS_ERROR_LIMIT = 300;    // consecutive failing frames before giving up
+    const ERIS_SHADE_ALPHA = 0.35;   // keeps the menu readable over the map
+    const ERIS_FALLBACK = { mapId: 1421, x: 9, y: 9 };   // the sandbox's own start
+
+    // Installed on first use, so the wrappers sit outside whatever the other
+    // plugins have already wrapped around the same calls.
+    function ensureErisGuards() {
+        if (ErisCam.guarded) return;
+        ErisCam.guarded = true;
+        const wrap = (obj, names, idle) => {
+            if (!obj) return;
+            for (const n of names) {
+                const orig = obj[n];
+                if (typeof orig !== 'function') continue;
+                obj[n] = function () {
+                    if (ErisCam.ticking) return idle;
+                    return orig.apply(this, arguments);
+                };
+            }
+        };
+        // No scene of the camera's may ever replace the title.
+        wrap(SceneManager, ['goto', 'push', 'pop', 'clearStack', 'snapForBackground', 'exit', 'reloadGame'], undefined);
+        // The title keeps its own music: the map is watched in silence.
+        wrap(AudioManager, ['playBgm', 'playBgs', 'playMe', 'playSe', 'playStaticSe',
+            'stopBgm', 'stopBgs', 'stopMe', 'stopSe', 'stopAll', 'fadeOutBgm', 'fadeOutBgs',
+            'fadeOutMe', 'fadeInBgm', 'fadeInBgs', 'replayBgm', 'replayBgs'], undefined);
+        wrap(window.ParchmentToast, ['show'], undefined);
+        // The keyboard, pad and mouse belong to the title menu.
+        wrap(Input, ['isPressed', 'isTriggered', 'isRepeated', 'isLongPressed'], false);
+        wrap(TouchInput, ['isPressed', 'isTriggered', 'isRepeated', 'isLongPressed',
+            'isClicked', 'isCancelled', 'isMoved', 'isHovered', 'isReleased'], false);
+        for (const p of ['dir4', 'dir8']) {
+            const d = Object.getOwnPropertyDescriptor(Input, p);
+            if (!d || !d.get || !d.configurable) continue;
+            Object.defineProperty(Input, p, {
+                configurable: true,
+                get() { return ErisCam.ticking ? 0 : d.get.call(this); }
+            });
+        }
+    }
+
+    // Runs fn as the camera's map scene (see the header above).
+    function asErisCamera(scene, fn) {
+        const prev = SceneManager._scene;
+        ErisCam.ticking = true;
+        SceneManager._scene = scene;
+        try {
+            return fn();
+        } finally {
+            SceneManager._scene = prev;
+            ErisCam.ticking = false;
+        }
+    }
+
+    // Whether every direction of a tile is open, read off the raw map JSON
+    // and the tileset flags the same way Game_Map.checkPassage reads them.
+    function erisTileOpen(map, flags, x, y) {
+        const w = map.width, h = map.height;
+        if (x < 0 || y < 0 || x >= w || y >= h) return false;
+        for (let z = 3; z >= 0; z--) {
+            const tileId = map.data[(z * h + y) * w + x] || 0;
+            const flag = flags[tileId] || 0;
+            if ((flag & 0x10) !== 0) continue;   // [*] tiles do not decide
+            if ((flag & 0x0f) === 0) return true;
+            return false;
+        }
+        return false;
+    }
+
+    // Terrain tags the camera never puts Eris down on.
+    const ERIS_BANNED_TERRAIN = [4, 7];
+
+    // The terrain tag of a tile, read the way Game_Map.terrainTag reads it:
+    // the first non-zero tag from the top layer down.
+    function erisTerrainTag(map, flags, x, y) {
+        const w = map.width, h = map.height;
+        for (let z = 3; z >= 0; z--) {
+            const tileId = map.data[(z * h + y) * w + x] || 0;
+            const tag = (flags[tileId] || 0) >> 12;
+            if (tag > 0) return tag;
+        }
+        return 0;
+    }
+
+    // A random passable tile on a map, with an open neighbour so she is not
+    // put down walled in, and with no event standing on it. Null when the map
+    // has none (or no display name: those are never shown).
+    function pickErisTile(map, tilesets, rand) {
+        rand = rand || Math.random;
+        if (!map || !map.data || !String(map.displayName || '').trim()) return null;
+        const tileset = tilesets && tilesets[map.tilesetId];
+        if (!tileset || !tileset.flags) return null;
+        const taken = new Set();
+        for (const ev of map.events || []) if (ev) taken.add(ev.x + ',' + ev.y);
+        const open = [];
+        for (let y = 0; y < map.height; y++) {
+            for (let x = 0; x < map.width; x++) {
+                if (taken.has(x + ',' + y) || !erisTileOpen(map, tileset.flags, x, y)) continue;
+                if (ERIS_BANNED_TERRAIN.includes(erisTerrainTag(map, tileset.flags, x, y))) continue;
+                if (erisTileOpen(map, tileset.flags, x + 1, y) || erisTileOpen(map, tileset.flags, x - 1, y) ||
+                    erisTileOpen(map, tileset.flags, x, y + 1) || erisTileOpen(map, tileset.flags, x, y - 1)) {
+                    open.push({ x, y });
+                }
+            }
+        }
+        if (!open.length) return null;
+        return open[Math.floor(rand() * open.length)];
+    }
+
+    function loadErisMapJson(mapId) {
+        return new Promise((resolve) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'data/Map%1.json'.format(mapId.padZero(3)));
+            xhr.overrideMimeType('application/json');
+            xhr.onload = () => {
+                try { resolve(xhr.status < 400 ? JSON.parse(xhr.responseText) : null); } catch (e) { resolve(null); }
+            };
+            xhr.onerror = () => resolve(null);
+            xhr.send();
+        });
+    }
+
+    // MapInfos folders whose whole subtree the camera never visits.
+    const ERIS_BANNED_MAP_ROOTS = [167, 168, 574];
+
+    // The ids of the banned roots and every map filed under them, however deep.
+    function erisBannedMapIds() {
+        const banned = new Set(ERIS_BANNED_MAP_ROOTS);
+        const infos = ($dataMapInfos || []).filter(Boolean);
+        let grew = true;
+        while (grew) {
+            grew = false;
+            for (const info of infos) {
+                if (!banned.has(info.id) && banned.has(info.parentId)) {
+                    banned.add(info.id);
+                    grew = true;
+                }
+            }
+        }
+        return banned;
+    }
+
+    // Any map with a display name outside the banned folders, any passable
+    // tile on it.
+    async function pickErisSpawn() {
+        const banned = erisBannedMapIds();
+        const ids = ($dataMapInfos || []).filter(Boolean).map(info => info.id)
+            .filter(id => !banned.has(id));
+        for (let i = 0; i < ERIS_SPAWN_TRIES && ids.length; i++) {
+            const mapId = ids[Math.floor(Math.random() * ids.length)];
+            const map = await loadErisMapJson(mapId);
+            const tile = pickErisTile(map, $dataTilesets);
+            if (tile) return { mapId, x: tile.x, y: tile.y };
+        }
+        return Object.assign({}, ERIS_FALLBACK);
+    }
+
+    // The map scene the camera drives: a Scene_Map in every respect that the
+    // plugins read, minus the parts that belong to a player (touch walking,
+    // the menu, the debug call, the name banner) and minus battles, which
+    // have no scene to play in behind the title.
+    class Scene_ErisCamera extends Scene_Map {
+        createDisplayObjects() {
+            super.createDisplayObjects();
+            // Her conversations still run (the autopilot answers them), but
+            // no window of hers is drawn over the title menu. The dialogue
+            // plugin's parchment box is a DOM overlay of its own, outside the
+            // window layer, so it is held hidden the same way; only display
+            // is ever toggled on it, so visibility stays ours.
+            if (this._windowLayer) this._windowLayer.visible = false;
+            if (this._menuButton) this._menuButton.visible = false;
+            const mw = this._messageWindow;
+            if (mw && mw._htmlMsgRoot) mw._htmlMsgRoot.style.visibility = 'hidden';
+            if (mw && mw._htmlMsgName) mw._htmlMsgName.style.visibility = 'hidden';
+        }
+        start() {
+            super.start();
+            // No portrait of hers stands over the title either: with no bust
+            // manager the dialogue plugin stages no exchange and speaks in
+            // plain boxes (as in battle), which the layer above keeps hidden.
+            this._bustManager = null;
+        }
+        shouldAutosave() { return false; }
+        updateDestination() { this._touchCount = 0; }
+        updateMenuButton() {}
+        isMenuCalled() { return false; }
+        updateCallMenu() {}
+        updateCallDebug() {}
+        updateEncounter() {}
+        // A sandbox Eris does not stay down: the camera picks her up again.
+        checkGameover() {
+            if ($gameParty.isAllDead()) {
+                for (const a of $gameParty.members()) a.recoverAll();
+            }
+        }
+        // A transfer is the camera's to perform: it builds the next map scene.
+        updateTransferPlayer() {
+            if ($gamePlayer.isTransferring()) this._erisNeedsRebuild = true;
+        }
+    }
+
+    class ErisCameraBackground {
+        constructor(title) {
+            this._title = title;
+            this._scene = null;
+            this._started = false;
+            this._ownsGame = false;
+            this._released = false;
+            this._saveCd = ERIS_SAVE_FRAMES;
+            this._errors = 0;
+            this._hidden = new Set();
+            this._enabled = !!(window.SaveSystem && window.SaveSystem.sandboxSlot && window.AutoIdleExplorer &&
+                window.AutoIdleExplorer.setBackgroundScene && window.PIXI);
+            if (!this._enabled) return;
+            ensureErisGuards();
+            this._holder = new PIXI.Container();
+            this._shade = new PIXI.Graphics();
+            this._shade.beginFill(0x000000, ERIS_SHADE_ALPHA);
+            this._shade.drawRect(0, 0, Graphics.width, Graphics.height);
+            this._shade.endFill();
+            this._holder.addChild(this._shade);
+            title.addChildAt(this._holder, 0);
+            this._boot();
+        }
+
+        get available() { return this._enabled; }
+
+        // Load the sandbox slot (create it when there is none), then put Eris
+        // down somewhere new. The load is done here rather than through
+        // DataManager.loadGame so that a camera released before the file
+        // arrives never extracts it over a game the player has started since.
+        _boot() {
+            const slot = window.SaveSystem.sandboxSlot();
+            const load = DataManager.savefileExists(slot)
+                ? StorageManager.loadObject(DataManager.makeSavename(slot)).then(contents => {
+                    if (this._released) return false;
+                    DataManager._lastLoadedSavefileId = slot;
+                    DataManager.createGameObjects();
+                    DataManager.extractSaveContents(contents);
+                    DataManager.correctDataErrors();
+                    $gameSystem.onAfterLoad();
+                    return true;
+                })
+                : Promise.resolve().then(() => {
+                    if (this._released) return false;
+                    setupSandboxGame();
+                    this._ownsGame = true;
+                    this.persist();
+                    return true;
+                });
+            load.then(ok => ok && !this._released ? pickErisSpawn() : null).then(spot => {
+                if (!spot || this._released) return;
+                this._ownsGame = true;
+                MinigameArcade._realGame = false;   // the arcade still sees a title context
+                $gameSystem._isSandboxMode = true;
+                $gamePlayer.reserveTransfer(spot.mapId, spot.x, spot.y, 2, 2);
+                this._buildScene();
+            }).catch(e => {
+                console.warn('[ErisCamera] could not start:', e);
+                this._enabled = false;
+            });
+        }
+
+        _buildScene() {
+            const scene = new Scene_ErisCamera();
+            this._scene = scene;
+            this._started = false;
+            this._holder.addChildAt(scene, 0);
+            this._guarded(scene, () => scene.create());
+        }
+
+        _dropScene() {
+            const scene = this._scene;
+            if (!scene) return;
+            this._scene = null;
+            window.AutoIdleExplorer.setBackgroundScene(null);
+            if (this._started) {
+                this._guarded(scene, () => { scene.stop(); scene.terminate(); });
+            }
+            if (scene.parent) scene.parent.removeChild(scene);
+            try { scene.destroy(); } catch (e) { /* ignore */ }
+            this._started = false;
+        }
+
+        // Runs fn as the map scene, and hides whatever DOM the map's plugins
+        // put up or changed while it ran: none of it belongs over the title.
+        _guarded(scene, fn) {
+            const body = document.body;
+            const before = new Map();
+            if (body) for (const el of body.children) before.set(el, el.style.cssText);
+            try {
+                return asErisCamera(scene, fn);
+            } finally {
+                if (body) {
+                    for (const el of body.children) {
+                        if (this._hidden.has(el)) {
+                            el.style.setProperty('visibility', 'hidden', 'important');
+                        } else if (!before.has(el) || before.get(el) !== el.style.cssText) {
+                            this._hidden.add(el);
+                            el.style.setProperty('visibility', 'hidden', 'important');
+                        }
+                    }
+                }
+            }
+        }
+
+        spawn() {}
+
+        update() {
+            if (!this._enabled || !this._scene) return;
+            const scene = this._scene;
+            try {
+                if (!this._started) {
+                    if (!this._guarded(scene, () => scene.isReady())) return;
+                    this._guarded(scene, () => scene.start());
+                    this._started = true;
+                    window.AutoIdleExplorer.setBackgroundScene(scene);
+                }
+                this._guarded(scene, () => scene.update());
+                this._errors = 0;
+            } catch (e) {
+                if (this._errors++ === 0) console.warn('[ErisCamera] map update error:', e);
+                if (this._errors > ERIS_ERROR_LIMIT) {
+                    console.warn('[ErisCamera] giving up after repeated errors');
+                    this.dispose();
+                    return;
+                }
+            }
+            if (scene._erisNeedsRebuild) {
+                this._dropScene();
+                this._buildScene();
+                return;
+            }
+            if (--this._saveCd <= 0) {
+                this._saveCd = ERIS_SAVE_FRAMES;
+                if (!$gamePlayer.isTransferring()) this.persist();
+            }
+        }
+
+        // Write the sandbox slot. The contents are serialised synchronously
+        // by saveGame, so what is written is exactly the state of this frame.
+        persist() {
+            if (!this._ownsGame || this._released) return;
+            try {
+                $gameSystem._isSandboxMode = true;
+                $gameSystem.onBeforeSave();
+                DataManager.saveGame(window.SaveSystem.sandboxSlot())
+                    .catch(e => console.warn('[ErisCamera] sandbox save failed:', e));
+            } catch (e) {
+                console.warn('[ErisCamera] sandbox save failed:', e);
+            }
+        }
+
+        // Save, then let go of the $game* objects: whatever runs next (a new
+        // game, a load, another background) is free to replace them.
+        dispose() {
+            if (this._released) return;
+            this.persist();
+            this._released = true;
+            this._ownsGame = false;
+            this._enabled = false;
+            this._dropScene();
+            for (const el of this._hidden) el.style.removeProperty('visibility');
+            this._hidden.clear();
+            if (this._holder && this._holder.parent) this._holder.parent.removeChild(this._holder);
+            if (this._holder) { try { this._holder.destroy({ children: true }); } catch (e) { /* ignore */ } }
+            this._holder = null;
+            // The next map scene must read its map fresh, not this camera's copy.
+            $dataMap = null;
+            MinigameArcade._realGame = false;
+        }
+    }
+
+    window.TitleErisCamera = { pickTile: pickErisTile, tileOpen: erisTileOpen, Scene: Scene_ErisCamera };
+
+    // -------------------------------------------------------------------------
     // Scene_Title mesh + cards with fixed connection tracking and hover interaction
     // -------------------------------------------------------------------------
     const _Scene_Title_create = Scene_Title.prototype.create;
@@ -5776,6 +6222,9 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             this._autoDriveBg = new AutoDriveBackground();
             // Fall back to the classic cards if THREE is unavailable
             if (!this._autoDriveBg.available) { this._autoDriveBg = null; this._bgMode = 'cards'; }
+        } else if (this._bgMode === 'eris') {
+            this._erisCameraBg = new ErisCameraBackground(this);
+            if (!this._erisCameraBg.available) { this._erisCameraBg = null; this._bgMode = 'cards'; this._dataCardBg = new DataCardBackground(); }
         }
 
         // Top-right button to change the active background on the fly
@@ -5835,10 +6284,10 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     // lands on the cards.
     const BG_CONFIG_TO_MODE = {
         0: 'random', 1: 'cards', 2: 'space', 3: 'cards',
-        4: 'cards', 5: 'cards', 6: 'cards', 7: 'hyperverse', 8: 'autodrive'
+        4: 'cards', 5: 'cards', 6: 'cards', 7: 'hyperverse', 8: 'autodrive', 9: 'eris'
     };
     const BG_MODE_TO_CONFIG = {
-        random: 0, cards: 1, space: 2, hyperverse: 7, autodrive: 8
+        random: 0, cards: 1, space: 2, hyperverse: 7, autodrive: 8, eris: 9
     };
 
     // The option-menu-level selection ('random' or a concrete mode), read from
@@ -5873,13 +6322,15 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     const BG_MODE_LABELS = () => T.obj('Titlescreen.bgMode');
 
     // The selections offered by the top-right switcher, in cycle order:
-    // Hyperverse (the default) first, Camper Drive second, then the rest, with
+    // Hyperverse (the default) first, the Eris camera second, Camper Drive
+    // third, then the rest, with
     // 'random' always last. Only modes whose renderer is actually loaded are
     // offered; 'random' is always available and reshuffles the concrete
     // background each pick. Keep in step with TITLE_BG_ORDER in GameOptions.js.
     Scene_Title.prototype.getAvailableBackgroundModes = function () {
         const modes = [];
         if (window.THREE && window.GalaxySim) modes.push('hyperverse');
+        if (window.SaveSystem && window.SaveSystem.sandboxSlot && window.AutoIdleExplorer) modes.push('eris');
         if (window.THREE && window.VoxelWorldSystem && window.VoxelWorldSystem.startTitleDrive) {
             modes.push('autodrive');
         }
@@ -5915,6 +6366,8 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         if (this._dataCardBg) { this._dataCardBg.dispose(); this._dataCardBg = null; }
         if (this._hyperverseBg) { this._hyperverseBg.dispose(); this._hyperverseBg = null; }
         if (this._autoDriveBg) { this._autoDriveBg.dispose(); this._autoDriveBg = null; }
+        // Saves the sandbox slot before letting go of it.
+        if (this._erisCameraBg) { this._erisCameraBg.dispose(); this._erisCameraBg = null; }
 
         // Clear the floating PIXI items, destroying per-instance canvas textures
         // (planets / celestials) while leaving shared textures like IconSet alone.
@@ -5941,10 +6394,16 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             } else if (mode === 'autodrive') {
                 this._autoDriveBg = new AutoDriveBackground();
                 if (!this._autoDriveBg.available) { this._autoDriveBg.dispose(); this._autoDriveBg = null; this._bgMode = 'cards'; }
+            } else if (mode === 'eris') {
+                this._erisCameraBg = new ErisCameraBackground(this);
+                if (!this._erisCameraBg.available) {
+                    this._erisCameraBg.dispose(); this._erisCameraBg = null;
+                    this._bgMode = 'cards'; this._dataCardBg = new DataCardBackground();
+                }
             }
         } catch (e) {
             console.warn('[Titlescreen] background "' + mode + '" failed to start:', e);
-            this._dataCardBg = this._hyperverseBg = this._autoDriveBg = null;
+            this._dataCardBg = this._hyperverseBg = this._autoDriveBg = this._erisCameraBg = null;
             this._bgMode = 'cards';
         }
 
@@ -7549,7 +8008,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
     // Spawn one background item according to the active mode.
     Scene_Title.prototype.spawnBackgroundItem = function () {
-        if (this._bgMode === 'hyperverse' || this._bgMode === 'autodrive') {
+        if (this._bgMode === 'hyperverse' || this._bgMode === 'autodrive' || this._bgMode === 'eris') {
             // These backgrounds drive their own animation; nothing to spawn.
             return;
         }
@@ -7652,8 +8111,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         const commands = [];
         // Mirrors Window_TitleCommand.makeCommandList: an entry that needs a
         // world already standing is shown greyed out rather than silently
-        // kicking the player to another screen. New party and New story are not
-        // among them, since they make a world of their own.
+        // kicking the player to another screen.
         const worldReady = hasActiveWorld();
 
         if (isPlaytestLaunch()) {
@@ -7831,6 +8289,10 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             this._autoDriveBg.dispose();
             this._autoDriveBg = null;
         }
+        if (this._erisCameraBg) {
+            this._erisCameraBg.dispose();
+            this._erisCameraBg = null;
+        }
         if (this._bgSwitchButton && this._bgSwitchButton.parentNode) {
             this._bgSwitchButton.parentNode.removeChild(this._bgSwitchButton);
         }
@@ -8003,6 +8465,11 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         // Update the Auto Drive background, if active
         if (this._autoDriveBg) {
             this._autoDriveBg.update();
+        }
+
+        // Tick the Eris camera's map, if active
+        if (this._erisCameraBg) {
+            this._erisCameraBg.update();
         }
 
         // Update all floating items (cards or planets)

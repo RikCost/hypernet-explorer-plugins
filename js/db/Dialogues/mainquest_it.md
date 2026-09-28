@@ -3,12 +3,12 @@
 intro
 
 Bubba:
-Em! T'aggio trovata finalmente!
-Mamma mia, grazie a Dio tenive ancora 'e manette liminali nostre accoppiate, ca si no col cavolo ca te localizzavo.
-A proposito 'e Dio... te lo devo dire proprio franco franco.
-Secondo me l'hai azzampato, Em!
-Ti eri trasformata 'ncopp a 'nu costrutto gigante 'e luce più alto d' 'a [Torre Omega | Omega Tower]...
-Tutti quanti nell'emisfero nord d' 'a Terra hanno visto a te e quello che hai combinato!
+Uè, Em! Finalmente ti ho trovata!
+Mamma mia, grazie a Dio avevi ancora le nostre manette liminali accoppiate, sennò col cavolo che ti localizzavo.
+A proposito di Dio... te lo devo dire proprio chiaro e tondo.
+Mannaggia, secondo me l'hai fatto fuori, Em!
+Ti eri trasformata in... quel costrutto gigante di luce che spuntava da dietro l'orizzonte...
+Tutti quanti nell'emisfero nord della Terra hanno visto te e quello che hai combinato!
 
 Em:
 Dio? Cos'è un dio? E tu chi sei?
@@ -17,82 +17,120 @@ Em:
 ... e chi è eM?
 
 Bubba:
-Uè, com'e'?! Sono Bubba Wilson, 'o cumpà tuo!
-Ce ne siamo passati d'anni 'ncopp 'a strada 'insieme! Nun te ricordi proprio niente?
+Sono Bubba Wilson, il tuo cumpà di viaggio!
+Ne abbiamo passati di anni sulla strada insieme! Non ti ricordi proprio niente?
 
 Em:
 ... no.
 
 Bubba:
-Eh, secondo me qualsiasi fattucchieria hai tirato a Dio, t'è rimbalzata directa 'ncapa!
-Mica è 'a prima volta, teso'! Te ricordi quando facesti un casino co' 'nu spell e ti dimenticasti cos'era il venerdì per mesi?
-Maronna mia, quanto ci siamo divertiti!
+Allora abbiamo un problema più grosso della morte di Dio...
+Secondo me qualsiasi incantesimo hai tirato a Dio ti è rimbalzato dritto nel cervello, Em.
+Mica è la prima volta che succede, l'ultima volta una fusione di incantesimi andata storta ti ha fatto dimenticare il concetto di venerdì per mesi.
+Ma ogni volta erano solo uno o due ricordi spazzatura, mica ti si cancellava l'identità intera!
 
 Em:
-Scusa Bubba, al momento il mio cervello sembra un pasticcio in datamosh...
+Il mio cervello sembra un pasticcio in datamosh in questo momento... mi ricordo a malapena di respirare ogni secondo per restare viva.
+
+Bubba:
+Non devi respirare a mano, Em, è un riflesso automatico.
+
+Em:
+Ah, giusto.
 Ma stando a quello che hai detto, sarei una strega?
 
 Bubba:
-Eh, si' 'na strega, Em!
-'Na strega wannabe, p' 'a precisione!
-No ca te manca 'o potenziale arcano o 'a devozione, eh!
-È ca fai proprio schifo a mirà cu 'e incantesimi, ecco pecchè usi 'a pistola!
-Te ricordi quando teletrasportasti 'nu pesce luna dinto 'o [Camper] nostro?
-E poi l'universo s'è inventato 'e risolver 'o problema 'e collisione allagandoci 'e viscere 'e pesce?
-Bei tempi, teso'!
+Sei una strega, Em!
+Una strega wannabe, per la precisione!
 
 Em:
-Non ne ho il minimo ricordo.
+Cosa dovremmo fare adesso?
 
 Bubba:
-Nun te preoccupà, teso'! Guarda 'nu mumento l'opzione [Archivio | Archive] d' 'o [Menu Principale | Main menu] p' 'mparate 'n'altra volta tutto quello ca te serve per campà 'ncopp 'a strada.
+Prima leviamoci da questa maledetta discarica gelata e andiamo al nostro [Camper | Camper] che ho parcheggiato in città.
 
-Em:
-Splendido. Questo menu prevede la Cedrata Massoni o è rigorosamente un prezzo fisso?
 
-Bubba:
-Ma che stai a di'?
-
-Em:
-Nel menu, stiamo ordinando da mangiare?
-
-Bubba:
-Ate'! È 'nu menu astratto, mica è quello 'e carta d' 'a trattoria!
-Ma puoi accedervi in qualsiasi momento premendo [MENU | Main menu], te fa vedè 'nu menu tipo JRPG dinto 'a capa.
-È 'na tecnica 'e meditazione trascendentale pe' deframmentà 'e ricordi tuoi.
-Tengo pure 'a patente d'auto tua 'ncopp a me, po' ricominciamo a ricostruire chi si' partendo da quella e dal tuo amore p' 'a [Cedrata Massoni | Cedrata massoni].
+------------------------------------------------------------------------------------------------------------
+fasttravel
 
 Em:
 E dove siamo diretti, allora?
 
 Bubba:
-A'ddò vuo' tu, teso', basta ca ce teniamo luntano dal Sacro Vaticano Impero.
-Nun penso proprio ca al Papa ci sia piaciuto quello ca hai fatto al dio suo.
-Fidati 'e me, chillo sta già apparecchiando 'nu rogo cu 'o nome tuo sopra.
+Secondo me dovremmo andare in una clinica a farti controllare la testa, Em, ma davvero, dove vuoi tu, teso'!
+Il mondo è la nostra ostrica e noi la spacchiamo a pezzi con le nostre chiavi inglesi!
+Però dobbiamo restare lontani dal Sacro Vaticano Impero.
+Non penso proprio che al Papa sia piaciuto quello che hai fatto al suo dio.
+Fidati di me, quello sta già preparando un rogo col tuo nome sopra.
 
 Em:
 Un posto dove io non sia la portata principale di un barbecue sarebbe delizioso.
 
 Bubba:
-E allora 'a risposta è 'a Torre Omega! È 'nu posto neutrale mezzo alle Iperpotenze, gestito dall'[Archive Foundation].
-A quei nerd atei nun glene importa 'na beneamata mazza ca hai fatto fuori l'Onnipotente!
-Parlame ogni volta ca teni bisogno 'e ricordà coccosa: finché nun troviamo 'o modo pe' restituirti 'a memoria, farò 'a macchina da tutorial vivente, siente a me!
+E allora la risposta è la Torre Omega!
+È un posto neutrale in mezzo alle Iperpotenze, gestito dall'[Archive Foundation | Archive Foundation].
+A quei nerd atei non gliene importa una beneamata mazza che hai fatto fuori l'Onnipotente!
+
+Em:
+E come ci arriviamo?
+
+Bubba:
+Adesso siamo in Scozia, quindi per arrivarci prendiamo il nostro [Camper | Camper] e guidiamo verso sud finché non arriviamo al [Tritunnel Ovest | Tritunnel West].
+
+
+------------------------------------------------------------------------------------------------------------
+menu
+
+Bubba:
+Uè, quasi mi scordavo! Premi [MENU] per aprire il menu.
+
+Em:
+Splendido. Questo menu prevede la Cedrata Massoni o è rigorosamente un prezzo fisso?
+
+Bubba:
+Ma che stai dicendo?
+
+Em:
+Nel menu, stiamo ordinando da mangiare?
+
+Bubba:
+Uè! È un menu astratto, mica quello di carta della trattoria!
+Ma puoi accedervi in qualsiasi momento premendo [MENU | Main menu], immaginati un menu tipo JRPG dentro la testa!
 
 ------------------------------------------------------------------------------------------------------------
 
+travel
+
+Em:
+E dove siamo diretti, allora?
+
+Bubba:
+Dove vuoi tu, teso', basta che restiamo lontani dal Sacro Vaticano Impero.
+Non penso proprio che al Papa sia piaciuto quello che hai fatto al suo dio.
+Fidati di me, quello sta già preparando un rogo col tuo nome sopra.
+
+Em:
+Un posto dove io non sia la portata principale di un barbecue sarebbe delizioso.
+
+Bubba:
+E allora la risposta è la Torre Omega!
+È un posto neutrale in mezzo alle Iperpotenze, gestito dall'[Archive Foundation | Archive Foundation]. A quei nerd atei non gliene importa una beneamata mazza che hai fatto fuori l'Onnipotente!
+Parlami ogni volta che hai bisogno di ricordare qualcosa: finché non troviamo il modo di restituirti la memoria, farò da tutorial vivente!
+
+------------------------------------------------------------------------------------------------------------
 exit_forest
 
 Bubba:
-Dobbiamo togliere 'e chiappe nostre da sta discarica gelata, Em!
-Aggio avvistato dei fantasmi giudiziari in città: sono i messaggeri 'e Eris, 'a Dea del Caos, d' 'a Discordia e d' 'a Giustizia... e pure 'a mia ex moglie.
+Jamme, Em, dobbiamo levare le chiappe da questa discarica gelata!
+Ho avvistato dei fantasmi giudiziari in città: sono i messaggeri di Eris, la Dea del Caos, della Discordia e della Giustizia... e pure la mia ex moglie.
 
 Em:
 Eri sposato con una dea? Bubba, vuota il sacco, per favore.
 
 Bubba:
-'A mia ex moglie, [Eris], 'a Dea d' 'a Discordia e d' 'a Giustizia.
-Vi siete già incontrate e te odia a morte!
-Mo ca hai commesso 'nu deicidio, volente o nolente, chilla te può strascinare 'o culo in prigione e tenertelo per millenni intere!
+La mia ex moglie, [Eris], la Dea della Discordia e della Giustizia.
+Vi siete già incontrate e ti odia a morte!
+Adesso che hai commesso un deicidio, volente o nolente, quella ti può trascinare il culo in prigione e tenercelo per millenni interi!
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -100,44 +138,42 @@ television
 La televisione
 
 Bubba:
-Aspetta, Em! Nun ti ricordi niente 'e tutto questo, ma c'è una cosa troppo importante ca devi sapere quando guardi 'a televisione.
+Aspetta, Em! Non ti ricordi niente di tutto questo, ma c'è una cosa troppo importante che devi sapere quando guardi la televisione.
 
 Em:
 E quale sarebbe?
 
 Bubba:
-Nun rispondere MAI a quelle persone dentro al televisore.
-Puoi sorridere, puoi fargli 'o dito medio o puoi annuire cu 'a capa, ma nun te farti MAI e poi MAI scappare 'na parola 'e bocca!
+Non rispondere MAI a quelle persone dentro al televisore.
+Puoi sorridere, puoi fargli il dito medio o puoi annuire con la testa, ma non farti MAI e poi MAI scappare una parola di bocca!
 
 Em:
 Posso sapere perché?
 
 Bubba:
-Nun t' 'o posso di', teso'. È 'nu pericolo informativo, 'nu infopericolo.
-Tu sei l'unica colpita, ma nun possiamo permettere ca si diffonda 'ncampagna.
+Non te lo posso dire, teso'. È un infopericolo.
+Tu sei l'unica colpita, ma non possiamo permettere che si diffonda in giro.
 
 ------------------------------------------------------------------------------------------------------------
-
 dog_encounter
 Em:
-Oh, una...un... coso! Posso accarezzarlo?
+Oh, un... coso! Posso accarezzarlo?
 
 Bubba:
-Vai, vai! Fagli 'nu sacco 'e coccole!
+Jamme, vai! Fagli un sacco di coccole!
 
 Em:
 Ho un piccolo problema: non ricordo come si accarezza quel coso.
 
 Bubba:
-Chillo si chiama "Cane", teso'!
+Quel coso si chiama "Cane", teso'!
 Avvicinati e premi [CONTINUA | Continue], seleziona [Empatia | Empathize] e poi [Accarezza | Pet].
-Se ci piaci abbastante, possiamo chiedergli di venire nel party nostro come animale o membro ufficioso.
+Se gli piaci abbastanza, possiamo chiedergli di entrare nel nostro party come animale o come membro vero e proprio.
 
 Em:
 Non vedo l'ora che il party abbia inizio!
 
 ------------------------------------------------------------------------------------------------------------
-
 mimic
 Mimic
 
@@ -146,15 +182,16 @@ Oh, quello è un mimic.
 Sarò anche magicamente lobotomizzata, ma riconosco un maledetto Mimic quando lo vedo.
 
 Bubba:
-Eggià, chi è chillo fetente ca lascerebbe 'nu forziere sano sano in mezzo a 'na foresta?
-Raccogliamo invece l'acciaio e 'o legname sparsi lì attorno.
-Li puoi usare in mille modi: pe' fabbricare oggetti nel menu del [Thinker | Thinker] o come materiale di costruzione nel menu [Costruzione | Build].
-Se vuoi darti alla scienza, toccherà accumulare 'na bella scorta 'e materiali pe' usarli nel menu [Ricerca | Research].
-Chissà? Magari un giorno te pigli 'nu [Premio Nobel | Nobel Prize] proprio come me!
+Eh già, chi è che lascia un forziere chiuso in mezzo a una foresta?
+Raccogliamo invece l'acciaio e il legname recuperati lì attorno al mimic.
+Li puoi usare in mille modi: per fabbricare oggetti nel menu del [Thinker | Thinker] o come materiale di costruzione nel menu [Costruzione | Build].
+Se vuoi darti alla scienza, toccherà accumulare una bella scorta di materiali da usare nel menu [Ricerca | Research].
+Chissà? Magari un giorno ti prendi un [Premio Nobel | Nobel Prize] proprio come me!
 
 Em:
 E cosa dovremmo fare con il mimic?
 
 Bubba:
-Lassalo sta'! Nun 'o penzà proprio!
+Uè, lascialo stare!
 
+------------------------------------------------------------------------------------------------------------

@@ -1436,6 +1436,25 @@
     this.updateWeaponSprite();
   };
 
+  // The warm-up above only starts the read. The 19MB file then parses on the
+  // main thread the moment it lands, a second or two into the fight, which is
+  // the stall the opening of the first unarmed battle used to have. So the
+  // hands are also read out on the map, where a lost frame is a lost frame and
+  // not the start of a fight. warmRig is a no-op once the pool holds a copy or
+  // a read is running, so asking again every few seconds costs a loop over the
+  // party and catches a weapon put down after the first ask.
+  const RIG_MAP_WARM_DELAY = 240;   // ~4s of map before the first ask
+  const RIG_MAP_WARM_EVERY = 300;
+  const _Scene_Map_update_warmRig = Scene_Map.prototype.update;
+  Scene_Map.prototype.update = function () {
+    _Scene_Map_update_warmRig.call(this);
+    this._rigWarmFrames = (this._rigWarmFrames || 0) + 1;
+    if (this._rigWarmFrames < RIG_MAP_WARM_DELAY) return;
+    if ((this._rigWarmFrames - RIG_MAP_WARM_DELAY) % RIG_MAP_WARM_EVERY !== 0) return;
+    if (this.isBusy() || !window.WeaponSystemProcedural || !$gameParty) return;
+    WeaponSystemProcedural.warmRig($gameParty.battleMembers());
+  };
+
   /**
    * Whether the hands on screen belong to `actor`. With CPU party members the
    * companions fight by themselves and the first person view stays the
@@ -1571,6 +1590,16 @@
     if (!rightWeapon && !rightShield && window.WeaponSystemProcedural) {
       rightWeapon = WeaponSystemProcedural.unarmedWeaponFor(actor);
     }
+    // The vector gun folded into the Fists of Em is put down: the hand is the
+    // authored pair of fists (WeaponSystemProcedural.rigFistWeapon), whatever
+    // the holder is, and her own built fist only if that file is missing.
+    const VG = window.VectorGun;
+    const vgFists = !!(rightWeapon && VG && VG.isVectorGun(rightWeapon) &&
+      VG.formKey() === VG.FISTS_FORM && window.WeaponSystemProcedural);
+    if (vgFists) {
+      rightWeapon = (WeaponSystemProcedural.rigFistWeapon && WeaponSystemProcedural.rigFistWeapon()) ||
+        WeaponSystemProcedural.unarmedWeaponFor(actor);
+    }
 
     // Claws are a pair even when the database lists one of them.
     const isClaws = !!(weapons[0] && weapons[0].wtypeId === 10);
@@ -1593,6 +1622,8 @@
     this._weaponActorId = actor.actorId();
 
     const right = this.setHeldWeaponModel('right', rightWeapon || shieldModel(rightShield));
+    // Still the gun as far as SWITCH is concerned: the fold plays on this hand.
+    if (right) right._vgHeld = vgFists;
     const left = this.setHeldWeaponModel('left', leftWeapon || shieldModel(leftShield));
     if (handover) {
       for (const sprite of [right, left]) {
@@ -1637,6 +1668,13 @@
       // terminate() runs disposeWeaponObject3D; a bare scene.remove would leak
       // the model's GPU buffers on every swap.
       if (held) held.terminate();
+      // A SWITCH is the same weapon refolding in the hand, not a new one carried
+      // in: the rise plays where the old shape stood, with no slide from the side.
+      if (held && this._vgMorphing) {
+        next._entryDone = true;
+        next._transitionDX = 0;
+        next._transitionDY = 0;
+      }
       next._vgFormKey = formKey;
       this._3dWeaponSprites[hand] = next;
     }

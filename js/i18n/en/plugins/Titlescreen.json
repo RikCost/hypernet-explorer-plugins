@@ -235,6 +235,7 @@
   "bgMode": {
     "hyperverse": "HYPERVERSE",
     "autodrive": "CAMPER DRIVE",
+    "eris": "ERIS CAMERA",
     "cards": "DATA CARDS",
     "space": "SPACE",
     "random": "RANDOM"

@@ -3903,7 +3903,7 @@
             const sq = check.square;
             const existing = sq ? TF.findAt(sq.x, sq.y, sq.planet) : null;
             const whereText = sq
-                ? T('Towns.deeds.square', { x: sq.x, y: sq.y }) +
+                ? T('Towns.deeds.square', { place: sq.planet ? T('WorldMapReturn.squareBare', { x: sq.x, y: sq.y }) : window.WorldMapTransfer.squareLabel(sq.x, sq.y) }) +
                   (sq.planet ? ' ' + T('Towns.deeds.onPlanet', { planet: sq.planet }) : '')
                 : '';
             const rows = [];

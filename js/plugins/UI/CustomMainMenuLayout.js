@@ -1280,7 +1280,7 @@
             const residents = TF.residents(town);
             const capacity = TF.capacity(town);
             due += TF.rentDue(town);
-            const where = T('Towns.deeds.square', { x: town.worldX, y: town.worldY }) +
+            const where = T('Towns.deeds.square', { place: town.planet ? T('WorldMapReturn.squareBare', { x: town.worldX, y: town.worldY }) : window.WorldMapTransfer.squareLabel(town.worldX, town.worldY) }) +
                 (town.planet ? ' ' + T('Towns.deeds.onPlanet', { planet: town.planet }) : '');
             townRows += `
                         <div class="deed-row">
@@ -2486,6 +2486,9 @@
     // it, so it prints what the dossier holds and nothing it would have to
     // invent.
     Scene_Menu.prototype.generateUIDynamicsDossierHTML = function () {
+        // A redraw removes the chip under the cursor before it can report the
+        // mouse leaving, so the hover card it raised is put away here.
+        window.CCTooltip?.hide?.();
         const entry = this.dynamicsSelectedEntry();
         if (!entry) return `<div class="roster-empty">${T('MainMenu.dynamics.noMembers')}</div>`;
 
@@ -2557,11 +2560,17 @@
                 </div>`;
             // The six fighting attributes, in the game's own labels: the two
             // pools above already say what MHP and MMP are.
+            // Each attribute raises the character creator's own card for it
+            // (CharCreate.statInfo), keyed by the game's stat name for the param.
+            const statKeys = ['HP', 'MP', 'STR', 'CON', 'INT', 'WIS', 'DEX', 'PSI'];
+            const statHover = id => (window.CCTooltip
+                ? `onmouseenter="window.CCTooltip&&window.CCTooltip.showStat(event,'${statKeys[id]}')" onmouseleave="window.CCTooltip&&window.CCTooltip.hide()"`
+                : '');
             paramsHTML = `
                 <h3 class="dyn-section-title">${T('MainMenu.dynamics.dossierParams')}</h3>
                 <div class="dyn-dossier-params">
                     ${[2, 3, 4, 5, 6, 7].map(id => `
-                    <div class="dyn-dossier-param">
+                    <div class="dyn-dossier-param" ${statHover(id)}>
                         <span class="dyn-dossier-param-lbl">${escapeHtml(TextManager.param(id))}</span>
                         <span class="dyn-dossier-param-val">${actor.param(id)}</span>
                     </div>`).join('')}
@@ -2572,8 +2581,11 @@
         // them a shelf of chips with the game's own IconSet sprite on it rather
         // than a number or a line of bare names. One chip builder for all of
         // them, so the shelves cannot drift apart; an entry with no icon of its
-        // own is drawn as the name alone rather than as an empty box.
-        const chip = (icon, label, note) => `<span class="dyn-chip">${
+        // own is drawn as the name alone rather than as an empty box. A chip
+        // that names a record (a skill, a trait, a piece of gear) raises the
+        // same hover card the character creator raises for it (window.CCTooltip).
+        const hover = (type, id) => (window.CCTooltip && type ? window.CCTooltip.attrs(type, id) : '');
+        const chip = (icon, label, note, tip) => `<span class="dyn-chip" ${tip || ''}>${
             Number.isFinite(icon) && icon > 0
                 ? `<span class="icon menu-icon dyn-chip-icon" style="${iconStyle(icon)}"></span>`
                 : ''
@@ -2594,9 +2606,9 @@
         // apart: the skill type the entry was filed under (stypeId 1 is magic,
         // 2 is everything hands do), never by reading the name.
         const magicChips = skillList.filter(sk => sk.stypeId === 1)
-            .map(sk => chip(sk.iconIndex, sk.name));
+            .map(sk => chip(sk.iconIndex, sk.name, '', hover('skill', sk.id)));
         const skillChips = skillList.filter(sk => sk.stypeId !== 1)
-            .map(sk => chip(sk.iconIndex, sk.name));
+            .map(sk => chip(sk.iconIndex, sk.name, '', hover('skill', sk.id)));
 
         // Every discipline this one has actually trained: level 1 is what
         // everybody is born at, so only what was raised above it is a thing
@@ -2612,14 +2624,16 @@
         }
 
         const gearChips = actor
-            ? (actor.equips() || []).filter(Boolean).map(item => chip(item.iconIndex, item.name))
+            ? (actor.equips() || []).filter(Boolean).map(item => chip(item.iconIndex, item.name, '',
+                hover(DataManager.isWeapon(item) ? 'weapon' : 'armor', item.id)))
             : [];
 
         const traitChips = actor
             ? (actor._selectedTraits || []).map(trait => {
                 const label = window.TraitText ? window.TraitText(trait, 'name') : (trait && trait.name);
                 if (!label) return '';
-                return chip(window.TraitIcon ? window.TraitIcon(trait) : -1, label);
+                return chip(window.TraitIcon ? window.TraitIcon(trait) : -1, label, '',
+                    trait && trait.id != null ? hover('trait', trait.id) : '');
             }).filter(Boolean)
             : [];
 
@@ -2650,7 +2664,11 @@
         const wikiHTML = window.NPCEmpathize?.openWiki
             ? `<div class="inspect-btn focusable roster-btn" onclick="SceneManager._scene?.openDynamicsWiki?.()">${T('MainMenu.dynamics.wiki')}</div>`
             : '';
-        const exportHTML = (!isPast && window.CharacterExport)
+        // Em, Bubba and every other written dossier belong to the game, so the
+        // whole section, the wiki with it, is left off their page.
+        const isAuthored = !isPast
+            && !!window.CharacterPresets?.isAuthoredCharacter?.(actor || preset);
+        const exportHTML = isAuthored ? '' : (!isPast && window.CharacterExport)
             ? `<h3 class="dyn-section-title">${T('MainMenu.dynamics.exportTitle')}</h3>
                 <div class="roster-actions dyn-dossier-export">
                     ${exportBtn(T('MainMenu.dynamics.exportJson'), 'exportDynamicsCharacter?.(\'json\')')}
@@ -2662,6 +2680,7 @@
 
         return `
             <div class="dyn-dossier">
+                <div class="dyn-dossier-scroll">
                 <div class="right-tools-title">${T('MainMenu.dynamics.dossierTitle')}</div>
                 <div class="dyn-dossier-head">
                     <div class="dyn-dossier-face">${face}</div>
@@ -2671,13 +2690,14 @@
                         <span class="roster-past-status ${statusBand}">${statusLabel}</span>
                         ${turnHTML}
                     </div>
+                    ${vitalsHTML}
                 </div>
-                ${vitalsHTML}
                 ${sinceHTML ? `<div class="dyn-dossier-lines">${sinceHTML}</div>` : ''}
                 ${loreHTML}
                 ${paramsHTML}
                 ${knowledgeHTML}
-                ${exportHTML}
+                </div>
+                ${exportHTML ? `<div class="dyn-dossier-foot">${exportHTML}</div>` : ''}
             </div>`;
     };
 
@@ -2847,8 +2867,15 @@
             typeof window.MergedVehicleSystem.enterAirshipInterior === "function") {
             AudioManager.playSe({ name: "Teleport", pan: 0, pitch: 100, volume: 90 });
             // Skip the interior command's own SE so the teleport isn't doubled.
-            window.MergedVehicleSystem.enterAirshipInterior({ silent: true });
-            SceneManager.pop();
+            // The teleport cutscene plays first (goto, so the menu is gone
+            // either way) and boards the ship when it ends.
+            const board = () => window.MergedVehicleSystem.enterAirshipInterior({ silent: true });
+            if (window.TeleportCutscene) {
+                window.TeleportCutscene.play({ onTeleport: board });
+            } else {
+                board();
+                SceneManager.pop();
+            }
         } else {
             SoundManager.playBuzzer();
             console.warn("commandReturnToShip: MergedVehicleSystem unavailable.");
@@ -2894,9 +2921,18 @@
         }
         SoundManager.playOk();
         AudioManager.playSe({ name: "Teleport", pan: 0, pitch: 100, volume: 90 });
-        $gamePlayer.reserveTransfer(
-            OMEGA_TOWER_ENTRY.mapId, OMEGA_TOWER_ENTRY.x,
-            OMEGA_TOWER_ENTRY.y, OMEGA_TOWER_ENTRY.dir, 0);
+        // The short teleport cutscene (pillar of light outside, black void
+        // inside) plays first and performs the transfer itself.
+        if (window.TeleportCutscene) {
+            window.TeleportCutscene.play({
+                mapId: OMEGA_TOWER_ENTRY.mapId, x: OMEGA_TOWER_ENTRY.x,
+                y: OMEGA_TOWER_ENTRY.y, dir: OMEGA_TOWER_ENTRY.dir, fadeType: 0
+            });
+        } else {
+            $gamePlayer.reserveTransfer(
+                OMEGA_TOWER_ENTRY.mapId, OMEGA_TOWER_ENTRY.x,
+                OMEGA_TOWER_ENTRY.y, OMEGA_TOWER_ENTRY.dir, 0);
+        }
     }
 
     // "Teleport to Omega Tower / Cancel" over the map. The first row takes the
@@ -2940,8 +2976,13 @@
         if (window.MergedVehicleSystem &&
             typeof window.MergedVehicleSystem.enterAirshipInterior === "function") {
             AudioManager.playSe({ name: "Teleport", pan: 0, pitch: 100, volume: 90 });
-            window.MergedVehicleSystem.enterAirshipInterior({ silent: true });
-            SceneManager.pop();
+            const board = () => window.MergedVehicleSystem.enterAirshipInterior({ silent: true });
+            if (window.TeleportCutscene) {
+                window.TeleportCutscene.play({ onTeleport: board });
+            } else {
+                board();
+                SceneManager.pop();
+            }
         } else {
             SoundManager.playBuzzer();
         }
@@ -3231,21 +3272,25 @@
         // all on the card in the list; the right page answers the one question
         // the card cannot fit, which is the state of every single part.
         const parts = Array.isArray(sel.parts) ? sel.parts : [];
-        const partRow = (p) => {
+        // Drawn as the status sheet draws the anatomy: three parts per line,
+        // the name and its reading over a slim bar.
+        const partCell = (p) => {
             const pct = Math.round((p.health / p.max) * 100);
             const band = this.uiVehicleBand(pct);
             return `
-            <div class="vehicle-part-row${p.critical ? ' is-critical' : ''}">
-                <span class="vehicle-part-name">${escapeHtml(p.label)}${p.critical
-                    ? `<span class="vehicle-part-critical">${T('VehicleRepair.critical')}</span>` : ''}</span>
+            <div class="vehicle-part-cell${p.critical ? ' is-critical' : ''}${pct <= 0 ? ' destroyed' : ''}"
+                 title="${escapeHtml(p.label)}${p.critical ? ' · ' + escapeHtml(T('VehicleRepair.critical')) : ''}">
+                <div class="vehicle-part-top">
+                    <span class="vehicle-part-name">${escapeHtml(p.label)}</span>
+                    <span class="vehicle-part-pct ${band}">${pct}%</span>
+                </div>
                 <span class="vehicle-meter"><span class="vehicle-meter-fill ${band}" style="--ui-bar-w:${pct}%"></span></span>
-                <span class="vehicle-part-pct ${band}">${pct}%</span>
             </div>`;
         };
         const partsPanel = parts.length
             ? `<div class="vehicle-parts-panel">
                    <div class="pets-group-title">${T('MainMenu.vehicles.partsTitle')}</div>
-                   ${parts.map(partRow).join('')}
+                   <div class="vehicle-parts-grid">${parts.map(partCell).join('')}</div>
                </div>`
             : '';
 

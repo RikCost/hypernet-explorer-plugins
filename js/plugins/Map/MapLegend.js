@@ -28,13 +28,9 @@
  * only thing that folds it away or brings it back. With switch 49 off there is
  * no sheet and no fold key: H is the help menu again.
  *
- * The notices beside it answer to their own setting, ConfigManager.showMapNotices,
- * which has three states: "first" opens a map's tips the first time the party
- * visits it and collapses them on every visit after, "always" opens them on
- * every arrival, "off" reads none. It is on
- * ("first") from the first game on, it is offered on the initial settings page
- * of character creation, it has a row of its own in Options > Gameplay >
- * Exploration, and Bubba's "Show/hide tips" entry steps through the same three.
+ * The notices beside it are not a setting: a map's tips open in full the first
+ * time the party visits it and collapse to their title on every visit after.
+ * No option, settings page or Bubba entry turns them off.
  *
  * The sheet wears the interface's own theme. Every colour, size and space on
  * it is a token out of css/vars.css and every rule that draws it lives in
@@ -61,7 +57,11 @@
  * folded. A notice that sends the party to a menu names it in square brackets
  * - "use the [Thinker] option in pause menu" - and the sheet draws that name
  * bold, without the brackets. Every translation of a notice must keep the
- * brackets around the same name.
+ * brackets around the same name. A bracket holding an RPG Maker input command
+ * in capitals, [MENU], [OK], [PAGEUP] and the rest of COMMANDS, is a button:
+ * it is written out as the key on a keyboard ([ESC / RIGHT CLICK]) and as the
+ * button on a pad ([Y]), read off Input's live mappers. Translations keep the
+ * token in English.
  *
  * ---------------------------------------------------------------------------
  * The pamphlet
@@ -224,9 +224,126 @@
   // left exactly as it was written.
   const NOTICE_EMPHASIS = /\[([^\[\]]+)\]/g;
 
-  function noticeHtml(s) {
-    return escapeHtml(s).replace(NOTICE_EMPHASIS,
-      (_, inner) => `<span class="mlg-strong">${inner}</span>`);
+  // One exception to the bold name: a bracket holding an RPG Maker input
+  // command in capitals, [MENU] or [OK], is a button, and it is written out as
+  // whatever reaches that command on the device in hand: [ESC / RIGHT CLICK] on
+  // a keyboard, [Y] on a pad. Every symbol MZ's Input answers to is here.
+  function noticeHtml(s, hasPad) {
+    const pad = hasPad === undefined ? padConnected() : !!hasPad;
+    return escapeHtml(s).replace(NOTICE_EMPHASIS, (whole, inner) => {
+      const label = COMMANDS[inner] ? commandLabel(inner, pad) : "";
+      return label
+        ? `<span class="mlg-strong">[${escapeHtml(label.toUpperCase())}]</span>`
+        : `<span class="mlg-strong">${inner}</span>`;
+    });
+  }
+
+  //===========================================================================
+  // [COMMANDS]
+  //===========================================================================
+  // The token, the Input symbol it stands for, and the mouse button that
+  // reaches the same thing. The keys and pad buttons are not written here:
+  // they are read off Input.keyMapper and Input.gamepadMapper when the notice
+  // is drawn, so a key rebound in the Options reads as its new key. "escape"
+  // is what MZ also counts as cancel and menu, so those two read its keys too.
+  const COMMANDS = {
+    OK:       { symbol: "ok",       mouseKey: "MapLegend.controls.leftClick" },
+    CANCEL:   { symbol: "cancel",   mouseKey: "MapLegend.controls.rightClick", escape: true },
+    MENU:     { symbol: "menu",     mouseKey: "MapLegend.controls.rightClick", escape: true },
+    ESCAPE:   { symbol: "escape",   mouseKey: "MapLegend.controls.rightClick", padFrom: ["menu", "cancel"] },
+    SHIFT:    { symbol: "shift" },
+    CONTROL:  { symbol: "control" },
+    TAB:      { symbol: "tab" },
+    PAGEUP:   { symbol: "pageup" },
+    PAGEDOWN: { symbol: "pagedown" },
+    UP:       { symbol: "up" },
+    DOWN:     { symbol: "down" },
+    LEFT:     { symbol: "left" },
+    RIGHT:    { symbol: "right" },
+    DEBUG:    { symbol: "debug" },
+  };
+
+  // Physical key and button names: they read the same in every language.
+  // i18n-ignore-start  physical key and gamepad button labels
+  const KEY_NAMES = {
+    8: "Backspace", 9: "Tab", 13: "Enter", 16: "Shift", 17: "Ctrl", 18: "Alt",
+    27: "Esc", 32: "Space", 33: "Page Up", 34: "Page Down", 35: "End", 36: "Home",
+    37: "←", 38: "↑", 39: "→", 40: "↓", 45: "Insert", 46: "Delete",
+    96: "Num 0", 97: "Num 1", 98: "Num 2", 99: "Num 3", 100: "Num 4", 101: "Num 5",
+    102: "Num 6", 103: "Num 7", 104: "Num 8", 105: "Num 9",
+    112: "F1", 113: "F2", 114: "F3", 115: "F4", 116: "F5", 117: "F6",
+    118: "F7", 119: "F8", 120: "F9", 121: "F10", 122: "F11", 123: "F12",
+  };
+  const PAD_BUTTONS = {
+    0: "A", 1: "B", 2: "X", 3: "Y", 4: "L1", 5: "R1", 6: "L2", 7: "R2",
+    8: "Select", 9: "Start", 10: "L3", 11: "R3",
+    12: "D-Pad ↑", 13: "D-Pad ↓", 14: "D-Pad ←", 15: "D-Pad →",
+  };
+  // i18n-ignore-end
+
+  // Which key is named first when several reach one command: the dedicated
+  // key before the letter or the numpad key that doubles for it.
+  const KEY_PREFERENCE = [27, 13, 16, 17, 9, 33, 34, 38, 40, 37, 39, 120, 32];
+
+  function keyName(code) {
+    code = Number(code);
+    if (KEY_NAMES[code]) return KEY_NAMES[code];
+    if ((code >= 48 && code <= 57) || (code >= 65 && code <= 90)) return String.fromCharCode(code);
+    return "";
+  }
+
+  function codesFor(mapper, symbols) {
+    const out = [];
+    for (const [code, sym] of Object.entries(mapper || {})) {
+      if (symbols.includes(sym)) out.push(Number(code));
+    }
+    return out;
+  }
+
+  function inputMappers() {
+    const input = typeof Input !== "undefined" ? Input : null;
+    return {
+      keys: (input && input.keyMapper) || {},
+      pad: (input && input.gamepadMapper) || {},
+    };
+  }
+
+  // A keyboard reads one key, the first by preference, plus the letter that
+  // also reaches it for the four directions (the game walks on WASD), plus
+  // the mouse button that does the same.
+  function keyboardLabel(token) {
+    const cmd = COMMANDS[token];
+    if (!cmd) return "";
+    const symbols = cmd.escape ? [cmd.symbol, "escape"] : [cmd.symbol];
+    const codes = codesFor(inputMappers().keys, symbols).filter(keyName);
+    codes.sort((a, b) => {
+      const ra = KEY_PREFERENCE.indexOf(a), rb = KEY_PREFERENCE.indexOf(b);
+      return (ra < 0 ? 999 : ra) - (rb < 0 ? 999 : rb) || a - b;
+    });
+    const parts = [];
+    if (codes.length) parts.push(keyName(codes[0]));
+    if (["up", "down", "left", "right"].includes(cmd.symbol)) {
+      const letter = codes.find(c => c >= 65 && c <= 90);
+      if (letter && letter !== codes[0]) parts.push(keyName(letter));
+    }
+    if (cmd.mouseKey) parts.push(T(cmd.mouseKey));
+    return parts.join(" / ");
+  }
+
+  // A pad reads its button. A command no button reaches (tab, control, debug)
+  // falls back to its keyboard face rather than to nothing.
+  function padLabel(token) {
+    const cmd = COMMANDS[token];
+    if (!cmd) return "";
+    const symbols = cmd.padFrom || [cmd.symbol];
+    const buttons = codesFor(inputMappers().pad, symbols).sort((a, b) => a - b);
+    const names = buttons.map(b => PAD_BUTTONS[b]).filter(Boolean);
+    return names.length ? names.join(" / ") : keyboardLabel(token);
+  }
+
+  function commandLabel(token, hasPad) {
+    const pad = hasPad === undefined ? padConnected() : !!hasPad;
+    return pad ? padLabel(token) : keyboardLabel(token);
   }
 
   //===========================================================================
@@ -434,47 +551,12 @@
     return legendEnabled();
   }
 
-  // The notices are the other half of the sheet, and they answer to their own
-  // setting, ConfigManager.showMapNotices, written by Bubba alone. It is not a switch
-  // but three states: a tip read once and never again, a tip read every time
-  // the party stands there, or no tips at all.
-
-  const NOTICE_MODES = ["first", "always", "off"]; // i18n-ignore: setting values
-  const NOTICE_MODE_DEFAULT = "first";             // i18n-ignore: setting value
-
-  function noticesMode() {
-    if (typeof ConfigManager === "undefined" || !ConfigManager) return NOTICE_MODE_DEFAULT;
-    const raw = ConfigManager.showMapNotices;
-    // A save written before the third state existed said true or false.
-    if (raw === true || raw == null) return NOTICE_MODE_DEFAULT;
-    if (raw === false) return "off";
-    return NOTICE_MODES.includes(raw) ? raw : NOTICE_MODE_DEFAULT;
-  }
-
-  function setNoticesMode(mode) {
-    if (typeof ConfigManager === "undefined" || !ConfigManager) return;
-    ConfigManager.showMapNotices = NOTICE_MODES.includes(mode) ? mode : NOTICE_MODE_DEFAULT;
-    if (ConfigManager.save) ConfigManager.save();
-  }
-
-  // The grid and the options row both step through the three in one direction.
-  function cycleNoticesMode() {
-    const next = NOTICE_MODES[(NOTICE_MODES.indexOf(noticesMode()) + 1) % NOTICE_MODES.length];
-    setNoticesMode(next);
-    return next;
-  }
+  // The notices are the other half of the sheet. They are not a setting: in
+  // the story mode a map's tips open in full the first time the party arrives
+  // and fold to their title on every visit after (see updateArrival).
 
   function noticesShown() {
-    return storyMode() && noticesMode() !== "off";
-  }
-
-  function setNoticesShown(value) {
-    setNoticesMode(value ? NOTICE_MODE_DEFAULT : "off");
-  }
-
-  function toggleNotices() {
-    setNoticesShown(!noticesShown());
-    return noticesShown();
+    return storyMode();
   }
 
   // Which tips have already been read, one record on $gameSystem so a save
@@ -504,7 +586,7 @@
   // already read is still drawn: "first" and "always" differ in whether it
   // opens on arrival (see updateArrival), not in whether it is there to reopen.
   function allowedNotice(notice) {
-    if (!storyMode() || !notice || noticesMode() === "off") {
+    if (!storyMode() || !notice) {
       noticeWatch.showing = null;
       return null;
     }
@@ -803,7 +885,7 @@
 
   // In the story mode a map's notices open the first time the party arrives
   // on it and are collapsed to their title on every visit after, where H or
-  // L2 opens them again ("always" opens them on every arrival). The places
+  // L2 opens them again. The places
   // are keyed the way the start place is, a generated map by its world
   // square, and the last one arrived on is kept on $gameSystem too, so a
   // menu, a battle or a load coming back to the same map is not an arrival.
@@ -826,7 +908,7 @@
     const visited = visitedPlaces();
     const first = !visited[key];
     visited[key] = true;
-    $gameSystem._mapLegendNoticeFolded = !(first || noticesMode() === "always");
+    $gameSystem._mapLegendNoticeFolded = !first;
   }
 
   // Which of the two the fold button is holding right now: the notice while
@@ -1040,7 +1122,7 @@
       // party is walking, and the notice is four fields.
       const noticeFolded = state.noticeFolded === undefined ? folded : !!state.noticeFolded;
       const noticeSig = (notice ? notice.key + "" + notice.title + "" + notice.text : "-") +
-        "" + (noticeFolded ? 1 : 0) + (state.foldable ? 1 : 0) + "" + (state.foldChip || "");
+        "" + (noticeFolded ? 1 : 0) + (state.foldable ? 1 : 0) + (state.hasPad ? 1 : 0) + "" + (state.foldChip || "");
       if (notice) {
         const el = this.element();
         if (noticeSig !== this._signature) {
@@ -1093,13 +1175,13 @@
     // says the rest is still there.
     _noticeHtml(notice, state) {
       const nFolded = state.noticeFolded === undefined ? !!state.folded : !!state.noticeFolded;
-      const parts = [`<div class="mlg-title">${noticeHtml(notice.title)}</div>`];
+      const parts = [`<div class="mlg-title">${noticeHtml(notice.title, state.hasPad)}</div>`];
       if (!nFolded && notice.text) {
         // Bubba's reading of the place is signed with his name; the place's
         // own sign is not signed at all, it just says what it says.
         const speaker = notice.voice === VOICE_GENERIC ? "" :
           `<span class="mlg-speaker">${escapeHtml(T("MapLegend.speaker"))}:</span> `;
-        parts.push(`<div class="mlg-text">${speaker}${noticeHtml(notice.text)}</div>`);
+        parts.push(`<div class="mlg-text">${speaker}${noticeHtml(notice.text, state.hasPad)}</div>`);
       }
       if (state.foldable) {
         parts.push(this._foldHtml(
@@ -1352,14 +1434,7 @@
     controlsShown,
 
     // The notices, on the same terms, except that they have three states.
-    NOTICE_MODES,
-    NOTICE_MODE_DEFAULT,
-    noticesMode,
-    setNoticesMode,
-    cycleNoticesMode,
     noticesShown,
-    setNoticesShown,
-    toggleNotices,
     isNoticeFolded,
     placeKey,
     visitedPlaces,
@@ -1388,6 +1463,10 @@
     // ask what would be shown without a screen to draw it on.
     readNotice,
     noticeHtml,
+    COMMANDS,
+    commandLabel,
+    keyboardLabel,
+    padLabel,
     ensureRegistry,
     areaNoticeKey,
     tooltipNoticeKey,

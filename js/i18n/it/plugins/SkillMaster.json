@@ -1,11 +1,11 @@
 {
   "scale": "Scala:",
   "hpDamage": "Danno PS",
-  "mpDamage": "Danno PM",
+  "mpDamage": "Danno MP",
   "hpRecovery": "Recupero PS",
-  "mpRecovery": "Recupero PM",
+  "mpRecovery": "Recupero MP",
   "hpDrain": "Assorbimento PS",
-  "mpDrain": "Assorbimento PM",
+  "mpDrain": "Assorbimento MP",
   "buff": "Potenzia",
   "debuff": "Riduce",
   "state": "Stato",
@@ -61,8 +61,8 @@
   "teachActor": "Insegna a {actor} ({cost} KC)",
   "teachPupil": "Insegna a {actor}",
   "selectSkillForDetails": "Seleziona una skill per vederne i dettagli",
-  "mpLabel": "PM:",
-  "apLabel": "PA:",
+  "mpLabel": "MP:",
+  "apLabel": "AP:",
   "effectLabel": "Effetto:",
   "descriptionLabel": "Descrizione",
   "noDescription": "Nessuna descrizione",
@@ -238,10 +238,10 @@
     "yourSkills": "Le tue abilita",
     "defaultSpellName": "Incantesimo senza nome",
     "defaultSkillName": "Abilita senza nome",
-    "spendsMP": "Consuma PM",
-    "spendsAP": "Consuma PA",
-    "mpLabel": "Costo PM",
-    "apLabel": "Costo PA",
+    "spendsMP": "Consuma MP",
+    "spendsAP": "Consuma AP",
+    "mpLabel": "Costo MP",
+    "apLabel": "Costo AP",
     "complexity": "Complessita",
     "statFloor": "Soglia",
     "yourStat": "Hai",
@@ -293,11 +293,11 @@
     "dmgType": {
       "0": "Nessun danno",
       "1": "Danno PS",
-      "2": "Danno PM",
+      "2": "Danno MP",
       "3": "Recupero PS",
-      "4": "Recupero PM",
+      "4": "Recupero MP",
       "5": "Assorbimento PS",
-      "6": "Assorbimento PM"
+      "6": "Assorbimento MP"
     },
     "comp": {
       "core": {
@@ -343,7 +343,7 @@
         },
         "etherFlow": {
           "name": "Condotto",
-          "desc": "Restituisce PM a chiunque colpisca."
+          "desc": "Restituisce MP a chiunque colpisca."
         },
         "siphon": {
           "name": "Sanguisuga",
@@ -351,7 +351,7 @@
         },
         "mindBurn": {
           "name": "Scarica",
-          "desc": "Brucia PM invece che sangue."
+          "desc": "Brucia MP invece che sangue."
         },
         "ward": {
           "name": "Cornice Vuota",
@@ -513,11 +513,11 @@
         },
         "regenMP": {
           "name": "Sorgente Lenta",
-          "desc": "Lascia rigenerazione di PM."
+          "desc": "Lascia rigenerazione di MP."
         },
         "regenAP": {
           "name": "Respiro Lento",
-          "desc": "Lascia rigenerazione di PA."
+          "desc": "Lascia rigenerazione di AP."
         },
         "protect": {
           "name": "Egida",
@@ -573,11 +573,11 @@
         },
         "etherSplash": {
           "name": "Sorso",
-          "desc": "Restituisce una fetta di PM oltre a tutto il resto."
+          "desc": "Restituisce una fetta di MP oltre a tutto il resto."
         },
         "apSurge": {
           "name": "Adrenalina",
-          "desc": "Consegna PA al bersaglio senza condizioni."
+          "desc": "Consegna AP al bersaglio senza condizioni."
         }
       },
       "refines": {
@@ -627,7 +627,7 @@
         },
         "apReturn": {
           "name": "Ritorno",
-          "desc": "Restituisce PA a chi lo usa."
+          "desc": "Restituisce AP a chi lo usa."
         }
       }
     },

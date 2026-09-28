@@ -220,239 +220,16 @@
             return false;
         }
 
+        // The look lives in css/dice3d.css, linked once on the first die.
         _initStyles() {
             if (typeof document === 'undefined') return;
-            if (document.getElementById('dice3d-styles')) return;
-            const style = document.createElement('style');
-            style.id = 'dice3d-styles';
-            style.textContent = `
-                #dice3d-container {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100vw;
-                    height: 100vh;
-                    z-index: 999999;
-                    pointer-events: none;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    overflow: hidden;
-                    opacity: 1;
-                    transition: opacity 0.45s ease;
-                }
-                #dice3d-container.fade-out {
-                    opacity: 0;
-                }
-                #dice3d-canvas {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                }
-                /* The result strip: a thin rule of a card, read at a glance.
-                   No glow, no gradient, no boxed status word: the numbers are
-                   the message and everything else stays out of their way. */
-                #dice3d-banner {
-                    position: absolute;
-                    bottom: 15%;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 2px;
-                    padding: 10px 22px;
-                    background: rgba(10, 9, 8, 0.82);
-                    border: 1px solid rgba(212, 175, 55, 0.28);
-                    border-radius: 3px;
-                    font-family: 'Cinzel', var(--font-ui), 'GameFont';
-                    color: var(--text-success-active);
-                    opacity: 0;
-                    transform: translateY(10px);
-                    transition: opacity 0.22s ease, transform 0.22s ease;
-                    pointer-events: none;
-                    min-width: 210px;
-                }
-                #dice3d-banner.show {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-                #dice3d-banner.crit-success { border-color: rgba(255, 215, 0, 0.55); }
-                #dice3d-banner.crit-fail { border-color: rgba(255, 51, 68, 0.55); }
-                .dice3d-header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 100%;
-                }
-                .dice3d-title {
-                    font-size: 0.66rem;
-                    letter-spacing: 1.6px;
-                    text-transform: uppercase;
-                    color: #9d9382;
-                    font-weight: normal;
-                }
-                /* The scoreboard: what was rolled over what it had to reach. */
-                .dice3d-score {
-                    display: flex;
-                    align-items: baseline;
-                    justify-content: center;
-                    gap: 8px;
-                    margin: 2px 0 0;
-                }
-                .dice3d-score-cell {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: baseline;
-                    gap: 5px;
-                }
-                .dice3d-score-num {
-                    font-size: 1.8rem;
-                    line-height: 1.1;
-                    font-weight: 700;
-                    color: var(--text-success-active);
-                    transition: color 0.2s ease;
-                }
-                .dice3d-score-num.need { color: #e5c158; }
-                .dice3d-score-num.summed { color: var(--text-primary-hover); }
-                .dice3d-score-num.crit-success { color: var(--text-primary-hover); }
-                .dice3d-score-num.crit-fail { color: #ff4d4d; }
-                .dice3d-score-label {
-                    font-size: 0.58rem;
-                    letter-spacing: 1.2px;
-                    text-transform: uppercase;
-                    color: #7d766a;
-                }
-                .dice3d-slash {
-                    font-size: 1.2rem;
-                    font-weight: 300;
-                    color: #6d6558;
-                }
-                .dice3d-breakdown {
-                    font-size: 0.72rem;
-                    letter-spacing: 0.4px;
-                    color: #9d9382;
-                    text-align: center;
-                }
-                .dice3d-breakdown .mod { color: #81c784; }
-                .dice3d-breakdown .mod.neg { color: #ef9a9a; }
-                .dice3d-status {
-                    font-size: 0.72rem;
-                    font-weight: bold;
-                    letter-spacing: 2px;
-                    text-transform: uppercase;
-                    padding: 0;
-                    background: none;
-                    border: none;
-                    opacity: 0;
-                    transition: opacity 0.2s ease;
-                }
-                .dice3d-status.visible { opacity: 1; }
-                .dice3d-status.success { color: #a5d6a7; }
-                .dice3d-status.failure { color: #ef9a9a; }
-                .dice3d-status.crit-success { color: var(--text-primary-hover); }
-                .dice3d-status.crit-fail { color: #ff5252; }
-                .dice3d-footer {
-                    font-size: 0.72rem;
-                    color: #b0bec5;
-                    letter-spacing: 0.5px;
-                }
-                /* ---------------------------------------------------------
-                   The card that offers the check before the die is thrown.
-                   It is the only part of this plugin the player can click, so
-                   it is the only part that takes pointer events.
-                   --------------------------------------------------------- */
-                #dice3d-prompt {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100vw;
-                    height: 100vh;
-                    z-index: 1000000;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background: rgba(0, 0, 0, 0.55);
-                    backdrop-filter: blur(2px);
-                    font-family: 'Cinzel', var(--font-ui), 'GameFont';
-                    opacity: 0;
-                    transition: opacity 0.18s ease;
-                }
-                #dice3d-prompt.show { opacity: 1; }
-                .dice3d-prompt-card {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 10px;
-                    min-width: 340px;
-                    max-width: 78vw;
-                    padding: 22px 34px 20px;
-                    background: linear-gradient(145deg, rgba(22, 19, 15, 0.97), rgba(10, 9, 8, 0.99));
-                    border: 1.5px solid var(--text-primary-hover);
-                    border-radius: 10px;
-                    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9), 0 0 26px rgba(212, 175, 55, 0.3);
-                    transform: translateY(14px) scale(0.96);
-                    transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                }
-                #dice3d-prompt.show .dice3d-prompt-card { transform: translateY(0) scale(1); }
-                .dice3d-prompt-title {
-                    font-size: 0.86rem;
-                    letter-spacing: 2px;
-                    text-transform: uppercase;
-                    color: #e5c158;
-                    font-weight: bold;
-                    text-align: center;
-                    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-                    padding-bottom: 6px;
-                    width: 100%;
-                }
-                .dice3d-prompt-who {
-                    font-size: 0.82rem;
-                    color: #b0bec5;
-                    letter-spacing: 0.5px;
-                }
-                .dice3d-prompt-target {
-                    font-size: 1.9rem;
-                    font-weight: 900;
-                    color: var(--text-success-active);
-                    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
-                }
-                .dice3d-prompt-formula {
-                    font-size: 1rem;
-                    color: #81c784;
-                    letter-spacing: 1px;
-                }
-                .dice3d-prompt-buttons {
-                    display: flex;
-                    gap: 14px;
-                    margin-top: 8px;
-                }
-                .dice3d-prompt-btn {
-                    min-width: 120px;
-                    padding: 8px 18px;
-                    font-family: inherit;
-                    font-size: 0.92rem;
-                    font-weight: bold;
-                    letter-spacing: 1.5px;
-                    text-transform: uppercase;
-                    color: #e0e0e0;
-                    background: rgba(0, 0, 0, 0.55);
-                    border: 1px solid rgba(212, 175, 55, 0.45);
-                    border-radius: 5px;
-                    cursor: pointer;
-                    transition: all 0.15s ease;
-                }
-                .dice3d-prompt-btn:hover { color: var(--text-success-active); border-color: var(--text-primary-hover); }
-                .dice3d-prompt-btn.selected {
-                    color: var(--text-primary-hover);
-                    border-color: var(--text-primary-hover);
-                    background: rgba(212, 175, 55, 0.16);
-                    box-shadow: 0 0 14px rgba(255, 215, 0, 0.45);
-                    transform: scale(1.04);
-                }
-            `;
-            document.head.appendChild(style);
+            if (document.getElementById('dice3d-stylesheet')) return;
+            const link = document.createElement('link');
+            link.id = 'dice3d-stylesheet';
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/dice3d.css';
+            document.head.appendChild(link);
         }
 
         _setupThree() {
@@ -497,8 +274,11 @@
             const w = window.innerWidth || 1280;
             const h = window.innerHeight || 720;
             this._renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            // The stage covers the whole screen over whatever panel is open, so
+            // it is drawn at one pixel per CSS pixel: a doubled ratio is four
+            // times the fill for a die that covers a sliver of it.
+            this._renderer.setPixelRatio(1);
             this._renderer.setSize(w, h);
-            this._renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
             this._scene = new THREE.Scene();
             this._camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 100);
@@ -702,6 +482,32 @@
 
             this._diceMesh = new THREE.Mesh(nonIndexed, materials);
             this._scene.add(this._diceMesh);
+
+            // Twenty faces uploaded now rather than on the first frame of the
+            // first tumble, where they stalled the throw.
+            if (this._renderer && this._renderer.initTexture) {
+                for (const mat of materials) {
+                    try { this._renderer.initTexture(mat.map); } catch (e) { /* uploaded on first render instead */ }
+                }
+            }
+        }
+
+        // Builds the stage while nothing is being thrown, so a panel that is
+        // about to ask for dice (NPC/NPCEmpathizeUI.js) does not pay for it on
+        // its first throw.
+        prewarm() {
+            if (this._scene || this._prewarmQueued) return;
+            this._prewarmQueued = true;
+            const build = () => {
+                this._prewarmQueued = false;
+                if (this._scene || this.isRolling()) return;
+                try {
+                    this._setupThree();
+                    if (this._renderer && this._renderer.compile) this._renderer.compile(this._scene, this._camera);
+                } catch (e) { /* built on the first throw instead */ }
+            };
+            if (typeof requestIdleCallback === 'function') requestIdleCallback(build, { timeout: 1500 });
+            else setTimeout(build, 300);
         }
 
         // The rotation that lays the given face flat against the camera, with
@@ -918,6 +724,7 @@
                 let landed = false;
                 let summed = false;
                 let exiting = false;
+                let restDrawn = false;
 
                 const animate = (currentTime) => {
                     if (startTime === null) startTime = currentTime;
@@ -990,7 +797,12 @@
                                 numEl.textContent = String(total);
                                 numEl.classList.add('summed');
                             }
-                            if (statusEl) {
+                            if (statusEl && options.outcomeText) {
+                                // A throw with no number to reach (the Dice of
+                                // YHWH) names what the face means instead.
+                                statusEl.textContent = String(options.outcomeText);
+                                statusEl.className = 'dice3d-status ' + (nat20 ? 'crit-success' : 'success') + ' visible';
+                            } else if (statusEl) {
                                 if (nat20) {
                                     statusEl.textContent = DT('outcome.critSuccess');
                                     statusEl.className = 'dice3d-status crit-success visible';
@@ -1017,7 +829,13 @@
                         }
                     }
 
-                    this._renderer.render(this._scene, this._camera);
+                    // Between touching down and lifting off the die holds still:
+                    // the landed pose is drawn once and the canvas is left alone
+                    // until it starts to leave.
+                    if (progress < 1 || exiting || !restDrawn) {
+                        this._renderer.render(this._scene, this._camera);
+                        if (progress >= 1) restDrawn = true;
+                    }
 
                     if (elapsed < totalDuration) {
                         this._animFrameId = requestAnimationFrame(animate);

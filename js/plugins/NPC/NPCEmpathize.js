@@ -1535,6 +1535,12 @@
       const sa   = window.Sprites.SpritesAssociation;
       const bust = sa[charName.split('.')[0]]?.[charIndex];
       if (bust && bust !== '7') return _bustUrl(bust);
+      // A sheet in no catalogue still names its face when a portrait carries
+      // the sheet's own name (Originals/!$Enchantress).
+      if (!sa[charName.split('.')[0]]) {
+        const named = window.BustPath?.forSheet?.(charName);
+        if (named) return _bustUrl(named);
+      }
     }
     // A creature or an animal wears a sheet out of the NPCs.json wardrobe, and
     // that entry names the faces it comes with. Those are ITS busts and are
@@ -6893,11 +6899,9 @@
     },
 
     // One of the worlds the Omega Tower's floors open onto
-    // (DungeonFloorSystem.js, window.TowerWorlds). Deliberately NOT listed
-    // anywhere: there is no listWorlds and no card on the wiki's front page,
-    // because those shelves are Earth's. A floor world is read by clicking the
-    // person standing on it, or the world's name where it is written out, and
-    // no other way.
+    // (DungeonFloorSystem.js, window.TowerWorlds). Listed on the Omega Tower
+    // half of the wiki's front page (listWorlds, listIn), never among Earth's
+    // shelves.
     getWorld(id) {
       const TW = window.TowerWorlds;
       if (!TW?.byId) return null;
@@ -7182,6 +7186,74 @@
         if (!seen.has(key)) out.push({ key, name: r.name, kind: r.kind, iconIndex: 245 });
       }
       return out.sort((a, b) => a.name.localeCompare(b.name));
+    },
+
+    // ── Earth and the Omega Tower ────────────────────────────────────────────
+    // The front page is split in two: what belongs to Earth, and what the
+    // tower's floors rolled for this world. Every shelf above holds both
+    // halves mixed; listIn(cat, realm) cuts one of them out. A thing is the
+    // tower's when it answers to a tower world's government or lives in one
+    // of its settlement groups (window.TowerWorlds).
+
+    _towerPowerSet() {
+      return this._roll('towerPowers', () => {
+        try { return new Set(window.TowerWorlds?.powerNames?.() || []); }
+        catch (e) { return new Set(); }
+      });
+    },
+
+    isTowerPower(name) { return !!name && this._towerPowerSet().has(name); },
+
+    _isTowerGroup(group) {
+      try { return !!(group && window.TowerWorlds?.isTowerGroup?.(group)); }
+      catch (e) { return false; }
+    },
+
+    // Every world the tower opens onto, top floor first, the cellars last.
+    listWorlds() { return this._roll('worlds', this._listWorlds); },
+    _listWorlds() {
+      let all = [];
+      try { all = window.TowerWorlds?.all?.() || []; } catch (e) { all = []; }
+      return all.filter(Boolean).slice().sort((a, b) => b.floor - a.floor);
+    },
+
+    // The creeds one half of the setting stands on. Earth's shelf is the whole
+    // non-alien book as before; the tower's is only what its benches hold,
+    // alien creeds included, since those are what a floor world votes for.
+    _listIdeologiesIn(tower) {
+      const list = window.NPCShared?.ideologyList?.() || [];
+      const counts = new Map();
+      for (const { party, powerName } of (window.NPCPolitics?.listAllParties?.() || [])) {
+        if (!party || this.isTowerPower(powerName) !== tower) continue;
+        counts.set(party.ideologyId, (counts.get(party.ideologyId) || 0) + 1);
+      }
+      const label = e => (window.T ? window.T(e.name) : e.id);
+      return list
+        .filter(e => e && (tower ? counts.has(e.id) : !e.alien))
+        .map(e => ({ id: e.id, name: e.name, partyCount: counts.get(e.id) || 0 }))
+        .sort((a, b) => (b.partyCount - a.partyCount) || label(a).localeCompare(label(b)));
+    },
+
+    // One shelf of the front page, for 'earth' or 'tower'. Null for a shelf
+    // the wiki draws off something else (favourites, the party).
+    listIn(cat, realm) {
+      const tower = realm === 'tower';
+      const byPower = (list, key) => list.filter(e => this.isTowerPower(key(e)) === tower);
+      switch (cat) {
+        case 'worlds':      return tower ? this.listWorlds() : [];
+        case 'people':      return this.listPeople().filter(p => this._isTowerGroup(p.group) === tower);
+        case 'mainPlayers': return byPower(this.listMainPlayers(), l => l.of);
+        case 'leaders':     return byPower(this.listLeaders(), l => l.of);
+        case 'politicians': return byPower(this.listPoliticians(), p => p.of);
+        case 'powers':      return byPower(this.listPowerNames(), n => n);
+        case 'politicalParties': return byPower(this.listPartyNames(), p => p.powerName);
+        case 'ideologies':  return this._roll('ideologies:' + (tower ? 'tower' : 'earth'),
+                              () => this._listIdeologiesIn(tower));
+        case 'nations':     return tower ? [] : this.listNations();
+        case 'artifacts':   return tower ? [] : this.listArtifacts();
+        case 'factions':    return tower ? [] : this.listFactionNames();
+      }
+      return null;
     },
 
     // ── name index & hyperlink pattern ───────────────────────────────────────

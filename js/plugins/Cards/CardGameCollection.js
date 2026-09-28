@@ -1129,8 +1129,7 @@
           ? `<span class="cgc-indeck">${escapeHtml(T("CardGame.col.inDeck", { n: taken }))}</span>` : "";
         return `<div class="cgc-cell rarity--${rare}${i === this._index ? " selected" : ""}${spent}${locked}" data-i="${i}" style="--d:${Math.min(n, 40)}">
             <div class="cgc-shine"></div>
-            ${badge}
-            <div class="cgc-chead"><span class="cgc-qty">x${owned}</span><span class="cgc-ctype">${escapeHtml(type)}</span></div>
+            <div class="cgc-chead"><span class="cgc-qty">x${owned}</span>${badge}<span class="cgc-ctype">${escapeHtml(type)}</span></div>
             <div class="cgc-lbl">${escapeHtml(CGx.nameOf(key))}</div>
             <div class="cgc-artcell"></div>
             ${foot}

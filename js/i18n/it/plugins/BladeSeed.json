@@ -41,7 +41,7 @@
   "level": "Livello",
   "levelStage": "Liv.{level}, stadio {stage}",
   "learningPoints": "Punti apprendimento",
-  "lp": "{points} PA",
+  "lp": "{points} AP",
   "expLine": "{exp} / {next} EXP",
   "stat": {
     "mhp": "HP",

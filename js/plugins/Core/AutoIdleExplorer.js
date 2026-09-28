@@ -393,13 +393,6 @@
  * @type boolean
  * @default true
  *
- * @param idleSeconds
- * @text Idle Seconds
- * @desc Seconds the player must be idle before the CPU takes over.
- * @type number
- * @min 1
- * @max 60
- * @default 3
  *
  * @param healThreshold
  * @text Heal Threshold (%)
@@ -444,8 +437,11 @@
 
     const PLUGIN = "AutoIdleExplorer";
     const params = PluginManager.parameters(PLUGIN);
-    const IDLE_FRAMES = Math.max(1, Math.round((Number(params.idleSeconds) || 3) * 60));
-    const REENGAGE_FRAMES = Math.max(1, Math.round(IDLE_FRAMES / 2));
+    // How long the player has to stand idle before the CPU takes the reins:
+    // a second the first time, two once it has already handed them back, so a
+    // player who has just taken over is not overruled the moment they pause.
+    const ENGAGE_FRAMES = 60;
+    const REENGAGE_FRAMES = 120;
     const HEAL_RATE = (Number(params.healThreshold) || 50) / 100;
     const HUNGER_RATE = (Number(params.hungerThreshold) || 35) / 100;
     const SCAN_RADIUS = Number(params.scanRadius) || 12;
@@ -644,6 +640,11 @@
     // other way, and how beaten the party has to be before it runs.
     const LEVEL_MARGIN = 5;
     const FLEE_HP = 0.35;
+    // How close a monster the party cannot take may stand before the leader
+    // steps no nearer, and how far off one that is already hunting them
+    // (noticed them, or giving chase) is run from.
+    const DANGER_BERTH = 3;
+    const EVADE_RANGE = 6;
     // The heat (Economy/CrimeSystem.js) at which the leader starts crossing
     // the street to avoid an officer, and how wide a berth they give one.
     const HEAT_SHY = 30;
@@ -704,17 +705,42 @@
     // Frames the fast travel overlay is given to write its confirm panel
     // before the CPU gives up on the journey and lets the overlay be closed.
     const TRAVEL_WAIT = 180;
+    // The world map. A named place is the usual reason to cross it; failing
+    // one, a square of open country a short walk off is picked to go down
+    // into. A place seen in the last PLACE_FORGET_MS counts as ten times
+    // further off, a square the map will not let them reach is given up on
+    // after WORLD_GOAL_TTL frames, and a walk longer than WORLD_TRAVEL_SQUARES
+    // is taken on the network when the party is sitting in a vehicle.
+    const PLACE_ODDS = 0.65;
+    const PLACE_REACH = 80;
+    const WORLD_WANDER_MIN = 4;
+    const WORLD_WANDER_MAX = 14;
+    const WORLD_GOAL_TTL = 60 * 180;
+    const PLACE_FORGET_MS = 30 * 60 * 1000;
+    const WORLD_TRAVEL_SQUARES = 30;
+    // How many times one journey may go out through the world map before it
+    // is given up on: a square that leads into a map the route did not expect
+    // would otherwise send the party out and back in forever.
+    const ROUTE_WORLD_TRIES = 2;
+    // A vehicle that would not carry the party (no fare, no fuel, never
+    // reached) is left alone this long before it is walked to again.
+    const VEHICLE_RETRY = 3600;
+    // How far a boat looks for a bank to put in at.
+    const SHORE_RADIUS = 20;
 
     function gazetteer() {
-        if (!$gameSystem) return { v: GAZ_VERSION, maps: {}, trail: [], travel: {} };
+        if (!$gameSystem) return { v: GAZ_VERSION, maps: {}, trail: [], travel: {}, places: {} };
         const book = $gameSystem._aieGazetteer;
         if (!book || book.v !== GAZ_VERSION) {
-            $gameSystem._aieGazetteer = { v: GAZ_VERSION, maps: {}, trail: [], travel: {} };
+            $gameSystem._aieGazetteer = { v: GAZ_VERSION, maps: {}, trail: [], travel: {}, places: {} };
         }
         const g = $gameSystem._aieGazetteer;
         if (!g.maps) g.maps = {};
         if (!Array.isArray(g.trail)) g.trail = [];
         if (!g.travel) g.travel = {};
+        // The named places on the world map the party last went down into,
+        // by Destinations.json key, so the continent is not toured in a circle.
+        if (!g.places) g.places = {};
         return g;
     }
 
@@ -1143,12 +1169,27 @@
         try { return FT.destinations() || []; } catch (e) { return []; }
     }
 
-    // Somewhere the party has not been carried lately. The book remembers when
-    // each place was last taken, so the network is not used to shuttle back
-    // and forth between the same two towns.
-    function pickTravelDestination() {
+    // Where the stop is picked from. With a square to aim at, the stop
+    // nearest it, and only when it leaves less of the walk than there is now:
+    // a bus that drops the party further from the place than they stand is
+    // not a journey. Without one, somewhere the party has not been carried
+    // lately, so the network is not used to shuttle between the same two towns.
+    function pickTravelDestination(toward) {
         const list = travelDestinations();
         if (!list.length) return null;
+        const WMR = window.WorldMapReturn;
+        if (toward) {
+            const from = worldHere();
+            const left = Math.abs(toward.x - from.x) + Math.abs(toward.y - from.y);
+            let near = null;
+            for (const dest of list) {
+                if (!dest || !dest.name || Number(dest.mapId) !== worldMapId()) continue;
+                if (WMR && typeof WMR.isLockedPlaceSquare === "function" && WMR.isLockedPlaceSquare(dest.x, dest.y)) continue;
+                const d = Math.abs(dest.x - toward.x) + Math.abs(dest.y - toward.y);
+                if (!near || d < near.d) near = { dest: dest, d: d };
+            }
+            return near && near.d < left ? near.dest : null;
+        }
         const seen = gazetteer().travel;
         let best = null;
         for (const dest of list) {
@@ -1159,13 +1200,16 @@
         return best ? best.dest : null;
     }
 
-    function tryFastTravel() {
+    // `toward` is a world square to get closer to; left out, the square the
+    // journey under way is headed for, when the book knows one.
+    function tryFastTravel(toward) {
         const FT = window.FastTravelSystem;
         if (!FT || typeof FT.openTo !== "function") return false;
         if (!(SceneManager._scene instanceof Scene_Map)) return false;
         const transport = transportHere();
         if (!transport) return false;
-        const dest = pickTravelDestination();
+        const aim = toward || (AutoIdle.route ? worldGoalForMap(AutoIdle.route.dest) : null);
+        const dest = pickTravelDestination(aim);
         if (!dest) return false;
         let opened = false;
         try { opened = !!FT.openTo(dest.name, transport); } catch (e) { return false; }
@@ -1265,9 +1309,24 @@
     // ========================================================================
     // Helpers
     // ========================================================================
+    // ========================================================================
+    // The background map (the title screen's Eris camera)
+    // ------------------------------------------------------------------------
+    // A background renderer may drive a map of its own while another scene owns
+    // the screen. It hands the map scene it is ticking to setBackgroundScene,
+    // and every question that would otherwise be asked of SceneManager._scene
+    // is asked of that instead. The scene it passes is a Scene_Map instance, so
+    // every rule the party plays by on a real map keeps applying; only the
+    // keyboard and the screen's own menus are left out of it, because on the
+    // title screen those belong to the title.
+    // ========================================================================
+    let _bgScene = null;
+    function backgroundMode() { return !!_bgScene; }
+    function resolveMapScene() { return _bgScene || SceneManager._scene; }
+
     function onDrivableMap() {
         return (
-            SceneManager._scene instanceof Scene_Map &&
+            resolveMapScene() instanceof Scene_Map &&
             !!$gameMap &&
             !!$gamePlayer &&
             !$gameMap.isEventRunning() &&
@@ -1278,6 +1337,10 @@
     }
 
     function manualInputDetected() {
+        // On the title screen's background camera the keyboard belongs to the
+        // title menu: no press of the player's is a takeover of a party they
+        // cannot see, and the walk must not stop every time they use the menu.
+        if (backgroundMode()) return false;
         if (Input.dir4 !== 0) return true;
         if (Input.isPressed("ok") || Input.isTriggered("ok")) return true;
         if (Input.isTriggered("cancel") || Input.isTriggered("escape") || Input.isTriggered("menu")) return true;
@@ -1509,6 +1572,21 @@
 
     // Every decision the leader takes is announced, because the player is not
     // watching the screen when it is taken. One line, the leader's name first.
+    // How long a page stays up for reading: a second and a half at the least,
+    // then about twenty characters a second, never more than eight seconds.
+    const READ_MIN = 90;
+    const READ_MAX = 480;
+    const READ_PER_CHAR = 3;
+    function readingFrames() {
+        let chars = 0;
+        try {
+            const text = $gameMessage.allText ? $gameMessage.allText() : "";
+            // Escape codes (\C[2], \N[1], \I[64]) are not read.
+            chars = String(text || "").replace(/\\[A-Za-z]+(\[[^\]]*\])?/g, "").length;
+        } catch (e) { chars = 0; }
+        return Math.min(READ_MAX, Math.max(READ_MIN, chars * READ_PER_CHAR));
+    }
+
     function announce(key, params, severity) {
         try {
             const actor = autoActor();
@@ -1626,9 +1704,26 @@
     // ------------------------------------------------------------- the danger
     // How outmatched the party is. The level on an enemy event is the one the
     // plate over its head shows (BattleSystemEnhancedLevelDisplay.js), measured
-    // against the party's median level, so the CPU keeps away from troops that
-    // are more than LEVEL_MARGIN (5) levels above the median.
+    // against the party's reference level, the same median the encounter rules
+    // and the "much higher level" warning measure against, so the CPU keeps
+    // away from troops more than LEVEL_MARGIN (5) levels above it.
+    //
+    // The helpers live on window.BattleSystemEnhanced. window.BSE is another
+    // object (two getters over the corpse state, no Helpers), and reading the
+    // level through it answered 0 for every enemy in every fight.
+    function bseHelpers() {
+        const BSE = window.BattleSystemEnhanced;
+        return (BSE && BSE.Helpers) || null;
+    }
+
     function partyLevel() {
+        const H = bseHelpers();
+        if (H && typeof H.getPartyReferenceLevel === "function") {
+            try {
+                const lvl = Number(H.getPartyReferenceLevel()) || 0;
+                if (lvl > 0) return lvl;
+            } catch (e) { /* the median below answers instead */ }
+        }
         const members = $gameParty ? ($gameParty.battleMembers().length ? $gameParty.battleMembers() : $gameParty.members()) : [];
         if (!members.length) return 1;
         const levels = members.map(m => m.level || 1).sort((a, b) => a - b);
@@ -1636,6 +1731,21 @@
         return (levels.length % 2 !== 0) ? levels[mid] : Math.floor((levels[mid - 1] + levels[mid]) / 2);
     }
 
+    // The highest level in a database troop, 0 when none of it is tagged.
+    function troopLevel(troopId) {
+        const H = bseHelpers();
+        const troop = troopId > 0 && typeof $dataTroops !== "undefined" ? $dataTroops[troopId] : null;
+        if (!troop || !H || typeof H.getEnemyLevel !== "function") return 0;
+        let max = 0;
+        for (const member of (troop.members || [])) {
+            const data = typeof $dataEnemies !== "undefined" && $dataEnemies[member.enemyId];
+            const l = data ? Number(H.getEnemyLevel(data.note)) || 0 : 0;
+            if (l > max) max = l;
+        }
+        return max;
+    }
+
+    // 0 means the level could not be read, never that the enemy is harmless.
     function eventLevel(ev) {
         if (!ev) return 0;
         if (typeof window.getEnemyLevelFromEvent === "function") {
@@ -1644,34 +1754,58 @@
                 if (lvl > 0) return lvl;
             } catch (e) {}
         }
-        if (ev._fixedTroopId > 0 && typeof $dataTroops !== "undefined" && $dataTroops[ev._fixedTroopId]) {
-            const troop = $dataTroops[ev._fixedTroopId];
-            let maxLevel = 0;
-            const BSE = window.BattleSystemEnhanced;
-            for (const member of (troop.members || [])) {
-                const enemyData = typeof $dataEnemies !== "undefined" && $dataEnemies[member.enemyId];
-                if (enemyData && enemyData.note && BSE && BSE.Helpers && BSE.Helpers.getEnemyLevel) {
-                    const l = Number(BSE.Helpers.getEnemyLevel(enemyData.note)) || 0;
-                    if (l > maxLevel) maxLevel = l;
-                }
+        if (ev._fixedTroopId > 0) {
+            const lvl = troopLevel(ev._fixedTroopId);
+            if (lvl > 0) return lvl;
+        }
+        // A hand-placed fight carries no troop on the event: its Battle
+        // Processing command names the troop outright (designation 0). One
+        // drawn from a variable or at random cannot be read ahead of time.
+        const page = ev.page && ev.page();
+        for (const cmd of (page && page.list) || []) {
+            if (cmd && cmd.code === 301 && cmd.parameters && cmd.parameters[0] === 0) {
+                const lvl = troopLevel(Number(cmd.parameters[1]) || 0);
+                if (lvl > 0) return lvl;
             }
-            if (maxLevel > 0) return maxLevel;
         }
         return 0;
     }
 
+    // Too much for the party, or of a strength nobody can read: an enemy the
+    // CPU cannot size up is not a fight it starts. The player may pick that
+    // fight on their own; the autopilot never bets the party on it.
     function tooStrong(ev) {
         const level = eventLevel(ev);
-        return level > 0 && level > partyLevel() + LEVEL_MARGIN;
+        if (level <= 0) return true;
+        return level > partyLevel() + LEVEL_MARGIN;
+    }
+
+    // Steps from (x, y) to the nearest enemy that is too much for the party,
+    // or Infinity when there is none on the map.
+    function threatDistance(x, y) {
+        if (!$gameMap) return Infinity;
+        let best = Infinity;
+        for (const ev of $gameMap.events()) {
+            if (!ev || ev._erased || !isEnemyEvent(ev) || !tooStrong(ev)) continue;
+            const d = Math.abs(ev.x - x) + Math.abs(ev.y - y);
+            if (d < best) best = d;
+        }
+        return best;
     }
 
     function underDangerEye(x, y) {
-        if (!$gameMap) return false;
-        for (const ev of $gameMap.events()) {
-            if (!ev || ev._erased || !isEnemyEvent(ev) || !tooStrong(ev)) continue;
-            if (Math.abs(ev.x - x) + Math.abs(ev.y - y) <= 3) return true;
-        }
-        return false;
+        return threatDistance(x, y) <= DANGER_BERTH;
+    }
+
+    // A step from (x, y) toward d is safe unless it lands inside a threat's
+    // berth AND nearer to it than the leader already stands: a leader caught
+    // inside the berth may always step back out of it.
+    function stepIsSafe(x, y, d) {
+        if (!$gameMap) return true;
+        const nx = $gameMap.roundXWithDirection(x, d);
+        const ny = $gameMap.roundYWithDirection(y, d);
+        const after = threatDistance(nx, ny);
+        return after > DANGER_BERTH || after >= threatDistance(x, y);
     }
 
     // --------------------------------------------------------------- the law
@@ -1800,7 +1934,7 @@
         if (!shelf.length) return false;
         const entry = shelf[0];
         let chance = 0;
-        try { chance = Number(SS.calcChance(entry.data, actor.agi)) || 0; } catch (e) { return false; }
+        try { chance = Number(SS.calcChance(entry.data, actor.agi, entry)) || 0; } catch (e) { return false; }
         const caught = Math.random() * 100 >= chance;
         if (caught) {
             const CS = window.CrimeSystem;
@@ -1821,6 +1955,10 @@
     // steps out onto the world map and walks to another square, which is how a
     // player leaves a place they are finished with.
     function canTakeWorldMap() {
+        // The background camera is not a party the player can send anywhere:
+        // stepping out onto the world map would replace the map the title is
+        // drawing underneath it.
+        if (backgroundMode()) return false;
         const WMR = window.WorldMapReturn;
         if (!WMR || typeof WMR.returnToWorldMap !== "function") return false;
         if (typeof WMR.isReturnDisabled === "function" && WMR.isReturnDisabled()) return false;
@@ -1836,19 +1974,307 @@
         return true;
     }
 
-    // Standing on the world map, a square away from here is a place to go: the
-    // party walks a few squares off and drops into one, the way the player
-    // picks somewhere new on the continent.
-    function tryEnterSquare() {
+    // ------------------------------------------------------ squares of the world
+    // Map 315's id, asked of the one authority on it.
+    function worldMapId() {
         const WMR = window.WorldMapReturn;
-        if (!WMR || typeof WMR.enterProceduralSquareAt !== "function") return false;
-        if (!Loose.onWorldMap()) return false;
+        return (WMR && WMR.worldMapId) || 315;
+    }
+
+    // The party's own world square: the tile underfoot on the world map, the
+    // square the coordinate service remembers everywhere else.
+    function worldHere() {
+        if ($gamePlayer && Loose.onWorldMap()) return { x: $gamePlayer.x, y: $gamePlayer.y };
+        const WMT = window.WorldMapTransfer;
+        try {
+            if (WMT && typeof WMT.playerWorld === "function") return WMT.playerWorld() || { x: 0, y: 0 };
+        } catch (e) { /* no square known reads as the corner */ }
+        return { x: 0, y: 0 };
+    }
+
+    // What a world square is called: the named place standing on it, or the
+    // country it lies in. Asked of the coordinate service, which is the one
+    // answer the travel menu and the map name banner give too.
+    function squareName(x, y) {
+        const WMT = window.WorldMapTransfer;
+        if (!WMT || typeof WMT.locationName !== "function") return "";
+        try { return WMT.locationName({ mapId: worldMapId(), worldX: x, worldY: y }) || ""; } catch (e) { return ""; }
+    }
+
+    // "Bologna, Fields at (48 132)": a goal as the toasts print it. The target's
+    // own name is dropped when the square's label already opens with it.
+    function goalLabel(target, x, y) {
+        const WMT = window.WorldMapTransfer;
+        const label = (WMT && typeof WMT.squareLabel === "function")
+            ? WMT.squareLabel(x, y) : T("WorldMapReturn.squareBare", { x: x, y: y });
+        if (!target || label.indexOf(target) === 0) return label;
+        return T("AutoIdle.auto.namedSquare", { target: target, place: label });
+    }
+
+    // A named place's own square: the tile of its footprint nearest the
+    // party where it declares one (its `base` is not dependably inside it),
+    // its single `base` square where it does not.
+    function placeSquare(entry) {
+        if (!entry || !entry.base) return null;
+        const base = { x: Number(entry.base.x) | 0, y: Number(entry.base.y) | 0 };
+        const reserved = Array.isArray(entry.reservedTiles) ? entry.reservedTiles : null;
+        if (!reserved || !reserved.length) return base;
+        const from = worldHere();
+        let best = null;
+        for (const tile of reserved) {
+            const parts = String(tile).split(",");
+            const x = Number(parts[0]), y = Number(parts[1]);
+            if (!isFinite(x) || !isFinite(y)) continue;
+            const d = Math.abs(x - from.x) + Math.abs(y - from.y);
+            if (!best || d < best.d) best = { x: x, y: y, d: d };
+        }
+        return best ? { x: best.x, y: best.y } : base;
+    }
+
+    // Every named place the party can walk into (Destinations.json, read
+    // through WorkSystem as WorldMapReturn reads it), sealed ones left out:
+    // the bubble over a locked place is the only answer to whether it can be
+    // entered, so the CPU never sets off for one.
+    function worldPlaces() {
+        const all = window.WorkSystem && window.WorkSystem.Destinations;
+        const WMR = window.WorldMapReturn;
+        const out = [];
+        if (!all) return out;
+        for (const key of Object.keys(all)) {
+            const entry = all[key];
+            if (!entry || !entry.base) continue;
+            if (WMR && typeof WMR.isLockedPlaceEntry === "function" && WMR.isLockedPlaceEntry(entry)) continue;
+            const square = placeSquare(entry);
+            if (square) out.push({ key: key, entry: entry, x: square.x, y: square.y });
+        }
+        return out;
+    }
+
+    // The world square a map is reached from, as a goal, or null. On the
+    // world map a Teleport square whose transfer names the map wins, because
+    // it IS the door; then a named place whose hand-made entrance is that
+    // map; then the <Coords> the map declares for itself.
+    function worldGoalForMap(mapId) {
+        const id = Number(mapId) || 0;
+        if (!id || !$gameMap) return null;
+        const MC = window.MapConnections;
+        if (MC && typeof MC.exitTarget === "function" && $gamePlayer && Loose.onWorldMap()) {
+            let best = null;
+            for (const ev of $gameMap.events()) {
+                if (!ev || ev._erased || MC.exitTarget(ev) !== id) continue;
+                const d = Math.abs(ev.x - $gamePlayer.x) + Math.abs(ev.y - $gamePlayer.y);
+                if (!best || d < best.d) best = { ev: ev, d: d };
+            }
+            if (best) {
+                return {
+                    kind: "route", mapId: id, eventId: best.ev.eventId(),
+                    x: best.ev.x, y: best.ev.y, name: squareName(best.ev.x, best.ev.y),
+                };
+            }
+        }
+        for (const place of worldPlaces()) {
+            const e = place.entry;
+            const doors = (e.entrance ? [e.entrance] : []).concat(Array.isArray(e.coords) ? e.coords : []);
+            if (!doors.some((c) => c && Number(c.id) === id)) continue;
+            return { kind: "route", mapId: id, key: place.key, x: place.x, y: place.y, name: squareName(place.x, place.y) };
+        }
+        const WMT = window.WorldMapTransfer;
+        const tag = (WMT && typeof WMT.mapCoordsTag === "function") ? WMT.mapCoordsTag(id) : null;
+        if (tag) {
+            const x = Number(tag.x) | 0, y = Number(tag.y) | 0;
+            return { kind: "route", mapId: id, x: x, y: y, name: squareName(x, y) };
+        }
+        return null;
+    }
+
+    // Somewhere on the world map worth going: most often the nearest named
+    // place not seen lately, otherwise a square of open country a short walk
+    // off, which is how a player picks somewhere new on the continent.
+    function pickWorldGoal() {
+        if (!$gameMap || !$gamePlayer) return null;
+        const px = $gamePlayer.x, py = $gamePlayer.y;
+        const WMR = window.WorldMapReturn;
+        if (Math.random() < PLACE_ODDS) {
+            const seen = gazetteer().places;
+            const now = Date.now();
+            let best = null;
+            for (const place of worldPlaces()) {
+                if (place.x === px && place.y === py) continue;
+                if (!$gameMap.isValid(place.x, place.y)) continue;
+                const d = Math.abs(place.x - px) + Math.abs(place.y - py);
+                if (d > PLACE_REACH) continue;
+                const when = Number(seen[place.key]) || 0;
+                const score = d * (when && now - when < PLACE_FORGET_MS ? 10 : 1);
+                if (!best || score < best.score) best = { place: place, score: score };
+            }
+            if (best) {
+                const p = best.place;
+                return { kind: "place", key: p.key, x: p.x, y: p.y, name: squareName(p.x, p.y) };
+            }
+        }
+        for (let i = 0; i < 24; i++) {
+            const dist = WORLD_WANDER_MIN + Math.floor(Math.random() * (WORLD_WANDER_MAX - WORLD_WANDER_MIN + 1));
+            const ang = Math.random() * Math.PI * 2;
+            const x = Math.round(px + Math.cos(ang) * dist);
+            const y = Math.round(py + Math.sin(ang) * dist);
+            if (!tilePassable(x, y)) continue;
+            if (WMR && typeof WMR.isLockedPlaceSquare === "function" && WMR.isLockedPlaceSquare(x, y)) continue;
+            return { kind: "square", x: x, y: y, name: squareName(x, y) };
+        }
+        return null;
+    }
+
+    // Go down into the square underfoot the way the player does: a Teleport
+    // square the goal names is started, anything else is the travel menu's
+    // own "Visit" row (WorldMapReturn.performVisitMap), which walks into a
+    // hand-made place through its door and generates every other square.
+    // Never from the air, and never into a sealed place.
+    function enterWorldSquare(goal) {
+        const WMR = window.WorldMapReturn;
+        if (!WMR || !$gamePlayer || !Loose.onWorldMap()) return false;
         const x = $gamePlayer.x, y = $gamePlayer.y;
-        let entered = false;
-        try { entered = !!WMR.enterProceduralSquareAt(x, y); } catch (e) { return false; }
-        if (!entered) return false;
-        announce("AutoIdle.auto.travelled", { x, y }, "info");
+        const ride = ($gamePlayer.isInVehicle && $gamePlayer.isInVehicle()) ? $gamePlayer.vehicle() : null;
+        if (ride && ride.isAirship && ride.isAirship()) return false;
+        if (typeof WMR.isLockedPlaceSquare === "function" && WMR.isLockedPlaceSquare(x, y)) return false;
+        const name = (goal && goal.name) || squareName(x, y);
+        const ev = goal && goal.eventId ? $gameMap.event(goal.eventId) : null;
+        if (ev && !ev._erased) {
+            if (ev.x !== x || ev.y !== y) $gamePlayer.setDirection(dirBetween(x, y, ev.x, ev.y));
+            try { ev.start(); } catch (e) { return false; }
+        } else {
+            try {
+                if (typeof WMR.performVisitMap === "function") WMR.performVisitMap();
+                else if (typeof WMR.enterProceduralSquareAt === "function") WMR.enterProceduralSquareAt(x, y);
+            } catch (e) { return false; }
+            if (!$gamePlayer.isTransferring()) return false;
+        }
+        if (goal && goal.key) gazetteer().places[goal.key] = Date.now();
+        announce("AutoIdle.auto.travelled", { place: goalLabel(name, x, y) }, "info");
         return true;
+    }
+
+    // The square underfoot, entered. Kept for the quest step and the last
+    // resort of pickGoal, which both stand on the square they mean.
+    function tryEnterSquare() {
+        if (!$gamePlayer || !Loose.onWorldMap()) return false;
+        return enterWorldSquare({ kind: "square", x: $gamePlayer.x, y: $gamePlayer.y });
+    }
+
+    // ------------------------------------------------------- the map's rim
+    // On the procedural map (Map/WorldMapReturn.js, map 636) the ways on are
+    // not events at all: the whole rim of the map is one. The player crosses it
+    // by pushing outward while standing on the outermost ring, and
+    // WorldMapReturn's Game_Player.moveStraight reads that push as the
+    // crossing: it grows the stitched window over the neighbouring square, or
+    // pans across to it. Nothing the autopilot did ever made that push. Every
+    // way off it knew was an event (isPortalEvent), and every step it took was
+    // asked of a tile ON the map (findDirectionTo, canPass, tilePassable), which
+    // is exactly the step that never leaves it. So the rim is written down here
+    // as a way out in its own right, walked to like a door, and crossed with
+    // the same outward step the arrow keys send (executeMove is moveStraight).
+    //
+    // A hand-made map that declares its exits with <Worldmap> is the same idea
+    // spoken differently: a walkable rim tile is crossed by standing on it
+    // (checkBorderTeleport) and a fenced one by pushing into the fence
+    // (tryBorderReturn), and $gameMap.isBorderCrossing already answers both.
+    const RIM_STEP = { 2: [0, 1], 4: [-1, 0], 6: [1, 0], 8: [0, -1] };
+    const RIM_REVERSE = { 2: 8, 4: 6, 6: 4, 8: 2 };
+    // How far in from the rim a fenced <Worldmap> border can be pushed from
+    // (EDGE_FENCE_DEPTH in WorldMapReturn.js).
+    const RIM_FENCE_DEPTH = 3;
+    // Pushes at one rim tile that carry nobody anywhere (a sealed place past
+    // it, the world map's own edge) before that side is written off.
+    const RIM_PUSH_TRIES = 2;
+    // How long a side that refused the party is left alone.
+    const RIM_REFUSE_FRAMES = 1800;
+
+    // "proc" on the procedural map, "border" on a hand-made map with
+    // <Worldmap> exits, "" wherever the rim is only a rim. The title's
+    // background camera never leaves its map, the same rule canTakeWorldMap
+    // keeps.
+    function rimKind() {
+        if (!$gameMap || !$gameSystem || backgroundMode()) return "";
+        if (Loose.onWorldMap()) return "";
+        const WMR = window.WorldMapReturn;
+        const procId = (WMR && WMR.procMapId) || 636;
+        if ($gameMap.mapId() === procId) {
+            const pg = $gameSystem._procGenData;
+            // A door or sandbox dungeon's rim leads back out to where it was
+            // entered (exitDungeonSession): that is the way in, not a way on.
+            if (!pg || pg._dungeonSession) return "";
+            return "proc";
+        }
+        if (WMR && typeof WMR.isReturnDisabled === "function" && WMR.isReturnDisabled()) return "";
+        if (($gameMap._borderDestination || $gameMap._coordsDest) &&
+            typeof $gameMap.isBorderCrossing === "function") return "border";
+        return "";
+    }
+
+    // Is a crossing already on its way? The pan or fade WorldMapReturn runs
+    // between the push and the transfer is not somewhere to go on walking.
+    function rimCrossingUnderWay() {
+        const pg = $gameSystem && $gameSystem._procGenData;
+        if (pg && (pg._edgeTransitionScheduled || pg._edgeTransitionDispatching)) return true;
+        return !!($gamePlayer && $gamePlayer.isTransferring());
+    }
+
+    // Tiles from (x, y) to the rim on side d. 0 standing on it.
+    function rimDistance(x, y, d) {
+        switch (d) {
+            case 2: return $gameMap.height() - 1 - y;
+            case 4: return x;
+            case 6: return $gameMap.width() - 1 - x;
+            case 8: return y;
+        }
+        return Infinity;
+    }
+
+    // Where to stand to leave by side d along one lane (the column for north
+    // and south, the row for east and west): the outermost walkable tile on
+    // the procedural map, and on a <Worldmap> map the first walkable tile in
+    // from the rim that a push outward really crosses from. Null when that
+    // lane is sea, cliff or wall.
+    function rimStandTile(kind, d, lane) {
+        const w = $gameMap.width(), h = $gameMap.height();
+        const inward = RIM_STEP[RIM_REVERSE[d]];
+        let x = d === 4 ? 0 : d === 6 ? w - 1 : lane;
+        let y = d === 8 ? 0 : d === 2 ? h - 1 : lane;
+        const depth = kind === "border" ? RIM_FENCE_DEPTH : 0;
+        for (let i = 0; i <= depth; i++, x += inward[0], y += inward[1]) {
+            if (!$gameMap.isValid(x, y) || !tilePassable(x, y)) continue;
+            // Void and cliff (terrain tags 7 and 4) are never a crossing:
+            // WorldMapReturn draws no marker over them either.
+            const tag = $gameMap.terrainTag(x, y);
+            if (tag === 4 || tag === 7) continue;
+            if (kind === "proc") return { x, y };
+            return $gameMap.isBorderCrossing(x, y, d) ? { x, y } : null;
+        }
+        return null;
+    }
+
+    // The rim tile to leave by: the nearest open side first, and along it
+    // the lane nearest the party. `avoid` is the side just come in over,
+    // taken only when nothing else is open; `refused` holds the sides that
+    // carried nobody anywhere lately.
+    function pickRimExit(kind, px, py, avoid, refused) {
+        const sides = [2, 4, 6, 8]
+            .filter((d) => !refused[d])
+            .map((d) => ({ d, key: rimDistance(px, py, d) + Math.random() * 8 + (d === avoid ? 100000 : 0) }))
+            .sort((a, b) => a.key - b.key);
+        for (const side of sides) {
+            const d = side.d;
+            const along = d === 2 || d === 8;
+            const span = along ? $gameMap.width() : $gameMap.height();
+            const home = along ? px : py;
+            for (let off = 0; off < span; off++) {
+                const a = rimStandTile(kind, d, home + off);
+                if (a) return { x: a.x, y: a.y, d };
+                if (off === 0) continue;
+                const b = rimStandTile(kind, d, home - off);
+                if (b) return { x: b.x, y: b.y, d };
+            }
+        }
+        return null;
     }
 
     // ========================================================================
@@ -2660,7 +3086,7 @@
         sameCount: 0,
         postDelay: 0,
         msgDelay: 0,
-        intent: null, // 'target' | 'wander'
+        intent: null, // 'target' | 'wander' | 'rim'
         target: null,
         destX: null,
         destY: null,
@@ -2680,7 +3106,15 @@
         destStall: 0,     // frames a pending touch destination has sat unmoved
         goals: 0,         // errands run on this map, the cue to take a way out
         been: {},         // "x,y" of every tile walked on this map, for wandering
+        rimDir: 0,        // side of the map being walked off (2/4/6/8), 0 when none
+        rimPushes: 0,     // outward pushes made at the rim tile on this walk
+        rimCameIn: 0,     // side of this square the party came in over
+        rimRefused: {},   // side -> frame until which it is left alone
         route: null,      // { dest, why } the map being travelled to, across maps
+        worldGoal: null,  // { kind, x, y, name } the world-map square being walked to
+        boarding: null,   // { key, name, x, y } the party's own vehicle being walked to
+        _noFare: 0,       // frame before which no vehicle is boarded for a journey again
+        _shore: false,    // the wander under way is a boat making for the bank
         travelling: null, // the fast travel destination being confirmed
         _travelWait: 0,   // frames the travel overlay has been given to build
         arrivedAt: -99999, // frame the party last set foot on a new map
@@ -2724,6 +3158,8 @@
             this._hasEngaged = true;
             this.intent = null;
             this.target = null;
+            this.rimDir = 0;
+            this.rimPushes = 0;
             this.destX = this.destY = null;
             this.idle = 0;
             this.destStall = 0;
@@ -2732,6 +3168,8 @@
             this.dismissCool = 0;
             this.driving = null;
             this.route = null;
+            this.worldGoal = null;
+            this.boarding = null;
             this.travelling = null;
             this._travelWait = 0;
             if ($gameTemp) $gameTemp.clearDestination();
@@ -2755,6 +3193,12 @@
                 this.goals = 0;
                 this.been = {};
                 this._surveyed = 0;
+                // A new map has sides of its own. A crossing between two
+                // procedural squares never reaches here (both are map 636), and
+                // that is what crossedRim is for.
+                this.rimDir = 0;
+                this.rimCameIn = 0;
+                this.rimRefused = {};
                 // Where they came in, and when. Every cooldown on this map is
                 // empty because they have never been here, so the one thing
                 // that stops them turning round is knowing which door is
@@ -2764,6 +3208,10 @@
                 recordArrival(this.mapId);
                 // Standing on the destination is the end of the journey.
                 if (this.route && this.route.dest === this.mapId) this.route = null;
+                // A square of the world map is only a goal while standing on
+                // it, and a vehicle walked to is only here while this map is.
+                this.worldGoal = null;
+                this.boarding = null;
             }
             // The book is written up once the map is quiet enough to be read,
             // whether or not the CPU is the one walking: a party that passed
@@ -2773,7 +3221,9 @@
                 surveyMap();
             }
 
-            if (!ConfigManager.autoIdle) {
+            // The title's Eris camera is walked by the autopilot whatever the
+            // option says: nobody else is there to walk her.
+            if (!ConfigManager.autoIdle && !backgroundMode()) {
                 this.disengage();
                 return;
             }
@@ -2792,6 +3242,16 @@
 
             if (this.engaged) {
                 this.updateEngaged();
+                return;
+            }
+
+            // The title's Eris camera has nobody to press a key: a box opened
+            // while the autopilot was not engaged (an NPC's event-touch talk,
+            // a disengage mid-conversation) keeps onDrivableMap() false, so
+            // idle frames never count and the camera would stand behind the
+            // title forever. Such a box is driven even without engaging.
+            if (backgroundMode() && $gameMessage.isBusy()) {
+                this.driveMessages();
                 return;
             }
 
@@ -2817,7 +3277,7 @@
                 $gameTemp.clearDestination();
             }
             this.destStall = 0;
-            const waitFrames = this._hasEngaged ? REENGAGE_FRAMES : 0;
+            const waitFrames = this._hasEngaged ? REENGAGE_FRAMES : ENGAGE_FRAMES;
             if (++this.idle >= waitFrames) {
                 this._hasEngaged = true;
                 this.engage();
@@ -2828,7 +3288,7 @@
         // diagnostic (AutoIdleExplorer.why()), never rendered anywhere.
         // i18n-ignore-start
         why() {
-            if (!ConfigManager.autoIdle) return "the option is off";
+            if (!ConfigManager.autoIdle && !backgroundMode()) return "the option is off";
             if (Loose.inMapBattle()) return "a map battle is running";
             if (this.engaged) return "engaged";
             if (!(SceneManager._scene instanceof Scene_Map)) return "not on the map";
@@ -2840,7 +3300,7 @@
             if (manualInputDetected()) return "input is being held";
             if ($gamePlayer.isMoving()) return "the player is moving";
             if ($gameTemp.isDestinationValid()) return "a touch destination is pending";
-            const targetFrames = this._hasEngaged ? REENGAGE_FRAMES : 0;
+            const targetFrames = this._hasEngaged ? REENGAGE_FRAMES : ENGAGE_FRAMES;
             return "counting idle frames (" + this.idle + "/" + targetFrames + ")";
         },
         // i18n-ignore-end
@@ -2855,6 +3315,41 @@
         // Engaged update: arbitrate between driving messages, dismissing any
         // external plugin menu we triggered, and exploring the map.
         updateEngaged() {
+            // The title screen's background camera (the Eris camera) has no
+            // player on it: the keyboard belongs to the title menu, so nothing
+            // pressed there is a takeover, and no DOM panel of the title's is a
+            // menu the autopilot must dismiss. Everything else - driving
+            // messages, taking a transfer, exploring - happens exactly as it
+            // does while the player watches a real map.
+            if (backgroundMode()) {
+                if ($gameMessage.isBusy()) {
+                    this.driveMessages();
+                    this._stillTile = null;
+                    return;
+                }
+                if (!onDrivableMap()) {
+                    this.idle = 0;
+                    this._stillTile = null;
+                    if ($gamePlayer && $gamePlayer.isTransferring()) {
+                        // The camera rebuilds the map on its own once the
+                        // transfer lands, so this is a wait, never a give-up.
+                        this.blocked = 0;
+                        return;
+                    }
+                    if (++this.blocked > BLOCK_LIMIT) {
+                        this.blocked = 0;
+                        this.disengage();
+                    }
+                    return;
+                }
+                this.blocked = 0;
+                this.dismissTries = 0;
+                this.driving = null;
+                if ($gamePlayer) this.been[$gamePlayer.x + "," + $gamePlayer.y] = true;
+                this.drive();
+                return;
+            }
+
             // 1) A "Show Text" / "Show Choices" / number / item prompt keeps the
             //    map busy, drive those windows ourselves. A clear takeover
             //    gesture (movement, cancel/menu) still hands control back; the
@@ -3111,7 +3606,8 @@
             for (const d of dirs) {
                 if (
                     typeof $gamePlayer.canPass === "function" &&
-                    $gamePlayer.canPass($gamePlayer.x, $gamePlayer.y, d)
+                    $gamePlayer.canPass($gamePlayer.x, $gamePlayer.y, d) &&
+                    stepIsSafe($gamePlayer.x, $gamePlayer.y, d)
                 ) {
                     announce("AutoIdle.auto.restless", {}, "info");
                     $gamePlayer.executeMove(d);
@@ -3123,6 +3619,10 @@
         },
 
         drive() {
+            // A crossing over the rim is under way (the pan or fade before the
+            // transfer): the party has already left, and walking on would only
+            // stroll back across the picture of the square being left.
+            if (rimCrossingUnderWay()) return;
             // Five seconds on one square is standing about: nudge before
             // anything else, so no held intent can pin the leader in place.
             if (this.keepMoving()) return;
@@ -3135,13 +3635,26 @@
                 return;
             }
 
+            // The vehicle comes before anything on the map: climbing in, pulling
+            // over and getting out are what the leader is doing this frame.
+            if (this.driveVehicle()) return;
+
+            // A monster the party cannot take that is closing in, or already
+            // at arm's length, outranks every errand: run first, plan after.
+            if (this.evadeThreat()) return;
+
             // Opportunistic: if the player is in contact with a "Door" event and
             // already facing it, walk through it (start it) so the autopilot can
             // move between maps the way a player would.
             if (this.tryDoorInFront()) return;
 
             if (this.intent) {
-                if (this.intent === "target" && this.target) {
+                // The rim is asked first: the wandering branch below would read
+                // standing on the rim tile as "arrived" and drop the walk one
+                // step short of the push that is the whole point of it.
+                if (this.intent === "rim") {
+                    if (this.driveRim()) return;
+                } else if (this.intent === "target" && this.target) {
                     if (!isInteractable(this.target)) {
                         this.abandonIntent();
                     } else if (this.adjacent(this.target)) {
@@ -3244,7 +3757,7 @@
         // while something is still being handled. Paced by msgDelay so dialogue
         // stays on screen for a beat instead of flashing past instantly.
         driveMessages() {
-            const scene = SceneManager._scene;
+            const scene = resolveMapScene();
             if (!(scene instanceof Scene_Map)) return false;
 
             if (this.msgDelay > 0) {
@@ -3252,11 +3765,29 @@
                 return true;
             }
 
+            // Whatever is on screen is left up long enough to be read before
+            // the CPU answers or turns the page: a player watching the party
+            // talk has to be able to follow what was said.
+            const choice = scene._choiceListWindow;
+            const num = scene._numberInputWindow;
+            const item = scene._eventItemWindow;
+            const mw = scene._messageWindow;
+            const waiting = (choice && choice.active) || (num && num.active) ||
+                (item && item.active) || (mw && mw.pause);
+            if (!waiting) {
+                this._readUntil = null;
+            } else if (this._readUntil == null) {
+                this._readUntil = this.frame + readingFrames();
+                return true;
+            } else if (this.frame < this._readUntil) {
+                return true;
+            }
+            this._readUntil = null;
+
             // 1) Show Choices. The answer comes off the person holding the
             // reins, who is speaking to them, what the purse can take and how
             // the day has gone: a coin flip here is the loudest machine noise
             // the autopilot can make.
-            const choice = scene._choiceListWindow;
             if (choice && choice.active) {
                 const max = choice.maxItems ? choice.maxItems() : 0;
                 if (max > 0) {
@@ -3271,7 +3802,6 @@
 
             // 2) Number input. The default is whatever the event happened to
             // put there; a person asks for a round number they can afford.
-            const num = scene._numberInputWindow;
             if (num && num.active) {
                 this.answerNumber(num);
                 if (num.processOk) num.processOk();
@@ -3280,7 +3810,6 @@
             }
 
             // 3) Select Item: the thing the party can most spare, not slot 0.
-            const item = scene._eventItemWindow;
             if (item && item.active) {
                 if (item.maxItems && item.maxItems() > 0) {
                     item.select(this.answerItem(item));
@@ -3292,9 +3821,9 @@
                 return true;
             }
 
-            // 4) Plain text, fast-forward the typewriter, then tap through each
-            // page exactly the way Window_Message.updateInput would on "ok".
-            const mw = scene._messageWindow;
+            // 4) Plain text: the typewriter runs at its own pace, and each
+            // finished page (once read, above) is turned exactly the way
+            // Window_Message.updateInput would on "ok".
             if (mw && $gameMessage.isBusy()) {
                 if (mw.pause) {
                     mw.pause = false;
@@ -3302,8 +3831,6 @@
                         mw.terminateMessage();
                     }
                     this.msgDelay = 24;
-                } else {
-                    mw._showFast = true;
                 }
                 return true;
             }
@@ -3374,6 +3901,9 @@
             // front of them, and the one in front of somebody who has just
             // arrived is the one they came out of.
             if (this.justArrived()) return false;
+            // A door is not driven through: the vehicle system opens nothing
+            // but a transfer to a rider, and the party gets out first anyway.
+            if (this.ridingOffWorld()) return false;
             const dir = $gamePlayer.direction();
             const fx = $gamePlayer.x + (dir === 6 ? 1 : dir === 4 ? -1 : 0);
             const fy = $gamePlayer.y + (dir === 2 ? 1 : dir === 8 ? -1 : 0);
@@ -3391,14 +3921,14 @@
                 announce("AutoIdle.auto.door", {
                     target: (ev.event() && ev.event().name) || "",
                 });
+                // The press is counted by the Game_Event.start watch below:
+                // a door that transfers nobody is refused rather than pressed
+                // every time the party is stood in it.
                 try {
                     ev.start();
                 } catch (e) {
                     /* door refused to start, ignore */
                 }
-                // Count the press: a door that transfers nobody is refused
-                // rather than pressed every time the party is stood in it.
-                this.noteInteraction(ev);
                 this.postDelay = 20;
                 this.abandonIntent();
                 return true;
@@ -3412,11 +3942,338 @@
         stepToward(x, y) {
             if (!$gamePlayer || $gamePlayer.isMoving() || !$gamePlayer.canMove()) return false;
             const dir = $gamePlayer.findDirectionTo(x, y);
+            // The engine's A* reads the map and never the events standing on
+            // it, so the shortest line to a door can run past, or straight
+            // into, a monster the party has no business fighting, and bumping
+            // it starts the fight (checkEventTriggerTouch). A step into a
+            // threat's berth is refused; the errand stalls and is dropped the
+            // way any blocked one is.
+            if (dir > 0 && !stepIsSafe($gamePlayer.x, $gamePlayer.y, dir)) return false;
             if (dir > 0) {
                 $gamePlayer.executeMove(dir);
-                return $gamePlayer.isMovementSucceeded();
+                if ($gamePlayer.isMovementSucceeded()) return true;
             }
+            // No dry way on. The engine's search does not answer "nowhere" for
+            // a goal across a river: it answers the straight line toward it,
+            // and that step goes into the water and fails. A player gets in
+            // and swims it (Map/MovementInteractionSystem.js), so the leader
+            // does too, the way the loose party already does (Loose.swimToward).
+            return this.swimFor(x, y);
+        },
+
+        // Get into the water and swim toward (x, y) when that is the way there.
+        // The question is put to the engine's own search as a swimmer would put
+        // it: for the length of one findDirectionTo the leader counts as in the
+        // water, which is all the swim passability rules read. The swim only
+        // starts when that route's first step is actually water; getting out on
+        // the far bank is updateSwimState's business, as it is for the player.
+        // They never DIVE: going under is the player's business.
+        swimFor(x, y) {
+            const p = $gamePlayer;
+            const mis = window.MovementSystem;
+            if (!p || !mis || typeof mis.enterSwimMode !== "function") return false;
+            if (p._isSwimming || p._isClimbing || p._isSitting || p.isInVehicle()) return false;
+            // The world map is a chart, not a shore: the game refuses a swim there.
+            if (Loose.onWorldMap()) return false;
+            let dir = 0;
+            p._isSwimming = true;
+            try { dir = p.findDirectionTo(x, y); } catch (e) { dir = 0; } finally { p._isSwimming = false; }
+            if (dir <= 0 || !stepIsSafe(p.x, p.y, dir)) return false;
+            const nx = $gameMap.roundXWithDirection(p.x, dir);
+            const ny = $gameMap.roundYWithDirection(p.y, dir);
+            if (!Loose.isWater(nx, ny) || $gameMap.regionId(nx, ny) === 10) return false;
+            if ($gameMap.eventsXy(nx, ny).length) return false;
+            mis.enterSwimMode(p);
+            p.executeMove(dir);
+            if (p.isMovementSucceeded()) {
+                announce("AutoIdle.auto.swims", {}, "info");
+                return true;
+            }
+            mis.exitSwimMode(p);
             return false;
+        },
+
+        // ------------------------------------------------------- the vehicle
+        // The party's own vehicles are not events: nothing starts when they are
+        // pressed, and the only way in or out is the action button and the
+        // choice window behind it (Game_Player.getOnOffVehicle), which the CPU
+        // never presses. Both halves go through the vehicle system's own calls
+        // instead (Vehicle/VehicleSystem.js boardParked / stepOut).
+        //
+        // At the wheel, the vehicle is kept while it is carrying the party
+        // somewhere: across the world map, or toward the fare of a journey too
+        // long to walk (followRoute). Anywhere else the party has arrived and
+        // exploring is done on foot, so the leader pulls over and gets out onto
+        // dry ground; a boat out on the water is sailed to the nearest bank
+        // first, and something flying stays up until it is over somewhere it
+        // can land. Returns true while the vehicle is this frame's business.
+        ridingOffWorld() {
+            return !!$gamePlayer && $gamePlayer.isInVehicle() && !Loose.onWorldMap();
+        },
+
+        driveVehicle() {
+            const p = $gamePlayer;
+            const MVS = window.MergedVehicleSystem;
+            if (!p || !MVS || typeof MVS.stepOut !== "function") return false;
+            if (p._vehicleGettingOn || p._vehicleGettingOff) return true;
+            if (!p.isInVehicle()) return this.boardIfBeside();
+            if (Loose.onWorldMap() || this.wantsVehicle()) return false;
+            const v = p.vehicle();
+            if (!v) return false;
+            const facing = p.direction();
+            for (let i = 0; i < 4; i++) {
+                const d = CARDINALS[i];
+                let ok = false;
+                try { ok = !!v.isLandOk(p.x, p.y, d); } catch (e) { ok = false; }
+                if (!ok) continue;
+                p.setDirection(d);
+                if (MVS.stepOut(false)) return this.steppedOut();
+            }
+            p.setDirection(facing);
+            const key = typeof MVS.riddenVehicleKey === "function" ? MVS.riddenVehicleKey() : null;
+            if (key === "boat") return this.headForShore();
+            if (key === "broom" || key === "airship") return false;
+            // A road vehicle is standing on ground: out where it stands.
+            if (MVS.stepOut(true)) return this.steppedOut();
+            return false;
+        },
+
+        steppedOut() {
+            announce("AutoIdle.auto.stepsOut", {}, "info");
+            this.abandonIntent();
+            this.postDelay = 20;
+            return true;
+        },
+
+        // A journey long enough for a fare, from the seat of a vehicle that has
+        // a network, is the one reason to stay at the wheel off the world map.
+        wantsVehicle() {
+            if (!this.route || this._noFare > this.frame) return false;
+            if (!transportHere()) return false;
+            const MC = window.MapConnections;
+            if (!MC || !$gameMap) return false;
+            let path = [];
+            try { path = MC.path($gameMap.mapId(), this.route.dest) || []; } catch (e) { return false; }
+            return path.length - 1 > FAST_TRAVEL_HOPS;
+        },
+
+        // Walk to the nearest of the party's own vehicles parked on this map
+        // that has a network (the camper, the car, the bike): once somebody is
+        // at its wheel, tryFastTravel has a network to book.
+        seekVehicle() {
+            const p = $gamePlayer;
+            const MVS = window.MergedVehicleSystem;
+            if (!p || p.isInVehicle() || !MVS || typeof MVS.parkedHere !== "function") return false;
+            if (this._noFare > this.frame) return false;
+            let list = [];
+            try { list = MVS.parkedHere() || []; } catch (e) { list = []; }
+            let best = null;
+            for (const v of list) {
+                if (!v || !v.network) continue;
+                const dist = Math.abs(v.x - p.x) + Math.abs(v.y - p.y);
+                if (!best || dist < best.dist) best = { v: v, dist: dist };
+            }
+            if (!best) return false;
+            this.abandonIntent();
+            this.boarding = { key: best.v.key, name: best.v.name, x: best.v.x, y: best.v.y };
+            this.intent = "wander";
+            this.destX = best.v.x;
+            this.destY = best.v.y;
+            this.sameCount = 0;
+            announce("AutoIdle.auto.toVehicle", { target: best.v.name }, "info");
+            return true;
+        },
+
+        // Alongside the vehicle being walked to: face it and climb in. A camper
+        // is several tiles of bodywork, so every side is tried, the heading they
+        // arrived with first; boardParked says no without side effects.
+        boardIfBeside() {
+            const b = this.boarding;
+            const MVS = window.MergedVehicleSystem;
+            if (!b || !MVS || typeof MVS.boardParked !== "function") return false;
+            const p = $gamePlayer;
+            if (Math.abs(p.x - b.x) + Math.abs(p.y - b.y) > 8) return false;
+            const facing = p.direction();
+            for (let i = -1; i < 4; i++) {
+                const d = i < 0 ? facing : CARDINALS[i];
+                if (i >= 0 && d === facing) continue;
+                p.setDirection(d);
+                let got = false;
+                try { got = !!MVS.boardParked(b.key); } catch (e) { got = false; }
+                if (!got) continue;
+                this.boarding = null;
+                this.abandonIntent();
+                announce("AutoIdle.auto.boards", { target: b.name }, "info");
+                this.postDelay = 20;
+                return true;
+            }
+            p.setDirection(facing);
+            return false;
+        },
+
+        // Out on the water with no bank alongside: sail for the nearest ground
+        // a walker could stand on. The wander walks the boat there, and the
+        // pull-over above puts them out the moment the bank is alongside.
+        headForShore() {
+            if (this.intent === "wander" && this._shore) return false;
+            const p = $gamePlayer;
+            let best = null;
+            for (let r = 1; r <= SHORE_RADIUS && !best; r++) {
+                for (let dx = -r; dx <= r && !best; dx++) {
+                    const dy = r - Math.abs(dx);
+                    for (let s = 0; s < (dy ? 2 : 1); s++) {
+                        const x = p.x + dx;
+                        const y = p.y + (s ? -dy : dy);
+                        if (!tilePassable(x, y) || Loose.isWater(x, y)) continue;
+                        best = { x: x, y: y };
+                        break;
+                    }
+                }
+            }
+            if (!best) return false;
+            this.abandonIntent();
+            this.intent = "wander";
+            this._shore = true;
+            this.destX = best.x;
+            this.destY = best.y;
+            this.sameCount = 0;
+            announce("AutoIdle.auto.shore", {}, "info");
+            return false;
+        },
+
+        // Running from a monster the party cannot take. It is fled while it is
+        // hunting them inside EVADE_RANGE ('alert' is the moment it notices,
+        // 'commit' the chase: BattleSystemEnhancedEncounters.js section 6b),
+        // or whenever it stands inside DANGER_BERTH whatever it is doing. The
+        // leader dashes the step that puts the most ground between them, the
+        // way the player is meant to break a chase: a committed creature is
+        // capped below a running party's speed.
+        evadeThreat() {
+            if (!$gamePlayer || !$gameMap || !$gamePlayer.canMove()) return false;
+            const px = $gamePlayer.x, py = $gamePlayer.y;
+            let threat = null, near = Infinity;
+            for (const ev of $gameMap.events()) {
+                if (!ev || ev._erased || !isEnemyEvent(ev) || !tooStrong(ev)) continue;
+                const d = Math.abs(ev.x - px) + Math.abs(ev.y - py);
+                const hunting = ev._aiState === "alert" || ev._aiState === "commit";
+                if (d > (hunting ? EVADE_RANGE : DANGER_BERTH)) continue;
+                if (d < near) { near = d; threat = ev; }
+            }
+            if (!threat) return false;
+            let best = 0, bestGap = near;
+            for (const d of CARDINALS) {
+                if (!$gamePlayer.canPass(px, py, d)) continue;
+                const gap = threatDistance($gameMap.roundXWithDirection(px, d), $gameMap.roundYWithDirection(py, d));
+                if (gap > bestGap) { bestGap = gap; best = d; }
+            }
+            const key = this.recentKey(threat);
+            if (!this.shunned[key]) {
+                this.shunned[key] = this.frame;
+                announce("AutoIdle.auto.evades", {
+                    target: (threat.event() && threat.event().name) || "",
+                }, "warning");
+            }
+            // Cornered: nothing gains ground, so the ordinary planner (which
+            // will not step any nearer) carries on.
+            if (!best) return false;
+            this.abandonIntent();
+            // Game_Player.updateDashing only rewrites the flag while standing
+            // still, so it holds for the step started here.
+            if (!$gameMap.isDashDisabled() && !$gamePlayer.isInVehicle()) $gamePlayer._dashing = true;
+            $gamePlayer.executeMove(best);
+            return $gamePlayer.isMovementSucceeded();
+        },
+
+        // Head for the rim of the map and leave over it (see rimKind). True
+        // when a rim tile to leave by was found and the walk has begun.
+        walkToRim() {
+            const kind = rimKind();
+            if (!kind) return false;
+            const refused = this.rimRefused || (this.rimRefused = {});
+            for (const d of Object.keys(refused)) {
+                if (refused[d] <= this.frame) delete refused[d];
+            }
+            const exit = pickRimExit(kind, $gamePlayer.x, $gamePlayer.y, this.rimCameIn || 0, refused);
+            if (!exit) return false;
+            announce("AutoIdle.auto.rim", {});
+            this.intent = "rim";
+            this.target = null;
+            this.rimDir = exit.d;
+            this.rimPushes = 0;
+            this.destX = exit.x;
+            this.destY = exit.y;
+            this.sameCount = 0;
+            this.goals++;
+            $gameTemp.setDestination(exit.x, exit.y);
+            return true;
+        },
+
+        // One frame of the walk to the rim, and the push off it. True while
+        // the rim still has the frame; false hands it back to planning.
+        driveRim() {
+            const d = this.rimDir;
+            if (!d || !rimKind() || this.destX === null) {
+                this.abandonIntent();
+                return false;
+            }
+            if ($gamePlayer.x !== this.destX || $gamePlayer.y !== this.destY) {
+                if (++this.sameCount < 24) {
+                    if (this.stepToward(this.destX, this.destY)) this.sameCount = 0;
+                    else Mind.frustrate();
+                    return true;
+                }
+                // The rim tile cannot be reached from here: that side is shut
+                // for now, and the next plan looks at another.
+                this.refuseRim(d);
+                this.abandonIntent();
+                return false;
+            }
+            if (this.rimPushes++ >= RIM_PUSH_TRIES) {
+                // Pushed and nothing happened: a sealed place past it, or the
+                // edge of the world itself.
+                this.refuseRim(d);
+                this.abandonIntent();
+                return false;
+            }
+            // The very step the arrow key sends from here. Game_Player.executeMove
+            // is moveStraight, and WorldMapReturn's moveStraight is where a step
+            // off the map becomes a crossing (or, on a <Worldmap> map,
+            // tryBorderReturn and its choice).
+            $gamePlayer.setDirection(d);
+            $gamePlayer.executeMove(d);
+            this.postDelay = 20;
+            if (rimCrossingUnderWay() || $gamePlayer.isMoving() || $gameMessage.isBusy()) {
+                this.crossedRim(d);
+            }
+            return true;
+        },
+
+        refuseRim(d) {
+            if (!this.rimRefused) this.rimRefused = {};
+            this.rimRefused[d] = this.frame + RIM_REFUSE_FRAMES;
+        },
+
+        // Over the rim. A crossing onto the next procedural square keeps the
+        // map id (every square is map 636), so updateOnMap never sees an
+        // arrival: say it here. The errands counted and the ground walked were
+        // the last square's, and the side just left by is the one the new
+        // square is entered from, the one way on not to take straight back.
+        crossedRim(d) {
+            const transfer = rimCrossingUnderWay();
+            this.abandonIntent();
+            this.rimCameIn = RIM_REVERSE[d];
+            this.rimRefused = {};
+            this.goals = 0;
+            this.been = {};
+            if (transfer) {
+                // A whole new square is generated, and its events reuse the
+                // old square's ids: every cooldown keyed by them is stale.
+                this.recent = {};
+                this.stuck = {};
+                this.shunned = {};
+                this.arrivalDoor = 0;
+                this.arrivedAt = this.frame;
+            }
         },
 
         recentKey(ev) {
@@ -3485,6 +4342,14 @@
         },
 
         interact(ev) {
+            // Nobody talks to a shopkeeper through a windscreen. VehicleSystem
+            // keeps every event but a transfer shut to a rider off the world
+            // map (checkEventTriggerHere / There), and ev.start() below would
+            // walk straight past that rule, so the autopilot keeps it itself.
+            if (this.ridingOffWorld()) {
+                this.abandonIntent();
+                return;
+            }
             // An event already written off as a loop is not pressed again; the
             // leader looks for somewhere else to be instead.
             if (this.refused(ev)) {
@@ -3501,14 +4366,14 @@
             // Getting there is the end of the wanting, and a long wanting is
             // worth a line in the party's own notebook.
             if (this.holdsThis(ev)) Mind.release("done", this.frame);
+            // The press is counted by the Game_Event.start watch below: one
+            // event started again and again is written off rather than
+            // hammered (see noteInteraction).
             try {
                 ev.start();
             } catch (e) {
                 /* event refused to start, ignore */
             }
-            // Count the press: one event started again and again is written off
-            // rather than hammered (see noteInteraction).
-            this.noteInteraction(ev);
             this.postDelay = 20;
             this.intent = null;
             this.target = null;
@@ -3521,8 +4386,18 @@
             if (this.intent === "target" && this.target) {
                 this.recent[this.recentKey(this.target)] = this.frame;
             }
+            // A vehicle walked to and never climbed into is not walked to again
+            // straight away: whatever kept them out (a wall round it, a slot in
+            // use) is still there.
+            if (this.boarding) {
+                this._noFare = this.frame + VEHICLE_RETRY;
+                this.boarding = null;
+            }
+            this._shore = false;
             this.intent = null;
             this.target = null;
+            this.rimDir = 0;
+            this.rimPushes = 0;
             this.destX = this.destY = null;
             this.sameCount = 0;
             if ($gameTemp) $gameTemp.clearDestination();
@@ -3535,6 +4410,9 @@
         pickGoal() {
             if (this.pursueErrand()) return;
             if (this.followRoute()) return;
+            // On the world map the next place IS the errand: a named square or
+            // a stretch of open country, picked, announced and walked to.
+            if (Loose.onWorldMap() && this.followWorldGoal()) return;
             const candidates = this.scanEvents();
 
             // What the party already wanted comes first. A thing on the map
@@ -3566,12 +4444,21 @@
             if (this.walkToPush()) return;
 
             if (done || !candidates.length) {
+                // On the procedural map the next square IS the frontier, and
+                // the rim is the way to it: walking off the edge is how the
+                // player explores the continent from here, so it comes before
+                // the connection graph (which knows nothing of map 636's
+                // neighbours) and long before the T key.
+                if (rimKind() === "proc" && this.walkToRim()) return;
                 if (this.planRoute() && this.followRoute()) return;
                 // Standing on the world map, the next square IS the next place.
                 if (Loose.onWorldMap() && tryEnterSquare()) {
                     this.goals = 0;
                     return;
                 }
+                // A hand-made map that declares <Worldmap> exits is left over
+                // them before the T key, the way the player walks out of town.
+                if (rimKind() === "border" && this.walkToRim()) return;
                 // A map with no errands left and no door out is left by the T key.
                 if (!candidates.length && tryWorldMap()) {
                     this.goals = 0;
@@ -3809,15 +4696,36 @@
                 return false;
             }
             const path = MC.path(here, this.route.dest);
+            // On the world map there are no doors to take: the next map on the
+            // route is a SQUARE, walked to and entered as the player enters one.
+            if (Loose.onWorldMap()) return this.routeAcrossWorld(path);
             if (path.length < 2) {
+                // No chain of doors joins the two, but the world map joins
+                // everything standing on a square of it: out, across, and in,
+                // or on the network when the party is sitting in a vehicle.
+                const aim = worldGoalForMap(this.route.dest);
+                if ((aim && tryFastTravel(aim)) || this.routeByWorld(0)) return true;
                 this.route = null;
                 return false;
             }
-            if (path.length - 1 > FAST_TRAVEL_HOPS && tryFastTravel()) return true;
+            if (path.length - 1 > FAST_TRAVEL_HOPS) {
+                if (tryFastTravel()) return true;
+                // At the wheel and still no fare: the network will not take them
+                // from here, so the vehicle is given up for a while and the
+                // journey is walked (driveVehicle pulls over next frame).
+                if ($gamePlayer.isInVehicle()) this._noFare = this.frame + VEHICLE_RETRY;
+                // On foot: the party's own camper, car or bike standing on this
+                // map is a network of its own once somebody is at its wheel.
+                else if (this.seekVehicle()) return true;
+            }
             const door = exitToward(path[1]);
             if (!door || !isInteractable(door) || this.refused(door)) {
-                // No usable way on: drop the journey rather than walk at a door
-                // that will not open, and let the map offer something else.
+                // The connection graph is walked both ways (a way through is a
+                // way back) but a door stands on ONE side of it: most hops out
+                // to the world map, and many out of a town, have no event on
+                // this side at all. The world map is the one way off every map
+                // has, so the journey goes that way before it is given up on.
+                if (this.routeByWorld(path[1])) return true;
                 this.route = null;
                 return false;
             }
@@ -3826,6 +4734,83 @@
                 return true;
             }
             this.setTarget(door, "AutoIdle.auto.routeStep");
+            return true;
+        },
+
+        // Out onto the world map on the journey's behalf: when the next map IS
+        // the world map, or when the book knows the square the destination
+        // stands on. Counted per journey, so a square that leads somewhere the
+        // route did not expect cannot send the party out and in forever.
+        routeByWorld(next) {
+            const r = this.route;
+            if (!r || (r.viaWorld || 0) >= ROUTE_WORLD_TRIES) return false;
+            if (next !== worldMapId() && !worldGoalForMap(r.dest)) return false;
+            if (!tryWorldMap()) return false;
+            r.viaWorld = (r.viaWorld || 0) + 1;
+            return true;
+        },
+
+        // A hop of the journey taken across the world map: the square the next
+        // map is entered from, or failing that the destination's own.
+        routeAcrossWorld(path) {
+            const r = this.route;
+            if (!this.worldGoal || this.worldGoal.forRoute !== r) {
+                const next = path.length >= 2 ? path[1] : r.dest;
+                const goal = worldGoalForMap(next) || (next !== r.dest ? worldGoalForMap(r.dest) : null);
+                if (!goal) {
+                    this.route = null;
+                    return false;
+                }
+                goal.forRoute = r;
+                this.setWorldGoal(goal);
+            }
+            return this.followWorldGoal();
+        },
+
+        // A square of the world map set as the goal, and said out loud: the
+        // player looking back at the screen should know where the party is
+        // headed and why it is not simply wandering.
+        setWorldGoal(goal) {
+            goal.since = this.frame;
+            this.worldGoal = goal;
+            announce(goal.kind === "square" ? "AutoIdle.auto.targetsSquare" : "AutoIdle.auto.targetsPlace", {
+                place: goal.kind === "square"
+                    ? goalLabel("", goal.x, goal.y) : goalLabel(goal.name || "", goal.x, goal.y),
+            }, "info");
+        },
+
+        // Walk the world goal; standing on it (or beside the Teleport square it
+        // names), go down into it. A goal the map will not let them reach is
+        // given up on, and a journey that hung on it goes with it.
+        followWorldGoal() {
+            if (!$gamePlayer || !Loose.onWorldMap()) {
+                this.worldGoal = null;
+                return false;
+            }
+            let goal = this.worldGoal;
+            if (goal && this.frame - goal.since > WORLD_GOAL_TTL) {
+                announce("AutoIdle.mind.givesUp", { target: goal.name || "" }, "warning");
+                if (goal.forRoute && goal.forRoute === this.route) this.route = null;
+                this.worldGoal = null;
+                return false;
+            }
+            if (!goal) {
+                goal = pickWorldGoal();
+                if (!goal) return false;
+                this.setWorldGoal(goal);
+            }
+            const far = Math.abs($gamePlayer.x - goal.x) + Math.abs($gamePlayer.y - goal.y);
+            if (far <= (goal.eventId ? 1 : 0)) {
+                this.worldGoal = null;
+                this.goals = 0;
+                return enterWorldSquare(goal);
+            }
+            if (far > WORLD_TRAVEL_SQUARES && tryFastTravel(goal)) return true;
+            this.intent = "wander";
+            this.destX = goal.x;
+            this.destY = goal.y;
+            this.sameCount = 0;
+            $gameTemp.setDestination(goal.x, goal.y);
             return true;
         },
 
@@ -3912,10 +4897,12 @@
                 if (enemy && tooStrong(ev)) {
                     if (!this.shunned[this.recentKey(ev)]) {
                         this.shunned[this.recentKey(ev)] = this.frame;
-                        announce("AutoIdle.auto.avoided", {
-                            target: (ev.event() && ev.event().name) || "",
-                            level: eventLevel(ev),
-                        }, "warning");
+                        const level = eventLevel(ev);
+                        const target = (ev.event() && ev.event().name) || "";
+                        // An unread level is refused too (tooStrong), and
+                        // said so rather than printed as "level 0".
+                        if (level > 0) announce("AutoIdle.auto.avoided", { target: target, level: level }, "warning");
+                        else announce("AutoIdle.auto.avoidedUnknown", { target: target }, "warning");
                     }
                     continue;
                 }
@@ -3977,6 +4964,7 @@
         showBadge() {
             if (!SHOW_BADGE || this._badge) return;
             const el = document.createElement("div");
+            if (backgroundMode()) return;   // no badge over the title screen
             el.textContent = "AUTO";
             el.style.cssText =
                 "position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:99;" +
@@ -3999,9 +4987,12 @@
             return ConfigManager.autoIdle && this.engaged;
         },
 
-        // Is this a fight the party is losing? Two ways of being outmatched:
-        // the party is being cut down (anybody under FLEE_HP, or half of them
-        // already off their feet), or the troop simply outranks them.
+        // Is this a fight to leave? Half the party already off their feet, a
+        // troop that outranks the party by more than LEVEL_MARGIN (before a
+        // single blow lands: a level 9 party does not wait to be hurt by a
+        // level 70), or somebody cut below FLEE_HP by a troop above the party.
+        // Hurt by a weaker troop is still a fight to finish: the auto-battle
+        // AI heals as it goes.
         losingFight() {
             const members = $gameParty.battleMembers();
             if (!members.length) return false;
@@ -4011,36 +5002,59 @@
                 if (m.isAlive() && m.hpRate() < FLEE_HP) hurt = true;
             }
             if (alive * 2 <= members.length) return true;
-            if (!hurt) return false;
-            // Hurt AND outranked is a fight to leave; hurt alone is a fight to
-            // finish, because the auto-battle AI heals as it goes.
-            let troopLevel = 0;
-            for (const enemy of $gameTroop.members()) {
-                const data = enemy && enemy.enemy && enemy.enemy();
-                const level = data && window.BSE && BSE.Helpers && BSE.Helpers.getEnemyLevel
-                    ? Number(BSE.Helpers.getEnemyLevel(data.note)) || 0
-                    : 0;
-                if (level > troopLevel) troopLevel = level;
+            const top = this.troopLevel();
+            const party = partyLevel();
+            if (top > party + LEVEL_MARGIN) return true;
+            return hurt && top > party;
+        },
+
+        // The highest level standing in the troop, read through the same
+        // getBattlerLevel the damage formulas use (an arena override
+        // included); 0 when nobody is tagged.
+        troopLevel() {
+            const H = bseHelpers();
+            let top = 0;
+            for (const enemy of $gameTroop.aliveMembers()) {
+                let level = 0;
+                try {
+                    if (H && typeof H.getBattlerLevel === "function") level = Number(H.getBattlerLevel(enemy)) || 0;
+                    else if (H && typeof H.getEnemyLevel === "function") level = Number(H.getEnemyLevel(enemy.enemy().note)) || 0;
+                } catch (e) { level = 0; }
+                if (level > top) top = level;
             }
-            return troopLevel > partyLevel() + LEVEL_MARGIN;
+            return top;
         },
 
         // Run for it, through whatever command window this battle system puts
         // the Escape row in (IndividualBattleTurns.js moves it onto the actor).
+        // No BattleManager.canEscape() gate: the ordinary map fight is set up
+        // with canEscape false (BattleSystemEnhanced.js startPersistentBattle)
+        // while the Run row is always offered and PerfectEscape.js decides the
+        // odds, so the gate left the CPU the one runner in the game who could
+        // never run.
         fleeBattle(scene) {
-            // Running is not a neutral act: the party carries it.
-            Mind.feel("hurt");
-            if (BattleManager.canEscape && !BattleManager.canEscape()) return false;
             for (const win of [scene._partyCommandWindow, scene._actorCommandWindow]) {
                 if (!win || !win.active || !win._list) continue;
                 const i = win._list.findIndex((c) => c && c.symbol === "escape");
                 if (i < 0) continue;
+                // Running is not a neutral act: the party carries it.
+                Mind.feel("hurt");
+                announce("AutoIdle.auto.flees", {}, "warning");
                 win.select(i);
                 if (win.callOkHandler) win.callOkHandler();
+                return true;
+            }
+            // No window offers the row: the scene's own handler tears the input
+            // state down after a run that got away, which a bare
+            // BattleManager.processEscape leaves standing.
+            if (typeof scene.commandEscape === "function") {
+                Mind.feel("hurt");
                 announce("AutoIdle.auto.flees", {}, "warning");
+                scene.commandEscape();
                 return true;
             }
             if (typeof BattleManager.processEscape === "function") {
+                Mind.feel("hurt");
                 announce("AutoIdle.auto.flees", {}, "warning");
                 BattleManager.processEscape();
                 return true;
@@ -4228,7 +5242,7 @@
             }
 
             if (!this.engaged) {
-                const waitFrames = this._hasEngaged ? REENGAGE_FRAMES : 0;
+                const waitFrames = this._hasEngaged ? REENGAGE_FRAMES : ENGAGE_FRAMES;
                 if (++this.idle >= waitFrames) {
                     this._hasEngaged = true;
                     this.engaged = true;
@@ -4374,7 +5388,11 @@
                 if (last && this.frame - last < 1800) continue; // 30s cooldown
                 const dist = Math.abs(e.x - ev.x) + Math.abs(e.y - ev.y);
                 if (dist > SCAN_RADIUS) continue;
-                out.push({ ev: e, dist, enemy: isEnemyEvent(e) });
+                const enemy = isEnemyEvent(e);
+                // The leader's rule (scanEvents above): a fight above the
+                // party's weight, or of unknown weight, is no errand for P2.
+                if (enemy && tooStrong(e)) continue;
+                out.push({ ev: e, dist, enemy });
             }
             out.sort((a, b) => (b.enemy - a.enemy) * 100 + (a.dist - b.dist));
             return out;
@@ -7346,8 +8364,20 @@
             return all.find(f => !this.isPet(f)) || all[0] || null;
         },
 
+        // Somebody who is not walking on their own feet next to the leader: a
+        // downed member held by whoever carries them, or Bubba stacked on the
+        // leader's tile. OK pressed near them belongs to the event or the water
+        // in front, never to a menu about them.
+        isCarriedAlong(f) {
+            if (!f) return false;
+            if (typeof Carry !== "undefined" && Carry.isBody(f)) return true;
+            const actor = f.actor && f.actor();
+            return !!(actor && actor.name && actor.name() === REGROUP_BUBBA &&
+                $gamePlayer && f.x === $gamePlayer.x && f.y === $gamePlayer.y);
+        },
+
         interactAt(x, y) {
-            const list = this.followersAtPos(x, y);
+            const list = this.followersAtPos(x, y).filter(f => !this.isCarriedAlong(f));
             list.sort((a, b) => (this.isPet(a) ? 1 : 0) - (this.isPet(b) ? 1 : 0));
             for (const f of list) {
                 if (this.talkTo(f)) return true;
@@ -7366,6 +8396,7 @@
             const fy = $gameMap.roundYWithDirection($gamePlayer.y, d);
             for (const f of $gamePlayer.followers().data()) {
                 if (this.isPet(f)) continue;
+                if (this.isCarriedAlong(f)) continue;
                 if (!f.isVisible() || f.isTransparent()) continue;
                 if (f.pos(fx, fy)) return f;
             }
@@ -8001,6 +9032,12 @@
             // lead does not change hands at all.
             if (window.VoxelWorldSystem && window.VoxelWorldSystem.isActive &&
                 window.VoxelWorldSystem.isActive()) return false;
+            // The same for the two star overlays drawn over the map: the ship
+            // controls turn their tabs on Tab and the shoulder buttons, and the
+            // night sky chart flips its constellation set on Tab.
+            if (window.GalaxySim && window.GalaxySim.isShipControlsOpen &&
+                window.GalaxySim.isShipControlsOpen()) return false;
+            if (SceneManager._scene && SceneManager._scene._starMapActive) return false;
             if (SceneManager.isSceneChanging()) return false;
             if ($gameParty.inBattle() || Loose.inMapBattle()) return false;
             if ($gameMessage.isBusy() || $gameMap.isEventRunning()) return false;
@@ -8359,6 +9396,38 @@
         return this.busy();
     };
     window.AutoIdleExplorer = AutoIdle;
+
+    // Every start of an event while the CPU holds the reins is a press, however
+    // it came about: the autopilot's own interact(), a door in front of it, the
+    // engine's touch-move arriving next to an event and pressing it, or walking
+    // onto a player-touch tile. Counting only the presses the autopilot makes
+    // itself missed the engine's two, and those were the loops that never
+    // ended: the leader stood at the same counter reopening the same line
+    // forever. An event written off as a loop is not started again for the
+    // length of the grudge, so the loop is actually broken rather than logged.
+    // Autorun and parallel pages are the map's own doing and never count.
+    const _Game_Event_start_watch = typeof Game_Event !== "undefined" && Game_Event.prototype.start;
+    if (_Game_Event_start_watch) Game_Event.prototype.start = function () {
+        const t = this._trigger;
+        const pressed = t === 0 || t === 1 || t === 2;
+        if (!pressed || !AutoIdle.engaged || !(ConfigManager.autoIdle || backgroundMode())) {
+            return _Game_Event_start_watch.call(this);
+        }
+        if (AutoIdle.refused(this)) return undefined;
+        const result = _Game_Event_start_watch.call(this);
+        try { AutoIdle.noteInteraction(this); } catch (e) { /* the watch never stops a press */ }
+        return result;
+    };
+
+    // The background map (the title screen's Eris camera): the scene handed
+    // over is a Scene_Map instance the camera ticks itself, and while one is
+    // set the autopilot drives it exactly as it drives the real map - only
+    // the player's own input and the world-map exit are left out of it.
+    AutoIdle.setBackgroundScene = function (scene) {
+        _bgScene = scene || null;
+        if (!_bgScene) AutoIdle.hideBadge();
+    };
+    AutoIdle.backgroundMode = backgroundMode;
 
     // ========================================================================
     // Loose party hooks

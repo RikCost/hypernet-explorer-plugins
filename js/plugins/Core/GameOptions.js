@@ -43,7 +43,7 @@
  * @type number
  * @min 0
  * @max 100
- * @default 90
+ * @default 50
  *
  * @param defaultMeVolume
  * @text Default ME Volume
@@ -782,10 +782,10 @@ window.GameOptions = GameOptions;
             const n = Number(stored);
             return isFinite(n) ? n.clamp(0, 100) : fallback;
         };
-        if (this.bgmVolume === undefined) this.bgmVolume = defaultBgmVolume;
-        if (this.bgsVolume === undefined) this.bgsVolume = defaultBgsVolume;
-        if (this.meVolume === undefined) this.meVolume = defaultMeVolume;
-        if (this.seVolume === undefined) this.seVolume = defaultSeVolume;
+        this.bgmVolume = volume(config.bgmVolume, defaultBgmVolume);
+        this.bgsVolume = volume(config.bgsVolume, defaultBgsVolume);
+        this.meVolume = volume(config.meVolume, defaultMeVolume);
+        this.seVolume = volume(config.seVolume, defaultSeVolume);
         this.footstepsVolume = volume(config.footstepsVolume, defaultFootstepsVolume);
         // Animalese chattering under the dialogue box (see DialogueSystem's
         // letter voices). On unless the player turns it off.
@@ -862,10 +862,6 @@ window.GameOptions = GameOptions;
         // Procedural map streaming (Map/WorldMapReturn.js, window.ProcStitch): on
         // by default. Off falls back to one square per map, crossed with a pan.
         this.mapStreaming = config.mapStreaming !== undefined ? config.mapStreaming : true;
-        // The map tips (Map/MapLegend.js): three states rather than a toggle,
-        // on from the first game. The row below, the initial settings page of
-        // character creation and Bubba's ask menu all write this one key.
-        this.showMapNotices = config.showMapNotices !== undefined ? config.showMapNotices : 'first';
         // Enemy difficulty slider: 0..100 with 50 = untouched stats. Anything
         // else scales every enemy parameter (see the Game_Enemy.paramBase hook).
         this.enemyDifficulty = config.enemyDifficulty !== undefined ? config.enemyDifficulty : ENEMY_DIFFICULTY_DEFAULT;
@@ -951,7 +947,6 @@ window.GameOptions = GameOptions;
         config.cpuPartyMembers = this.cpuPartyMembers;
         config.mapBattleMode = this.mapBattleMode;
         config.mapStreaming = this.mapStreaming;
-        config.showMapNotices = this.showMapNotices;
         config.enemyDifficulty = this.enemyDifficulty;
         config.retroTune = RETRO_TUNE;
         config.retroShaderMode = this.retroShaderMode;
@@ -2369,14 +2364,14 @@ window.GameOptions = GameOptions;
     // Title Screen Background switcher (select between the data cards, the
     // starfield and the two cinematic backgrounds; Random reshuffles each launch)
     const titleBgNames = () => T.list('GameOptions.titleBackground');
-    // Cycle order as seen by the player: Hyperverse (the default) first, Camper
-    // Drive second, then the rest, with Random always last. The stored config
+    // Cycle order as seen by the player: Hyperverse (the default) first, the
+    // Eris camera (9) second, Camper Drive third, then the rest, with Random always last. The stored config
     // ids keep their original numbering so existing configs stay valid; only the
     // order they are stepped through changes. 3, 4, 5 and 6 (Artifacts,
     // Bestiary, Weapons and the old Enemies 3D) are gone from the cycle: the
     // data cards cover all four. Mirrors
     // Scene_Title.getAvailableBackgroundModes in Titlescreen.js.
-    const TITLE_BG_ORDER = [7, 8, 1, 2, 0];
+    const TITLE_BG_ORDER = [7, 9, 8, 1, 2, 0];
     const stepTitleBg = (v, dir) => {
         let i = TITLE_BG_ORDER.indexOf(v);
         if (i < 0) i = 0;

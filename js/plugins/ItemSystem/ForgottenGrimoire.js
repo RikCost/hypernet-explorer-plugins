@@ -369,7 +369,7 @@
         GrimInput.deactivate();
         if (this._dom) {
             const c = this._dom;
-            c.style.transition = "opacity .2s ease-out"; c.style.opacity = "0"; c.style.pointerEvents = "none";
+            c.classList.add("grim-closing");
             setTimeout(() => { if (c && c.parentNode) c.parentNode.removeChild(c); }, 200);
             this._dom = null;
         }
@@ -576,12 +576,11 @@
     Scene_ForgottenGrimoire.prototype.createDOM = function () {
         this._dom = document.createElement("div");
         this._dom.id = "menu-container";
-        this._dom.style.opacity = "0";
-        this._dom.style.transition = "opacity .22s ease-out";
+        this._dom.classList.add("grim-fade");
         document.body.appendChild(this._dom);
         this.redraw();
         GrimInput.activate();
-        setTimeout(() => { if (this._dom) this._dom.style.opacity = "1"; }, 16);
+        setTimeout(() => { if (this._dom) this._dom.classList.add("grim-open"); }, 16);
     };
 
     // Never name this "render": a Scene is a PIXI.Container and the renderer
@@ -601,22 +600,22 @@
         });
 
         const leftHTML = `
-          <div class="left-page">
+          <div class="left-page grim-page">
             <div class="page-header-bar">
               <div class="back-button focusable" onclick="SceneManager._scene.popScene()">${back}</div>
-              <h2 class="title" style="font-size:1.665em;">${this.headerTitle()}</h2>
+              <h2 class="title">${this.headerTitle()}</h2>
             </div>
-            <div style="font-family:var(--font-ui); font-style: normal; opacity:0.8; font-size:0.892em; margin-bottom:12px; color:var(--text-primary-hover,#58180D);">
+            <div class="ui-prose grim-blurb">
               ${this._custom
                 ? T('Grimoire.custom.blurb', { left: this.pagesLeft(), total: this._offered.length })
                 : T('Grimoire.ui.blurb')}
             </div>
-            <div style="font-family:var(--font-ui); font-weight:bold; font-size:0.928em; margin-bottom:6px; color:var(--text-primary-hover,#58180D);">${T('Grimoire.ui.partyReader')}</div>
+            <div class="inspect-section-title">${T('Grimoire.ui.partyReader')}</div>
             <div class="grim-list">${actorsHTML}</div>
             <div class="grim-psi">
-              <div style="font-weight:bold; color:var(--accent-gold-pure,#b8860b);">${T('Grimoire.ui.psychicDiagnostics')}</div>
-              <div class="row"><span>${T('Grimoire.ui.medianPsi')}</span><span style="font-weight:bold;">${medianPartyPSI()}</span></div>
-              <div class="row"><span>${T('Grimoire.ui.forbiddenSurfacing')}</span><span>${manifestLabel()}</span></div>
+              <div class="inspect-section-title">${T('Grimoire.ui.psychicDiagnostics')}</div>
+              <div class="inspect-spec-row"><span class="inspect-spec-label">${T('Grimoire.ui.medianPsi')}</span><span class="inspect-spec-value">${medianPartyPSI()}</span></div>
+              <div class="inspect-spec-row"><span class="inspect-spec-label">${T('Grimoire.ui.forbiddenSurfacing')}</span><span class="inspect-spec-value">${manifestLabel()}</span></div>
             </div>
           </div>`;
 
@@ -648,8 +647,10 @@
         }
 
         const rightHTML = `
-          <div class="right-page">
-            <h2 class="title" style="font-size:1.475em; margin-bottom:12px;">${T('Grimoire.ui.whisperedSpells')}</h2>
+          <div class="right-page grim-page">
+            <div class="page-header-bar page-header-bar--compact">
+              <h2 class="title">${T('Grimoire.ui.whisperedSpells')}</h2>
+            </div>
             <div class="grim-list">${cardsHTML}</div>
           </div>`;
 

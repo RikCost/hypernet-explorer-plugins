@@ -12,18 +12,18 @@
  * Scene_VectorGun, the screen the main menu opens in story mode.
  *
  * The shared kit and nothing of its own: one .book-spread, a .page-header-bar
- * carrying the one .back-button, a .backpack-tabs strip of TWO pages, and a
+ * carrying the one .back-button, a .backpack-tabs strip of four pages, and a
  * .backpack-grid of .item-slot cards on the left page, written exactly as the
  * skills menu writes a skill (a stripe, an icon, a name, a cost or a state).
  * The right page is the gun on the shared 3D viewer (window.Weapon3DPreview)
  * with the card for the row under the cursor beneath it, and the three bays the
  * gun is running along the bottom.
  *
- * The two pages:
- *   modes  - the twenty odd operating modes, three across
- *   form   - the shapes the gun folds into AND the element it carries, one
- *            page because both are "what the weapon is" rather than what it
- *            is running
+ * The pages:
+ *   modes     - the twenty odd operating modes, three across
+ *   form      - the shapes the gun folds into
+ *   element   - the element the pistol carries
+ *   calibrate - the gimmick of the fitted shape
  *
  * The grid is the control: every card is a button. Confirming a mode LOADS it
  * into the first free bay of the three the gun runs, and with all three taken
@@ -50,6 +50,7 @@
   const ELEMENT_IDS = VG.ELEMENT_IDS;
   const FORM_CHOICES = VG.FORM_CHOICES;
   const GUN_FORM = VG.GUN_FORM;
+  const DICE_FORM = VG.DICE_FORM;
 
   // How long the cursor must rest before the stand is rebuilt. Every step on
   // the form page tears a WebGL model down and builds another, and a pad's key
@@ -57,9 +58,9 @@
   // walk the page one stuttering card at a time.
   const STAND_SETTLE = 140;
 
-  // The shapes and the element are one page: both answer "what is this weapon",
-  // where the modes answer "what is it doing".
-  const TABS = ['modes', 'form', 'calibrate'];
+  // The shapes and the element each have a page of their own: the element is
+  // what the pistol is loaded with, not one of the shapes.
+  const TABS = ['modes', 'form', 'element', 'calibrate'];
   // How many cards a line of the grid holds. Must match .vg-grid's
   // grid-template-columns in css/theme.css, the way every other grid scene
   // keeps its own COLS in step with the sheet.
@@ -118,6 +119,7 @@
   // The shapes wear the face of the weapon type they are, so the page reads as
   // a rack of weapons rather than a list of words.
   const SHAPE_ICONS = {
+    dice: 31,           // LUK Up: the die that is thrown for the shape
     gun: 115,           // SMG: the pistol's own face, off the weapon row
     sniper: 116,        // Gatling Gun: the long shape it racks out into
     abrasax: 326,       // Dagger
@@ -133,8 +135,6 @@
     longinus: 381,      // Fire Lance
     solomon: 187,       // Book: the grimoire that is read instead of swung
     fists: 141,         // Gauntlets of Might: the empty hands
-    twin: 117,          // Pistol: the pair
-    crossbow: 371,      // Crossbow
     eris: 353,          // Frost Whip: the nunchaku on its chain
     maat: 109,          // Flaming Mace: the ankh on its chain
     bubba: 223,         // Wrench
@@ -193,7 +193,7 @@
   const CAL_SECTION_ICONS = {
     element: 96, rack: 445, marks: 177, stance: 129, sky: 130, schools: 187,
     quarry: 292, lash: 216, venom: 177, head: 109, cleave: 351, draw: 370,
-    charge: 381, pattern: 115, bolt: 371, discord: 353, measure: 187,
+    charge: 381, discord: 353, measure: 187,
     reads: 119, bargain: 126, mends: 72, known: 79, reach: 80,
   };
 
@@ -321,6 +321,13 @@
       this._stand = GUN_FORM;
       this._switching = false;
       this._standTimer = 0;
+      // The Fists of Em are the battle's rig, a large file: read it now so the
+      // stand has it by the time the cursor reaches them.
+      const WSP = window.WeaponSystemProcedural;
+      if (WSP && WSP.warmRig && VG.wielder) {
+        const holder = VG.wielder() || VG.emActor();
+        if (holder) WSP.warmRig([holder]);
+      }
       // The overlay is the shared one every screen the main menu opens uses
       // (#menu-container, UI/CustomMainMenuLayout.js createUIMenuDOM).
       this._el = document.createElement('div');
@@ -393,12 +400,13 @@
         return (VG.MODE_ORDER || MODE_KEYS).map((key) => ({ kind: 'mode', key: key }));
       }
       if (this._tab === 'calibrate') return this.calRows();
-      return [{ kind: 'head', text: T('VectorGun.section.forms') }]
-        .concat(byName(FORM_CHOICES, (key) => shapeText(key, 'name'))
-          .map((key) => ({ kind: 'form', key: key })))
-        .concat([{ kind: 'head', text: T('VectorGun.section.elements') }])
-        .concat(byName(ELEMENT_IDS, elementName)
-          .map((id) => ({ kind: 'element', id: id })));
+      if (this._tab === 'element') {
+        return byName(ELEMENT_IDS, elementName).map((id) => ({ kind: 'element', id: id }));
+      }
+      // The forms are a progression too: the dice and the gun first, then the
+      // twenty weapon forms in the order they come open, each card carrying
+      // the level it needs.
+      return FORM_CHOICES.map((key) => ({ kind: 'form', key: key }));
     }
 
     /**
@@ -442,11 +450,12 @@
      */
     shownShape() {
       const row = this._tab === 'form' ? this.current() : null;
-      if (row && row.kind === 'form') {
-        return row.key === GUN_FORM ? VG.SNIPER_FORM : row.key;
-      }
-      const fitted = VG.fittedForm();
-      return fitted === GUN_FORM ? VG.SNIPER_FORM : fitted;
+      // The dice is not a shape of its own: it stands as the pistol it is
+      // thrown from.
+      const shapeOf = (key) => key === DICE_FORM ? GUN_FORM
+        : key === GUN_FORM ? VG.SNIPER_FORM : key;
+      if (row && row.kind === 'form') return shapeOf(row.key);
+      return shapeOf(VG.fittedForm());
     }
 
     /** The shape actually on the stand right now. */
@@ -461,9 +470,11 @@
      */
     standTarget() {
       const row = this.current();
-      // The shapes page: a shape card stands as that shape, and an element
-      // card stands as the pistol, which is what the element is loaded into.
-      if (this._tab === 'form') return (row && row.kind === 'form') ? ALT_STAND : GUN_FORM;
+      // The shapes page: a shape card stands as that shape. The element page
+      // falls through to the pistol, which is what the element is loaded into.
+      if (this._tab === 'form') {
+        return (row && row.kind === 'form' && row.key !== DICE_FORM) ? ALT_STAND : GUN_FORM;
+      }
       // The calibrate page: the shape being calibrated is the one on the
       // bench, which with the gun fitted is the coilgun it racks out into -
       // except over an element card, which is the coilgun's own element and
@@ -480,9 +491,20 @@
       // through leaves the piece standing as the shape the cursor has left.
       // morphStand asks again once it has finished.
       if (this._switching) return;
-      const want = this.standTarget();
-      if (want !== this._stand) this.morphStand(want);
+      if (this._standStale()) this.morphStand(this.standTarget());
       else this._mountPreview();
+    }
+
+    /**
+     * Whether the piece on the stand is the wrong SHAPE for the cursor: the
+     * wrong half, or the alternate half standing as another form. A new
+     * element or mode on the same shape is only a rebuild, not a fold.
+     */
+    _standStale() {
+      const want = this.standTarget();
+      if (want !== this._stand) return true;
+      const shape = want === GUN_FORM ? GUN_FORM : this.shownShape();
+      return !!this._mountedShape && shape !== this._mountedShape;
     }
 
     /**
@@ -504,25 +526,54 @@
      * it: it is the screen looking at the other half of the same weapon.
      */
     morphStand(form) {
-      if (this._switching || !this._el || this._stand === form) return;
+      if (this._switching || !this._el) return;
       this._switching = true;
-      const entry = this._previews[0];
-      const fold = VG.playSwitchOn(entry ? entry.model : null, 'fold') || 0;
-      this._zoomStand(MORPH_ZOOM, fold);
+      let fold = 0;
+      try {
+        const entry = this._previews[0];
+        fold = VG.playSwitchOn(entry ? entry.model : null, 'fold') || 0;
+        this._zoomStand(MORPH_ZOOM, fold);
+      } catch (e) {
+        console.warn('[VectorGunUI] fold failed:', e);
+      }
       setTimeout(() => {
+        // Whatever goes wrong in the rebuild, the stand is never left locked
+        // mid-fold: a stuck flag froze it on one shape for good.
+        try {
+          if (!this._el) return;
+          this._stand = form;
+          this._mountPreview(true);
+        } catch (e) {
+          console.warn('[VectorGunUI] rebuild failed:', e);
+        }
         if (!this._el) { this._switching = false; return; }
-        this._stand = form;
-        this._mountPreview(true);
-        const rise = VG.playSwitchOn(
-          this._previews[0] ? this._previews[0].model : null, 'rise') || 0;
-        this._switching = false;
-        // The cursor may have walked off this shape while it was folding: the
-        // request that was refused mid-morph is served now.
-        if (this.standTarget() !== this._stand) { this._syncStand(); return; }
-        // The new shape is measured only once it has finished unfolding: while
-        // its panels are still swinging open the bounds are the whole swing.
-        setTimeout(() => { if (this._el) this._fitStand(280); }, rise + 60);
+        // The viewer builds the model inside its own animation loop, so the
+        // rise waits for it to exist: played on nothing, the new shape just
+        // snapped in.
+        this._whenModel((model) => {
+          let rise = 0;
+          try { rise = VG.playSwitchOn(model, 'rise') || 0; } catch (e) { rise = 0; }
+          this._switching = false;
+          if (!this._el) return;
+          // The cursor may have walked off this shape while it was folding:
+          // the request that was refused mid-morph is served now.
+          if (this._standStale()) { this._syncStand(); return; }
+          // The new shape is measured only once it has finished unfolding:
+          // while its panels are still swinging open the bounds are the swing.
+          setTimeout(() => { if (this._el) this._fitStand(280); }, rise + 60);
+        });
       }, fold);
+    }
+
+    /** Calls back with the stand's model once the viewer has built it. */
+    _whenModel(cb, tries) {
+      const left = tries === undefined ? 20 : tries;
+      const entry = this._previews[0];
+      if ((!entry || !entry.model) && left > 0 && this._el) {
+        requestAnimationFrame(() => this._whenModel(cb, left - 1));
+        return;
+      }
+      cb(entry ? entry.model : null);
     }
 
     //------------------------------------------------------------------------
@@ -628,6 +679,14 @@
       if (!row) return;
       if (row.kind === 'mode') this._fit(row.key);
       else if (row.kind === 'form') {
+        // A form her level has not reached is refused, with the level it needs.
+        if (VG.isFormUnlocked && !VG.isFormUnlocked(row.key)) {
+          SoundManager.playBuzzer();
+          this._toast(T('VectorGun.toast.formLocked', {
+            form: shapeText(row.key, 'name'), n: VG.formUnlockLevel(row.key),
+          }), 'vgform');
+          return;
+        }
         VG.setForm(row.key);
         SoundManager.playOk();
         this._toast(T('VectorGun.toast.form', { form: shapeText(row.key, 'name') }), 'vgform');
@@ -720,7 +779,11 @@
       const model = entry && entry.model;
       const camera = entry && entry.camera;
       if (!model || !camera || !window.THREE) return STAND_ZOOM;
-      const box = new THREE.Box3().setFromObject(model);
+      // The Fists of Em are a skinned rig, whose geometry is the bind pose:
+      // what is measured is the hands as they are held.
+      const WSP = window.WeaponSystemProcedural;
+      const box = (model.userData.rigPreview && WSP)
+        ? WSP.handBoundsOf(model) : new THREE.Box3().setFromObject(model);
       if (box.isEmpty()) return STAND_ZOOM;
       const size = box.getSize(new THREE.Vector3());
       // The piece turns on the stand, so the depth counts as width too.
@@ -797,7 +860,7 @@
               <h2 class="title">${esc(T('VectorGun.title'))}</h2>
             </div>
             <div class="backpack-tabs vg-tabs">${tabsHTML}</div>
-            <div class="vg-status"></div>
+            <div class="vg-status ui-chip-row"></div>
             <div class="backpack-grid vg-grid"></div>
           </div>
           <div class="right-page vg-page">
@@ -826,7 +889,9 @@
       this._el.querySelector('.vg-bays').innerHTML = this._baysHTML();
       this._el.querySelector('.vg-detail').innerHTML = this._detailHTML();
       this._scrollToSelection();
-      this._mountPreview();
+      // Through the stand's own sync, not a bare mount: a card picked with the
+      // mouse lands here, and a bare mount refuses any shape needing a fold.
+      this._syncStand();
     }
 
     /**
@@ -874,6 +939,12 @@
       if (shut.length) {
         chips.push(T('VectorGun.lock.remaining', { n: shut.length, next: shut[0].level }));
       }
+      const shutForms = VG.lockedForms ? VG.lockedForms() : [];
+      if (shutForms.length) {
+        chips.push(T('VectorGun.lock.formsRemaining', {
+          n: shutForms.length, next: shutForms[0].level,
+        }));
+      }
       // What the fitted shape is set to, which is the one thing it carries of
       // its own now that the bays and the element stop at the gun.
       // Only what is lit: the whole page of a skill shape means ranking a
@@ -885,7 +956,7 @@
       chips.push(calibrated.length
         ? calibrated.map((row) => calRowText(row, row.section).name).filter(Boolean).join(', ')
         : T('VectorGun.cal.none'));
-      return chips.map((chip) => `<span class="vg-status-chip">${esc(chip)}</span>`).join('');
+      return chips.map((chip) => `<span class="ui-chip">${esc(chip)}</span>`).join('');
     }
 
     //------------------------------------------------------------------------
@@ -897,7 +968,7 @@
       let pick = -1;
       return rows.map((row) => {
         if (row.kind === 'head') {
-          return `<div class="vg-grid-head">${esc(row.text)}</div>`;
+          return `<div class="vg-grid-head inspect-section-title">${esc(row.text)}</div>`;
         }
         pick++;
         const card = row.kind === 'mode' ? this._modeCard(row.key)
@@ -942,13 +1013,19 @@
 
     _formCard(key) {
       const fitted = VG.fittedForm() === key;
+      const locked = VG.isFormUnlocked ? !VG.isFormUnlocked(key) : false;
+      // Every weapon form says the level it needs, earned or not; the dice and
+      // the gun need none.
+      const needs = VG.FORM_UNLOCK && VG.FORM_UNLOCK[key]
+        ? T('VectorGun.lock.level', { n: VG.formUnlockLevel(key) }) : '';
       return {
         name: shapeText(key, 'name'),
         icon: SHAPE_ICONS[key] || 0,
         meta: line('VectorGun.shape.' + key + '.desc'),
-        chip: fitted ? T('VectorGun.form.fitted') : '',
+        chip: fitted ? T('VectorGun.form.fitted') : needs,
         stripe: fitted ? STRIPE_ON : STRIPE_OFF,
         on: fitted,
+        locked: locked,
       };
     }
 
@@ -1052,7 +1129,7 @@
      * asked of the system rather than restated here.
      */
     _formDetail(key) {
-      const folded = key === GUN_FORM ? VG.SNIPER_FORM : key;
+      const folded = key === GUN_FORM ? VG.SNIPER_FORM : key === DICE_FORM ? GUN_FORM : key;
       const gun = VG.gunData();
       const baseRange = gun ? (/<Range:\s*(\d+)>/i.exec(gun.note || '') || [0, 1])[1] : 1;
       const baseBullets = gun ? (/<Bullets:\s*(\d+)>/i.exec(gun.note || '') || [0, 1])[1] : 1;
@@ -1061,20 +1138,31 @@
       VG.withForm(folded, () => {
         specs.push([T('VectorGun.detail.range'), T('VectorGun.detail.rangeTiles', { n: VG.weaponReach(Number(baseRange)) })]);
         // The frame condenses its own rounds, so no shape carries ammunition.
-        // What a shape can have is a rack of its own - the coilgun's three,
-        // the crossbow's single bolt - and those are the cards with a number.
+        // What a shape can have is a rack of its own - the coilgun's three -
+        // and those are the cards with a number.
         if ((VG.FORM_MODES[folded] || {}).bullets) {
           specs.push([T('VectorGun.detail.magazine'),
             String(VG.magazineSize(Number(baseBullets)))]);
         }
       });
+      // What a weapon form needs, where she is, and which face of the dice
+      // lands on it.
+      if (VG.FORM_UNLOCK && VG.FORM_UNLOCK[key]) {
+        specs.push([T('VectorGun.lock.unlocksAt'), String(VG.formUnlockLevel(key))]);
+        if (!VG.isFormUnlocked(key)) {
+          specs.push([T('VectorGun.lock.current'), String(VG.gunLevel())]);
+        }
+        const face = (VG.DICE_FACES || []).indexOf(key);
+        if (face >= 0) specs.push([T('VectorGun.detail.face'), String(face + 1)]);
+      }
+      const gain = key === GUN_FORM ? 'VectorGun.form.gunGain'
+        : key === DICE_FORM ? 'VectorGun.form.diceGain' : 'VectorGun.form.gain';
+      const locked = VG.isFormUnlocked ? !VG.isFormUnlocked(key) : false;
       return {
         name: shapeText(key, 'name'),
-        kind: T('VectorGun.detail.formTitle'),
+        kind: locked ? T('VectorGun.lock.title') : T('VectorGun.detail.formTitle'),
         prose: line('VectorGun.shape.' + key + '.effect') + '<br><br>' +
-          T(key === GUN_FORM ? 'VectorGun.form.gunGain' : 'VectorGun.form.gain', {
-            bonus: bonus, element: elementName(VG.elementId()),
-          }),
+          T(gain, { bonus: bonus, element: elementName(VG.elementId()) }),
         specs: specs,
       };
     }
@@ -1157,6 +1245,7 @@
       this._zoomStand(STAND_ZOOM, 0);
       this._fitStand(0);
       this._previewKey = key;
+      this._mountedShape = form;
     }
 
     _disposePreview() {
@@ -1165,6 +1254,7 @@
       }
       this._previews = [];
       this._previewKey = '';
+      this._mountedShape = '';
     }
   }
 

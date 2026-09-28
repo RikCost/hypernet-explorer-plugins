@@ -290,6 +290,27 @@
         return match ? match[1].trim() : null;
     }
 
+    // Guard (2) and Escape (5) are battle menu commands, not skills: no
+    // character ever learns or carries them, and no list ever shows them.
+    const MENU_COMMAND_SKILL_IDS = [2, 5];
+    function isMenuCommandSkill(skillId) {
+        return MENU_COMMAND_SKILL_IDS.includes(Number(skillId));
+    }
+
+    // The Basic kit (<category:Basic>) is the engine's own fallback moves. It
+    // is never a school: SkillMaster does not list it, teach it, or hand it
+    // to the forge or the benches.
+    function isBasicCategory(category) {
+        return typeof category === 'string' && category.trim().toLowerCase() === 'basic'; // i18n-ignore: <category:Basic> note tag
+    }
+
+    function isHiddenFromSkillMaster(skill) {
+        if (!skill) return true;
+        if (isMenuCommandSkill(skill.id)) return true;
+        const match = (skill.note || '').match(/<category:\s*(.+?)\s*>/i);
+        return !!match && isBasicCategory(match[1]);
+    }
+
     function getSkillMagicSystem(skillId) {
         if (!skillId) return null;
         const skill = $dataSkills[skillId];
@@ -359,6 +380,7 @@
         if (typeof $dataSkills === 'undefined' || !$dataSkills) return list;
         for (const skill of $dataSkills) {
             if (!skill || !skill.name || skill._customSpell) continue;
+            if (isHiddenFromSkillMaster(skill)) continue;
             if (getSkillMagicSystem(skill.id) === id) list.push(skill);
         }
         return list;
@@ -432,7 +454,7 @@
             for (const skill of known) {
                 if (!skill) continue;
                 const cat = getSkillCategory(skill.id);
-                if (!cat || own.includes(cat) || out.includes(cat)) continue;
+                if (!cat || isBasicCategory(cat) || own.includes(cat) || out.includes(cat)) continue;
                 out.push(cat);
             }
             this._foreignKey = key;
@@ -479,6 +501,7 @@
                 if (filterNature && !MN.allowsData(skill)) continue;
                 const categoryMatch = skill.note.match(/<category:(.+?)>/i);
                 if (categoryMatch) {
+                    if (isHiddenFromSkillMaster(skill)) continue;
                     if (allowed && !allowed.includes(categoryMatch[1].trim())) continue;
                     categories.add(categoryMatch[1]);
                 }
@@ -565,6 +588,7 @@
             for (const skill of $dataSkills) {
                 if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
                 if (skill._customSpell) continue;
+                if (isHiddenFromSkillMaster(skill)) continue;
                 if (filterNature && !MN.allowsData(skill)) continue;
 
                 if (catRegex) {
@@ -588,6 +612,9 @@
     SkillMaster.getCategoryIconStyle = getCategoryIconStyle;
     SkillMaster.getSkillIconStyle = getSkillIconStyle;
     SkillMaster.getSkillCategory = getSkillCategory;
+    SkillMaster.isMenuCommandSkill = isMenuCommandSkill;
+    SkillMaster.isBasicCategory = isBasicCategory;
+    SkillMaster.isHiddenSkill = isHiddenFromSkillMaster;
     SkillMaster.getSkillMagicSystem = getSkillMagicSystem;
     SkillMaster.getActorMagicSystem = getActorMagicSystem;
     SkillMaster.getAllMagicalSystems = getAllMagicalSystems;
@@ -932,6 +959,7 @@
         const list = [];
         let stale = null;
         for (const id of this._skills.concat(this.addedSkills())) {
+            if (isMenuCommandSkill(id)) continue;
             const skill = db ? db[id] : null;
             if (!skill) {
                 const known = this._skills.includes(id);
@@ -943,7 +971,16 @@
             if (!list.includes(skill)) list.push(skill);
         }
         if (stale) this._skills = this._skills.filter(id => !stale.includes(id));
+        if (this._skills.some(isMenuCommandSkill)) this._skills = this._skills.filter(id => !isMenuCommandSkill(id));
         return list;
+    };
+
+    // A menu command is never assigned: learning one is refused, and an old
+    // save that already holds one loses it the next time skills() is read.
+    const _SkillMaster_Game_Actor_learnSkill = Game_Actor.prototype.learnSkill;
+    Game_Actor.prototype.learnSkill = function (skillId) {
+        if (isMenuCommandSkill(skillId)) return;
+        _SkillMaster_Game_Actor_learnSkill.call(this, skillId);
     };
 
     function isWorkshopMode() {
@@ -1980,6 +2017,7 @@
             if (typeof $dataSkills !== 'undefined' && $dataSkills) {
                 for (const skill of $dataSkills) {
                     if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
+                    if (isHiddenFromSkillMaster(skill)) continue;
                     const cat = SkillMaster.getSkillCategory ? SkillMaster.getSkillCategory(skill.id) : null;
                     if (cat !== category) continue;
                     (this.isForbidden(skill.id) ? inner : outer).push(skill.id);
@@ -3375,7 +3413,7 @@
         const chosenElsewhere = (this._editorSlots || []).filter((id, i) => id != null && i !== slotIndex);
         return actor.skills().filter(s => {
             if (!s || !s.name) return false;
-            if (s.id === 1 || s.id === 2) return false;
+            if (s.id === 1 || (SkillMaster.isHiddenSkill ? SkillMaster.isHiddenSkill(s) : s.id === 2)) return false;
             if (s._customSpell) return false;
             if (!actor.isLearnedSkill(s.id)) return false;
             if (chosenElsewhere.includes(s.id)) return false;
@@ -6983,9 +7021,9 @@
               <h2 class="title">${esc(craftTitle)}</h2>
               <div class="sm-bench-kp-pill"><strong>${knowledge} KP</strong></div>
             </div>
-            <div class="sm-bench-tabs">
-              <div class="sm-bench-tab focusable ${spell ? 'active' : ''}" onclick="SceneManager._scene.openCraftBench('spell')">${esc(tr('titleSpell'))}</div>
-              <div class="sm-bench-tab focusable ${!spell ? 'active' : ''}" onclick="SceneManager._scene.openCraftBench('skill')">${esc(tr('titleSkill'))}</div>
+            <div class="backpack-tabs-row sm-bench-tabs">
+              <div class="backpack-tab sm-bench-tab focusable ${spell ? 'active' : ''}" onclick="SceneManager._scene.openCraftBench('spell')">${esc(tr('titleSpell'))}</div>
+              <div class="backpack-tab sm-bench-tab focusable ${!spell ? 'active' : ''}" onclick="SceneManager._scene.openCraftBench('skill')">${esc(tr('titleSkill'))}</div>
             </div>
             <div class="sm-forge-rows sm-craft-rows">
                 ${rowsHTML}
@@ -7361,7 +7399,7 @@
     /** A spell is anything filed under a school Categories.json calls Magic. */
     function isSpell(skill) {
         if (!skill || !skill.id) return false;
-        if (skill.id === 1 || skill.id === 2) return false;
+        if (skill.id === 1 || (SkillMaster.isHiddenSkill ? SkillMaster.isHiddenSkill(skill) : skill.id === 2)) return false;
         const cat = SkillMaster.getSkillCategory ? SkillMaster.getSkillCategory(skill.id) : null;
         if (!cat) return false;
         return SkillMaster.getCategoryType(cat) === 'Magic'; // i18n-ignore: skill category id / type discriminator
@@ -7896,6 +7934,7 @@
             for (const s of actor.skills()) {
                 if (!s || seen.has(s.id)) continue;
                 seen.add(s.id);
+                if (SkillMaster.isHiddenSkill ? SkillMaster.isHiddenSkill(s) : s.id === 2) continue;
                 if (bindableTo(s, kind)) out.push(s);
             }
         }
@@ -8116,10 +8155,10 @@
               <h2 class="title">${esc(tr('title' + kindWord))}</h2>
               <div class="sm-bench-kp-pill"><strong>${knowledge} KP</strong></div>
             </div>
-            <div class="sm-bench-tabs">
-              <div class="sm-bench-tab focusable ${kind === 'weapon' ? 'active' : ''}" onclick="SceneManager._scene.openEnchantBench('weapon')">${esc(tr('titleWeapon'))}</div>
-              <div class="sm-bench-tab focusable ${kind === 'armor' ? 'active' : ''}" onclick="SceneManager._scene.openEnchantBench('armor')">${esc(tr('titleArmor'))}</div>
-              <div class="sm-bench-tab focusable ${kind === 'book' ? 'active' : ''}" onclick="SceneManager._scene.openEnchantBench('book')">${esc(tr('titleBook'))}</div>
+            <div class="backpack-tabs-row sm-bench-tabs">
+              <div class="backpack-tab sm-bench-tab focusable ${kind === 'weapon' ? 'active' : ''}" onclick="SceneManager._scene.openEnchantBench('weapon')">${esc(tr('titleWeapon'))}</div>
+              <div class="backpack-tab sm-bench-tab focusable ${kind === 'armor' ? 'active' : ''}" onclick="SceneManager._scene.openEnchantBench('armor')">${esc(tr('titleArmor'))}</div>
+              <div class="backpack-tab sm-bench-tab focusable ${kind === 'book' ? 'active' : ''}" onclick="SceneManager._scene.openEnchantBench('book')">${esc(tr('titleBook'))}</div>
             </div>
             <div class="sm-enchant-blurb">${esc(tr('blurb' + kindWord))}</div>
             <div class="ui-section sm-bench-subhead">
@@ -8163,7 +8202,7 @@
               <div class="sm-bench-kp-pill"><strong>${knowledge} KP</strong></div>
             </div>
             <div class="sm-enchant-target">${esc(target)}</div>
-            <div id="enchant-spell-box" class="ui-list ui-scroll sm-forged-list" style="flex:1 1 0; min-height:0;">
+            <div id="enchant-spell-box" class="ui-list ui-scroll sm-forged-list sm-forged-list--fill">
                 ${spellsHTML}
             </div>
             <div class="sm-forge-knowledge">${esc(tr('knowledge'))}: <strong>${knowledge} KP</strong></div>`;
@@ -8418,7 +8457,7 @@
             for (const s of actor.skills()) {
                 if (!s || !s.id || seen.has(s.id)) continue;
                 seen.add(s.id);
-                if (s.id === 1 || s.id === 2) continue;
+                if (s.id === 1 || (SkillMaster.isHiddenSkill ? SkillMaster.isHiddenSkill(s) : s.id === 2)) continue;
                 const magic = En.isSpell ? En.isSpell(s) : false;
                 if (magic !== wantSpell) continue;
                 out.push(s);
@@ -8712,9 +8751,9 @@
               <h2 class="title">${esc(tr('title' + word))}</h2>
               <div class="sm-bench-kp-pill"><strong>${knowledge} KP</strong></div>
             </div>
-            <div class="sm-bench-tabs">
-              <div class="sm-bench-tab focusable ${kind === 'grimorie' ? 'active' : ''}" onclick="SceneManager._scene.openWriteBench('grimorie')">${esc(tr('titleGrimorie'))}</div>
-              <div class="sm-bench-tab focusable ${kind === 'skillbook' ? 'active' : ''}" onclick="SceneManager._scene.openWriteBench('skillbook')">${esc(tr('titleSkillBook'))}</div>
+            <div class="backpack-tabs-row sm-bench-tabs">
+              <div class="backpack-tab sm-bench-tab focusable ${kind === 'grimorie' ? 'active' : ''}" onclick="SceneManager._scene.openWriteBench('grimorie')">${esc(tr('titleGrimorie'))}</div>
+              <div class="backpack-tab sm-bench-tab focusable ${kind === 'skillbook' ? 'active' : ''}" onclick="SceneManager._scene.openWriteBench('skillbook')">${esc(tr('titleSkillBook'))}</div>
             </div>
             <div class="sm-enchant-blurb">${esc(tr('blurb' + word))}</div>
             <div class="ui-section sm-bench-subhead">
@@ -8754,7 +8793,7 @@
               <h2 class="title">${esc(tr('source' + word))}</h2>
               <div class="sm-bench-kp-pill"><strong>${knowledge} KP</strong></div>
             </div>
-            <div id="write-source-box" class="ui-list ui-scroll sm-forged-list" style="flex:1 1 0; min-height:0;">
+            <div id="write-source-box" class="ui-list ui-scroll sm-forged-list sm-forged-list--fill">
                 ${listHTML}
             </div>
             <div class="sm-forge-knowledge">${esc(tr('knowledge'))}: <strong>${knowledge} KP</strong></div>`;
@@ -9030,7 +9069,7 @@
               <div class="sm-bench-kp-pill"><strong>${knowledge} KP</strong></div>
             </div>
             <div class="sm-enchant-blurb">${esc(tr('blurb'))}</div>
-            <div id="hexorcize-gear-box" class="ui-list ui-scroll sm-forged-list" style="flex:1 1 0; min-height:0;">
+            <div id="hexorcize-gear-box" class="ui-list ui-scroll sm-forged-list sm-forged-list--fill">
                 ${listHTML}
             </div>`;
 

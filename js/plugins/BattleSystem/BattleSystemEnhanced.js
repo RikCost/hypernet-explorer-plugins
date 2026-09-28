@@ -2404,6 +2404,11 @@
             pData[persistentId] = { troopId: troopId, enemyHp: {} };
         }
         if ($gameSystem.getBattleCooldown() > 0) return;
+        // A monster the party has just fled is held off for a moment
+        // (BattleSystemEnhancedEncounters.js, section 13), whatever route
+        // the new fight was about to start by.
+        const heldEvent = eventId && mapId === $gameMap.mapId() ? $gameMap.event(eventId) : null;
+        if (heldEvent && heldEvent.isFleeHeld && heldEvent.isFleeHeld()) return;
 
         // Tactical map battle (MapBattleMode.js): fights play out on the live
         // map instead of pushing Scene_Battle. Presentation-only redirect -
@@ -2785,6 +2790,30 @@
     };
 
     // ------------------------------------------------------------------
+    // 15c-bis. THE BODY FALLS ON THE BLOW THAT KILLS IT
+    //
+    //   Left to the log, the collapse (and its sound) waited behind every
+    //   damage line and wait the log still had to read out, so a monster was
+    //   heard dying a good second after it had died. It collapses the moment
+    //   it takes the Death state now, and every later request for the same
+    //   death (the log's own line, the vital-part hand-off, 15c) is a no-op,
+    //   so the sound is never doubled.
+    // ------------------------------------------------------------------
+    const _Game_Enemy_performCollapse_BSE = Game_Enemy.prototype.performCollapse;
+    Game_Enemy.prototype.performCollapse = function() {
+        if (this._collapsePlayed) return;
+        this._collapsePlayed = true;
+        _Game_Enemy_performCollapse_BSE.call(this);
+    };
+
+    const _Game_Enemy_die_BSE = Game_Enemy.prototype.die;
+    Game_Enemy.prototype.die = function() {
+        _Game_Enemy_die_BSE.call(this);
+        this._collapsePlayed = false;
+        if ($gameParty && $gameParty.inBattle()) this.performCollapse();
+    };
+
+    // ------------------------------------------------------------------
     // 15d. WHICH TWO WEAPONS SWING THIS TURN
     //
     //   A character with more than two hands can carry up to eight weapons,
@@ -2961,14 +2990,18 @@
     CritSever.applyVerdict = function(verdict, target) {
         if (!verdict || verdict.outcome === "none") return verdict;
         const boss = CritSever.isBoss(target);
-        // A boss keeps its life and loses a piece of itself instead.
-        const takesLife = verdict.outcome === "behead" && !boss;
+        // A boss keeps its life and loses a piece of itself instead, and so
+        // does anything still above a quarter of its HP: a vital part is only
+        // ever lethal under that line (MonsterHealth.vitalCanFall).
+        const MH = window.MonsterHealth;
+        const vitalOpen = !MH || !MH.vitalCanFall || MH.vitalCanFall(target);
+        const takesLife = verdict.outcome === "behead" && !boss && vitalOpen;
         let partKey = takesLife ? CritSever.pickVitalPart(target) : null;
         if (!partKey) partKey = CritSever.pickLimb(target);
         if (partKey && window.MonsterHealth) window.MonsterHealth.severPart(target, partKey);
         if (takesLife) {
             CritSever.finish(target);
-        } else if (verdict.outcome === "behead" && typeof $gameTemp !== "undefined" && $gameTemp) {
+        } else if (verdict.outcome === "behead" && boss && typeof $gameTemp !== "undefined" && $gameTemp) {
             $gameTemp.critSeverNote = T('Battle.critSever.bossEndures', { enemy: target.name() });
         }
         verdict.partKey = partKey;

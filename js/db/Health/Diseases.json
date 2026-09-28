@@ -11,7 +11,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 8,
-      "desc": "Seasonal flu virus. Fever, aches, and a week of misery.",
+      "desc": "An RNA virus infecting the respiratory tract. Onset is abrupt: fever, muscle aches, headache and a dry cough that lingers after the fever breaks.",
       "params": {
         "atk": -2,
         "agi": -3
@@ -82,7 +82,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 6,
-      "desc": "Rhinovirus. Runny nose, mild but relentlessly contagious.",
+      "desc": "A mild upper respiratory infection, usually rhinovirus. Sneezing, congestion and a sore throat that clear within a week without treatment.",
       "params": {
         "mat": -1,
         "agi": -1
@@ -149,7 +149,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 14,
-      "desc": "A pandemic respiratory virus with a stubborn viral load.",
+      "desc": "Respiratory infection from SARS-CoV-2. Fever, dry cough and loss of smell are typical; severity ranges from asymptomatic to acute respiratory distress.",
       "params": {
         "mhp": -40,
         "agi": -3,
@@ -226,7 +226,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 10,
-      "desc": "Extraordinarily contagious. Koplik spots and a blanketing rash.",
+      "desc": "A highly contagious paramyxovirus spread by airborne droplets. Fever and conjunctivitis precede a spreading rash roughly two weeks after exposure.",
       "params": {
         "mhp": -30,
         "def": -2
@@ -296,7 +296,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 12,
-      "desc": "Paramyxovirus swelling the parotid glands.",
+      "desc": "Viral infection of the salivary glands. Fever and malaise give way to painful swelling of the parotid glands at the jawline.",
       "params": {
         "mmp": -20,
         "mat": -2
@@ -366,7 +366,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 9,
-      "desc": "German measles. Mild in adults, dangerous in pregnancy.",
+      "desc": "A generally mild togavirus infection. Half of cases pass unnoticed; when present, a fine rash and swollen lymph nodes appear about two weeks after exposure.",
       "params": {
         "def": -2
       },
@@ -432,7 +432,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 11,
-      "desc": "Varicella-zoster. Itching crops of blisters everywhere.",
+      "desc": "Primary infection with varicella-zoster virus. An itchy, blistering rash spreads from the trunk outward, scabbing over within a week or two.",
       "params": {
         "agi": -2,
         "def": -2
@@ -502,7 +502,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 21,
-      "desc": "Reactivated varicella tracing a nerve in searing pain.",
+      "desc": "Reactivation of dormant varicella-zoster virus in nerve tissue. A painful, blistering rash erupts in a band on one side of the body.",
       "params": {
         "atk": -2,
         "agi": -3
@@ -570,7 +570,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
-      "desc": "The kissing disease. Epstein-Barr leaves you flattened for weeks.",
+      "desc": "Epstein-Barr virus infection, spread through saliva. Fever, sore throat and swollen lymph nodes are accompanied by fatigue that can persist for weeks.",
       "params": {
         "agi": -4,
         "atk": -3
@@ -643,7 +643,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 28,
-      "desc": "Fecal-oral liver virus. Jaundice and exhaustion.",
+      "desc": "A liver infection from the hepatitis A virus, spread by contaminated food or water. Nausea, fatigue and jaundice appear two to six weeks after exposure.",
       "params": {
         "mmp": -25,
         "mat": -2
@@ -713,7 +713,7 @@
       "venereal": true,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Bloodborne and sexual. Chronic liver inflammation.",
+      "desc": "Bloodborne or sexually transmitted liver infection. Many carry it silently; others develop fatigue and jaundice as the liver inflames.",
       "params": {
         "mhp": -25,
         "mmp": -30
@@ -788,7 +788,7 @@
       "venereal": true,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Silent bloodborne virus scarring the liver over decades.",
+      "desc": "A bloodborne liver infection often acquired silently. Chronic cases can progress over years to scarring and liver failure if untreated.",
       "params": {
         "mhp": -35,
         "mmp": -25
@@ -863,7 +863,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 3,
-      "desc": "Winter vomiting bug. Explosive and absurdly contagious.",
+      "desc": "The leading cause of acute gastroenteritis. Sudden vomiting and watery, non-bloody diarrhea spread easily through contaminated hands and surfaces.",
       "params": {
         "agi": -3,
         "atk": -2
@@ -932,7 +932,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 5,
-      "desc": "Severe gastroenteritis, dehydrating and swift.",
+      "desc": "A highly contagious gut virus common in young children. Profuse watery diarrhea and vomiting can cause dangerous dehydration within days.",
       "params": {
         "agi": -3
       },
@@ -998,7 +998,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Once symptomatic, near-universally fatal. Hydrophobia and fury.",
+      "desc": "A near-universally fatal viral encephalitis transmitted through the bite of an infected animal. Agitation, muscle spasms and hydrophobia mark the terminal stage.",
       "params": {
         "mhp": -60,
         "atk": 3,
@@ -1069,7 +1069,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Attacks motor neurons; can leave permanent paralysis.",
+      "desc": "Poliovirus infection of the gut, mostly asymptomatic. In a minority of cases the virus reaches the spinal cord and destroys motor neurons, causing paralysis.",
       "params": {
         "agi": -5,
         "atk": -4
@@ -1138,7 +1138,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 21,
-      "desc": "Eradicated in life, resurgent in nightmares. Pustular and deadly.",
+      "desc": "An eradicated Orthopoxvirus disease, historically devastating. Fever preceded a rash of fluid-filled pustules that scarred survivors for life.",
       "params": {
         "mhp": -50,
         "def": -4
@@ -1208,7 +1208,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 12,
-      "desc": "Hemorrhagic fever. The body unmakes itself from within.",
+      "desc": "A viral hemorrhagic fever spread through contact with bodily fluids. Fever and muscle pain progress rapidly to bleeding and multi-organ failure.",
       "params": {
         "mhp": -70,
         "atk": -4
@@ -1279,7 +1279,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 10,
-      "desc": "Breakbone fever carried by mosquitoes.",
+      "desc": "A mosquito-borne flavivirus infection. Sudden fever accompanies severe joint and bone pain, earning it the nickname breakbone fever.",
       "params": {
         "atk": -3,
         "agi": -3,
@@ -1349,7 +1349,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 12,
-      "desc": "Mosquito-borne hemorrhagic fever with jaundice.",
+      "desc": "A mosquito-borne viral hemorrhagic fever. Fever and muscle aches can progress to jaundice, bleeding and liver failure in severe cases.",
       "params": {
         "mhp": -40,
         "mmp": -20
@@ -1419,7 +1419,7 @@
       "venereal": true,
       "severity": "mild",
       "durationDays": 7,
-      "desc": "Usually mild, dangerous in pregnancy. Also sexually transmissible.",
+      "desc": "A mosquito-borne flavivirus, usually mild. Low fever, joint pain and a fine rash resolve within a week, though infection in pregnancy carries separate risks.",
       "params": {
         "agi": -2
       },
@@ -1487,7 +1487,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 14,
-      "desc": "Mosquito-borne; occasionally neuroinvasive.",
+      "desc": "A mosquito-borne virus. Most infections are silent; a minority develop fever, headache and, rarely, neuroinvasive disease.",
       "params": {
         "mat": -3,
         "agi": -2
@@ -1555,7 +1555,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 10,
-      "desc": "Rodent-borne pulmonary syndrome. Drowning on dry land.",
+      "desc": "A rodent-borne virus inhaled from contaminated dust or droppings. Fever progresses to severe respiratory or renal distress depending on the strain.",
       "params": {
         "mhp": -55,
         "def": -3
@@ -1622,7 +1622,7 @@
       "venereal": true,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Retrovirus dismantling the immune system over years.",
+      "desc": "A retrovirus that infects and depletes CD4 immune cells. Left untreated, progressive immune collapse leaves the body open to opportunistic infection.",
       "params": {
         "mhp": -30,
         "def": -4,
@@ -1699,7 +1699,7 @@
       "venereal": true,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "Lifelong latent virus; periodic cold-sore or genital flares.",
+      "desc": "A lifelong viral infection of skin and nerve tissue. Painful, fluid-filled blisters recur at the site of latency, triggered by stress or illness.",
       "params": {
         "mat": -1
       },
@@ -1769,7 +1769,7 @@
       "venereal": true,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Common venereal virus; some strains oncogenic.",
+      "desc": "A common sexually transmitted DNA virus. Most infections clear on their own; persistent strains can cause warts or precancerous changes.",
       "params": {
         "def": -1
       },
@@ -1835,7 +1835,7 @@
       "venereal": true,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "Ubiquitous herpesvirus, dangerous only to the immunocompromised.",
+      "desc": "A herpesvirus that establishes lifelong latency after infection. Usually silent, it can cause prolonged fatigue and mononucleosis-like illness.",
       "params": {
         "mmp": -10
       },
@@ -1904,7 +1904,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 7,
-      "desc": "Streptococcus pyogenes inflaming the throat.",
+      "desc": "Bacterial pharyngitis from Streptococcus pyogenes. Sudden sore throat, fever and inflamed tonsils, without the cough typical of viral infection.",
       "params": {
         "mat": -2,
         "atk": -1
@@ -1979,7 +1979,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Consumption. A slow, coughing wasting of the lungs.",
+      "desc": "A chronic Mycobacterium tuberculosis infection of the lungs. A persistent cough, weight loss and night sweats develop as the disease becomes active.",
       "params": {
         "mhp": -35,
         "agi": -3,
@@ -2054,7 +2054,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 14,
-      "desc": "Lungs filling with inflammatory fluid.",
+      "desc": "Bacterial infection of the alveoli. Fever, productive cough and shortness of breath as the lungs fill with inflammatory fluid.",
       "params": {
         "mhp": -30,
         "agi": -3
@@ -2124,7 +2124,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 5,
-      "desc": "Rice-water diarrhea that can kill by dehydration in a day.",
+      "desc": "Acute intestinal infection by Vibrio cholerae. Profuse watery diarrhea can cause fatal dehydration within hours if fluids are not replaced.",
       "params": {
         "mhp": -45,
         "agi": -4
@@ -2192,7 +2192,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 21,
-      "desc": "Salmonella typhi. Sustained fever and rose spots.",
+      "desc": "A systemic Salmonella Typhi infection from contaminated food or water. Fever climbs in stepwise fashion over several days, with abdominal pain and rash.",
       "params": {
         "mhp": -30,
         "mat": -3
@@ -2263,7 +2263,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 8,
-      "desc": "The Black Death. Buboes, fever, and blackened extremities.",
+      "desc": "Yersinia pestis infection from flea bites. Fever and headache precede swollen, agonizing lymph nodes, or buboes, near the site of infection.",
       "params": {
         "mhp": -60,
         "def": -3,
@@ -2336,7 +2336,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Lockjaw. Neurotoxin locking every muscle rigid.",
+      "desc": "Toxin from Clostridium tetani, entering through a wound, causes progressive muscle rigidity beginning at the jaw and spreading through the body.",
       "params": {
         "agi": -5,
         "atk": -3
@@ -2406,7 +2406,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Hansen's disease numbing nerves and disfiguring slowly.",
+      "desc": "A slow Mycobacterium leprae infection of skin and peripheral nerves. Numb patches and lesions develop as nerve damage accumulates over years.",
       "params": {
         "def": -3,
         "agi": -3,
@@ -2478,7 +2478,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
-      "desc": "Tick-borne; a bullseye rash then joint and nerve grief.",
+      "desc": "A tick-borne Borrelia infection. A spreading bullseye rash is often the first sign, followed by joint pain and fatigue if untreated.",
       "params": {
         "agi": -3,
         "mat": -2
@@ -2552,7 +2552,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 7,
-      "desc": "Inflamed meninges. Stiff neck, photophobia, and speed kills.",
+      "desc": "Bacterial inflammation of the membranes around the brain and spinal cord. High fever, stiff neck and severe headache demand urgent treatment.",
       "params": {
         "mhp": -40,
         "mat": -4
@@ -2621,7 +2621,7 @@
       "venereal": true,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "The clap. Purulent venereal infection.",
+      "desc": "A sexually transmitted Neisseria gonorrhoeae infection of the genital tract. Discharge and burning on urination, though infection may be silent.",
       "params": {
         "def": -2,
         "agi": -1
@@ -2692,7 +2692,7 @@
       "venereal": true,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "Often silent venereal infection; a leading cause of infertility.",
+      "desc": "The most common bacterial sexually transmitted infection, often symptomless. Discharge or burning appears weeks after exposure when it does present.",
       "params": {
         "def": -1
       },
@@ -2762,7 +2762,7 @@
       "venereal": true,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "The great imitator; untreated it climbs to the brain.",
+      "desc": "A staged Treponema pallidum infection. A painless chancre marks the primary stage, followed by rash and, untreated, damage to the nervous system.",
       "params": {
         "mat": -3,
         "luk": -3,
@@ -2839,7 +2839,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 10,
-      "desc": "The most potent toxin known; descending paralysis.",
+      "desc": "Paralytic poisoning from Clostridium botulinum toxin. Blurred vision and weakness spread from the face downward as nerve signals are blocked.",
       "params": {
         "agi": -5,
         "atk": -4
@@ -2906,7 +2906,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 21,
-      "desc": "Methicillin-resistant staph. Antibiotics fail.",
+      "desc": "A staphylococcal strain resistant to standard beta-lactam antibiotics. Skin abscesses and infections that resist first-line treatment.",
       "params": {
         "mhp": -25,
         "def": -3
@@ -2974,7 +2974,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 9,
-      "desc": "Strep with a sandpaper rash and strawberry tongue.",
+      "desc": "A Streptococcus pyogenes infection producing an erythrogenic toxin. Sore throat and fever accompany a fine, sandpaper-textured rash.",
       "params": {
         "atk": -2,
         "def": -2
@@ -3045,7 +3045,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 28,
-      "desc": "Pertussis. Paroxysmal coughing fits ending in a whoop.",
+      "desc": "A highly contagious Bordetella pertussis infection. Cold-like symptoms give way to weeks of violent coughing fits ending in a characteristic whoop.",
       "params": {
         "agi": -2,
         "mmp": -10
@@ -3111,7 +3111,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Tissue death spreading from a wound; smells of rot.",
+      "desc": "Tissue death from interrupted blood supply, often secondary to infection. Skin darkens and breaks down as the affected area loses circulation.",
       "params": {
         "mhp": -30,
         "atk": -4,
@@ -3185,7 +3185,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 6,
-      "desc": "The body's response to infection turning on itself.",
+      "desc": "A dysregulated, body-wide response to infection that damages the body's own tissues. Fever, rapid heart rate and confusion signal organ systems failing in cascade.",
       "params": {
         "mhp": -50,
         "agi": -4,
@@ -3256,7 +3256,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 21,
-      "desc": "Dermatophyte fungus in expanding itchy rings.",
+      "desc": "A dermatophyte fungal infection of the skin, despite the name unrelated to worms. A red, scaly, ring-shaped rash spreads outward from the point of contact.",
       "params": {
         "luk": -1
       },
@@ -3322,7 +3322,7 @@
       "venereal": false,
       "severity": "trivial",
       "durationDays": 30,
-      "desc": "Tinea pedis. Itching, peeling, contagious feet.",
+      "desc": "A fungal infection of the skin between the toes, thriving in warm, damp footwear. Itching, scaling and cracking of the skin.",
       "params": {
         "agi": -1
       },
@@ -3388,7 +3388,7 @@
       "venereal": true,
       "severity": "mild",
       "durationDays": 14,
-      "desc": "Yeast overgrowth; thrush or genital infection.",
+      "desc": "Overgrowth of Candida yeast, normally held in check by the body's flora. White patches or itching discharge appear at the affected mucous membrane.",
       "params": {
         "mmp": -8
       },
@@ -3455,7 +3455,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 30,
-      "desc": "Mold colonizing the lungs of the vulnerable.",
+      "desc": "A mold infection of the lungs, usually in those with prior lung disease or a weakened immune system. Persistent cough and wheeze as spores colonize the airway.",
       "params": {
         "mhp": -25,
         "mmp": -15
@@ -3520,7 +3520,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 21,
-      "desc": "Coccidioidomycosis from inhaled desert spores.",
+      "desc": "Coccidioidomycosis, a fungal lung infection from inhaled desert soil spores. Fever, cough and rash appear in the minority who develop symptoms.",
       "params": {
         "agi": -2,
         "mat": -2
@@ -3589,7 +3589,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 30,
-      "desc": "Fungal meningitis, chiefly in the immunocompromised.",
+      "desc": "A fungal infection that colonizes the lungs before spreading to the brain. Headache and confusion mark meningitis once it reaches the central nervous system.",
       "params": {
         "mat": -4,
         "mmp": -20
@@ -3656,7 +3656,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Chronic mycotoxin exposure fogging body and mind.",
+      "desc": "Chronic exposure to Stachybotrys spores in damp buildings. Headache, brain fog and cough accumulate the longer exposure continues.",
       "params": {
         "mat": -3,
         "agi": -2,
@@ -3730,7 +3730,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Plasmodium cycling through the blood in fevered waves.",
+      "desc": "A Plasmodium parasite carried by Anopheles mosquitoes, cycling through red blood cells. Fever spikes and chills recur on a regular schedule as parasites burst free.",
       "params": {
         "mhp": -30,
         "agi": -3,
@@ -3805,7 +3805,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "Cat-borne protozoan; may nudge behavior and risk-taking.",
+      "desc": "Infection with the Toxoplasma gondii parasite, often from undercooked meat or cat feces. Usually mild, but linked to lasting behavioral change once established in the brain.",
       "params": {
         "luk": 2,
         "mdf": -2
@@ -3870,7 +3870,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 14,
-      "desc": "Beaver fever. Greasy diarrhea from contaminated water.",
+      "desc": "A protozoan parasite of the small intestine, spread through contaminated water. Bloating and greasy diarrhea follow ingestion of its cysts.",
       "params": {
         "agi": -2,
         "atk": -1
@@ -3937,7 +3937,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 21,
-      "desc": "Entamoeba eating through the gut wall.",
+      "desc": "Intestinal infection by Entamoeba histolytica. The amoeba erodes the gut lining, producing cramping and, in severe cases, bloody diarrhea.",
       "params": {
         "mhp": -25,
         "agi": -3
@@ -4009,7 +4009,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Kissing-bug trypanosome that decades later wrecks the heart.",
+      "desc": "Infection with Trypanosoma cruzi, transmitted by the bite of a triatomine kissing bug. Acute swelling gives way to slow, silent damage to heart muscle over decades.",
       "params": {
         "mhp": -30,
         "def": -3
@@ -4076,7 +4076,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Tsetse trypanosome invading the brain; sleep inverts and fails.",
+      "desc": "African trypanosomiasis, spread by the tsetse fly. The parasite eventually crosses into the brain, disrupting the sleep-wake cycle and clouding thought.",
       "params": {
         "mat": -4,
         "agi": -3
@@ -4144,7 +4144,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Sandfly protozoan; disfiguring sores or organ disease.",
+      "desc": "A sandfly-borne protozoan infection. Depending on the species involved it produces skin ulcers, or spreads internally with fever and organ swelling.",
       "params": {
         "def": -3,
         "luk": -2
@@ -4211,7 +4211,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "A segmented guest in the gut, quietly taking your meals.",
+      "desc": "A ribbon-like intestinal flatworm acquired from undercooked meat. It absorbs nutrients directly through its body wall, leaving the host hungry despite eating.",
       "params": {
         "mhp": -15,
         "atk": -2
@@ -4277,7 +4277,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Soil-borne worm draining blood from the gut wall.",
+      "desc": "Intestinal worms that enter through bare skin and migrate to the gut, where they feed on blood. Chronic infection produces anemia and fatigue.",
       "params": {
         "mhp": -20,
         "agi": -2
@@ -4351,7 +4351,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Freshwater flukes lodging in blood vessels for years.",
+      "desc": "Infection by parasitic flatworms picked up from freshwater contaminated with snail-borne larvae. Eggs lodged in tissue cause chronic inflammation and blood in the urine.",
       "params": {
         "mhp": -25,
         "def": -2
@@ -4419,7 +4419,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 21,
-      "desc": "Mites burrowing under the skin; maddening night itch.",
+      "desc": "Skin infestation by the microscopic mite Sarcoptes scabiei, which burrows into the outer layer of skin. Intense itching, worse at night, follows visible burrow tracks.",
       "params": {
         "agi": -2,
         "luk": -1
@@ -4486,7 +4486,7 @@
       "venereal": false,
       "severity": "trivial",
       "durationDays": 21,
-      "desc": "Insects nesting in the hair; itchy and socially dire.",
+      "desc": "Infestation of the scalp by the head louse, spread through direct hair contact. Itching from bites may take weeks to develop on a first exposure.",
       "params": {
         "luk": -1
       },
@@ -4552,7 +4552,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Filarial worms blocking lymph until limbs swell grotesquely.",
+      "desc": "Lymphatic filariasis, caused by thread-like parasitic worms lodged in the lymph vessels. Chronic blockage causes gross swelling of the limbs, called elephantiasis.",
       "params": {
         "agi": -4,
         "def": -2
@@ -4619,7 +4619,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Onchocerca microfilariae migrating to the eyes.",
+      "desc": "Onchocerca worms, transmitted by blackfly bites, release larvae that migrate through the skin and eyes. Severe itching precedes progressive vision loss.",
       "params": {
         "mat": -2
       },
@@ -4689,7 +4689,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Prions spongifying the brain; rapid, unstoppable dementia.",
+      "desc": "A prion disease in which misfolded proteins destroy brain tissue. Rapid dementia, muscle jerks and loss of coordination progress over months to death.",
       "params": {
         "mat": -5,
         "agi": -4,
@@ -4757,7 +4757,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The laughing death; a prion once spread by ritual cannibalism.",
+      "desc": "A prion disease once transmitted through ritual consumption of infected brain tissue. Tremors and loss of coordination progress as neurons degenerate.",
       "params": {
         "agi": -5,
         "mat": -4
@@ -4826,7 +4826,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "A prion stealing sleep until the body simply stops.",
+      "desc": "A prion disease that destroys the thalamus, the brain's sleep-regulating relay. Sleep becomes impossible as the disease progresses, followed by autonomic collapse.",
       "params": {
         "mmp": -30,
         "mat": -4,
@@ -4895,7 +4895,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Autoimmune loss of insulin; blood sugar unmoored.",
+      "desc": "An autoimmune disease in which the immune system destroys the pancreas's insulin-producing cells. Blood sugar rises unchecked without external insulin.",
       "params": {
         "mhp": -20,
         "agi": -2
@@ -4964,7 +4964,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Insulin resistance from a lifetime of strain.",
+      "desc": "Insulin resistance combined with relative insulin deficiency. Persistent thirst, frequent urination and slow-healing wounds develop as blood sugar stays elevated.",
       "params": {
         "mhp": -15,
         "agi": -2,
@@ -5037,7 +5037,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "The wolf. Immunity turned on the body's own tissues.",
+      "desc": "An autoimmune disease in which the immune system attacks the body's own tissue. Joint pain, fatigue and a characteristic facial rash flare and remit unpredictably.",
       "params": {
         "mhp": -20,
         "agi": -3,
@@ -5110,7 +5110,7 @@
       "venereal": false,
       "severity": "chronic",
       "durationDays": -1,
-      "desc": "Immune-driven joint destruction, symmetric and stiff.",
+      "desc": "An autoimmune disease targeting the joint lining. Symmetric swelling and stiffness, worst after rest, gradually erode joint function.",
       "params": {
         "atk": -3,
         "agi": -3
@@ -5177,7 +5177,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "The immune system stripping nerve insulation.",
+      "desc": "An autoimmune disease in which the immune system strips the insulating myelin from nerve fibers. Numbness, vision loss and fatigue appear as damaged nerves misfire.",
       "params": {
         "agi": -4,
         "mat": -3,
@@ -5250,7 +5250,7 @@
       "venereal": false,
       "severity": "chronic",
       "durationDays": -1,
-      "desc": "Inflammation anywhere along the gut, flaring and remitting.",
+      "desc": "A form of inflammatory bowel disease that can affect any part of the digestive tract. Cramping and diarrhea flare as the gut lining becomes inflamed.",
       "params": {
         "mhp": -15,
         "agi": -2
@@ -5319,7 +5319,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Gluten triggering an immune assault on the small bowel.",
+      "desc": "An autoimmune reaction to gluten that damages the lining of the small intestine. Bloating and malabsorption follow exposure to wheat, barley or rye.",
       "params": {
         "mhp": -10,
         "atk": -2
@@ -5386,7 +5386,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "Skin cells racing to the surface in silvery plaques.",
+      "desc": "An autoimmune skin disease that accelerates skin cell turnover. Thick, itchy plaques of built-up skin form on the scalp, elbows and knees.",
       "params": {
         "luk": -2,
         "def": -1
@@ -5455,7 +5455,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Overdriven thyroid; racing heart and bulging eyes.",
+      "desc": "An autoimmune disease that overstimulates the thyroid gland. Racing heartbeat and bulging eyes accompany the resulting excess of thyroid hormone.",
       "params": {
         "agi": 2,
         "mhp": -12,
@@ -5523,7 +5523,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "The thyroid slowly extinguished; cold and heavy.",
+      "desc": "An autoimmune disease that gradually destroys the thyroid gland. Fatigue and weight gain creep in as thyroid hormone output slowly fails.",
       "params": {
         "agi": -3,
         "atk": -2
@@ -5593,7 +5593,7 @@
       "venereal": false,
       "severity": "chronic",
       "durationDays": -1,
-      "desc": "Airways that tighten and wheeze under trigger and strain.",
+      "desc": "Chronic inflammation of the airways that narrows them in response to triggers. Wheezing and shortness of breath come in episodes rather than constantly.",
       "params": {
         "agi": -2,
         "mmp": -8
@@ -5660,7 +5660,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Emphysema and bronchitis stealing lung capacity for good.",
+      "desc": "Progressive lung damage, usually from long-term irritant exposure, that narrows the airways permanently. Breathing grows harder over years, not days.",
       "params": {
         "mhp": -20,
         "agi": -3
@@ -5727,7 +5727,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "The silent pressure quietly straining heart and vessels.",
+      "desc": "Persistently elevated blood pressure in the arteries. It rarely causes symptoms directly but quietly strains the heart, kidneys and blood vessels.",
       "params": {
         "mhp": -10,
         "mdf": -2
@@ -5793,7 +5793,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "A heart that skips, races, or stutters out of time.",
+      "desc": "An irregularity in the heart's electrical rhythm, too fast, too slow, or erratic. Palpitations and fainting spells can signal the heart falling out of sync.",
       "params": {
         "mhp": -15,
         "agi": -2
@@ -5862,7 +5862,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 60,
-      "desc": "Too little iron; the blood carries too little air.",
+      "desc": "A shortage of red blood cells caused by insufficient iron. The blood carries less oxygen, leaving the body pale, weak and easily winded.",
       "params": {
         "mhp": -12,
         "atk": -2,
@@ -5931,7 +5931,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Storms of headache with aura, light, and nausea.",
+      "desc": "A neurological disorder causing recurring, often one-sided headaches. Nausea and sensitivity to light and sound accompany the worst episodes.",
       "params": {
         "mat": -3,
         "agi": -2
@@ -6001,7 +6001,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Electrical storms that seize the brain without warning.",
+      "desc": "A tendency toward recurrent seizures caused by bursts of abnormal electrical activity in the brain. Episodes range from brief lapses to full convulsions.",
       "params": {
         "agi": -3,
         "mat": -2
@@ -6070,7 +6070,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Dopamine fading; tremor, rigidity, and a slowing gait.",
+      "desc": "A neurodegenerative disease that depletes dopamine-producing neurons. Tremor, rigidity and slowed movement worsen gradually over years.",
       "params": {
         "agi": -4,
         "atk": -3
@@ -6141,7 +6141,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Memory unspooling as plaques choke the mind.",
+      "desc": "The most common cause of dementia, marked by progressive loss of neurons. Memory for recent events fails first, followed by language and orientation.",
       "params": {
         "mat": -5,
         "luk": -2
@@ -6210,7 +6210,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Sleep intruding on waking life without permission.",
+      "desc": "A disorder of the brain's sleep-wake regulation. Sudden daytime sleep attacks and, in some cases, a collapse of muscle tone strike without warning.",
       "params": {
         "agi": -2,
         "mat": -2
@@ -6282,7 +6282,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "Acid climbing the esophagus night after night.",
+      "desc": "Chronic backflow of stomach acid into the esophagus. Persistent heartburn and regurgitation can erode the esophageal lining over time.",
       "params": {
         "mhp": -6
       },
@@ -6350,7 +6350,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "A gut at war with itself, cramping to its own rhythm.",
+      "desc": "A functional disorder of the gut with no visible structural cause. Cramping abdominal pain and irregular bowel habits recur over months or years.",
       "params": {
         "agi": -1,
         "atk": -1
@@ -6419,7 +6419,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 45,
-      "desc": "H. pylori and acid burning a hole in the stomach lining.",
+      "desc": "An open sore in the stomach or duodenal lining, often linked to bacterial infection or long-term irritant use. Burning pain typically worsens or eases around meals.",
       "params": {
         "mhp": -12,
         "atk": -1
@@ -6492,7 +6492,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
-      "desc": "Vitamin C gone; collagen fails and old wounds reopen.",
+      "desc": "Vitamin C deficiency that impairs collagen production throughout the body. Bleeding gums, bruising and joint pain follow weeks without fresh produce.",
       "params": {
         "mhp": -18,
         "def": -3,
@@ -6565,7 +6565,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Vitamin D starvation softening and bowing the bones.",
+      "desc": "Vitamin D deficiency in growing bone, leaving it soft and prone to bending. Bone pain and visible deformity develop as the skeleton fails to mineralize.",
       "params": {
         "def": -2,
         "atk": -2,
@@ -6631,7 +6631,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Thiamine deficiency drowning nerves and heart.",
+      "desc": "Thiamine deficiency that disrupts nerve and cardiac function. Nerve damage or fluid retention develop depending on which system fails first.",
       "params": {
         "agi": -3,
         "mhp": -15
@@ -6696,7 +6696,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Niacin lack: the four D's, dermatitis to dementia to death.",
+      "desc": "Niacin deficiency causing damage across skin, gut and brain. Untreated, it progresses through the classic triad of dermatitis, diarrhea and dementia.",
       "params": {
         "mat": -3,
         "luk": -2,
@@ -6766,7 +6766,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Protein starvation swelling a hollow body.",
+      "desc": "Severe protein malnutrition despite adequate calories. Swelling from fluid retention and a distended, fatty liver mark advanced cases.",
       "params": {
         "mhp": -25,
         "atk": -3
@@ -6832,7 +6832,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "The thyroid swelling in a hunt for missing iodine.",
+      "desc": "Enlargement of the thyroid gland, most often from insufficient dietary iodine. A visible swelling forms at the neck as the gland struggles to keep up.",
       "params": {
         "mat": -2,
         "agi": -1
@@ -6897,7 +6897,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "A grey weight on will, energy, and joy.",
+      "desc": "A mood disorder marked by persistent low mood and loss of interest in once-enjoyable activities. Fatigue and disrupted sleep compound the weight of it.",
       "params": {
         "atk": -2,
         "agi": -2,
@@ -6967,7 +6967,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "Alarm that never fully switches off.",
+      "desc": "A disorder of excessive, hard-to-control worry that outlasts its trigger. Muscle tension and restlessness accompany dread about ordinary, everyday matters.",
       "params": {
         "mdf": -2,
         "agi": 1,
@@ -7035,7 +7035,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "The past ambushing the present in flashes.",
+      "desc": "A trauma-linked disorder in which the nervous system stays locked in threat mode. Flashbacks and hypervigilance persist long after the danger has passed.",
       "params": {
         "mdf": -3,
         "luk": -2,
@@ -7105,7 +7105,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Tides of mania and depression on their own calendar.",
+      "desc": "A mood disorder cycling between depressive lows and abnormally elevated highs. Manic episodes bring reckless energy; depressive ones bring its collapse.",
       "params": {
         "atk": 2,
         "mdf": -3,
@@ -7173,7 +7173,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Perception and reality slipping their moorings.",
+      "desc": "A disorder of disorganized thought and perception. Hallucinations and delusions develop gradually, typically emerging in young adulthood.",
       "params": {
         "mat": -3,
         "mdf": -3,
@@ -7243,7 +7243,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Sleep withheld night after grinding night.",
+      "desc": "Persistent difficulty falling or staying asleep despite the opportunity to rest. Daytime fatigue and irritability follow each poorly slept night.",
       "params": {
         "agi": -2,
         "mat": -2
@@ -7312,7 +7312,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": -1,
-      "desc": "Intrusive thoughts answered by rituals that never satisfy.",
+      "desc": "A disorder of intrusive, unwanted thoughts relieved only by repeated ritual behavior. The compulsion offers brief relief before the obsession returns.",
       "params": {
         "mdf": 2,
         "agi": -1,
@@ -7383,7 +7383,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Mana channels blackening and leaking; magic sours in the veins.",
+      "desc": "Chronic overdraw on a personal mana channel, which begins to necrotize under sustained load. Bleeding mana and numbness spread from the channel outward as it fails.",
       "params": {
         "mmp": -40,
         "mat": -4
@@ -7456,7 +7456,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 18,
-      "desc": "A wildfire of corrupted mana leaping between casters.",
+      "desc": "A transmissible corruption of the body's arcane channel, provoking uncontrolled discharge. Fever and involuntary spell misfire follow as the channel loses containment.",
       "params": {
         "mmp": -60,
         "mat": -5,
@@ -7525,7 +7525,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 21,
-      "desc": "Breathing raw aether crystallizes the alveoli faintly aglow.",
+      "desc": "Prolonged inhalation of raw, uncondensed aether crystallizes along the alveoli. The lining glows faintly under strain, and each breath grows shorter than the last.",
       "params": {
         "agi": -3,
         "mmp": -15
@@ -7594,7 +7594,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "A slow undeath: warmth, name, and self leaching away.",
+      "desc": "A slow severance between body and self, of uncertain origin. Sensation and memory fade together as the connection thins, leaving cold, unresponsive skin behind.",
       "params": {
         "mhp": -30,
         "luk": -4,
@@ -7671,7 +7671,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "A gnawing that ordinary food cannot touch, and craves worse.",
+      "desc": "A curse that inverts the body's hunger signal past any satiety point. Insatiable craving, extremity frostbite and mounting paranoia progress together as the affliction deepens.",
       "params": {
         "atk": 3,
         "luk": -4,
@@ -7742,7 +7742,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Skin hardening toward statue; slow, heavy, and irreversible.",
+      "desc": "A curse that gradually mineralizes soft tissue, beginning at the extremities. Skin greys and stiffens as flexibility is traded for a slow, creeping rigidity.",
       "params": {
         "def": 3,
         "agi": -5,
@@ -7813,7 +7813,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 12,
-      "desc": "A fever whose delirium speaks in others' voices.",
+      "desc": "A febrile illness accompanied by auditory hallucination, voices heard just below the threshold of words. Fever rises in step with the intensity of what is heard.",
       "params": {
         "mat": -3,
         "mdf": -2
@@ -7883,7 +7883,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Reflections lag, then disagree; the self doubles and frays.",
+      "desc": "A dissociative affliction in which one's reflection appears to lag behind actual movement. Sufferers report a growing detachment from their own actions as the delay widens.",
       "params": {
         "mdf": -3,
         "luk": -2
@@ -7951,7 +7951,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 14,
-      "desc": "Time stutters in the body; wounds age and heal out of order.",
+      "desc": "Exposure to unstable temporal fields causes localized aging inconsistent with elapsed time. Sufferers experience brief slips where perceived time and physical time diverge.",
       "params": {
         "agi": -3,
         "luk": -3,
@@ -8019,7 +8019,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Contact with the outer dark; a cold that eats from inside.",
+      "desc": "Sustained proximity to a void-adjacent phenomenon leaves extremities numb and hair follicles inert. A pervasive, objectless dread accompanies the physical symptoms.",
       "params": {
         "mhp": -40,
         "mdf": -4,
@@ -8090,7 +8090,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Gazing too long into deep sky invites a geometry that maddens.",
+      "desc": "Prolonged exposure to non-Euclidean cosmic geometry overwhelms the mind's spatial reasoning. Persistent visions and dread follow, often outlasting the exposure itself.",
       "params": {
         "mat": -4,
         "mdf": -4,
@@ -8161,7 +8161,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "A signal-borne affliction fuzzing thought and vision to snow.",
+      "desc": "A neurological condition producing a constant field of flickering static across the visual field. Tinnitus and light sensitivity often ride alongside it.",
       "params": {
         "mat": -3,
         "agi": -2
@@ -8233,7 +8233,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "The self overwritten with blanks; identity checksum fails.",
+      "desc": "A dissociative disorder in which the self feels detached from its own body and thoughts. The world takes on an unreal, muffled distance.",
       "params": {
         "mat": -4,
         "luk": -3,
@@ -8303,7 +8303,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Corruption spreading through implanted memory and nerve-lace.",
+      "desc": "Gradual corruption of stored information through accumulated small failures. Errors compound quietly until retrieval turns to garbage.",
       "params": {
         "mmp": -20,
         "agi": -2
@@ -8371,7 +8371,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "An infection carried between sleepers, harvesting rest.",
+      "desc": "A contagious affliction of the sleeping mind, passing nightmare content between sufferers. Waking exhaustion accumulates despite hours spent apparently asleep.",
       "params": {
         "mmp": -25,
         "agi": -2,
@@ -8440,7 +8440,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "A fungus that gardens the living toward a flowering death.",
+      "desc": "A parasitic fungus that hijacks its host's nervous system before fruiting through the flesh. Infection ends only once the fungus has finished growing.",
       "params": {
         "mhp": -25,
         "def": -2,
@@ -8511,7 +8511,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Each breath rusts; the chest slowly seizes to metal.",
+      "desc": "A curse that weighs down the breath as though the lungs were slowly filling with metal. A persistent metallic taste accompanies each labored inhale.",
       "params": {
         "agi": -4,
         "mhp": -18,
@@ -8578,7 +8578,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 10,
-      "desc": "Pustules that itch into helpless, exhausting laughter.",
+      "desc": "A neurological disorder producing sudden, uncontrollable laughing or crying unrelated to actual mood. Pustules mark the skin where the fever has passed through.",
       "params": {
         "atk": -2,
         "mdf": -2,
@@ -8650,7 +8650,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Ergotism reborn: burning limbs, gangrene, and holy visions.",
+      "desc": "Ergot alkaloid poisoning from tainted grain. Burning limb pain and vivid hallucination precede gangrene as blood vessels constrict.",
       "params": {
         "atk": -3,
         "agi": -4,
@@ -8721,7 +8721,7 @@
       "venereal": true,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "A metamorphic infection that half-seals the host in chrysalis.",
+      "desc": "A slow hardening of the outer skin into a chrysalis-like shell. Lethargy deepens as metabolic activity redirects toward the hardening process.",
       "params": {
         "agi": -4,
         "def": 3,
@@ -8791,7 +8791,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 12,
-      "desc": "The flu that killed the young and healthy first. Drowning from the inside.",
+      "desc": "A severe H1N1 influenza strain responsible for a global pandemic. Rapid onset of high fever and pulmonary edema turned lips and skin cyanotic.",
       "params": {
         "mhp": -60,
         "atk": -3,
@@ -8861,7 +8861,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 18,
-      "desc": "Louse-borne camp fever: rash, stupor, and the smell of crowded rooms.",
+      "desc": "A louse-borne Rickettsia infection that spreads fastest through crowded, unhygienic conditions. High fever and stupor follow the onset of a spreading rash.",
       "params": {
         "mhp": -45,
         "mat": -4,
@@ -8933,7 +8933,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 14,
-      "desc": "A grey membrane grows across the throat until breath will not pass.",
+      "desc": "A Corynebacterium diphtheriae infection of the throat. A thick gray membrane forms across the airway, choking off breath as the illness progresses.",
       "params": {
         "mhp": -35,
         "atk": -2,
@@ -9005,7 +9005,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 7,
-      "desc": "Spores from the soil or the mail; black eschars and a fast collapse.",
+      "desc": "Infection by Bacillus anthracis spores, whether through the skin, lungs, or gut. Skin exposure produces a black, painless eschar; inhaled spores bring rapid breathlessness.",
       "params": {
         "mhp": -50,
         "def": -3
@@ -9077,7 +9077,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 11,
-      "desc": "A filovirus out of a mine shaft. Bleeding from every soft tissue.",
+      "desc": "A viral hemorrhagic fever closely related to Ebola, carried by fruit bats. Sudden fever and collapse progress to uncontrolled bleeding.",
       "params": {
         "mhp": -70,
         "def": -4,
@@ -9149,7 +9149,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 12,
-      "desc": "Bat-borne and brain-hungry; survivors rarely come back whole.",
+      "desc": "A bat-borne virus that can jump to pigs and humans. Fever and headache can progress to fatal brain inflammation.",
       "params": {
         "mhp": -55,
         "mat": -4,
@@ -9221,7 +9221,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 16,
-      "desc": "A new pneumonia that jumps wards faster than the paperwork.",
+      "desc": "A coronavirus respiratory disease first identified in 2002. Dry cough and fever progress to dangerously low blood oxygen in severe cases.",
       "params": {
         "mhp": -40,
         "agi": -3
@@ -9290,7 +9290,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 12,
-      "desc": "Bred in cooling towers, breathed in by everyone downwind of one.",
+      "desc": "A form of pneumonia caused by Legionella bacteria, often from contaminated water systems. Fever and confusion accompany the lung infection.",
       "params": {
         "mhp": -35,
         "agi": -3,
@@ -9362,7 +9362,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Sleep that deepens into statue stillness; some never surface again.",
+      "desc": "A rare brain inflammation of uncertain viral origin. Tremor and double vision can progress to a statue-like, unresponsive stillness.",
       "params": {
         "agi": -5,
         "mat": -4,
@@ -9433,7 +9433,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 21,
-      "desc": "They dance until the feet split, and cannot say why they started.",
+      "desc": "A documented outbreak of compulsive, involuntary dancing, most likely a form of stress-induced mass hysteria. Dancers continued for days until exhaustion or collapse.",
       "params": {
         "mhp": -25,
         "agi": -3,
@@ -9503,7 +9503,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 14,
-      "desc": "Word spreads that a handshake can steal what a man was born with. The mob believes it first and checks later.",
+      "desc": "A culture-bound delusional panic centered on the belief that the genitals are shrinking or retracting into the body, spreading through fear and rumor rather than any physical cause.",
       "params": {
         "luk": -3,
         "mdf": -3,
@@ -9572,7 +9572,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 12,
-      "desc": "It starts in a schoolroom and closes the school; nobody finds it funny by the third week.",
+      "desc": "A documented outbreak of mass hysteria marked by episodes of uncontrollable laughter spreading through a community, without any infectious agent involved.",
       "params": {
         "mat": -3,
         "atk": -2,
@@ -9641,7 +9641,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 9,
-      "desc": "A spider nobody saw; only music and dancing are said to draw the venom out.",
+      "desc": "A historical form of mass hysteria once blamed on spider bite, marked by frenzied dancing said to sweat the venom out. Sweating and melancholy alternate with the fits.",
       "params": {
         "agi": -2,
         "mdf": -2
@@ -9709,7 +9709,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 16,
-      "desc": "One sister meows, then the cloister does, and no prayer stops it.",
+      "desc": "Mass psychogenic illness spreading through a closed community. Symptoms and behaviors pass from person to person with no organic cause behind them.",
       "params": {
         "mat": -2,
         "mdf": -2
@@ -9777,7 +9777,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 10,
-      "desc": "A prowler with a sweet-smelling spray that the police never once find.",
+      "desc": "A documented panic involving reported gas attacks with no confirmed physical agent. Numb legs and terror spread through a community convinced of an unseen assailant.",
       "params": {
         "mdf": -3,
         "agi": -2
@@ -9845,7 +9845,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 8,
-      "desc": "One faints in assembly and forty follow within the hour.",
+      "desc": "A form of mass psychogenic illness in which fainting spells spread through a group. Nausea and dizziness precede each collapse, with no infection to explain it.",
       "params": {
         "mhp": -15,
         "agi": -3
@@ -9915,7 +9915,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 7,
-      "desc": "The whole city inspects its windscreens and finds damage that was always there.",
+      "desc": "A documented mass panic in which people began noticing ordinary wear on glass and attributed it to a shared, invisible cause. Obsessive inspection followed the rumor.",
       "params": {
         "luk": -2,
         "mat": -1
@@ -9980,7 +9980,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 11,
-      "desc": "Everyone in the plant feels the bug bite. No entomologist ever finds it.",
+      "desc": "A delusional disorder in which the sufferer is convinced their body is infested by parasites that are not actually present. The itch feels real even without a cause.",
       "params": {
         "def": -2,
         "mdf": -2,
@@ -10050,7 +10050,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 40,
-      "desc": "The rumour arrives fully formed with names attached, and the names get burned.",
+      "desc": "A moral panic built on unsubstantiated accusations, spreading through rumor and recovered-memory suggestion rather than evidence. Paranoia and insomnia follow the accusations.",
       "params": {
         "mdf": -3,
         "luk": -3,
@@ -10119,7 +10119,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 18,
-      "desc": "Half the district swears a neighbour has been replaced by a very good copy.",
+      "desc": "A delusional misidentification disorder in which familiar people are believed to have been replaced by identical impostors. Paranoia hardens around every familiar face.",
       "params": {
         "mdf": -3,
         "luk": -2
@@ -10188,7 +10188,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 15,
-      "desc": "People stop saying their own names aloud; something is collecting them.",
+      "desc": "A moral panic in which fear over an unproven threat spreads faster than any evidence for it. Suspicion of stolen identity breeds mutism and dread.",
       "params": {
         "luk": -3,
         "mat": -2
@@ -10256,7 +10256,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 13,
-      "desc": "A grammar nobody was taught runs through a congregation in one evening.",
+      "desc": "Fluid, speech-like vocalization without comprehensible meaning, often arising in a trance-like religious state. It can spread contagiously through a gathered crowd.",
       "params": {
         "mat": -2,
         "mdf": -2
@@ -10324,7 +10324,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 20,
-      "desc": "The town wakes on the road out of town, all facing the same way.",
+      "desc": "A parasomnia in which wakefulness and deep sleep occur in different brain regions simultaneously, driving complex behavior without conscious awareness. Groups have been known to walk identical routes together.",
       "params": {
         "agi": -2,
         "mmp": -10
@@ -10392,7 +10392,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 6,
-      "desc": "Four hundred witnesses, one identical impossible thing, no photograph.",
+      "desc": "A state of collective effervescence, in which a gathered crowd shares the same intense thought or vision at once. The shared euphoria can leave the group sleepless.",
       "params": {
         "mdf": -2,
         "mat": -1
@@ -10461,7 +10461,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 25,
-      "desc": "Listeners start copying the broadcast down, then reading it out to each other.",
+      "desc": "A fixation on shortwave numbers stations, the cryptic broadcasts once used to relay coded messages. Compulsive transcription and monotone speech follow prolonged listening.",
       "params": {
         "mat": -3,
         "mmp": -15,
@@ -10531,7 +10531,7 @@
       "venereal": true,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The immune system has been dismantled. Every other pathogen walks straight in.",
+      "desc": "Advanced HIV infection in which the immune system has collapsed. Wasting and opportunistic infections take hold once CD4 cell counts fall too low to fight back.",
       "params": {
         "mhp": -140,
         "def": -5,
@@ -10609,7 +10609,7 @@
       "venereal": true,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Decades late, the spirochete comes back for the aorta and the mind.",
+      "desc": "The late, untreated stage of syphilis, years after the original infection. Gummas, dementia and damage to the heart and spinal cord mark systemic organ involvement.",
       "params": {
         "mhp": -70,
         "mat": -5,
@@ -10682,7 +10682,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The liver has been replaced by scar. What it used to filter, nothing does.",
+      "desc": "Irreversible scarring of the liver from chronic disease. Healthy tissue is replaced by fibrous nodules, and jaundice and fluid buildup follow as function fails.",
       "params": {
         "mhp": -90,
         "mmp": -45,
@@ -10758,7 +10758,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "An untreated throat infection taught the body to attack its own heart valves.",
+      "desc": "An inflammatory disease triggered by an untreated strep throat infection. It can inflame the heart, joints, skin and brain weeks after the original infection clears.",
       "params": {
         "mhp": -55,
         "agi": -4,
@@ -10833,7 +10833,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "The spirochete settled into joints and nerves and stopped answering to anything.",
+      "desc": "Lyme disease left untreated until the bacteria disseminate widely. Arthritis, nerve damage and facial palsy develop as the infection reaches joints and nerves.",
       "params": {
         "agi": -5,
         "mat": -3,
@@ -10906,7 +10906,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "The virus is long gone. Whatever it did to you stayed.",
+      "desc": "A disabling fatigue that persists long after the triggering infection has cleared. Exertion, even mild, brings a marked worsening that can last for days.",
       "params": {
         "atk": -4,
         "agi": -4,
@@ -10981,7 +10981,7 @@
       "venereal": true,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "An untreated infection climbed, scarred what it found and settled in to stay.",
+      "desc": "An ascending bacterial infection of the upper female reproductive tract, often silent at first. Untreated, it can scar the fallopian tubes and cause infertility.",
       "params": {
         "mhp": -45,
         "agi": -4,
@@ -11052,7 +11052,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The bacillus is out of the lungs and seeded through every organ in millet-sized colonies.",
+      "desc": "A widely disseminated form of tuberculosis that spreads tiny lesions through the bloodstream to multiple organs. Wasting and fever accompany the failure of whichever organs are seeded.",
       "params": {
         "mhp": -110,
         "atk": -5,
@@ -11123,7 +11123,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Years of unmanaged sugar have taken the nerves in the feet and the eyes with them.",
+      "desc": "Nerve damage from prolonged high blood sugar, most common in the feet and legs. Numbness progresses until injuries and ulcers go unnoticed.",
       "params": {
         "agi": -5,
         "atk": -3,
@@ -11198,7 +11198,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The dysentery went through the gut wall and built itself a cavity in the liver.",
+      "desc": "A pus-filled cavity in the liver caused by amoebic infection. Right-sided pain and fever develop as the parasite destroys liver tissue from within.",
       "params": {
         "mhp": -80,
         "atk": -4,
@@ -11270,7 +11270,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The rot reached the channels themselves. Magic drains out of you faster than it comes in.",
+      "desc": "Collapse of a personal mana channel under catastrophic overdraw, leaving the surrounding tissue without circulation. Numb sigils and cold blood mark the dead channel's spread.",
       "params": {
         "mmp": -90,
         "mat": -6,
@@ -11343,7 +11343,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The hollowing finished. Something else is answering to your name now.",
+      "desc": "An advanced stage of severance from the self, in which the body persists without its usual signs of presence. No reflection is cast, no shadow falls, and the voice that speaks is not recognizably one's own.",
       "params": {
         "mhp": -100,
         "mat": -6,
@@ -11417,7 +11417,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The gray static resolved into a signal, and the signal is using you as an aerial.",
+      "desc": "A fixation on electronic voice phenomena, the faint patterns some hear as voices within recorded static. Long sessions of listening leave a carrier hum ringing in the ears.",
       "params": {
         "mat": -5,
         "mmp": -60,
@@ -11490,7 +11490,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 10,
-      "desc": "Waded through the wrong water. They are painless, patient and full.",
+      "desc": "Blood-feeding annelid worms that attach with a sucker and release an anticoagulant as they feed. Bites bleed longer than expected and can itch for days after the worm detaches.",
       "params": {
         "mhp": -18,
         "agi": -2
@@ -11566,7 +11566,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 25,
-      "desc": "The inn's mattress had tenants. They travel in the seams of your pack.",
+      "desc": "Small blood-feeding insects that hide in bedding and feed at night. Their bites raise itchy welts, often in a telltale line, and disrupt sleep.",
       "params": {
         "agi": -1,
         "mmp": -8
@@ -11635,7 +11635,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 18,
-      "desc": "Picked up from a dog, a bed or a corpse. They bite in lines of three.",
+      "desc": "Small jumping insects that live on the blood of a host. Repeated bites raise itchy welts and leave the skin restless and irritated.",
       "params": {
         "agi": -2,
         "luk": -1
@@ -11703,7 +11703,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 12,
-      "desc": "Buried head-first and swelling. What they carry is worse than what they take.",
+      "desc": "Blood-feeding arachnids that attach for extended feedings, swelling as they engorge. Local rash and fatigue can follow, along with any pathogen the tick carries.",
       "params": {
         "mhp": -12,
         "agi": -1
@@ -11772,7 +11772,7 @@
       "venereal": false,
       "severity": "trivial",
       "durationDays": 21,
-      "desc": "A childhood parasite with no dignity and enormous persistence.",
+      "desc": "A small intestinal worm whose females migrate to lay eggs around the anus at night. The resulting itch disrupts sleep and spreads eggs to bedding and hands.",
       "params": {
         "mmp": -10,
         "agi": -1
@@ -11842,7 +11842,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Giant roundworms in the gut, eating first and leaving you the remainder.",
+      "desc": "Infection by a large intestinal roundworm, acquired by swallowing its eggs. Heavy worm burdens cause abdominal distension and rob the body of nutrition.",
       "params": {
         "mhp": -25,
         "atk": -2,
@@ -11912,7 +11912,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Threaded into the colon wall, bleeding you a little at a time for years.",
+      "desc": "A whip-shaped intestinal parasite that embeds its thin end in the gut lining. Heavy infections cause bloody stool, cramping and anemia.",
       "params": {
         "mhp": -20,
         "atk": -2
@@ -11986,7 +11986,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "A metre of worm emerging from the shin, one agonising centimetre a day.",
+      "desc": "A parasite acquired by drinking water containing infected copepods. The adult worm migrates beneath the skin for a year before emerging through a burning blister.",
       "params": {
         "agi": -4,
         "atk": -3,
@@ -12057,7 +12057,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": -1,
-      "desc": "Raw river fish, and now something is living in your bile ducts.",
+      "desc": "A flatworm parasite acquired from contaminated water plants, which migrates to the liver's bile ducts. Right-sided pain and jaundice follow as the fluke settles in.",
       "params": {
         "mmp": -25,
         "mat": -2,
@@ -12127,7 +12127,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
-      "desc": "Something laid eggs under your skin and the lump moves when you press it.",
+      "desc": "Infestation of living tissue by fly larvae, which burrow in and feed as they grow. A moving lump under the skin often marks where a larva has taken hold.",
       "params": {
         "def": -3,
         "mhp": -15,
@@ -12202,7 +12202,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 21,
-      "desc": "Burrowed into the toe and swelling to a pea. Walking is a negotiation.",
+      "desc": "A burrowing flea that embeds itself in the skin, usually of the foot, to feed and swell with eggs. A painful, itchy lesion forms around the buried insect.",
       "params": {
         "agi": -3
       },
@@ -12270,7 +12270,7 @@
       "venereal": true,
       "severity": "trivial",
       "durationDays": 21,
-      "desc": "The other kind of lice, and the more embarrassing conversation.",
+      "desc": "A pubic-hair-dwelling louse spread through close contact. Persistent itching and small blue bite marks appear where the lice have fed.",
       "params": {
         "luk": -2,
         "mmp": -6
@@ -12339,7 +12339,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 28,
-      "desc": "Caught off a beast; the mites go deeper and the crusts go thicker than scabies.",
+      "desc": "A skin infestation by burrowing mites, more familiar in animals but transmissible to people. Crusted skin, hair loss and relentless itching follow the mites' tunneling.",
       "params": {
         "def": -3,
         "agi": -2,
@@ -12413,7 +12413,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 7,
-      "desc": "A single amoeba went up the nose from warm fresh water and began eating the frontal lobe. Almost nobody has ever survived it.",
+      "desc": "A rare but almost always fatal infection in which a free-living amoeba travels up the olfactory nerve into the brain after entering through the nose. Headache and loss of smell progress rapidly to hallucination and coma.",
       "params": {
         "mhp": -120,
         "mat": -6,
@@ -12486,7 +12486,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "A misfolded protein out of the food chain, patient for a decade, then all at once.",
+      "desc": "A prion disease of cattle that can cross to humans through contaminated tissue. Abnormal behavior and loss of coordination progress as brain tissue turns spongy.",
       "params": {
         "mhp": -90,
         "mat": -6,
@@ -12560,7 +12560,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "The shepherd's disease. Ewes rub themselves raw on the fence, and then so do you.",
+      "desc": "A prion disease of sheep and goats, not known to transmit to humans. Relentless itching and stumbling gait mark its progression in the animals it affects.",
       "params": {
         "mhp": -70,
         "agi": -5,
@@ -12631,7 +12631,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 9,
-      "desc": "Sore throat, red eyes and a fever that outstays its welcome.",
+      "desc": "A common respiratory virus spread through droplets and contact. Sore throat, conjunctivitis and fever resemble a cold that lingers longer than usual.",
       "params": {
         "agi": -2,
         "mat": -1
@@ -12701,7 +12701,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 8,
-      "desc": "Coxsackievirus. Blisters exactly where the name says and nowhere pleasant.",
+      "desc": "An enterovirus infection common in young children. Fever precedes painful mouth ulcers and blisters on the palms and soles.",
       "params": {
         "agi": -2,
         "atk": -1
@@ -12770,7 +12770,7 @@
       "venereal": false,
       "severity": "trivial",
       "durationDays": 10,
-      "desc": "Parvovirus B19. A bright red face and a week of aching joints.",
+      "desc": "A mild parvovirus B19 infection, most recognizable by the bright red rash it leaves on the cheeks. Joint ache can follow in older children and adults.",
       "params": {
         "agi": -2
       },
@@ -12835,7 +12835,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 14,
-      "desc": "Mosquito-borne. The name means the illness that bends you up, and it does.",
+      "desc": "A mosquito-borne virus named for the contorted posture it forces on sufferers. Fever and severe, often crippling joint pain follow the bite.",
       "params": {
         "agi": -5,
         "atk": -4
@@ -12905,7 +12905,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 16,
-      "desc": "Carried by rats, hemorrhagic in the unlucky fifth, deafening in the survivors.",
+      "desc": "A rodent-borne viral hemorrhagic fever endemic to West Africa. Most infections are silent, but severe cases bring fever, bleeding and permanent hearing loss.",
       "params": {
         "mhp": -60,
         "mdf": -4,
@@ -12976,7 +12976,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 13,
-      "desc": "A tick bite, then bruising under skin that has not been struck.",
+      "desc": "A tick-borne viral hemorrhagic fever with a high fatality rate in severe cases. Fever and bruising progress to bleeding under the skin within two weeks of exposure.",
       "params": {
         "mhp": -75,
         "def": -4,
@@ -13047,7 +13047,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 18,
-      "desc": "Smallpox's smaller cousin, out of the forest and into the towns.",
+      "desc": "A viral disease related to smallpox, spread through close contact. A blistering, crusting rash accompanies fever and swollen lymph nodes, usually resolving within weeks.",
       "params": {
         "mhp": -25,
         "def": -3,
@@ -13118,7 +13118,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 21,
-      "desc": "A mosquito, a paddy field, and inflammation where thought is kept.",
+      "desc": "A mosquito-borne virus that occasionally crosses into the brain. Most infections pass unnoticed, but the minority that inflame the brain bring seizures and paralysis.",
       "params": {
         "mat": -6,
         "mhp": -50,
@@ -13189,7 +13189,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 45,
-      "desc": "Unpasteurised milk. A fever that comes and goes on its own tide for months.",
+      "desc": "A bacterial zoonosis contracted from unpasteurized milk or close animal contact. Fever that rises and falls, drenching sweats and joint pain give it the name undulant fever.",
       "params": {
         "atk": -3,
         "agi": -3,
@@ -13266,7 +13266,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 21,
-      "desc": "Breathed in off a barn floor. Half of those who catch it never notice.",
+      "desc": "A bacterial infection contracted by inhaling spores shed by infected livestock. Fever and headache can progress to pneumonia in a minority of cases.",
       "params": {
         "agi": -2,
         "mhp": -15
@@ -13336,7 +13336,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 21,
-      "desc": "Soft cheese kept badly. It crosses barriers other bacteria respect.",
+      "desc": "A foodborne bacterial infection, dangerous chiefly to the immunocompromised, newborns and the elderly. Fever and stiff neck can signal spread to the nervous system.",
       "params": {
         "mhp": -40,
         "mat": -3
@@ -13406,7 +13406,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 7,
-      "desc": "Undercooked egg. Two days of regret and a week of caution.",
+      "desc": "A common foodborne bacterial infection. Cramping, diarrhea and fever follow ingestion of contaminated food, usually resolving within a week.",
       "params": {
         "agi": -3,
         "atk": -2
@@ -13476,7 +13476,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 8,
-      "desc": "Ten organisms are enough. Dysentery with blood in it.",
+      "desc": "A bacterial intestinal infection historically known as dysentery. Bloody diarrhea and cramping follow exposure to very small amounts of the bacteria.",
       "params": {
         "agi": -3,
         "mhp": -20
@@ -13547,7 +13547,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 9,
-      "desc": "Chicken, unwashed hands, and the worst stomach cramps of your life.",
+      "desc": "One of the most common bacterial causes of foodborne illness. Cramping and diarrhea, sometimes bloody, follow undercooked poultry or contaminated water.",
       "params": {
         "agi": -3,
         "atk": -2
@@ -13617,7 +13617,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Repeated infection scars the lid until the lashes turn inward on the eye.",
+      "desc": "A chlamydial eye infection and the world's leading infectious cause of blindness. Repeated infection scars the eyelid, turning the lashes inward against the cornea.",
       "params": {
         "mat": -3,
         "luk": -2,
@@ -13693,7 +13693,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 30,
-      "desc": "Out of wet soil after rain, abscessing anywhere it likes and relapsing for years.",
+      "desc": "A soil-and-water-borne bacterial infection common in tropical regions. Most exposures pass unnoticed, but symptomatic cases range from skin abscess to fever and pneumonia.",
       "params": {
         "mhp": -55,
         "def": -3,
@@ -13764,7 +13764,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Bacteria colonised a heart valve and are shedding into the blood with every beat.",
+      "desc": "A bacterial infection of the heart's inner lining, usually settling on a valve. Fever and a new heart murmur can precede embolic complications elsewhere in the body.",
       "params": {
         "mhp": -70,
         "agi": -4,
@@ -13840,7 +13840,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 28,
-      "desc": "Breathed in off cave floors and bird lofts. The lungs answer in nodules.",
+      "desc": "A fungal lung infection from inhaling spores in soil contaminated with bird or bat droppings. Cough and fatigue follow exposure, usually resolving without treatment.",
       "params": {
         "mhp": -25,
         "agi": -3
@@ -13909,7 +13909,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 40,
-      "desc": "The rose gardener's disease, climbing the arm one nodule per lymph node.",
+      "desc": "A fungal infection introduced through a skin puncture, often from handling plants or soil. Firm nodules form along the lymph vessels and later ulcerate.",
       "params": {
         "def": -3,
         "atk": -2
@@ -13977,7 +13977,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": 14,
-      "desc": "A black mould with an appetite for the face of anyone whose defences have slipped.",
+      "desc": "An aggressive fungal infection favoring the immunocompromised. It spreads rapidly through sinus and facial tissue, leaving a blackened eschar in its wake.",
       "params": {
         "mhp": -85,
         "mat": -4,
@@ -14048,7 +14048,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 45,
-      "desc": "Undercooked pork. The larvae encyst in muscle, including the ones you breathe with.",
+      "desc": "A parasitic roundworm infection from undercooked meat. Larvae migrate into muscle tissue, causing swelling, pain and fever as the body reacts to their presence.",
       "params": {
         "atk": -4,
         "agi": -4,
@@ -14119,7 +14119,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "A dog tapeworm's cyst, growing quietly in the liver for a decade. Never puncture it.",
+      "desc": "Infection by tapeworm larvae that form slow-growing, fluid-filled cysts in the liver or lungs. Symptoms appear only once a cyst grows large enough to press on surrounding tissue.",
       "params": {
         "mhp": -40,
         "agi": -3
@@ -14187,7 +14187,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": 21,
-      "desc": "A tick-borne malaria of sorts, chewing red cells in the same lazy way.",
+      "desc": "A tick-borne parasite that infects red blood cells, similar to malaria. Fever and hemolytic anemia follow the parasite's destruction of infected cells.",
       "params": {
         "mhp": -35,
         "atk": -3,
@@ -14258,7 +14258,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 14,
-      "desc": "Chlorine does not touch it. One swimming pool, one whole town.",
+      "desc": "A waterborne protozoan parasite resistant to standard chlorination. Watery diarrhea follows ingestion of its cysts, particularly from contaminated recreational water.",
       "params": {
         "agi": -3,
         "mhp": -18
@@ -14327,7 +14327,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 45,
-      "desc": "The world goes out at dusk, then the cornea starts to soften.",
+      "desc": "Vitamin A deficiency that impairs the retina's ability to adapt to low light. Difficulty seeing at dusk is often the first sign, before daytime vision is affected.",
       "params": {
         "mat": -3,
         "luk": -2,
@@ -14396,7 +14396,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 60,
-      "desc": "Pins and needles climbing from the feet, and a memory going the other way.",
+      "desc": "A shortage of vitamin B12 that impairs red blood cell formation and nerve function. Fatigue and numbness in the extremities develop as deficiency progresses.",
       "params": {
         "mat": -3,
         "agi": -3,
@@ -14463,7 +14463,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 30,
-      "desc": "One side of the face stopped answering overnight. Usually it comes back.",
+      "desc": "Sudden, usually one-sided facial nerve paralysis of unclear cause. The affected side of the face droops, unable to smile, blink or raise an eyebrow.",
       "params": {
         "luk": -3,
         "mat": -2
@@ -14532,7 +14532,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Nothing is wrong with the body. Something is wrong at the level the body is an expression of, and it is spreading by sympathy.",
+      "desc": "A wasting of the self at a level deeper than the body, of uncertain mechanism. Grief and attachment fade first, followed by a thinning of one's own shadow and name.",
       "params": {
         "mmp": -70,
         "mat": -5,
@@ -14611,7 +14611,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Crude in the alveoli that will not come up and will not stop being warm.",
+      "desc": "Pneumoconiosis: interstitial lung scarring from years of inhaled fine particulate. Breath grows shorter and shallower long after the exposure that caused it has ended.",
       "params": {
         "mhp": -45,
         "agi": -4,
@@ -14687,7 +14687,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 21,
-      "desc": "The long-haul sickness. Every cough comes up tasting of a road you have not driven yet.",
+      "desc": "Occupational asthma triggered by prolonged exposure to airborne irritants on the job. The airways narrow and inflame each time the trigger is encountered.",
       "params": {
         "atk": -2,
         "agi": -3,
@@ -14756,7 +14756,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Up has stopped being a direction and started being a place, and it is pulling.",
+      "desc": "A disorder of balance in which the world seems to spin or tilt though nothing has moved. Nausea and unsteady footing follow any sudden turn of the head.",
       "params": {
         "agi": -4,
         "mdf": -4,
@@ -14827,7 +14827,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "You have had this disease before. You will have it again. The middle keeps going missing.",
+      "desc": "Anterograde amnesia: an inability to form new memories after the triggering event. Long-past memories stay intact even as the present slips away unrecorded.",
       "params": {
         "mat": -4,
         "mmp": -30,
@@ -14898,7 +14898,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 24,
-      "desc": "Written wards go soft near you and every seal you touch reads slightly wrong afterwards.",
+      "desc": "Degradation of the skin's inscribed warding sigils, causing them to smear and misfire. Wards read incorrectly and itching spreads across the affected palms.",
       "params": {
         "mat": -4,
         "mmp": -25
@@ -14972,7 +14972,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 16,
-      "desc": "Caught off somebody else's familiar. You dream its dreams and wake with its appetite.",
+      "desc": "A febrile bleed-through from a bonded familiar's instincts into the handler's own body. Hunger and reflexes shift toward the familiar's nature as the fever peaks at night.",
       "params": {
         "mat": -3,
         "agi": 2,
@@ -15044,7 +15044,7 @@
       "venereal": false,
       "severity": "mild",
       "durationDays": 30,
-      "desc": "Read something aloud that was meant to be read silently. It is still finishing the sentence.",
+      "desc": "Persistent ringing left behind by prolonged exposure to spoken incantation. Fragments of recited text intrude on thought and disrupt sleep long after the reading ends.",
       "params": {
         "mat": -2,
         "mdf": -2
@@ -15114,7 +15114,7 @@
       "venereal": false,
       "severity": "moderate",
       "durationDays": 12,
-      "desc": "Caught off a terminal. Your sense of sequence arrives out of order and retries.",
+      "desc": "An obsessive fixation on network congestion and dropped connections. Frustration and restlessness build in step with every stalled packet.",
       "params": {
         "agi": -3,
         "mat": -3
@@ -15187,7 +15187,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "Every thought calls itself once more before finishing. The stack does not unwind.",
+      "desc": "A cognitive strain from following a process that calls back into itself without a clean end. Thought loops on the same unresolved step until it collapses under its own weight.",
       "params": {
         "mat": -5,
         "mmp": -40,
@@ -15258,7 +15258,7 @@
       "venereal": false,
       "severity": "lethal",
       "durationDays": -1,
-      "desc": "Sound keeps arriving. Meaning has stopped. It spreads to whoever you try to explain it to.",
+      "desc": "A rare cosmic affliction that erodes the sufferer's grasp of language and meaning. Words lose their referents one by one, leaving a flat affect and an empty stare.",
       "params": {
         "mat": -5,
         "mdf": -5,
@@ -15332,7 +15332,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "There are two of you in there and only one of you is keeping track of the days.",
+      "desc": "An altered state in which control of speech and movement seems to pass to another presence entirely. The body acts and speaks in ways the sufferer does not recognize as their own.",
       "params": {
         "mdf": -5,
         "luk": -4,
@@ -15411,7 +15411,7 @@
       "venereal": false,
       "severity": "severe",
       "durationDays": -1,
-      "desc": "A bite that took. The body keeps a calendar of its own and it is lunar.",
+      "desc": "A rare delusional syndrome in which the sufferer is convinced they can, or have, transformed into an animal. The conviction persists despite no physical change having occurred.",
       "params": {
         "atk": 3,
         "agi": 3,
@@ -15485,7 +15485,7 @@
       "name": "Broken Arm",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "A fractured arm splinted and slung; strength halved on that side.",
+      "desc": "A fractured bone in the arm, immobilized in a splint or cast while it knits. Strength on that side is halved until the bone has healed.",
       "params": {
         "atk": -3,
         "agi": -1
@@ -15504,7 +15504,7 @@
       "name": "Broken Leg",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "A fractured leg in a cast; every step is negotiated.",
+      "desc": "A fractured leg bone, set in a cast to hold the break aligned while it mends. Every step must be taken carefully to avoid disturbing the healing bone.",
       "params": {
         "agi": -4,
         "atk": -1
@@ -15523,7 +15523,7 @@
       "name": "Broken Rib",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "Cracked ribs make breath and swing a wince.",
+      "desc": "A crack in one or more ribs, usually from blunt trauma. Breathing deeply, coughing or twisting brings a sharp stab of pain until the bone knits.",
       "params": {
         "atk": -2,
         "def": -2,
@@ -15543,7 +15543,7 @@
       "name": "Concussion",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "A rung skull; thought comes slow and light stings.",
+      "desc": "A mild traumatic brain injury from a blow to the head. Thinking slows and light or noise becomes unpleasant while the brain recovers.",
       "params": {
         "mat": -3,
         "agi": -2
@@ -15562,7 +15562,7 @@
       "name": "Sprained Ankle",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "Torn ligaments; the ankle protests weight.",
+      "desc": "Torn or overstretched ligaments around the ankle joint. Swelling and instability make the joint protest under weight until the ligaments heal.",
       "params": {
         "agi": -3
       },
@@ -15580,7 +15580,7 @@
       "name": "Dislocated Shoulder",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "Reset but tender; the arm holds nothing heavy yet.",
+      "desc": "The upper arm bone forced out of its shoulder socket. The joint is visibly deformed and useless until it is reduced back into place.",
       "params": {
         "atk": -3,
         "def": -1
@@ -15599,7 +15599,7 @@
       "name": "Deep Laceration",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "A stitched wound that reopens if pushed too hard.",
+      "desc": "A cut through the skin deep enough to expose underlying tissue. It requires closure and careful cleaning to prevent infection while it heals.",
       "params": {
         "mhp": -15,
         "def": -2
@@ -15618,7 +15618,7 @@
       "name": "Severe Burns",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "Healing burns tighten skin and blunt every nerve.",
+      "desc": "Thermal injury deep enough to damage multiple layers of skin. Fluid loss and infection risk rise sharply with the size and depth of the burn.",
       "params": {
         "def": -3,
         "agi": -2,
@@ -15638,7 +15638,7 @@
       "name": "Frostbite",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "Frozen tissue, blackened at the tips, aching in the cold.",
+      "desc": "Tissue damage from prolonged exposure to freezing temperatures. Ice crystals form within cells as circulation to the extremity shuts down to protect the body's core.",
       "params": {
         "agi": -3,
         "atk": -2
@@ -15657,7 +15657,7 @@
       "name": "Whiplash",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "A wrenched neck locking the head in careful poses.",
+      "desc": "A neck injury from sudden, forceful back-and-forth motion, straining muscles and ligaments beyond their normal range. Pain and stiffness often worsen a day or two after the injury.",
       "params": {
         "agi": -2,
         "mat": -1
@@ -15676,7 +15676,7 @@
       "name": "Spinal Injury",
       "category": "injury",
       "nature": "Mundane",
-      "desc": "Damage along the spine dulling strength and speed.",
+      "desc": "Damage to the spinal cord that disrupts the signals passing between brain and body. The severity of impairment depends on where along the cord the damage occurred.",
       "params": {
         "agi": -5,
         "atk": -3,
@@ -15696,7 +15696,7 @@
       "name": "Amputation",
       "category": "surgical",
       "nature": "Mundane",
-      "desc": "A limb lost; balance and reach permanently changed.",
+      "desc": "Surgical or traumatic loss of a limb. The body must relearn balance and function around the missing structure.",
       "params": {
         "atk": -4,
         "agi": -3,
@@ -15716,7 +15716,7 @@
       "name": "Cataract",
       "category": "chronic",
       "nature": "Mundane",
-      "desc": "A clouding lens dimming the world to fog.",
+      "desc": "Clouding of the eye's normally clear lens, usually developing slowly with age. Vision dims and blurs as the lens loses its transparency.",
       "params": {
         "mat": -2,
         "luk": -1
@@ -15735,7 +15735,7 @@
       "name": "Hearing Loss",
       "category": "chronic",
       "nature": "Mundane",
-      "desc": "A silence closing in; the world loses its warnings.",
+      "desc": "Reduced ability to detect sound, from damage to the inner ear or auditory nerve. It can develop gradually from noise exposure or age, or arrive suddenly from injury.",
       "params": {
         "agi": -2,
         "luk": -1
@@ -15754,7 +15754,7 @@
       "name": "Chronic Back Pain",
       "category": "chronic",
       "nature": "Mundane",
-      "desc": "An old ache that colors every lift and stride.",
+      "desc": "Persistent pain along the spine, often from degenerated discs or strained muscle and ligament. It flares with certain movements and rarely resolves completely.",
       "params": {
         "atk": -2,
         "agi": -2
@@ -15773,7 +15773,7 @@
       "name": "Osteoarthritis",
       "category": "chronic",
       "nature": "Mundane",
-      "desc": "Worn joints grinding stiff, worse in the cold.",
+      "desc": "Wear-related breakdown of joint cartilage, most common in weight-bearing joints. Pain and stiffness worsen with use and ease with rest.",
       "params": {
         "atk": -2,
         "agi": -3
@@ -15792,7 +15792,7 @@
       "name": "Osteoporosis",
       "category": "chronic",
       "nature": "Mundane",
-      "desc": "Brittle bones a hard fall could shatter.",
+      "desc": "Progressive loss of bone density that leaves the skeleton porous and fragile. Fractures can occur from falls, or strain, that would not break healthy bone.",
       "params": {
         "def": -3,
         "mhp": -10
@@ -15811,7 +15811,7 @@
       "name": "Kidney Stones",
       "category": "condition",
       "nature": "Mundane",
-      "desc": "A grain of agony passing on its own cruel schedule.",
+      "desc": "Hard mineral deposits that form in the kidney and can lodge in the urinary tract. Passing one brings waves of severe flank pain until it clears.",
       "params": {
         "agi": -2,
         "atk": -2
@@ -15830,7 +15830,7 @@
       "name": "Appendicitis",
       "category": "condition",
       "nature": "Mundane",
-      "desc": "An inflamed appendix; a surgical clock ticking.",
+      "desc": "Inflammation of the appendix, usually from a blockage that traps bacteria inside. Pain migrates to the lower right abdomen and worsens quickly, requiring prompt surgery.",
       "params": {
         "mhp": -20,
         "agi": -3
@@ -15849,7 +15849,7 @@
       "name": "Hernia",
       "category": "condition",
       "nature": "Mundane",
-      "desc": "A bulge that turns lifting into a gamble.",
+      "desc": "Protrusion of internal tissue through a weak point in the surrounding muscle wall. A visible bulge appears, often with a dragging discomfort that worsens with strain.",
       "params": {
         "atk": -3,
         "def": -1
@@ -15868,7 +15868,7 @@
       "name": "Gout",
       "category": "chronic",
       "nature": "Mundane",
-      "desc": "Crystals flaring a joint into red, untouchable pain.",
+      "desc": "A form of arthritis caused by uric acid crystals accumulating in a joint. Sudden, intense pain and swelling typically strike the big toe first.",
       "params": {
         "agi": -3,
         "atk": -1
@@ -15887,7 +15887,7 @@
       "name": "Chronic Fatigue Syndrome",
       "category": "chronic",
       "nature": "Mundane",
-      "desc": "A tiredness sleep never repays.",
+      "desc": "A disabling exhaustion unrelieved by rest, often triggered by illness or physical exertion. Even light activity can bring on a crash that lasts for days.",
       "params": {
         "atk": -2,
         "agi": -3,
@@ -15907,7 +15907,7 @@
       "name": "Phantom Limb Pain",
       "category": "chronic",
       "nature": "Mundane",
-      "desc": "Pain in a limb no longer there.",
+      "desc": "Pain felt in a limb that is no longer there, after amputation. The brain's map of the body persists even after the body itself has changed.",
       "params": {
         "mdf": -2,
         "luk": -1
@@ -15926,7 +15926,7 @@
       "name": "Old Battle Scars",
       "category": "condition",
       "nature": "Mundane",
-      "desc": "Knotted scars that tug and ache before a storm.",
+      "desc": "Fibrous tissue laid down to close a wound, replacing the original skin's structure. It is less flexible and less sensitive than the tissue it replaces.",
       "params": {
         "def": 1,
         "agi": -1
@@ -15945,7 +15945,7 @@
       "name": "Cybernetic Rejection",
       "category": "condition",
       "nature": "Mundane",
-      "desc": "Implants the flesh refuses; inflammation at every seam.",
+      "desc": "An immune response against implanted prosthetic or cybernetic tissue. Inflammation and pain build around the interface as the body treats it as foreign.",
       "params": {
         "mhp": -15,
         "def": -2,
@@ -15965,7 +15965,7 @@
       "name": "Mana-Burn Scars",
       "category": "condition",
       "nature": "Mundane",
-      "desc": "Channels seared by overcasting; magic flows rough.",
+      "desc": "Permanent tissue damage from an arcane channel that overloaded and discharged through the body. The scarring is inert but marks where the burn passed through.",
       "params": {
         "mmp": -20,
         "mat": -2
@@ -15984,7 +15984,7 @@
       "name": "Cursed Brand",
       "category": "condition",
       "nature": "Mundane",
-      "desc": "A mark burned by dark magic that never fully cools.",
+      "desc": "A mark burned into the skin by a curse, binding some lasting effect to the bearer. It does not fade or heal like an ordinary scar.",
       "params": {
         "mdf": -3,
         "luk": -2
@@ -16004,7 +16004,7 @@
       "category": "esoteric",
       "nature": "Magical",
       "unique": true,
-      "desc": "You are a ticking bomb, Em. Ninety-two percent of your memories were forged into the Lance of Memory, and what grew back in the hole they left has not stopped growing.",
+      "desc": "A binding affliction tied to an ancient seal, passed down through contact with what it was meant to contain. Its effects trace directly back to the terms of that original binding.",
       "params": {
         "mmp": 45,
         "mat": 3,

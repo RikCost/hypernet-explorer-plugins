@@ -566,13 +566,14 @@
     // Right-page tabs
     //
     // The sheet is read one section at a time instead of stacking every card
-    // down a page that was never tall enough for them: the raw numbers (the
-    // default), the traits written out, what is permanently on, and the body's
+    // down a page that was never tall enough for them: the body part by part
+    // (the default), the raw numbers, the traits written out, what is permanently on, and the body's
     // own condition. The chips are the shared bookmark-tab design the backpack
     // and the shop already use (.backpack-tabs / .backpack-tab in css/theme.css).
     //=============================================================================
 
     const STATUS_TABS = [
+        { id: "bodyparts", labelKey: "SceneStatus.ui.tabBodyParts" },
         { id: "attributes", labelKey: "SceneStatus.ui.tabAttributes" },
         { id: "bio", labelKey: "SceneStatus.ui.tabBio" },
         { id: "backstory", labelKey: "SceneStatus.ui.tabBackstory" },
@@ -581,7 +582,7 @@
         { id: "diseases", labelKey: "SceneStatus.ui.tabDiseases" }
     ];
 
-    // The section the sheet opens on. Attributes is what the page is for, and
+    // The section the sheet opens on. The body is what the page is for, and
     // whichever tab was last read is kept on $gameSystem so re-opening the
     // screen (or another character's) comes back to it rather than to the top.
     const DEFAULT_STATUS_TAB = STATUS_TABS[0].id;
@@ -1392,11 +1393,13 @@
                             </div>
                             <h2 class="title status-12" id="status-actor-name"></h2>
                         </div>
-                        
+
+                        <div class="status-left-body">
                         <div class="status-portrait-column">
                             <div class="status-bust-wrapper">
                                 <canvas id="status-bust" width="440" height="500"></canvas>
                             </div>
+                        </div>
 
                             <div class="status-vitals-box">
                             <div class="status-gauge-row">
@@ -1439,11 +1442,26 @@
                                 </div>
                             </div>
                             </div>
+
+                        <div class="status-gauges-box">
+                            <div class="status-needs-rows" id="status-needs"></div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="right-page">
+                        <div class="status-right-header">
+                            <div class="companion-switcher" id="status-companion-switcher"></div>
                         </div>
 
                         <div class="backpack-tabs status-tabs" id="status-tabs"></div>
 
                         <div id="status-lower-cards">
+                            <div class="status-tab-panel" data-status-tab="bodyparts">
+                                <div class="status-anatomy-panel">
+                                    <div class="anatomy-grid" id="bodyparts-scroll-container"></div>
+                                </div>
+                            </div>
+
                             <div class="status-tab-panel" data-status-tab="passives">
                                 <div class="bodyparts-card">
                                     <div class="card-label">${T('SceneStatus.ui.passiveAbilities')}</div>
@@ -1491,21 +1509,6 @@
                         </div>
 
                         <div class="status-actions" id="status-actions"></div>
-                    </div>
-                    <div class="right-page">
-                        <div class="status-right-header">
-                            <div class="companion-switcher" id="status-companion-switcher"></div>
-                        </div>
-
-                        <div class="status-left-body">
-                        <div class="status-gauges-box">
-                            <div class="status-needs-rows" id="status-needs"></div>
-                        </div>
-
-                        <div class="status-anatomy-panel">
-                            <div class="anatomy-grid" id="bodyparts-scroll-container"></div>
-                        </div>
-                        </div>
                     </div>
                 </div>
             `;
@@ -2127,6 +2130,30 @@
     // too, so a missing file is not retried on every refresh.
     const glbPortraitCache = {};
     const glbPortraitFailed = {};
+
+    // A character export (VRM through Blender) leaves metallicFactor unset, and
+    // glTF reads an unset factor as 1: every surface becomes a mirror, and with
+    // no environment to reflect a mirror is black except where the key light
+    // glints off it, so the face only showed once turned side on. The same
+    // export marks every material BLEND, which depth sorts skin and hair as
+    // glass. A portrait is a painted figure: no metal, and cut-out alpha.
+    function dressPortraitMaterials(root) {
+        root.traverse((obj) => {
+            if (!obj.material) return;
+            const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+            mats.forEach((m) => {
+                if ('metalness' in m) m.metalness = 0;
+                if (m.transparent) {
+                    m.transparent = false;
+                    m.alphaTest = Math.max(m.alphaTest || 0, 0.5);
+                    m.depthWrite = true;
+                }
+                m.needsUpdate = true;
+            });
+        });
+        return root;
+    }
+
     function loadPortraitGLB(path) {
         if (typeof THREE === 'undefined' || !THREE.GLTFLoader) return Promise.resolve(null);
         if (!glbPortraitCache[path]) {
@@ -2135,7 +2162,7 @@
                 try {
                     new THREE.GLTFLoader().load(path,
                         (gltf) => {
-                            if (gltf && gltf.scene) resolve(gltf.scene);
+                            if (gltf && gltf.scene) resolve(dressPortraitMaterials(gltf.scene));
                             else fail();
                         },
                         undefined,
@@ -2615,10 +2642,10 @@
             return;
         }
 
-        // The anatomy grid lives on the right page, so its cursor answers to
-        // up / down whichever section of the left page is being read.
+        // The anatomy grid is a tab of its own, so its cursor answers to
+        // up / down only while that tab is the one being read.
         const actor = this.actor();
-        if (actor && actor._bodyParts) {
+        if (this._dndActiveTab === "bodyparts" && actor && actor._bodyParts) {
             const bodyParts = [];
             for (const key in actor._bodyParts) {
                 if (actor._bodyParts[key]) bodyParts.push(actor._bodyParts[key]);

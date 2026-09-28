@@ -354,16 +354,22 @@
     return !!(window.$gameSystem && $gameSystem._bloodAndOilMode);
   }
 
+  // A vital part can only be lethal once its owner is under this share of HP.
+  const VITAL_LETHAL_RATE = 0.25;
+  function vitalCanFall(actor) {
+    return !!actor && actor.mhp > 0 && actor.hp / actor.mhp < VITAL_LETHAL_RATE;
+  }
+
   // ===========================================================================
   // What a weapon does to a body part
   // ===========================================================================
   // What an attack does to a body part:
   // A monster's limb can be cut by Explosive, Piercing and Cutting damage.
-  // A party member's limb comes off only under Cutting (slashing) damage.
+  // A party member's limb comes off under Cutting and Piercing damage.
   // Blunt, Area, Abstract, None cannot sever limbs.
   // ===========================================================================
   const CUTTING_DAMAGE_TYPES = ["Explosive", "Piercing", "Cutting"];
-  const PLAYER_CUTTING_DAMAGE_TYPES = ["Cutting"];
+  const PLAYER_CUTTING_DAMAGE_TYPES = ["Cutting", "Piercing"];
 
   function getActionDamageType(action, subject) {
     // The vector gun's Wide shots mode fans one shot across several parts, and
@@ -402,7 +408,7 @@
     return CUTTING_DAMAGE_TYPES.includes(dt);
   }
 
-  /** The stricter test a party member's body gets: only a slash severs. */
+  /** The stricter test a party member's body gets: a slash or a thrust severs. */
   function attackerCanCutPlayer(subject, action) {
     const act = action || (window.BattleManager ? BattleManager._action : null);
     const dt = getActionDamageType(act, subject);
@@ -1489,7 +1495,7 @@
    * part off (the archetype's msg, the part gone and its full penalty owed),
    * half the time it only breaks it where it stands (brokenMsg, the smaller
    * penalty). A part the archetype says cannot come off is never cut, and
-   * only Cutting damage ever takes one off a party member.
+   * only Cutting or Piercing damage ever takes one off a party member.
    */
   function rollPartCutoff(actor, partKey, part, action) {
     if (!isBloodAndOil()) return false;
@@ -1653,6 +1659,13 @@
     } else {
       // Normal damage application if health is 60% or lower
       var appliedDamage = Math.min(part.currentHp, damage);
+      // Blood and Oil: a vital part is only lethal once the character is under
+      // a quarter of their HP, the same line a monster's vital parts keep
+      // (MonsterHealth.vitalCanFall). Above it the part holds at 1 HP.
+      if (part.vital && isBloodAndOil() && !vitalCanFall(actor)) {
+        appliedDamage = Math.min(part.currentHp - 1, damage);
+        if (appliedDamage <= 0) return 0;
+      }
       part.currentHp -= appliedDamage;
 
       // Check if the part is now completely damaged
@@ -1665,7 +1678,7 @@
 
         // --- Blood and Oil mode check ---
         // Only here can a finished part be permanent: cut off on a won coin
-        // toss under a slash, destroyed where it stands if the body can never
+        // toss under a slash or a thrust, destroyed where it stands if the body can never
         // shed it. Anything else, here as on every other difficulty, is merely
         // broken and mends (healBodyParts).
         if (isBloodAndOil()) {
@@ -2930,6 +2943,7 @@
   // breaks a limb where a sword takes it off.
   window.HealthCore.attackerCanCut = attackerCanCut;
   window.HealthCore.attackerCanCutPlayer = attackerCanCutPlayer;
+  window.HealthCore.vitalCanFall = vitalCanFall;
   window.HealthCore.PLAYER_CUTTING_DAMAGE_TYPES = PLAYER_CUTTING_DAMAGE_TYPES;
   window.HealthCore.getActionDamageType = getActionDamageType;
   window.HealthCore.CUTTING_DAMAGE_TYPES = CUTTING_DAMAGE_TYPES;

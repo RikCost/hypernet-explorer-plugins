@@ -65,7 +65,7 @@
   "fed": "The \\c[14]{animal}\\c[0] eats out of your hand.",
   "notHungry": "The \\c[14]{animal}\\c[0] has had enough.",
   "tooHungryToProduce": "The \\c[14]{animal}\\c[0] is too hungry to give anything.",
-  "farmerOf": "The farmer of ({x},{y})",
+  "farmerOf": "The farmer of {place}",
   "owner": "Owner",
   "wildAnimal": "Wild",
   "actionConvince": "Convince to join",

@@ -1580,7 +1580,9 @@
                 if (lamp === 'glow') {
                     this.drawLightCircle(ctx, vx, vy, basePartyRadius * this.getFlicker(1.1), 1.0, 'party');
                 } else {
-                    this.drawHeadlights(ctx, vx, vy, $gamePlayer.direction(), s, lamp === 'beam');
+                    const hull = $gamePlayer.vehicle ? $gamePlayer.vehicle() : null;
+                    const at = this.vehicleLampOrigin(hull || $gamePlayer, s, vx, vy);
+                    this.drawHeadlights(ctx, at.x, at.y, $gamePlayer.direction(), s, lamp === 'beam');
                 }
             }
             this._refreshLitEventCache();
@@ -1593,7 +1595,8 @@
                     const cx2 = car.screenX() * s;
                     const cy2 = (car.screenY() - th / 2) * s;
                     if (cx2 < -260 || cx2 > cw + 260 || cy2 < -260 || cy2 > ch + 260) continue;
-                    this.drawHeadlights(ctx, cx2, cy2, car.direction(), s);
+                    const at = this.vehicleLampOrigin(car, s, cx2, cy2);
+                    this.drawHeadlights(ctx, at.x, at.y, car.direction(), s);
                 }
             }
 
@@ -1854,6 +1857,30 @@
             const VS = window.MergedVehicleSystem;
             const key = (VS && typeof VS.riddenVehicleKey === 'function') ? VS.riddenVehicleKey() : null;
             return (key && VEHICLE_LAMPS[key]) || null;
+        }
+
+        // Where a vehicle's lamps sit on screen: the front edge of its drawn
+        // hull, low on the body above the wheels, rather than the one tile it
+        // stands on (a camper sprite is several tiles long, so the beam used
+        // to start from under its middle). The hull box is VehicleSystem's
+        // measurement of the sprite; while it loads the tile centre stands in.
+        vehicleLampOrigin(character, s, fallbackX, fallbackY) {
+            const VF = window.VehicleFootprint;
+            const box = (character && VF && typeof VF.screenBox === 'function') ? VF.screenBox(character) : null;
+            if (!box) return { x: fallbackX, y: fallbackY };
+            const ax = character.screenX();
+            const ay = character.screenY();
+            const midX = (box.left + box.right) / 2;
+            const lampY = box.top + (box.bottom - box.top) * 0.72;
+            let dx = midX;
+            let dy = lampY;
+            switch (character.direction()) {
+                case 6: dx = box.right; break;
+                case 4: dx = box.left; break;
+                case 2: dy = box.bottom - (box.bottom - box.top) * 0.12; break;
+                case 8: dy = box.top; break;
+            }
+            return { x: (ax + dx) * s, y: (ay + dy) * s };
         }
 
         // The beam a vehicle throws in the direction it faces, plus the small

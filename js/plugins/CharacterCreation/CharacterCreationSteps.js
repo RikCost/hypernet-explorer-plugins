@@ -68,6 +68,10 @@
   } = window.StartingEquipment || {};
   const { markStepCompleted } = window.CharacterPresets || {};
 
+  // How many ranks of its own trade a profession arrives with, bought out of
+  // the specialization purse (see _applyJobSpecPreset).
+  const JOB_SPEC_PRESET_RANKS = 2;
+
   // What the story mode leaves Em to answer for herself on the bio page. Her
   // dossier is locked like any other authored one, so these are named here and
   // let past that lock rather than by unlocking the whole page: what she
@@ -1291,6 +1295,7 @@
       if (!actor) return;
       const catalog = this._specsCatalog();
       actor._specTrained = {};
+      actor._ccJobSpecPreset = null;
       if (!Array.isArray(catalog) || catalog.length === 0) return;
 
       // Points are rolled on top of whatever the class and the traits already
@@ -1309,6 +1314,7 @@
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (!actor) return;
       actor._specTrained = {};
+      actor._ccJobSpecPreset = null;
       SoundManager.playCancel();
       this._patchSpecBoard();
     }
@@ -1323,6 +1329,7 @@
       const cat = Array.isArray(catalog) ? catalog : this._specsCatalog();
       if (!Array.isArray(cat) || cat.length === 0) return;
       actor._specTrained = {};
+      actor._ccJobSpecPreset = null;
 
       const grantCtx = this._specGrantContext(actor);
       const className = grantCtx ? grantCtx.className : null;
@@ -1352,6 +1359,40 @@
         this._randomSpendSpecs(actor, grantCtx, cat, remaining);
       }
       actor._specPointsSpent = (typeof CC_SPEC_BUDGET !== "undefined" ? CC_SPEC_BUDGET : 12) - remaining;
+    }
+
+    // A profession arrives trained in its trade: the job's own specialization
+    // (Jobs.json "spec") is bought JOB_SPEC_PRESET_RANKS ranks up out of the
+    // member's purse the moment the job is picked. It is a preset, not a
+    // grant: the ranks sit in _specTrained like any bought by hand, so the
+    // Specializations tab can sell them back or spend on top of them. Changing
+    // job first takes back what the previous one put there.
+    _applyJobSpecPreset(actor, jobId) {
+      if (!actor || this._specsReadOnly()) return;
+      if (!actor._specTrained) actor._specTrained = {};
+      const prev = actor._ccJobSpecPreset;
+      if (prev && actor._specTrained[prev.specId] != null) {
+        const left = Math.max(0, (actor._specTrained[prev.specId] || 0) - prev.ranks);
+        if (left > 0) actor._specTrained[prev.specId] = left;
+        else delete actor._specTrained[prev.specId];
+      }
+      actor._ccJobSpecPreset = null;
+
+      const jobs = (window.WorkSystem && window.WorkSystem.Jobs) || [];
+      const job = jobId > 0 ? jobs.find((j) => j.id === jobId) : null;
+      const spec = job && job.spec
+        ? this._specsCatalog().find((sp) => sp.name === job.spec) // i18n-ignore: Specialization.json key
+        : null;
+      if (spec) {
+        const ctx = this._specGrantContext(actor);
+        const current = Math.max(actor._specTrained[spec.id] || 0, this._specGrantRankIn(ctx, spec));
+        const add = Math.min(JOB_SPEC_PRESET_RANKS, 4 - current, this._specsRemaining(actor));
+        if (add > 0) {
+          actor._specTrained[spec.id] = current + add;
+          actor._ccJobSpecPreset = { specId: spec.id, ranks: add };
+        }
+      }
+      this._specsRemaining(actor);
     }
 
     onSuggestSpecsForCurrentActor() {
@@ -2065,6 +2106,29 @@
         `;
       }
 
+      // Story mode's Em is a written character: her second archetype, gender,
+      // organs (held to a uterus by applyStoryModeEmLocks), endocrine balance,
+      // creed, morality, age, standing and blood are the dossier's, so the
+      // sheet stops asking them. Her trade and her home town are all it keeps.
+      // The room the settled fields free is given to her class card, so the
+      // facing page is left to her written history alone.
+      if (isStoryEm) {
+        const storyClassData = (typeof $dataClasses !== 'undefined') ? $dataClasses[actor._classId] : null;
+        return `
+          <div class="cc-page cc-page-left cc-page-full ts-page cc-page-column">
+            <div class="cc-bio-container cc-step-scroll">
+              ${typePillsHtml}
+              ${professionSectionHtml}
+              <div class="cc-bio-section">
+                <div class="cc-bio-section-title">${this._ccIconHtml(190, 16)} <span>${ccT('CharCreate.originCity')}</span></div>
+                ${this._pickTriggerHtml('hometown', this._pickLabel('hometown'))}
+              </div>
+              ${this._renderSimpleClassDetailsHtml(actor, storyClassData, { maxLevel: 99, grid: true })}
+            </div>
+          </div>
+        `;
+      }
+
       // Detailed mode asks every bio question on this one sheet and has no
       // facing board to put beside it, so the page takes the whole spread.
       return `
@@ -2179,8 +2243,15 @@
       return `<div class="npc-backstory-text">${ccT('CharCreate.bio.noBackstory')}</div>`;
     }
 
-    _renderSimpleClassDetailsHtml(actor, c) {
+    // opts.maxLevel stretches the growth plan past level 10 and opts.grid sets
+    // it in columns; story mode's Em shows her whole plan to level 99 that way.
+    _renderSimpleClassDetailsHtml(actor, c, opts) {
       if (!c) return "";
+      const roadmapMax = (opts && opts.maxLevel) || 10;
+      const roadmapGrid = !!(opts && opts.grid);
+      const roadmapBody = (rows) => roadmapGrid
+        ? `<div class="cc-compact-loadout-grid cc-loadout-grid-cols-3">${rows}</div>`
+        : `<div class="cc-loadout-col">${rows}</div>`;
       const passives = window.BattleSystemPassiveSkills;
       const passiveName = passives && passives.getPassiveName ? passives.getPassiveName(c.id) : "";
       const passiveDesc = passives && passives.getPassiveEffect ? passives.getPassiveEffect(c.id) : "";
@@ -2229,9 +2300,9 @@
         }
       }
 
-      // Learnings up to level 10
+      // Learnings up to roadmapMax (level 10 unless asked otherwise)
       const sortedLearnings = (c.learnings || [])
-        .filter((l) => l.level >= 1 && l.level <= 10)
+        .filter((l) => l.level >= 1 && l.level <= roadmapMax)
         .sort((a, b) => a.level - b.level);
 
       const roadmapRowHtml = (l) => {
@@ -2282,14 +2353,15 @@
 
           ${roadmapRows ? (
             typeof this._ccLoadoutSectionHtml === "function" ? this._ccLoadoutSectionHtml(
-              ccT('CharCreate.skillRoadmap') + ' (Lv 1 - 10)',
-              `<div class="cc-loadout-col">${roadmapRows}</div>`,
+              ccT('CharCreate.skillRoadmap') + ` (${ccT('CharCreate.abbrev.level')} 1 - ${roadmapMax})`,
+              roadmapGrid ? roadmapRows : roadmapBody(roadmapRows),
               "",
-              true
+              true,
+              roadmapGrid ? 'cc-loadout-grid-cols-3' : ''
             ) : `
               <div class="cc-dossier-card cc-class-section cc-gap-above-tight">
-                <h4 class="cc-subheader cc-subheader-tight">${ccT('CharCreate.skillRoadmap')} (Lv 1 - 10)</h4>
-                <div class="cc-loadout-col">${roadmapRows}</div>
+                <h4 class="cc-subheader cc-subheader-tight">${ccT('CharCreate.skillRoadmap')} (${ccT('CharCreate.abbrev.level')} 1 - ${roadmapMax})</h4>
+                ${roadmapBody(roadmapRows)}
               </div>
             `
           ) : ''}
@@ -2385,8 +2457,12 @@
       const className = classData ? (window.CCDbName ? window.CCDbName(classData) : classData.name) : ccT('CharCreate.defaultClassName');
 
       const isSimpleMode = Scene_CharacterCreation.isSimpleMode();
-      const simpleClassHtml = isSimpleMode ? this._renderSimpleClassDetailsHtml(actor, classData) : "";
-      const sheetHistoryHtml = isSimpleMode ? this._simpleSheetHistoryHtml(actor, age) : "";
+      // Story mode's Em carries her class card on the middle page (see
+      // _bioPickerLeftHtml), so this page keeps only her history.
+      const CP = window.CharacterPresets;
+      const isStoryEm = !!(CP && CP.isStoryModeEm && CP.isStoryModeEm(actor));
+      const simpleClassHtml = (isSimpleMode && !isStoryEm) ? this._renderSimpleClassDetailsHtml(actor, classData) : "";
+      const sheetHistoryHtml = (isSimpleMode || isStoryEm) ? this._simpleSheetHistoryHtml(actor, age) : "";
 
       return `
         <div class="cc-page cc-page-right ts-page cc-page-column">
@@ -2397,9 +2473,9 @@
               <span class="cc-bio-identity-class">(${className})</span>
             </div>
 
-            ${sheetHistoryHtml}
-
             ${simpleClassHtml}
+
+            ${sheetHistoryHtml}
 
           </div>
         </div>
@@ -2534,6 +2610,18 @@
         }
       }
 
+      // A trade. Only the id is written: the starting goods a job hands out
+      // belong to the player picking it on the bio page, not to a silent roll.
+      // The trade itself is known, goods or not, so its preset ranks are
+      // bought before the purse below is spent.
+      if (!feral && !actor._jobId) {
+        const job = rand((window.WorkSystem && window.WorkSystem.Jobs) || []);
+        if (job) {
+          actor._jobId = job.id;
+          this._applyJobSpecPreset(actor, job.id);
+        }
+      }
+
       // The specialization purse, spent for them. Simple mode never opens the
       // board, so a sheet that leaves it here arrives with nothing trained;
       // the same roll the Randomize button makes is made quietly instead.
@@ -2544,6 +2632,7 @@
         const catalog = this._specsCatalog ? this._specsCatalog() : [];
         if (Array.isArray(catalog) && catalog.length) {
           actor._specTrained = {};
+          actor._ccJobSpecPreset = null;
           this._randomSpendSpecs(actor, this._specGrantContext(actor), catalog, CC_SPEC_BUDGET);
         }
       }
@@ -2598,13 +2687,6 @@
           ? Object.keys(window.WorkSystem.Destinations) : [];
         const town = rand(towns);
         if (town) $gameSystem._ccHometown = town;
-      }
-
-      // A trade. Only the id is written: the starting goods a job hands out
-      // belong to the player picking it on the bio page, not to a silent roll.
-      if (!feral && !actor._jobId) {
-        const job = rand((window.WorkSystem && window.WorkSystem.Jobs) || []);
-        if (job) actor._jobId = job.id;
       }
 
       // The society profile holds the creed and the personality; it is minted
@@ -2745,6 +2827,7 @@
             }
           }
         }
+        this._applyJobSpecPreset(actor, jobId);
       } else if (field === "ideology") {
         actor._ideologyId = value;
         // Same as the wizard's own ideology step: the registry is NPCSocietyRegistry.
@@ -4216,16 +4299,10 @@
         }
       }
 
-      // Random Specializations (Allocate 12 budget points across catalog)
-      const specCatalog = this._specsCatalog ? this._specsCatalog() : ((window.Specializations && window.Specializations.list) || []);
+      // Random Specializations: the purse is emptied here and spent once the
+      // job below is picked, so the profession's own trade is bought first.
       currentActor._specTrained = {};
-      if (Array.isArray(specCatalog) && specCatalog.length > 0) {
-        const specGrantCtx = this._specGrantContext ? this._specGrantContext(currentActor) : null;
-        if (typeof this._randomSpendSpecs === "function") {
-          const left = this._randomSpendSpecs(currentActor, specGrantCtx, specCatalog, CC_SPEC_BUDGET);
-          currentActor._specPointsSpent = CC_SPEC_BUDGET - left;
-        }
-      }
+      currentActor._ccJobSpecPreset = null;
 
       // Random Bio & Ideology
       currentActor._bioSet = true;
@@ -4296,6 +4373,15 @@
             }
           });
         }
+      }
+
+      // The job's trade first, then whatever the purse still holds at random.
+      this._applyJobSpecPreset(currentActor, currentActor._jobId || 0);
+      const specCatalog = this._specsCatalog();
+      if (Array.isArray(specCatalog) && specCatalog.length > 0) {
+        const left = this._randomSpendSpecs(currentActor, this._specGrantContext(currentActor),
+          specCatalog, this._specsRemaining(currentActor));
+        currentActor._specPointsSpent = CC_SPEC_BUDGET - left;
       }
 
       // Attachments, the one page of the sheet the roll used to skip.

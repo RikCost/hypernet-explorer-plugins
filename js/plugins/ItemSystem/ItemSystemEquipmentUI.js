@@ -273,7 +273,64 @@
                     model = m;
                 };
 
-                if (item.model3d && THREE.GLTFLoader) {
+                // Some empty hands are the authored rig rather than a built
+                // fist (WeaponSystemProcedural.previewRigFor): the stand shows
+                // the same pair of fists the battle holds, idling in their own
+                // clip. The rig comes out of the battle's pool and goes back to
+                // it when the stand is taken down.
+                const WSP = window.WeaponSystemProcedural;
+                const rigSpec = (item.wtypeId !== undefined && WSP && WSP.previewRigFor)
+                    ? WSP.previewRigFor(item) : null;
+                const buildModel = () => {
+                    const isWeapon = item.wtypeId !== undefined;
+                    const pModel = isWeapon
+                        ? (window.WeaponSystemProcedural && WeaponSystemProcedural.createModel(item))
+                        : (window.ItemModelSystem && window.ItemModelSystem.createModel(item));
+                    if (pModel) setupModelPosition(pModel);
+                };
+
+                // Started once the preview's record exists: a warm pool answers
+                // in the same call, before the record below has been declared.
+                let startRig = null;
+                if (rigSpec && THREE.GLTFLoader) {
+                    startRig = () => WSP.acquireRig(rigSpec, (entry) => {
+                        if (previewEntry.disposed) { WSP.releaseRig(rigSpec, entry); return; }
+                        if (!entry) { buildModel(); return; }
+                        const root = entry.scene;
+                        const mixer = new THREE.AnimationMixer(root);
+                        const rig = {
+                            mixer, spec: rigSpec, entry, down: false,
+                            clips: WSP.rigActionsFor(mixer, entry.animations)
+                        };
+                        // A one-shot (the SWITCH lowering or raising the hands)
+                        // hands back to the idle, unless they were put away.
+                        mixer.addEventListener('finished', () => {
+                            if (!rig.down) WSP.playPreviewRig(rig, rigSpec.framePose, true);
+                        });
+                        // Turned the way the battle holds them, and pivoted on
+                        // the fists so dragging turns the hands, not the elbows.
+                        const pivot = new THREE.Group();
+                        root.position.set(0, 0, 0);
+                        root.scale.set(1, 1, 1);
+                        const r = rigSpec.rotation;
+                        root.rotation.set(
+                            THREE.MathUtils.degToRad(r.x),
+                            THREE.MathUtils.degToRad(r.y),
+                            THREE.MathUtils.degToRad(r.z));
+                        pivot.add(root);
+                        WSP.playPreviewRig(rig, rigSpec.framePose, true);
+                        mixer.update(0);
+                        const hands = WSP.handBoundsOf(pivot);
+                        const size = hands.getSize(new THREE.Vector3());
+                        root.position.sub(hands.getCenter(new THREE.Vector3()));
+                        pivot.scale.setScalar(1.2 / Math.max(size.x, size.y, size.z, 1e-6));
+                        pivot.userData.rigPreview = rig;
+                        previewEntry.rig = rig;
+                        scene.add(pivot);
+                        model = pivot;
+                        WSP.playPreviewRig(rig, 'Equip', false);
+                    });
+                } else if (item.model3d && THREE.GLTFLoader) {
                     new THREE.GLTFLoader().load(
                         `models/${item.model3d}`,
                         (gltf) => setupModelPosition(gltf.scene),
@@ -284,11 +341,7 @@
                     // A weapon is built by the weapon pipeline, anything else by
                     // the item one. Both hand back a plain THREE.Group, so the
                     // rest of the viewport does not care which answered.
-                    const isWeapon = item.wtypeId !== undefined;
-                    const pModel = isWeapon
-                        ? (window.WeaponSystemProcedural && WeaponSystemProcedural.createModel(item))
-                        : (window.ItemModelSystem && window.ItemModelSystem.createModel(item));
-                    if (pModel) setupModelPosition(pModel);
+                    buildModel();
                 }
 
                 let activeButton  = -1;
@@ -374,6 +427,7 @@
                                  auxclick: onAuxClick, touchstart: onTouchStart, touchmove: onTouchMove, touchend: onTouchEnd },
                     rafId: 0
                 };
+                if (startRig) startRig();
 
                 // Scratch objects reused every frame to avoid per-frame allocations.
                 const _scratchDeltaRot = new THREE.Euler();
@@ -446,6 +500,7 @@
                     // can play something on the piece itself: the vector gun's
                     // screen folds the one it is showing into its other shape.
                     previewEntry.model = model;
+                    if (previewEntry.rig) previewEntry.rig.mixer.update(deltaMs / 1000);
 
                     if (model && window.WeaponSystemProcedural) {
                         // Gears, drifting shards and pulsing runes declared by the
@@ -487,6 +542,17 @@
                 if (!entries) return;
                 entries.forEach(p => {
                     if (p.rafId) cancelAnimationFrame(p.rafId);
+                    p.disposed = true;
+                    // A rig on the stand belongs to the battle's pool: it is
+                    // let go of, never freed.
+                    if (p.rig && window.WeaponSystemProcedural) {
+                        const rig = p.rig;
+                        p.rig = null;
+                        rig.mixer.stopAllAction();
+                        rig.mixer.uncacheRoot(rig.entry.scene);
+                        if (rig.entry.scene.parent) rig.entry.scene.parent.remove(rig.entry.scene);
+                        WeaponSystemProcedural.releaseRig(rig.spec, rig.entry);
+                    }
                     p.renderer.dispose();
                     p.canvas.removeEventListener('mousedown',  p.listeners.mousedown);
                     p.canvas.removeEventListener('mousemove',  p.listeners.mousemove);

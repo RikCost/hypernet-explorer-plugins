@@ -1048,10 +1048,6 @@
             `;
         }
 
-        // The map-tooltip setting is not the book's: it is a setting, and it is
-        // read and turned with every other one on the Gameplay page of the
-        // Options menu (Core/GameOptions.js, symbol mapTooltips).
-
         if (detailChanged) detailPage.innerHTML = detailHTML;
 
         // Every gold link on the page just built. A link is followed with the

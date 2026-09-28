@@ -1015,6 +1015,16 @@
             this._container.style.transition = 'opacity 0.22s ease-out';
             document.body.appendChild(this._container);
 
+            // Hung on the container once: the page's markup is rewritten on
+            // every refresh but the container is not, so a listener added there
+            // would pile up and one right click would pop the scene again and
+            // again until SceneManager ran out of stack and quit the game.
+            this._container.addEventListener('contextmenu', (ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
+                this.onCancelAction();
+            });
+
             this.refreshUIApiary();
 
             setTimeout(() => {
@@ -1429,7 +1439,7 @@
                 <div class="book-spread">
                     <div class="left-page">
                         <div class="page-header-bar">
-                            <div class="back-button" onclick="SceneManager._scene.popScene()">${T('Apiary.ui.back')}</div>
+                            <div class="back-button" onclick="SceneManager._scene.closeApiary()">${T('Apiary.ui.back')}</div>
                             <h2 class="title">${T('Apiary.ui.apiary')}</h2>
                         </div>
 
@@ -1514,15 +1524,10 @@
                     this.executeApiaryAction(idx);
                 });
             });
-
-            this._container.addEventListener('contextmenu', (ev) => {
-                ev.preventDefault();
-                ev.stopPropagation();
-                this.onCancelAction();
-            });
         }
 
         executeApiaryAction(idx) {
+            if (this._closing) return;
             const apiary = $gameSystem.apiaryComplex;
             if (!apiary) return;
 
@@ -1557,8 +1562,7 @@
                     window.SpecializationXP.awardCapped('Beekeeping', 1);
                 }
             } else {
-                SoundManager.playCancel();
-                this.popScene();
+                this.closeApiary();
                 return;
             }
             this.refreshUIApiary();
@@ -1602,12 +1606,23 @@
                 SoundManager.playCancel();
                 this.refreshUIApiary();
             } else {
-                SoundManager.playCancel();
-                this.popScene();
+                this.closeApiary();
             }
         }
 
+        // The one way out. The scene keeps updating through its fade out, and
+        // a right click arrives both as a contextmenu event and as a touch
+        // cancel, so without the latch a second popScene lands on an empty
+        // SceneManager stack, which exits the game.
+        closeApiary() {
+            if (this._closing) return;
+            this._closing = true;
+            SoundManager.playCancel();
+            this.popScene();
+        }
+
         updateApiaryInput() {
+            if (this._closing) return;
             const count = (this._maxActionIndex || 1) + 1;
             if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
                 this.onCancelAction();

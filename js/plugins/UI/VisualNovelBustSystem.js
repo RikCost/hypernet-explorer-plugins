@@ -204,6 +204,24 @@
             },
             // Whether a loose name names a bust at all, in either folder.
             exists(name) { return this.resolve(name) != null; },
+            // The bust a sheet in no catalogue is named after, or null. An
+            // authored event on an Originals/ sheet has no NPCs.json entry to
+            // pair it with a face, but the portrait usually carries the sheet's
+            // own name: "Skab/Originals/!$Enchantress" -> "Enchantress", with
+            // "Enchantress2" also trying "Enchantress". Only a file confirmed on
+            // disk counts, because this is a guess and a Monsters/ sheet has no
+            // portrait at all. The flat folder only: presets/ holds the
+            // dossiers' faces, which are never handed to a stranger.
+            forSheet(sheet) {
+                const base = String(sheet == null ? "" : sheet).trim()
+                    .replace(/\.png$/i, "").split("/").pop()
+                    .replace(/^[!$]+/, "");
+                if (!base) return null;
+                for (const name of [base, base.replace(/\d+$/, "")]) {
+                    if (name && fileExists(name)) return name;
+                }
+                return null;
+            },
         };
     })();
 

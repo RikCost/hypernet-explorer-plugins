@@ -1,4 +1,4 @@
-/*:
+﻿/*:
  * @target MZ
  * @plugindesc Arena Battle Handler UI v2.0 - DOM book-spread screens for the arena (party -> mode -> gauntlet/biome).
  * @author OmniLex
@@ -161,9 +161,9 @@
         this._dndContainer.innerHTML = `
             <div class="book-spread">
                 <div class="left-page">
-                    <div class="arena-header">
-                        <h2 class="cc-header-gothic" style="font-size:1.925rem; margin:0">${this.headerTitle()}</h2>
-                        <div class="arena-back" onclick="SceneManager._scene.goBack()">${this.backLabel()}</div>
+                    <div class="page-header-bar">
+                        <div class="back-button" onclick="SceneManager._scene.goBack()">${this.backLabel()}</div>
+                        <h2 class="title">${this.headerTitle()}</h2>
                     </div>
                     ${sub ? `<div class="arena-subtitle">${sub}</div>` : ''}
                     <div id="arena-scroll" class="arena-scroll">${rowsHTML}</div>
@@ -362,7 +362,7 @@
                 <div class="arena-big-glyph">&#9861;</div>
                 <h3 class="arena-detail-title">${T('Arena.randomParty2')}</h3>
                 <div class="arena-info-card">${T('Arena.threeRandomCombatantsWithGear')}</div>
-                <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${continueLabel}</div>
+                <div class="arena-action-btn arena-action-btn--wide" onclick="SceneManager._scene.confirmSelection()">${continueLabel}</div>
             </div>`;
         }
         let memberCards = '';
@@ -383,7 +383,7 @@
                 <div class="arena-detail-sub">${entry.playtime || ''}</div>
             </div>
             <div style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1">${memberCards}</div>
-            <div class="arena-action-btn" style="margin-top:auto" onclick="SceneManager._scene.confirmSelection()">${continueLabel}</div>
+            <div class="arena-action-btn arena-action-btn--push" onclick="SceneManager._scene.confirmSelection()">${continueLabel}</div>
         </div>`;
     };
 
@@ -470,7 +470,7 @@
                     <li>${T('Arena.win7ConsecutiveBoutsTo')}</li>
                     <li>${T('Arena.defeatEndsTheGauntlet')}</li>
                 </ul></div>
-                <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${go}</div>
+                <div class="arena-action-btn arena-action-btn--wide" onclick="SceneManager._scene.confirmSelection()">${go}</div>
             </div>`;
         }
         if (entry.type === 'biome') {
@@ -482,7 +482,7 @@
                     <li>${T('Arena.fightTheBiomeRosterIn')}</li>
                     <li>${T('Arena.eachWinGrantsALevel')}</li>
                 </ul></div>
-                <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${go}</div>
+                <div class="arena-action-btn arena-action-btn--wide" onclick="SceneManager._scene.confirmSelection()">${go}</div>
             </div>`;
         }
         return `<div class="arena-right center">
@@ -493,7 +493,7 @@
                 <li>${T('Arena.yourPartyIsSetToEach')}</li>
                 <li>${T('Arena.defeatEndsTheRush')}</li>
             </ul></div>
-            <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${T('Arena.beginTheRush')}</div>
+            <div class="arena-action-btn arena-action-btn--wide" onclick="SceneManager._scene.confirmSelection()">${T('Arena.beginTheRush')}</div>
         </div>`;
     };
 
@@ -547,7 +547,7 @@
                     <li>${T('Arena.noRetreatPermittedDefeatEnds')}</li>
                 </ul>
             </div>
-            <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${T('Arena.initiateGauntlet')}</div>
+            <div class="arena-action-btn arena-action-btn--wide" onclick="SceneManager._scene.confirmSelection()">${T('Arena.initiateGauntlet')}</div>
         </div>`;
     };
 
@@ -600,7 +600,7 @@
                 <li>${T('Arena.eachVictoryGrantsALevel')}</li>
                 <li>${T('Arena.ifTheLevelGapIs')}</li>
             </ul></div>
-            <div class="arena-action-btn" style="margin-top:auto" onclick="SceneManager._scene.confirmSelection()">${T('Arena.beginTheTrial')}</div>
+            <div class="arena-action-btn arena-action-btn--push" onclick="SceneManager._scene.confirmSelection()">${T('Arena.beginTheTrial')}</div>
         </div>`;
     };
 

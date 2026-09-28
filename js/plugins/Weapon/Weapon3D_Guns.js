@@ -8237,113 +8237,6 @@
 
       // Gauntlet of Kia: the empty fist made into a machine. A plated glove with
       // a piston over the knuckles that drives the blow.
-      // ---- Twin vectors ------------------------------------------------
-      // The frame split down its own seam: two short pistols out of the one.
-      // The second stands BEHIND the first rather than beside it, so the long
-      // axis stays on Z and the fold still packs down the barrel rather than
-      // sideways across the pair (startVectorSwitch reads the longest axis).
-      createVectorTwinModel(weapon, rand) {
-        const group = new THREE.Group();
-        const mats = this._vectorGunPalette();
-        const { black, polymer, accent, glow } = mats;
-
-        const build = (lead) => {
-          const half = new THREE.Group();
-          const slide = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.04, 0.13), black);
-          slide.position.set(0, 0.03, 0.02);
-          half.add(slide);
-          const frame = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.034, 0.1), polymer);
-          frame.position.set(0, -0.006, 0.01);
-          half.add(frame);
-          const barrel = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.009, 0.009, 0.04, this.seg(6, 5)), accent);
-          barrel.rotation.x = Math.PI / 2;
-          barrel.position.set(0, 0.024, 0.1);
-          half.add(barrel);
-          const port = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.016, 0.03), accent);
-          port.position.set(0.014, 0.036, 0.02);
-          half.add(port);
-          const grip = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.085, 0.04), polymer);
-          grip.position.set(0, -0.066, -0.028);
-          grip.rotation.x = Math.PI / 14;
-          half.add(grip);
-          const cap = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.008, 0.042), accent);
-          cap.position.set(0, -0.112, -0.04);
-          half.add(cap);
-          if (lead) {
-            // Only one flash is ever built, so only one barrel is the muzzle.
-            const crownless = new THREE.Group();
-            crownless.position.set(0, 0.024, 0.122);
-            crownless.userData.gun = 'muzzle';
-            half.add(crownless);
-          }
-          const vent = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.006, 0.006, 0.05, this.seg(8, 5)), glow);
-          vent.rotation.x = Math.PI / 2;
-          vent.position.set(0, 0.004, 0.05);
-          vent.userData.pulse = { min: 0.25, max: 1.2, freq: 1.4, phase: lead ? 0 : 0.8 };
-          half.add(vent);
-          this._gunTrigger(half, accent, 0, -0.03, -0.006, { curl: 0.14, guardR: 0.02 });
-          return half;
-        };
-
-        const lead = build(true);
-        lead.position.set(-0.022, 0, 0.012);
-        lead.rotation.z = 0.1;
-        group.add(lead);
-        const off = build(false);
-        off.position.set(0.024, -0.006, -0.048);
-        off.rotation.z = -0.13;
-        off.scale.setScalar(0.95);
-        group.add(off);
-
-        // The seam the frame came apart on, and the hinges either half turned
-        // out of: this is one weapon that opened, not two that were issued.
-        for (const s of [-1, 1]) {
-          this._vectorHinge(group, mats,
-            { axis: 'z', r: 0.006, len: 0.016, x: s * 0.004, y: 0.012, z: -0.014, phase: s });
-          this._vectorSeam(group, mats,
-            { x: s * 0.002, y: 0.014, z: 0.01, len: 0.09, w: 0.003, phase: s * 0.5 });
-        }
-        this._vectorGunFittings(group, mats, this.VECTOR_FIT_LAYOUTS.twin);
-        return group;
-      },
-
-      // ---- Vector crossbow ---------------------------------------------
-      // Cocked rather than drawn. The shared crossbow frame is what makes it
-      // let off with a finger instead of a shoulder, and it sets the flag the
-      // pose readings look for.
-      createVectorCrossbowModel(weapon, rand) {
-        const group = new THREE.Group();
-        const mats = this._vectorGunPalette();
-        this._crossbowFrame(group, mats.plate, mats.glow, mats.black, {
-          span: 0.12, stockLen: 0.28, boltMat: mats.accent, tipMat: mats.glow,
-        });
-        // The cocking lever folded along the tiller, and the sight standing
-        // over the groove.
-        const lever = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.016, 0.11), mats.accent);
-        lever.position.set(0, 0.038, -0.05);
-        lever.rotation.x = 0.08;
-        group.add(lever);
-        const sight = new THREE.Mesh(
-          new THREE.TorusGeometry(0.014, 0.003, this.seg(5, 3), this.seg(14, 8)), mats.accent);
-        sight.position.set(0, 0.052, -0.01);
-        group.add(sight);
-        const cell = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.009, 0.009, 0.04, this.seg(10, 6)), mats.glow);
-        cell.rotation.z = Math.PI / 2;
-        cell.position.set(0, 0.002, -0.09);
-        cell.userData.pulse = { min: 0.3, max: 1.2, freq: 1.1 };
-        group.add(cell);
-        this._vectorHinge(group, mats, { axis: 'x', r: 0.009, len: 0.03, y: 0.014, z: 0.02 });
-        for (const s of [-1, 1]) {
-          this._vectorSeam(group, mats,
-            { x: s * 0.014, y: 0.014, z: -0.04, len: 0.14, w: 0.003, phase: s * 0.4 });
-        }
-        this._vectorGunFittings(group, mats, this.VECTOR_FIT_LAYOUTS.crossbow);
-        return group;
-      },
-
       // ---- Nunchaku of Eris --------------------------------------------
       // Two batons on a lit chain. Eris keeps nothing in order, so the pair
       // hangs unevenly and the links are of three different lights.
@@ -9070,16 +8963,16 @@
           group.add(cone);
         }
 
-        // Solomon incantation: a reading ring standing over the barrel, the
-        // words held in it turning as the piece turns.
+        // Solomon incantation: a narrow reading ring standing over the barrel,
+        // the words held in it turning as the piece turns.
         if (on('solomonIncantation')) {
-          const ring = new THREE.Mesh(new THREE.TorusGeometry(0.02, 0.004, this.seg(6, 3), this.seg(16, 8)), glow);
-          ring.position.set(0, up + 0.034, fwd + 0.055);
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(0.012, 0.003, this.seg(6, 3), this.seg(16, 8)), glow);
+          ring.position.set(0, up + 0.026, fwd + 0.055);
           ring.userData.pulse = { min: 0.25, max: 1.3, freq: 1.0 };
           group.add(ring);
           for (const s of [-1, 1]) {
-            const strut = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.026, 0.006), accent);
-            strut.position.set(s * 0.018, up + 0.018, fwd + 0.055);
+            const strut = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.018, 0.005), accent);
+            strut.position.set(s * 0.011, up + 0.014, fwd + 0.055);
             group.add(strut);
           }
         }
@@ -9212,8 +9105,6 @@
         gauntlet: { fwd: 0.0, up: 0.035 },
         lance: { fwd: 0.16, up: 0.04 },
         grimoire: { fwd: 0.1, up: 0.06 },
-        twin: { fwd: 0.06, up: 0.05 },
-        crossbow: { fwd: 0.08, up: 0.04 },
         nunchaku: { fwd: 0.04, up: 0.03 },
         flail: { fwd: 0.1, up: 0.03 },
         wrench: { fwd: 0.04, up: 0.03 },

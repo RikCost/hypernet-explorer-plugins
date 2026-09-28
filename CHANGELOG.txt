@@ -1,4 +1,75 @@
+0.6.42a
+Added:
+ - story mode Em starts with 1000 KP, teleport cutscene crash fixed
+ - status menu bodyparts default tab, pages inverted
+ - teleport animation for omega tower and return to ship
+ - PickupSound tag on items, weapons and armours played when found
+ - NPCs confront Em more about killing God, plus faith crisis
+ . Meaner tutorial signs
+ - Eris camera titlescreen background playing the sandbox savegame
+
+Changed:
+ - dossier export buttons hidden for Em, Bubba and presets, never scroll
+ - dice 3d css moved to its own file, results window restyled
+ - party dynamics right page text standardized, character creation tooltips on hover
+ - reworked vehicles menu, part bars shown like the anatomy grid
+ - double clicking an inventory item uses it, special actions as buttons
+ - thinker bench tabs now look like bestiary tabs
+ - magishop always has health potion, mana potion and flying broomstick
+ - omega tower teleport options are Request teleport and Cancel
+ - standardized UI chips, headers and buttons on the backpack style
+ - patreon vault renamed to Holy Patron Bunker
+ - vector gun switch costs a turn, resets after battle, 3D dice
+ - story mode character creation class info under place of birth
+ - map tooltips always appear fully on first visit, no Bubba option
+ - story mode and new party disabled until a world is created
+ - reworked story mode character creation
+ - reworked diseases.json descriptions to just describe the disease
+ - show every exported character except 100% matching duplicates
+ - reworked vector gun forms around the Dice of YHWH and level unlocks
+ - no enemy has the talk to animals skill
+ - italian translation uses HP MP AP, TP renamed to AP
+ - empathize wiki tab split between earth and omega tower
+ - tooltips and NPC bubbles share one semitransparent layout, no chevron
+ - status PV PM PA experience moved to right page on one line
+ - coordinates always show the biome name, like Fields at (48 132)
+ - monster events are impassable and still for 3 seconds after fleeing
+ - Bubba italian lines with a lighter neapolitan accent
+ - all modals use a single golden border and gold outlined buttons
+
+ Fixed:
+ - omega tower teleport animation now shows
+ - carried downed members and Bubba no longer block events or water
+ - enemy death sound immediate, vital parts lethal under 25%, piercing severs
+ - summoning in battle no longer freezes the game for some seconds
+ - fix vector gun forms descriptions, 3D preview and battle switching
+ - fix camper light placement
+ - fix Em model not being rendered correctly
+ - fix world map opening off-corner, now centred on your coordinates zoomed
+ - quest board no longer offers quests to locked destinations
+ - game crashed after closing apiary
+ - spellcheck english dialogues of all maps events
+ - fixed italian mainquest dialogue to match the split scenes
+ - beach sand no longer overrides placed prefabs
+ - comment initialized NPCs show their bust and alcove NPCs stay solid
+ - empathize ui window chat option UI
+ - guard and escape no longer assignable skills, Basic hidden from skillmaster
+ - Bubba event character no longer cloned in storymode after a teleport
+ - vehicles unusable and unspawnable inside vehicle interiors except low orbit spaceship
+ - socialize and introspect no longer show NPC data unavailable
+ - character creation back and right click no longer open sprite selection
+ - zombies no longer restart battles after escaping or resurrect after dying
+ - battle music in character creation plays only in settings tab
+ - omega tower chests now spawn away from collisions with a walkable safezone
+ - rocket launch bodies, ship following and star catalog controller support
+ - water options displayed only when interacting with region id 99
+ - battle music selected in options now ends when closing the options menu
+
+
 0.6.41a
+Changed:
+ - stuck interactions and idling detection for auto explorer experimental
+
  Fixed:
   - battle preview music
   - restored HP curves, tweaked MP curves
@@ -15,6 +86,8 @@ Changed:
  - default music for title screen and removed music label
 
 Fixed:
+ - option screen shows text on top
+ - fix refuel UI bugged rows and pump price
  - fixed alice spawning as follower when starting storymode
  - fixed modal buttons to match itemsysteminventoryUI
  - placement of Kola superdeep borehole

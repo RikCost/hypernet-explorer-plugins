@@ -743,6 +743,28 @@
     return mapCache.isInterior($gameMap.mapId());
   }
 
+  /**
+   * True when the vehicle `key` ('camper', 'car', 'bike', 'boat', 'broom',
+   * 'airship', 'mount') may not be summoned, parked or ridden on the vehicle
+   * cabin `mapId`. The camper and the car are rooms a few tiles across, so no
+   * vehicle comes into them. The Low orbit spaceship (the Starship's own
+   * interior) is the one cabin with a hangar: every vehicle is allowed there
+   * except the Starship itself. Any map that is not a vehicle cabin answers false.
+   */
+  function vehicleBarredInCabin(key, mapId) {
+    const cabin = getConfigByInteriorMapId(mapId);
+    if (!cabin) return false;
+    if (cabin === VehicleConfig.AIRSHIP) return key === 'airship';
+    return true;
+  }
+
+  /** The vehicle key a summon(vehicleType, subType) call stands for. */
+  function summonKey(vehicleType, subType) {
+    if (vehicleType === 'ship') return 'camper';
+    if (vehicleType === 'airship') return 'airship';
+    return subType || ($gameSystem && $gameSystem._boatType) || 'car';
+  }
+
   // The generated sheet is served from memory. Falling back to the drawn airship
   // sheet keeps the shape of the answer right (both are `!$` 3x4 sheets) on a
   // machine where the render did not come off.
@@ -1268,6 +1290,8 @@
       tx = pos.x; ty = pos.y;
     } else {
       if (pos.mapId !== currentMap) return null;
+      // A record left inside a cabin by an older save is never honoured there.
+      if (vehicleBarredInCabin(key, currentMap)) return null;
       tx = pos.x; ty = pos.y;
     }
 
@@ -1938,6 +1962,10 @@
       // here rather than at each caller so a plugin command cannot go round it.
       if (vehicleType === 'airship' && starshipBarredHere()) {
         showLocalizedMessage(T('VehicleSystem.noStarshipIndoors'));
+        return;
+      }
+      if (vehicleBarredInCabin(summonKey(vehicleType, subType), $gameMap.mapId())) {
+        showLocalizedMessage(T('VehicleSystem.noVehicleInCabin'));
         return;
       }
       // A mount is not called out of thin air: it is a companion already
@@ -2785,6 +2813,26 @@
     return rect;
   }
 
+  /**
+   * The opaque box of the character's current frame in screen pixels, measured
+   * from its screenX / screenY (the sprite's bottom-centre anchor), or null while
+   * the sheet is still loading. What a lamp needs to find the front of a hull.
+   */
+  function footprintScreenBox(character) {
+    const name = character && character.characterName ? character.characterName() : '';
+    if (!name || name === STARSHIP_MOORED_MARK.name) return null;
+    const index = character.characterIndex ? character.characterIndex() : 0;
+    const measured = footprintPixelBox(name, index, character.direction());
+    if (!measured) return null;
+    const { box, fw, fh } = measured;
+    return {
+      left: box.left - fw / 2,
+      right: box.right + 1 - fw / 2,
+      top: box.top - fh,
+      bottom: box.bottom + 1 - fh
+    };
+  }
+
   /** True when the character's sprite covers tile (x, y) on the current map. */
   function footprintCovers(character, x, y) {
     if (!character) return false;
@@ -2829,6 +2877,7 @@
     },
     covers: footprintCovers,
     rect: footprintRect,
+    screenBox: footprintScreenBox,
     /** True when an oversized sprite stands between `mover` and tile (x, y). */
     blocks(mover, x, y) {
       if (!$gameMap || !$gamePlayer || !mover) return false;
@@ -3127,6 +3176,10 @@
     // house, cave or dungeon has the headroom (see starshipBarredHere).
     if (vehicle.isAirship() && starshipBarredHere()) {
       showLocalizedMessage(T('VehicleSystem.noStarshipIndoors'));
+      return;
+    }
+    if (vehicleBarredInCabin(upgradeTypeForConfig(vehicleManager.getConfig(vehicle)), $gameMap.mapId())) {
+      showLocalizedMessage(T('VehicleSystem.noVehicleInCabin'));
       return;
     }
     rememberVehicleUsed(vehicleManager.getConfig(vehicle));
@@ -3924,6 +3977,16 @@
       if (!spawnPending && fromMapId !== this._newMapId &&
         getConfigByInteriorMapId(fromMapId)) {
         $gameTemp._exitedVehicleInteriorMapId = fromMapId;
+      }
+      // Riding into a cabin that bars the vehicle (a broom through the camper
+      // door): the rider gets off first, so it stays parked outside the door.
+      if (this.isInVehicle() && fromMapId !== this._newMapId) {
+        const ridden = this.vehicle();
+        const key = ridden && upgradeTypeForConfig(vehicleManager.getConfig(ridden));
+        if (key && vehicleBarredInCabin(key, this._newMapId)) {
+          if (key === 'mount') dismountMount();
+          else disembarkLeavingParked(ridden);
+        }
       }
     }
     _Game_Player_performTransfer.call(this);
@@ -4909,6 +4972,65 @@
       return true;
     },
 
+    // Every vehicle the party owns that is standing on the map loaded right
+    // now, as { key, name, x, y, flying, network }, by the one rule that
+    // decides where a vehicle is shown (parkedTileOnCurrentMap). The auto
+    // explorer (Core/AutoIdleExplorer.js) reads this to walk up to one; the
+    // network is the fast travel type it opens once somebody is at the wheel,
+    // null for the vehicles that have none.
+    parkedHere() {
+      if (typeof $gameMap === 'undefined' || !$gameMap || !$gamePlayer) return [];
+      const out = [];
+      VEHICLE_KEYS.forEach(key => {
+        if (key === 'mount' || !ownsVehicleKey(key)) return;
+        const tile = parkedTileOnCurrentMap(key);
+        const config = tile ? configForVehicleKey(key) : null;
+        if (!config) return;
+        out.push({
+          key, name: vehicleDisplayName(config), x: tile.x, y: tile.y,
+          flying: isFlyingConfig(config),
+          network: canFastTravel(config) ? getFastTravelType(config) : null
+        });
+      });
+      return out;
+    },
+
+    // "Start driving" without the menu: boards the parked vehicle `key` when it
+    // can be reached from where the player stands and faces, exactly as the
+    // action button would. Answers whether the party is now getting in.
+    boardParked(key) {
+      if (!$gamePlayer || $gamePlayer.isInVehicle()) return false;
+      if (typeof $gameMessage !== 'undefined' && $gameMessage.isBusy()) return false;
+      if (key === 'mount' || !reachableVehicleKeys().includes(key)) return false;
+      const vehicle = materializeVehicle(key);
+      if (!vehicle) return false;
+      startDrivingVehicle(vehicle);
+      return $gamePlayer.isInVehicle();
+    },
+
+    // "Stop driving" without the menu: onto the tile in front when the vehicle
+    // may land the party there. With inPlace a road vehicle that has no ground
+    // in front puts the party out where it stands instead; a boat on the water
+    // and anything that flies never do, since that would drop somebody in a
+    // lake or out of the sky. Answers whether anybody is getting out.
+    stepOut(inPlace) {
+      if (!$gamePlayer || !$gamePlayer.isInVehicle()) return false;
+      if ($gamePlayer._vehicleGettingOn || $gamePlayer._vehicleGettingOff) return false;
+      const vehicle = $gamePlayer.vehicle();
+      if (!vehicle) return false;
+      const config = vehicleManager.getConfig(vehicle);
+      // Asked first, so a refusal never raises the "cannot land here" box.
+      if (vehicle.isLandOk($gamePlayer.x, $gamePlayer.y, $gamePlayer.direction())) {
+        $gamePlayer.getOffVehicle();
+      }
+      if (!$gamePlayer._vehicleGettingOff) {
+        if (!inPlace || isFlyingConfig(config) || isBoatSubType(vehicle)) return false;
+        disembarkLeavingParked(vehicle);
+      }
+      vehicleManager.savePosition(vehicle);
+      return true;
+    },
+
     // Every vehicle the party owns (holds the summoning item for), in menu order.
     // Where a vehicle's own inside is, for anything that has to put the party
     // aboard it without walking them through a door: the 3D world does exactly
@@ -4968,13 +5090,21 @@
       return ownsVehicleConfig(configByVehicleKey(key));
     },
 
-    // False when there is no map loaded to summon onto, and - for the Starship
-    // alone - when that map is an interior. Every other vehicle may be summoned
-    // indoors and out.
+    // False when there is no map loaded to summon onto, for the Starship when
+    // that map is an interior, and for any vehicle the cabin the party stands in
+    // bars (see vehicleBarredInCabin). Otherwise indoors and out alike.
     canSpawnHere(key) {
       if (typeof $gameMap === 'undefined' || !$gameMap) return false;
       if (key === 'airship' && starshipBarredHere()) return false;
+      if (vehicleBarredInCabin(key, $gameMap.mapId())) return false;
       return true;
+    },
+
+    // True when `key` may not be summoned, parked or ridden on the given vehicle
+    // cabin map (the current map when omitted).
+    isBarredInCabin(key, mapId) {
+      const id = mapId != null ? mapId : ($gameMap ? $gameMap.mapId() : 0);
+      return vehicleBarredInCabin(key, id);
     },
 
     // Summons the vehicle the party last drove to a tile beside them: what a
@@ -5022,7 +5152,9 @@
           const parked = materializeVehicle(info.key);
           if (parked) { pendingVehicleMenu = parked; return; }
           if (!this.spawnVehicleByKey(info.key)) {
-            showLocalizedMessage(T('VehicleSystem.noSummonIndoors'));
+            showLocalizedMessage(vehicleBarredInCabin(info.key, $gameMap.mapId())
+              ? T('VehicleSystem.noVehicleInCabin')
+              : T('VehicleSystem.noSummonIndoors'));
           }
         });
       });

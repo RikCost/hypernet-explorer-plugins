@@ -1299,6 +1299,17 @@
         this.addChild(this._battleWeatherSprite);
     };
 
+    // The engine lays a BlurFilter over the map snapshot behind the battlebacks,
+    // and PIXI runs that filter as two full-screen passes on every frame of the
+    // fight, from the very first one, for a picture the battlebacks and the sky
+    // above paint straight over. The snapshot stays; only the filter goes.
+    Spriteset_Battle.prototype.createBackground = function () {
+        this._backgroundFilter = null;
+        this._backgroundSprite = new Sprite();
+        this._backgroundSprite.bitmap = SceneManager.backgroundBitmap();
+        this._baseSprite.addChild(this._backgroundSprite);
+    };
+
     // Battleback Creation
 
     const _Spriteset_Battle_createBattleback = Spriteset_Battle.prototype.createBattleback;

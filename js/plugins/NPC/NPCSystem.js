@@ -5376,6 +5376,36 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       return found;
     },
 
+    // Whether the far side of the NPC at (bx, by), seen from the player at
+    // (px, py), opens into somewhere: a tile that is not one wide within
+    // MAX_SEARCH steps, or a passage that runs on past them. An NPC standing in a dead-end alcove (a priest behind
+    // the altar) blocks no route at all, so the player bumping into them on
+    // the way to talk must not phase them into somebody that can be walked on.
+    leadsOut(bx, by, px, py) {
+      const mapW = $gameMap.width();
+      const key = (x, y) => x + y * mapW;
+      const dist = new Map([[key(bx, by), 0]]);
+      const queue = [{ x: bx, y: by }];
+      let head = 0;
+      while (head < queue.length) {
+        const { x, y } = queue[head++];
+        const d = dist.get(key(x, y));
+        // A passage longer than the search is a way through, not an alcove.
+        if (d >= this.MAX_SEARCH) return true;
+        for (const dir of ORTHO_DIRS) {
+          const nx = $gameMap.roundXWithDirection(x, dir);
+          const ny = $gameMap.roundYWithDirection(y, dir);
+          const k = key(nx, ny);
+          if (dist.has(k) || (nx === px && ny === py)) continue;
+          if (!this.canStepTerrain(x, y, dir)) continue;
+          if (!this.isNarrow(nx, ny)) return true;
+          dist.set(k, d + 1);
+          queue.push({ x: nx, y: ny });
+        }
+      }
+      return false;
+    },
+
     // The player's step at (bx, by) was refused. Act only when an NPC is what
     // refused it and the geometry leaves no way round.
     onPlayerBlocked(bx, by) {
@@ -5387,6 +5417,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (!this.controllerAt(bx, by)) return;
       const px = $gamePlayer.x, py = $gamePlayer.y;
       if (!this.isNarrow(bx, by) && !this.isNarrow(px, py)) return;
+      if (!this.leadsOut(bx, by, px, py)) return;
       for (const ctrl of this.corridorControllers(bx, by, px, py)) ctrl.yieldToPlayer();
     },
   };
@@ -7020,10 +7051,19 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     return !!(name && SC && SC.isZombieSheet && SC.isZombieSheet(name));
   }
 
-  // One of the dead walking, and only ever in a zombie world.
+  // One of the dead walking, and only ever in a zombie world. Only a person
+  // rises: an authored prop or tutorial figure that happens to wear a sheet
+  // out of the Zombies/ folder is set dressing, and a written character never
+  // rises at all (see zombifyMapNPCs).
   function isZombieWalker(ev) {
-    if (!ev || ev._erased || !Config.isZombieWorld()) return false;
-    return isZombieSheet(ev.characterName && ev.characterName());
+    if (!ev || ev._erased || ev._npcZombieDead || !Config.isZombieWorld()) return false;
+    if (!isZombieSheet(ev.characterName && ev.characterName())) return false;
+    if (ev._npcZombieSheet) return true;
+    const data = ev.event ? ev.event() : null;
+    if (!data) return false;
+    const note = data.note || "";
+    if (Utils.hasStoryTag(note)) return false;
+    return Utils.isNPCEvent(note) || String(data.name || "").startsWith("NPC"); // i18n-ignore: event name matched at runtime
   }
 
   // The sheet this slot rose in, or null if whoever stood here made it. Pure
@@ -7047,8 +7087,12 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   function applyZombieSheet(ev, sheet) {
     const data = ev && ev.event ? ev.event() : null;
     if (!data || !sheet) return;
+    // The self switch A page is the body a kill leaves behind (see
+    // SECTION 5b of NPCEmpathize): it keeps whatever the author drew on it,
+    // or a corpse would get up again wearing the face it fell in.
     for (const page of (data.pages || [])) {
-      if (page?.image) {
+      const c = page?.conditions;
+      if (page?.image && !(c && c.selfSwitchValid && c.selfSwitchCh === "A")) {
         page.image.characterName = sheet;
         page.image.characterIndex = 0;
       }
@@ -7090,19 +7134,134 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   function reassertZombies() {
     if (!$gameMap) return;
     for (const ev of $gameMap.events()) {
-      if (!ev || ev._erased || !ev._npcZombieSheet) continue;
+      if (!ev || ev._erased) continue;
+      if (isFallenZombie(ev)) { ev._npcZombieDead = true; ev.erase(); continue; }
+      if (!ev._npcZombieSheet) continue;
       if (ev.characterName() !== ev._npcZombieSheet) applyZombieSheet(ev, ev._npcZombieSheet);
       else applyZombieGait(ev);
     }
   }
 
+  // ---- the dead that stay down --------------------------------------------
+  // A corpse put down is gone from its slot for good. Kept on $gameSystem,
+  // keyed by where it fell: the map and event on an authored map, the world
+  // square and biome layer on the procedural one (whose event ids are only
+  // stable within one square). The name is kept too, so a slot the spawner
+  // has since dealt to somebody else is not buried with it.
+  function zombieKillScope(mapId) {
+    if (mapId !== 636) return String(mapId);
+    const x = $gameVariables.value(43) || 1;
+    const y = $gameVariables.value(44) || 1;
+    const biome = $gameSystem?._procGenData?.currentBiome || "";
+    return `636@${x},${y}/${biome}`;
+  }
+
+  function zombieKillStore(create) {
+    if (!$gameSystem) return null;
+    if (!$gameSystem._npcZombieKills && create) $gameSystem._npcZombieKills = {};
+    return $gameSystem._npcZombieKills || null;
+  }
+
+  function recordZombieKill(mapId, eventId, name) {
+    const store = zombieKillStore(true);
+    if (!store) return;
+    store[`${zombieKillScope(mapId)}#${eventId}`] = name || "";
+  }
+
+  function isFallenZombie(ev) {
+    const store = zombieKillStore(false);
+    if (!store || !ev || !ev.event) return false;
+    const key = `${zombieKillScope($gameMap.mapId())}#${ev.eventId()}`;
+    if (!(key in store)) return false;
+    const name = ev.event()?.name || "";
+    return !store[key] || !name || store[key] === name;
+  }
+
+  // ---- which of the dead it is ------------------------------------------
+  // Whoever rose is fought as one of the risen the bestiary knows, drawn from
+  // the ones pitched at where the party is standing: the nation's level band
+  // on Earth, the map's own encounter median elsewhere, the party's level as a
+  // last resort. Seeded on (map, event, world seed) like the face and the
+  // gait, so the same corpse is the same fight every time.
+  // A person rose, so the undead that were never people (hounds, bats, a
+  // severed hand) are left to the crypts they spawn in.
+  const ZOMBIE_ARCHETYPES = ["Undead"]; // i18n-ignore: enemy archetype keys
+  const ZOMBIE_NOT_A_PERSON_RE = /hound|nightwing|hand|whale|beetle/i;
+  const ZOMBIE_NEAREST_POOL = 4;     // how many to draw from when the band holds none
+  let _zombieTroopPool = null;
+
+  function zombieTroopPool() {
+    if (_zombieTroopPool) return _zombieTroopPool;
+    const H = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+    const pool = [];
+    if (typeof $dataTroops !== "undefined" && $dataTroops && H) {
+      for (let i = 1; i < $dataTroops.length; i++) {
+        const troop = $dataTroops[i];
+        if (!troop || !troop.members || !troop.members.length) continue;
+        const risen = troop.members.every(m => {
+          const data = $dataEnemies[m.enemyId];
+          if (!data) return false;
+          const note = data.note || "";
+          if (/<Boss>|<Special>/i.test(note)) return false;
+          if (ZOMBIE_NOT_A_PERSON_RE.test(data.name || "")) return false;
+          return ZOMBIE_ARCHETYPES.includes(H.getEnemyArchetype(data));
+        });
+        if (!risen) continue;
+        const level = H.getTroopMaxLevel ? H.getTroopMaxLevel(i) : 0;
+        if (level > 0) pool.push({ troopId: i, level: level });
+      }
+    }
+    return (_zombieTroopPool = pool);
+  }
+
+  function zombieLevelBand() {
+    const H = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+    const band = H && H.getActiveNationBand ? H.getActiveNationBand() : null;
+    if (band && Number.isFinite(band.min) && Number.isFinite(band.max)) return band;
+    const median = $gameMap && $gameMap._medianEncounterLevel;
+    if (median) return { min: Math.max(1, median - 4), max: median + 4 };
+    const ref = H && H.getPartyReferenceLevel ? H.getPartyReferenceLevel() : 1;
+    return { min: Math.max(1, ref - 2), max: ref + 4 };
+  }
+
+  function zombieTroopFor(mapId, eventId) {
+    const pool = zombieTroopPool();
+    if (!pool.length) return ZOMBIE_TROOP_ID;
+    const band = zombieLevelBand();
+    let candidates = pool.filter(p => p.level >= band.min && p.level <= band.max);
+    if (!candidates.length) {
+      const center = (band.min + band.max) / 2;
+      candidates = pool.slice()
+        .sort((a, b) => Math.abs(a.level - center) - Math.abs(b.level - center))
+        .slice(0, ZOMBIE_NEAREST_POOL);
+    }
+    const seedBase = (window.HistoryManager && window.HistoryManager.getSeed)
+      ? window.HistoryManager.getSeed() : 19002001;
+    let h = (mapId * 73856093) ^ (eventId * 45989) ^ (seedBase + 0x2f1b);
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+    return candidates[h % candidates.length].troopId;
+  }
+
   // ---- walking into one of the dead --------------------------------------
   // There is nothing to say to a corpse: bumping into one is the fight. The
-  // same machinery the Empathize panel's Attack uses carries it (the generic
-  // person troop, and the target recorded so a kill leaves a body behind on
-  // its own event), with the enemy built as a green procedural humanoid rather
-  // than as whatever battler that troop happens to hold (see the forced body
-  // in 3DBattlerSystem).
+  // same machinery the Empathize panel's Attack uses carries it (the target
+  // recorded so a kill leaves a body behind on its own event), against one of
+  // the risen picked above, tinted the green a zombie's body is fought in.
+  //
+  // Getting away buys a breather: for ZOMBIE_GRACE_FRAMES nothing the dead do
+  // starts a fight, and the one that was fled stands dazed where it is, so an
+  // escape is not straight back into the same battle on the same tile.
+  const ZOMBIE_GRACE_FRAMES = 180;
+
+  function zombieGraceActive() {
+    const until = $gameTemp && $gameTemp._npcZombieGraceUntil;
+    return !!until && Graphics.frameCount < until;
+  }
+
+  function canStartZombieBattle() {
+    return !$gameParty.inBattle() && !$gameTemp?._npcZombieBattle && !zombieGraceActive();
+  }
+
   function requestZombieBattle(ev) {
     if (!ev || !$gameTemp) return;
     $gameTemp._npcZombieBattle = {
@@ -7113,17 +7272,59 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   }
 
   function startZombieBattle(request) {
-    BattleManager.setup(ZOMBIE_TROOP_ID, true, false);
+    BattleManager.setup(zombieTroopFor(request.mapId, request.eventId), true, false);
     $gamePlayer.makeEncounterCount();
-    // Armed after setup on purpose: both are cleared at the top of
+    // Armed after setup on purpose: all three are cleared at the top of
     // BattleManager.setup, so a fight begun any other way can never inherit
     // this victim or wear a zombie's body.
     $gameTemp._NPCEmpathizeBattleTarget = {
       mapId: request.mapId, eventId: request.eventId, name: request.name,
     };
-    $gameTemp._battler3DOverride = { archetype: "humanoid", tint: ZOMBIE_TINT }; // i18n-ignore: Battler3D archetype key
+    $gameTemp._npcZombieFight = {
+      mapId: request.mapId, eventId: request.eventId, name: request.name,
+    };
+    $gameTemp._battler3DOverride = { tint: ZOMBIE_TINT };
     SceneManager.push(Scene_Battle);
   }
+
+  const _BattleManager_setup_zombie = BattleManager.setup;
+  BattleManager.setup = function (troopId, canEscape, canLose) {
+    if ($gameTemp) $gameTemp._npcZombieFight = null;
+    _BattleManager_setup_zombie.call(this, troopId, canEscape, canLose);
+  };
+
+  // How the fight ended decides what is left on the street. A kill (every
+  // member of the troop down, not a win by the enemy running off) takes the
+  // corpse off the map there and then and keeps it off; anything else is an
+  // escape, and buys the grace period.
+  function settleZombieFight(fight, result) {
+    if (!fight || !$gameMap || $gameMap.mapId() !== fight.mapId) return;
+    const ev = $gameMap.event(fight.eventId);
+    const troop = $gameTroop ? $gameTroop.members() : [];
+    const killed = result === 0 && troop.length > 0 && troop.every(e => e.hp <= 0);
+    if (killed) {
+      recordZombieKill(fight.mapId, fight.eventId, fight.name);
+      if (ev) { ev._npcZombieDead = true; ev.erase(); }
+      return;
+    }
+    $gameTemp._npcZombieGraceUntil = Graphics.frameCount + ZOMBIE_GRACE_FRAMES;
+    if (ev) {
+      ev._npcZombieHunt = 0;
+      ev._npcZombieLast = null;
+      ev._npcZombieDazed = ZOMBIE_GRACE_FRAMES;
+    }
+  }
+
+  const _BattleManager_endBattle_zombie = BattleManager.endBattle;
+  BattleManager.endBattle = function (result) {
+    const fight = $gameTemp ? $gameTemp._npcZombieFight : null;
+    if (fight) {
+      $gameTemp._npcZombieFight = null;
+      try { settleZombieFight(fight, result); }
+      catch (e) { console.error("[NPC System] zombie fight outcome failed", e); }
+    }
+    _BattleManager_endBattle_zombie.call(this, result);
+  };
 
   // The bump itself. checkEventTriggerTouch is what RMMZ calls when the party
   // walks into an event that blocks them, which is every zombie standing in a
@@ -7131,10 +7332,12 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // BattleSystemEnhancedEncounters' business, not a fight).
   const _Game_Player_checkEventTriggerTouch_zombie = Game_Player.prototype.checkEventTriggerTouch;
   Game_Player.prototype.checkEventTriggerTouch = function (x, y) {
-    if (Config.isZombieWorld() && !this.isInVehicle() && !$gameParty.inBattle() &&
-        !$gameMap.isEventRunning() && !$gameTemp?._npcZombieBattle) {
+    if (Config.isZombieWorld() && !this.isInVehicle() && !$gameMap.isEventRunning()) {
       const walker = $gameMap.eventsXy(x, y).find(ev => isZombieWalker(ev));
-      if (walker) { requestZombieBattle(walker); return true; }
+      if (walker) {
+        if (canStartZombieBattle()) requestZombieBattle(walker);
+        return true;
+      }
     }
     return _Game_Player_checkEventTriggerTouch_zombie.call(this, x, y);
   };
@@ -7145,9 +7348,8 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   const _Game_Event_checkEventTriggerTouch_zombie = Game_Event.prototype.checkEventTriggerTouch;
   Game_Event.prototype.checkEventTriggerTouch = function (x, y) {
     if (Config.isZombieWorld() && $gamePlayer.pos(x, y) && !$gamePlayer.isInVehicle() &&
-        !$gameParty.inBattle() && !$gameMap.isEventRunning() && !$gameTemp?._npcZombieBattle &&
-        isZombieWalker(this)) {
-      requestZombieBattle(this);
+        !$gameMap.isEventRunning() && isZombieWalker(this)) {
+      if (canStartZombieBattle()) requestZombieBattle(this);
       return;
     }
     _Game_Event_checkEventTriggerTouch_zombie.call(this, x, y);
@@ -7158,12 +7360,14 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // panel with its talk and leave options is never built for one of the dead
   // (see also the guard in NPCEmpathize.open, for a panel opened by name from
   // somewhere off the map). The action button and either touch trigger all
-  // resolve to the one thing there is to do with a corpse.
+  // resolve to the one thing there is to do with a corpse. A press landing
+  // while that fight is already pending, or inside the grace after an escape,
+  // does nothing at all rather than falling through to the page: the page is
+  // the living person's menu, and a corpse never offers it.
   const _Game_Event_start_zombie = Game_Event.prototype.start;
   Game_Event.prototype.start = function () {
-    if (isZombieWalker(this) && this.isTriggerIn([0, 1, 2]) &&
-        !$gameParty.inBattle() && !$gameTemp?._npcZombieBattle) {
-      requestZombieBattle(this);
+    if (isZombieWalker(this)) {
+      if (canStartZombieBattle()) requestZombieBattle(this);
       return;
     }
     _Game_Event_start_zombie.call(this);
@@ -7319,6 +7523,12 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   Game_Event.prototype.update = function () {
     _Game_Event_update_zombie.call(this);
     if (!this._npcZombieGait || !isZombieWalker(this)) return;
+    // Dazed after being fled from: it neither hunts nor notices anybody.
+    if (this._npcZombieDazed > 0) {
+      this._npcZombieDazed--;
+      this._npcZombieHunt = 0;
+      return;
+    }
     if (this._npcZombieHunt > 0) this._npcZombieHunt--;
     this._npcZombieScan = (this._npcZombieScan || 0) + 1;
     if (this._npcZombieScan < ZOMBIE_SCAN_INTERVAL) return;
@@ -7332,6 +7542,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // and wanders the way the gait was set up to.
   const _Game_Event_updateSelfMovement_zombie = Game_Event.prototype.updateSelfMovement;
   Game_Event.prototype.updateSelfMovement = function () {
+    if (this._npcZombieDazed > 0 && isZombieWalker(this)) return;
     if (this._npcZombieGait && this._npcZombieHunt > 0 && isZombieWalker(this) &&
         !this._locked && !this.isMoving() && !this.isMoveRouteForcing() &&
         !$gameMap.isEventRunning() && this._stopCount > 0) {
@@ -7358,6 +7569,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     if (!request) return;
     if (SceneManager.isSceneChanging() || $gameParty.inBattle() || $gameMap.isEventRunning()) return;
     $gameTemp._npcZombieBattle = null;
+    if (zombieGraceActive()) return;
     // A transfer between the bump and this tick (a doorway right behind the
     // party) leaves the request pointing at a map nobody is standing on any
     // more: dropped rather than fought.
@@ -8212,7 +8424,8 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // One of the dead walking (a zombie world only). Asked by NPCEmpathize, so
     // the panel is never opened on one: the interaction IS the fight.
     isZombieWalker: (ev) => isZombieWalker(ev),
-    requestZombieBattle: (ev) => requestZombieBattle(ev),
+    // Honours the grace period after an escape: inside it, nothing starts.
+    requestZombieBattle: (ev) => { if (canStartZombieBattle()) requestZombieBattle(ev); },
     generateSeededPersona: SpawnManager.generateSeededPersona,
     hasShopTag: Utils.hasShopTag,
     isAnyShopEvent: Utils.isAnyShopEvent,

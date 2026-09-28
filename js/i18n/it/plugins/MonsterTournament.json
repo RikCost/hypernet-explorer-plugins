@@ -19,9 +19,9 @@
   "ui": {
     "bet": "Puntata:",
     "keepCurrentBet": "Mantieni la puntata attuale",
-    "hp": "PV",
-    "mp": "PM",
-    "tp": "PT",
+    "hp": "HP",
+    "mp": "MP",
+    "tp": "AP",
     "time": "TEMPO"
   }
 }

@@ -65,7 +65,7 @@
   "fed": "Il \\c[14]{animal}\\c[0] mangia dalla tua mano.",
   "notHungry": "Il \\c[14]{animal}\\c[0] ne ha avuto abbastanza.",
   "tooHungryToProduce": "Il \\c[14]{animal}\\c[0] e troppo affamato per dare qualcosa.",
-  "farmerOf": "Il contadino di ({x},{y})",
+  "farmerOf": "Il contadino di {place}",
   "owner": "Proprietario",
   "wildAnimal": "Selvatico",
   "actionConvince": "Convinci a unirsi",

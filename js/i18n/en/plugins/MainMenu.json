@@ -390,7 +390,7 @@
     "wantedLevel": "Wanted {pct}%"
   },
   "omegaTowerChoice": {
-    "teleport": "Teleport to Omega Tower",
+    "teleport": "Request teleport",
     "cancel": "Cancel"
   },
   "group": {

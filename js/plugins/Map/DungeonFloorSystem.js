@@ -332,19 +332,118 @@ Game_System.prototype.generateEventPositions = function(mapId, floor) {
       return; // Already generated
   }
 
-  let passableTiles = [];
+  let positions = [];
   try {
       const mapData = loadMapDataSync(mapId);
       if (mapData) {
-          passableTiles = this.findPassableTilesFromTilesets(mapData);
+          positions = pickChestSquares(mapData, () => this.dungeonRandom());
       }
   } catch (e) {
       console.error("Error loading map data for event positioning", e);
   }
 
-  // Store the positions
-  this._eventPositions[key] = passableTiles.slice(0, 10); // Store first 10 positions
+  this._eventPositions[key] = positions;
 };
+
+  //=============================================================================
+  // Chest squares
+  //=============================================================================
+  // A tower chest is a solid event, so one dealt into a corridor seals the way
+  // on until somebody opens it. A chest square therefore needs its own tile
+  // and all eight around it walkable, and no two chests stand close enough for
+  // their clear rings to touch. A map with too few such squares gets fewer
+  // chests rather than one in the way.
+  const CHEST_LIMIT = 10;
+  const CHEST_EVENT_NAMES = ["RandomItemChest", "RandomArmorChest", "RandomWeaponChest", "LearnSkill"];
+  const CHEST_SPACING = 3; // squares, counted as the larger of dx and dy
+
+  // Whether a square of a map's raw data can be walked onto from every side,
+  // read off the tileset's passage flags the way Game_Map.checkPassage does.
+  // Without a tileset to ask it falls back on the old "floor-type tile" test.
+  function mapSquareWalkable(mapData, x, y) {
+    const w = mapData.width, h = mapData.height;
+    if (x < 0 || y < 0 || x >= w || y >= h) return false;
+    if ($gameSystem.getRegionIdFromMapData(mapData, x, y) === noGoRegion()) return false;
+    const tileset = typeof $dataTilesets !== "undefined" && $dataTilesets ? $dataTilesets[mapData.tilesetId] : null;
+    const flags = tileset && tileset.flags;
+    if (!flags || !mapData.data) return $gameSystem.isPassableTileFromTilesets(mapData, x, y);
+    for (let z = 3; z >= 0; z--) {
+      const tileId = mapData.data[(z * h + y) * w + x] || 0;
+      if (!tileId) continue;
+      const flag = flags[tileId] || 0;
+      if (flag & 0x10) continue; // [*] upper tile, no effect on passage
+      return (flag & 0x0f) === 0;
+    }
+    return false;
+  }
+
+  // The squares a hand-placed event other than a dealt chest already holds.
+  function authoredEventSquares(mapData) {
+    const taken = new Set();
+    for (const ev of mapData.events || []) {
+      if (!ev || CHEST_EVENT_NAMES.indexOf(ev.name) >= 0) continue;
+      taken.add(ev.x + "," + ev.y);
+    }
+    return taken;
+  }
+
+  function chestSquareClear(mapData, x, y, taken) {
+    const w = mapData.width, h = mapData.height;
+    if (x <= 2 || y <= 2 || x >= w - 2 || y >= h - 2) return false;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (taken && taken.has((x + dx) + "," + (y + dy))) return false;
+        if (!mapSquareWalkable(mapData, x + dx, y + dy)) return false;
+      }
+    }
+    return true;
+  }
+
+  function chestsSpaced(list) {
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        if (Math.max(Math.abs(list[i].x - list[j].x), Math.abs(list[i].y - list[j].y)) < CHEST_SPACING) return false;
+      }
+    }
+    return true;
+  }
+
+  function pickChestSquares(mapData, random) {
+    const taken = authoredEventSquares(mapData);
+    const candidates = [];
+    for (let y = 0; y < mapData.height; y++) {
+      for (let x = 0; x < mapData.width; x++) {
+        if (chestSquareClear(mapData, x, y, taken)) candidates.push({ x, y });
+      }
+    }
+    for (let i = candidates.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1));
+      [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+    }
+    const picked = [];
+    for (const c of candidates) {
+      if (picked.length >= CHEST_LIMIT) break;
+      if (chestsSpaced(picked.concat([c]))) picked.push(c);
+    }
+    return picked;
+  }
+
+  // The chest squares for the map the party stands on. A world made before the
+  // clear-ring rule holds squares that may block a path; those are dealt again
+  // off the live map, seeded by the floor so every visit gets the same answer.
+  function chestSquaresHere(key) {
+    const cached = ($gameSystem._eventPositions && $gameSystem._eventPositions[key]) || null;
+    if (!$dataMap || !$dataMap.data) return cached || [];
+    const taken = authoredEventSquares($dataMap);
+    if (cached && cached.every((t) => chestSquareClear($dataMap, t.x, t.y, taken)) && chestsSpaced(cached)) {
+      return cached;
+    }
+    const rng = createSeededRandom(`towerChests:${dungeonWorldSeed()}:${key}`);  // i18n-ignore  seed string
+    const fresh = pickChestSquares($dataMap, rng);
+    if (!$gameSystem._eventPositions) $gameSystem._eventPositions = {};
+    $gameSystem._eventPositions[key] = fresh;
+    return fresh;
+  }
 
 // Add this function to cache Region 14 tiles (add after generateEventPositions function)
 Game_System.prototype.generateTreasureRoomPosition = function(mapId, floor) {
@@ -3026,6 +3125,10 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
     // asks for these first, so a lift never opens onto a hazard and a way down
     // is never buried under a chest.
     reservedTiles: towerReservedTiles,
+    // Puts the authored floor's staircases and chests on their dealt squares,
+    // healing chest squares cached before the clear-ring rule. Exposed so a
+    // test drives it without a real scene.
+    repositionStairEvents,
     // The other climbers: which floor holds bands at all, who is on this one,
     // and the two passes that move them and fight their fights. Exposed so a
     // test drives them a step at a time rather than waiting on frames.
@@ -3260,7 +3363,7 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
     const key = `${currentMapId}_${currentFloor}`;
     // Old saves may have _dungeonFloors but no _eventPositions (initDungeonSystem
     // only seeds it when _dungeonFloors is absent); guard so map load doesn't throw.
-    const passableTiles = ($gameSystem._eventPositions && $gameSystem._eventPositions[key]) || [];
+    const passableTiles = chestSquaresHere(key);
     
     // Get treasure room position
     const treasureKey = `treasure_${currentMapId}_${currentFloor}`;  // i18n-ignore  record key
@@ -3268,7 +3371,7 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
         $gameSystem._treasureRoomPositions[treasureKey] : null;
 
     const events = $gameMap.events();
-    const randomEventNames = ["RandomItemChest", "RandomArmorChest", "RandomWeaponChest", "LearnSkill"];
+    const randomEventNames = CHEST_EVENT_NAMES;
     
     let passableTileIndex = 0;
 
@@ -3317,10 +3420,10 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
                 event.setThrough(false);
                 passableTileIndex++;
             } else {
-                placeEventKeepingPose(event, params.playerSpawnX + passableTileIndex, params.playerSpawnY);
-                event.setOpacity(255);
-                event.setThrough(false);
-                passableTileIndex++;
+                // No clear square left for it: it is taken off the floor
+                // rather than dropped somewhere it could block the way.
+                event.locate(-1, -1);
+                event.setOpacity(0);
             }
         }
     }

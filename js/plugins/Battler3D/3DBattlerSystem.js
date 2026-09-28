@@ -4798,6 +4798,25 @@
         }
     };
 
+    // Is a fallen enemy's model still fading off the field? The fade ends by
+    // hiding the model (applyDeathFade), so a dead or hidden enemy whose model
+    // is still visible is one the battle has to wait for. A model that never
+    // finished loading never fades, so it is not waited on, and nothing is
+    // waited on for longer than the fade itself could take.
+    const DEATH_FADE_WAIT_MS = (DEATH_FADE_TIME + 1) * 1000;
+    Spriteset_Battle.prototype.is3DEnemyFading = function() {
+        if (!this._battle3DScene || !$gameTroop) return false;
+        const now = Date.now();
+        return $gameTroop.members().some(enemy => {
+            if (!enemy.isDead() && !enemy.isHidden()) return false;
+            const model = this.get3DModel(enemy);
+            if (!model || !model.model || !model.model.visible) return false;
+            if (model.loaded === false) return false;
+            if (!model._fadeWaitSince) model._fadeWaitSince = now;
+            return now - model._fadeWaitSince < DEATH_FADE_WAIT_MS;
+        });
+    };
+
     // Scratch vector reused by getBattlerPartPosition (lazily created so it does
     // not depend on THREE being present at plugin-load time).
     let _partPosScratch = null;

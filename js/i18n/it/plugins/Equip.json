@@ -39,8 +39,8 @@
   "dualPenaltyWarning": "Doppia arma senza addestramento: {name} infligge il {n}% di danno in meno con ENTRAMBE le armi. Rimuovine una per togliere la penalita.",
   "dualPenaltyHint": "La tua classe non combatte con due armi, quindi entrambe sono indebolite.",
   "short": {
-    "hp": "PV",
-    "mp": "PM",
+    "hp": "HP",
+    "mp": "MP",
     "str": "FRZ",
     "con": "COS",
     "int": "INT",

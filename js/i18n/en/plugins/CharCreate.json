@@ -468,8 +468,8 @@
       "desc": "You come round at a terminal in the [Hypernet Point] with a bag of [components], an energy drink and no memory of paying for the hour. The [deck is half built]. The rest of it is out there somewhere, in shops, in skips, and in other people's houses."
     },
     "originPatronVault": {
-      "name": "Patron Vault",
-      "desc": "You wake on [Floor -1] of a vault nobody else can reach, nine cellars deep under a [hatch in open country]. The way out is the patron's own hatch, and the way in was knowing where it is."
+      "name": "Holy Patron Bunker",
+      "desc": "You wake on [Floor -1] of a bunker nobody else can reach, nine cellars deep under a [hatch in open country]. The way out is the patron's own hatch, and the way in was knowing where it is."
     }
   },
   "hairStyle": {
@@ -1070,14 +1070,14 @@
   "patronVaultAskTileHint": "38, 27",
   "patronVaultSave": "Save coordinates",
   "patronVaultStart": "Begin here",
-  "patronVaultSquareLine": "Square {x}, {y} - hatch {tileX}, {tileY}",
+  "patronVaultSquareLine": "{place} - hatch {tileX}, {tileY}",
   "patronVaultNoneSaved": "No coordinates saved yet.",
   "patronVaultPickSquare": "Pick one of the saved squares first.",
   "padDelete": "Del",
   "padNext": "Next",
   "patronVaultWrongSquare": "No hatch answers to those coordinates.",
-  "patronVaultTravelName": "Patreon vault",
-  "floorMinusOneOfAPatronsVault": "Floor -1 of a patron's vault",
+  "patronVaultTravelName": "Holy Patron Bunker",
+  "floorMinusOneOfAPatronsVault": "Floor -1 of a Holy Patron Bunker",
   "thePatronsOwnHatch": "The patron's own hatch, on the surface above",
   "locked": "Locked by",
   "theSecretCoordinates": "The secret coordinates of the hatch",

@@ -3,15 +3,6 @@
   "foldHint": "fold this away",
   "unfoldHint": "read this",
   "controlsHeading": "Controls",
-  "setting": {
-    "label": "Map tooltips",
-    "desc": "Shows a legend in the corner of the map naming the terrain the party is standing on.",
-    "mode": {
-      "first": "First time",
-      "always": "Always",
-      "off": "Off"
-    }
-  },
   "controls": {
     "action": "Action",
     "holdShift": "Hold Shift",
@@ -20,6 +11,7 @@
     "leadSwap": "Switch party member",
     "interact": "Interact with or dismantle an object",
     "leftClick": "Left Click",
+    "rightClick": "Right Click",
     "menu": "Menu",
     "move": "Move",
     "dragMap": "Drag the map",

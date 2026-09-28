@@ -9,10 +9,10 @@
       "blurb": "Launch mast on the meridian."
     },
     "vault": {
-      "name": "{patron}'s Vault",
-      "blurb": "Shaft launcher under the vault.",
-      "nameUnknown": "The Vault",
-      "blurbUnknown": "Shaft launcher under a vault."
+      "name": "{patron}'s Holy Patron Bunker",
+      "blurb": "Shaft launcher under the bunker.",
+      "nameUnknown": "The Holy Patron Bunker",
+      "blurbUnknown": "Shaft launcher under a Holy Patron Bunker."
     },
     "omega": {
       "name": "Omega Tower",

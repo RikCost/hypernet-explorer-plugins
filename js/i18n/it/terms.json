@@ -1,9 +1,9 @@
 {
   "Rank": "Grado",
   "Lv": "Lv",
-  "HP": "Hp",
-  "MP": "Mp",
-  "AP": "Pa",
+  "HP": "HP",
+  "MP": "MP",
+  "AP": "AP",
   "EXP": "Exp",
   "Fight": "Combatti",
   "Flee": "Fuggi",

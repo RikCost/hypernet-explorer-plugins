@@ -94,13 +94,21 @@
        mixes in its own ground or its own frame reads as a different game, so
        none of them do it any more. */
     --modal-scrim: rgba(0, 0, 0, 0.55);
-    --modal-bg: var(--bg-panel);
-    --modal-border: none;
-    --modal-radius: 6px;
-    --modal-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    --modal-bg: var(--bg-secondary-hover);
+    --modal-border: 1px solid var(--text-primary-hover);
+    --modal-radius: 5px;
+    --modal-shadow: 0 24px 60px var(--shadow-black-translucent-45);
     --modal-pad: 20px 24px;
     --modal-gap: 12px;
     --modal-fg: var(--text-success-active);
+    /* The modal press: the frame and ink every popup button wears. */
+    --modal-btn-bg: var(--bg-secondary-hover);
+    --modal-btn-border: 2px solid var(--text-primary-hover);
+    --modal-btn-fg: var(--text-primary-hover);
+    --modal-btn-hover-bg: var(--chip-active-bg);
+    --modal-btn-hover-fg: var(--chip-active-fg);
+    --modal-btn-hover-border: var(--text-primary-hover);
+    --modal-btn-hover-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5);
 }
 
 :root {
@@ -168,6 +176,8 @@
     --npc-option-border: #8b5a2b;
 
     /* === Text Colors === */
+    /* Map tooltip and NPC bubble plate: the same fill, see-through */
+    --map-tip-bg: rgba(236, 220, 185, 0.82);
     --text-danger-hover: #ecdcb9;
     --text-disabled: #5d5044;
     --text-highlight-active: #f4edd4;
@@ -1115,8 +1125,8 @@
 }
 .cc-categories-list .cc-card-option .cc-element-badge {
     color: #6b5242 !important;
-    background: rgba(160, 120, 50, 0.12) !important;
-    border-color: rgba(120, 90, 40, 0.45) !important;
+    background: transparent !important;
+    border: none !important;
 }
 .cc-categories-list .cc-card-option {
     border-color: rgba(120, 90, 40, 0.45) !important;

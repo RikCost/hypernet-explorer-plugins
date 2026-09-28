@@ -490,11 +490,14 @@
     // A bridge deck is never an offer: the tile it masks still reads as water,
     // so facing a span would otherwise ask the party to dive into the bridge,
     // and standing ON a deck facing the river must not offer to swim off it.
+    // The region is the only answer here: a liquid-looking tile (an A1 autotile
+    // reused for shelves, carpets, fountains) is read for its sound, never for
+    // the menu, so a library's bookcases no longer offer Swim / Fish / Drink.
     canPromptWater(character, x, y) {
       if (!character) return false;
       if (this.isBridgeTile(character.x, character.y)) return false;
       if (this.isBridgeTile(x, y)) return false;
-      return this.isWaterTile(x, y);
+      return Config.waterRegions.includes($gameMap.regionId(x, y));
     },
 
     isWallTile(x, y) {
@@ -3896,6 +3899,7 @@
   window.MovementSystem = {
     isWaterTile: Utils.isWaterTile.bind(Utils),
     isLiquidTile: Utils.isLiquidTile.bind(Utils),
+    canPromptWater: Utils.canPromptWater.bind(Utils),
     isPartyDiving: isPartyDiving,
     isClimbableAndAccessible: Utils.isClimbableAndAccessible.bind(Utils),
     canClimbInDirection: Utils.canClimbInDirection.bind(Utils),

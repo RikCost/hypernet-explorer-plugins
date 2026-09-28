@@ -611,6 +611,8 @@
         if ($gameMessage.isBusy()) return false;
         // The one thing worth waiting for: the body still on screen.
         if (this._spriteset && this._spriteset.isBusy()) return false;
+        if (this._spriteset && this._spriteset.is3DEnemyFading
+            && this._spriteset.is3DEnemyFading()) return false;
         return true;
     };
 
@@ -900,8 +902,13 @@
     const _Spriteset_Battle_isBusy = Spriteset_Battle.prototype.isBusy;
     Spriteset_Battle.prototype.isBusy = function() {
         if (_Spriteset_Battle_isBusy.call(this)) return true;
+        // An enemy drawn as a 3D model hides its 2D sprite, so that sprite's
+        // collapse effect (a boss's runs for hundreds of frames) never holds
+        // the battle: the model's own fade is what a won fight waits on
+        // (isFastVictoryReady).
         if (this._enemySprites) {
-            return this._enemySprites.some(sprite => sprite.isEffecting && sprite.isEffecting());
+            return this._enemySprites.some(sprite => sprite.isEffecting && sprite.isEffecting()
+                && !(this.get3DModel && this.get3DModel(sprite._battler)));
         }
         return false;
     };
@@ -1282,7 +1289,7 @@
 
             $gameSystem.getEventsToLock().forEach(entry => {
                 const event = $gameMap.event(entry.eventId);
-                if (event) event.lockMovement(160);
+                if (event) event.holdAfterFlee();
             });
             $gameSystem.clearEventsToLock();
 

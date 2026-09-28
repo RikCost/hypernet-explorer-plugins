@@ -965,6 +965,9 @@
     this._buildOverlay();
     this._render();
     setTimeout(() => { if (this._overlay) this._overlay.classList.add('npc-shown'); }, 16);
+    // Most of what this panel does is settled by a die: the stage is built
+    // while the player reads, not on the first throw.
+    window.Dice3D?.prewarm?.();
   };
 
   // ============================================================================
@@ -2527,7 +2530,7 @@
     } else if (this._introspectCreedMode) {
       actionsHTML = this._buildInlineIntrospectCreedActions(T);
     } else if (this._socialMode) {
-      actionsHTML = selfTalk
+      actionsHTML = this._isSelfTalk()
         ? this._buildInlineIntrospectActions(T)
         : this._buildInlineSocialActions(T);
     } else if (this._romanceMode) {
@@ -2848,10 +2851,10 @@
         <div class="npc-chat-modal-title">${esc(T.introspectChangeNamePrompt || 'Enter new character name:')}</div>
         <input type="text" id="npc-dlg-name-input" class="npc-chat-modal-input"
           maxlength="24" autocomplete="off" spellcheck="false"
-          value="${esc(currentName)}" style="height: auto; padding: 8px 10px;" />
+          value="${esc(currentName)}" />
         <div class="npc-chat-modal-btns">
           <button class="npc-chat-modal-cancel" onmousedown="event.stopPropagation();SceneManager._scene._closeNameModal?.()">${esc(T.cancel)}</button>
-          <button class="npc-chat-modal-send" onmousedown="event.stopPropagation();SceneManager._scene._submitNameModal?.()">${esc(T.confirm || 'Confirm')}</button>
+          <button class="npc-chat-modal-send" onmousedown="event.stopPropagation();SceneManager._scene._submitNameModal?.()">${esc(T.confirm)}</button>
         </div>
       </div>`;
     modal.addEventListener('mousedown', (e) => {
@@ -3076,7 +3079,7 @@
     if (!btns) return;
     btns.forEach(btn => {
       const text = btn.textContent.toLowerCase();
-      btn.style.display = (!q || text.includes(q)) ? '' : 'none';
+      btn.classList.toggle('npc-hidden', !(!q || text.includes(q)));
     });
   };
 
@@ -3094,7 +3097,7 @@
     let html = `<div class="npc-note npc-mb-2">${_escapeHtml(T.introspectCreedPrompt || 'Select a new creed')}</div>`;
     html += `<input type="text" class="npc-chat-modal-input" placeholder="${_escapeHtml(T.introspectFilterCreed || 'Filter creeds...')}" ` +
       `oninput="SceneManager._scene._onCreedFilterInput(this.value)" onkeydown="event.stopPropagation()" ` +
-      `style="width: 100%; box-sizing: border-box; margin-bottom: 6px; padding: 4px 8px; font-size: 13px; height: auto;" />`;
+      `/>`;
     html += sorted.map(c => {
       const isCur = c.id === curCreedId;
       const curBadge = isCur ? ` <span class="npc-good npc-em">✓</span>` : '';
@@ -6714,6 +6717,29 @@
     { id: 'armies',           glyph: '⚔', labelKey: 'armiesTab' },
   ];
 
+  // The Omega Tower half of the front page: the worlds its floors open onto,
+  // then the same shelves again, holding only what those worlds rolled. Its
+  // cards open 'tower:<id>', which is how the entry grid knows which half of
+  // a shelf to draw.
+  const TOWER_WIKI_CATEGORIES = [
+    { id: 'worlds',           glyph: '◈', labelKey: 'wikiWorlds' },
+    { id: 'people',           glyph: '☺', labelKey: 'wikiPeople' },
+    { id: 'politicians',      glyph: '☗', labelKey: 'wikiPoliticians' },
+    { id: 'powers',           glyph: '♛', labelKey: 'wikiHyperpowers' },
+    { id: 'politicalParties', glyph: '⚖', labelKey: 'wikiPoliticalParties' },
+    { id: 'ideologies',       glyph: '✪', labelKey: 'wikiIdeologies' },
+    { id: 'armies',           glyph: '⚔', labelKey: 'armiesTab' },
+  ];
+  const _TOWER_WIKI_PREFIX = 'tower:';   // i18n-ignore  category key
+
+  // 'tower:people' -> the tower's People shelf; a bare id is Earth's.
+  function _wikiCategoryOf(key) {
+    const k = String(key || '');
+    return k.indexOf(_TOWER_WIKI_PREFIX) === 0
+      ? { realm: 'tower', id: k.slice(_TOWER_WIKI_PREFIX.length) }
+      : { realm: 'earth', id: k };
+  }
+
   // Past party members (NPCSystemParty's removeActor snapshots), excluding
   // anyone who has since rejoined the active roster.
   function _pastPartyMembers() {
@@ -6876,48 +6902,59 @@
   // The catalogue the articles above are reached from: one card per category,
   // then the entries inside it.
 
+  // The columns in the field on one half of the setting. The party's own
+  // column marches on Earth.
+  function _listArmiesIn(realm) {
+    const tower = realm === 'tower';
+    return _listArmies().filter(a =>
+      (a.kind !== 'party' && Wiki.isTowerPower(a.powerName)) === tower);
+  }
+
   Scene_NPCEmpathize.prototype._buildWikiTabHTML = function (T) {
     const pets = window.PetSystem ? window.PetSystem.getPets() : [];
-    const counts = {
-      favourites: Wiki.listFavourites().length,
-      party:   ($gameParty?.members()?.length ?? 0) + _pastPartyMembers().length + pets.length,
-      people:    Wiki.listPeople().length,
-      mainPlayers: Wiki.listMainPlayers().length,
-      leaders:   Wiki.listLeaders().length,
-      politicians: Wiki.listPoliticians().length,
-      powers:    Wiki.listPowerNames().length,
-      nations:   Wiki.listNations().length,
-      artifacts: Wiki.listArtifacts().length,
-      factions:  Wiki.listFactionNames().length,
-      politicalParties: Wiki.listPartyNames().length,
-      ideologies:       Wiki.listIdeologyNames().length,
-      armies:           _listArmies().length,
+    const countOf = (id, realm) => {
+      if (id === 'favourites') return Wiki.listFavourites().length;
+      if (id === 'party') {
+        return ($gameParty?.members()?.length ?? 0) + _pastPartyMembers().length + pets.length;
+      }
+      if (id === 'armies') return _listArmiesIn(realm).length;
+      return (Wiki.listIn(id, realm) || []).length;
     };
 
     // ── Category grid ─────────────────────────────────────────────────────────
     if (!this._wikiCategory) {
       // The category last opened keeps a golden border while the grid is up, so
       // coming back out of a category still shows which one you were reading.
-      const cards = WIKI_CATEGORIES.map(cat => `
-        <div class="npc-wiki-card${this._lastWikiCategory === cat.id ? ' npc-wiki-card-selected' : ''}" onmousedown="event.stopPropagation();SceneManager._scene._setWikiCategory('${cat.id}')">
+      const cards = (list, realm) => list.map(cat => {
+        const key = (realm === 'tower' ? _TOWER_WIKI_PREFIX : '') + cat.id;
+        return `
+        <div class="npc-wiki-card${this._lastWikiCategory === key ? ' npc-wiki-card-selected' : ''}" onmousedown="event.stopPropagation();SceneManager._scene._setWikiCategory('${key}')">
           <span class="npc-wiki-card-glyph">${cat.glyph}</span>
           <span class="npc-wiki-card-label">${_escapeHtml(T[cat.labelKey] || cat.fallback)}</span>
-          <span class="npc-wiki-card-count">${counts[cat.id]}</span>
-        </div>`).join('');
+          <span class="npc-wiki-card-count">${countOf(cat.id, realm)}</span>
+        </div>`;
+      }).join('');
       return `
         <div class="npc-wiki-hdr">
           <div class="npc-sec-hdr">${_escapeHtml(T.wikiTab)}, ${_escapeHtml(T.wikiCategories)}</div>
           <hr class="npc-r-sep">
         </div>
-        <div class="npc-wiki-grid npc-wiki-grid--cards">${cards}</div>`;
+        <div class="npc-sec-hdr npc-wiki-realm-hdr">${_escapeHtml(T.wikiEarth)}</div>
+        <div class="npc-wiki-grid npc-wiki-grid--cards">${cards(WIKI_CATEGORIES, 'earth')}</div>
+        <div class="npc-sec-hdr npc-wiki-realm-hdr">${_escapeHtml(T.wikiOmegaTower)}</div>
+        <div class="npc-wiki-grid npc-wiki-grid--cards">${cards(TOWER_WIKI_CATEGORIES, 'tower')}</div>`;
     }
 
     // ── Entry grid for the selected category ─────────────────────────────────
-    const cat = WIKI_CATEGORIES.find(c => c.id === this._wikiCategory) || WIKI_CATEGORIES[0];
+    const sel = _wikiCategoryOf(this._wikiCategory);
+    const realm = sel.realm;
+    const shelf = realm === 'tower' ? TOWER_WIKI_CATEGORIES : WIKI_CATEGORIES;
+    const cat = shelf.find(c => c.id === sel.id) || shelf[0];
+    const realmLbl = realm === 'tower' ? `${_escapeHtml(T.wikiOmegaTower)} · ` : '';
     const headerHTML = `
       <div class="npc-wiki-hdr">
       <div class="npc-panel-top-hdr">
-        <div class="npc-sec-hdr npc-wiki-cat-selected npc-mb-0">${cat.glyph} ${_escapeHtml(T[cat.labelKey] || cat.fallback)} (${counts[cat.id]})</div>
+        <div class="npc-sec-hdr npc-wiki-cat-selected npc-mb-0">${cat.glyph} ${realmLbl}${_escapeHtml(T[cat.labelKey] || cat.fallback)} (${countOf(cat.id, realm)})</div>
         <span class="npc-back-btn" onmousedown="event.stopPropagation();SceneManager._scene._setWikiCategory(null)">← ${_escapeHtml(T.wikiCategories)}</span>
       </div>
       <hr class="npc-r-sep">
@@ -6925,10 +6962,7 @@
 
     let tiles = '';
     switch (cat.id) {
-      // Everything the player has starred, whatever shelf it came off, and
-      // including the articles no shelf holds at all: a world behind one of
-      // the Omega Tower's floors is reachable from its star and from nowhere
-      // else on this page.
+      // Everything the player has starred, whatever shelf it came off.
       case 'favourites': {
         const favs = Wiki.listFavourites();
         tiles = favs.length
@@ -7002,8 +7036,17 @@
         tiles = curTiles + pastTiles + petTiles + visitorTiles;
         break;
       }
+      // Every world the tower opens onto, under the floor it is reached from.
+      case 'worlds':
+        tiles = Wiki.listIn('worlds', realm).map(w =>
+          _wikiEntryTile('world', w.id, `◈ ${_escapeHtml(w.name)}`,
+            [T2('DungeonFloor.worldKind.' + w.kind, w.kind),
+             T2('DungeonFloor.world.reachedFloor', '', { floor: w.floor })]
+              .filter(Boolean).map(_escapeHtml).join(' · '))
+        ).join('');
+        break;
       case 'people':
-        tiles = Wiki.listPeople().map(p =>
+        tiles = Wiki.listIn('people', realm).map(p =>
           _wikiEntryTile('npc', p.name, _escapeHtml(p.name), p.group ? _escapeHtml(p.group) : '')
         ).join('');
         break;
@@ -7011,8 +7054,7 @@
       // which half of the cast the person came from.
       case 'mainPlayers':
       case 'leaders': {
-        const roll = this._wikiCategory === 'mainPlayers'
-          ? Wiki.listMainPlayers() : Wiki.listLeaders();
+        const roll = Wiki.listIn(cat.id, realm);
         tiles = roll.map(l =>
           _wikiEntryTile('leader', l.name,
             `${_escapeHtml(_worldName('leader', l.name))}${l.dead ? ' <span class="npc-bad">✝</span>' : ''}`,
@@ -7024,7 +7066,7 @@
         // Everybody the world elected without history writing them down. The
         // article behind the tile is the same leader profile: it simply has a
         // politician on the other side of it instead of a book entry.
-        tiles = Wiki.listPoliticians().map(p =>
+        tiles = Wiki.listIn('politicians', realm).map(p =>
           _wikiEntryTile('leader', p.name,
             `${_escapeHtml(_worldName('leader', p.name))}${p.dead ? ' <span class="npc-bad">✝</span>' : ''}`,
             [p.office, p.of ? _worldName(_LEADER_OF_KIND[p.ofType] || 'power', p.of) : '']
@@ -7032,21 +7074,21 @@
         ).join('');
         break;
       case 'powers':
-        tiles = Wiki.listPowerNames().map(n => {
+        tiles = Wiki.listIn('powers', realm).map(n => {
           const live = window.NPCPolitics?.getPower?.(n);
           return _wikiEntryTile('power', n, `♛ ${_escapeHtml(_worldName('power', n))}`,
             live ? _escapeHtml(window.NPCPolitics?.powerLabel?.(live, 'govType') || live.govType) : '');
         }).join('');
         break;
       case 'nations':
-        tiles = Wiki.listNations().map(n =>
+        tiles = Wiki.listIn('nations', realm).map(n =>
           _wikiEntryTile('nation', n.name, `⚑ ${_escapeHtml(_worldName('nation', n.name))}`,
             n.controller && n.controller !== 'Neutral'
               ? _escapeHtml(_worldName('power', n.controller)) : _escapeHtml(T.independent))
         ).join('');
         break;
       case 'artifacts':
-        tiles = Wiki.listArtifacts().map(a => {
+        tiles = Wiki.listIn('artifacts', realm).map(a => {
           const kindLabel = a.kind === 'weapon' ? (T.artifactKindWeapon)
             : a.kind === 'armor' ? (T.artifactKindArmor)
             : (T.artifactKindItem);
@@ -7055,12 +7097,12 @@
         }).join('');
         break;
       case 'factions':
-        tiles = Wiki.listFactionNames().map(n =>
+        tiles = Wiki.listIn('factions', realm).map(n =>
           _wikiEntryTile('faction', n, `⚜ ${_escapeHtml(_worldName('faction', n))}`, '')
         ).join('');
         break;
       case 'politicalParties':
-        tiles = Wiki.listPartyNames().map(p => {
+        tiles = Wiki.listIn('politicalParties', realm).map(p => {
           const ideoLabel = _ideologyLabel(p.ideologyId);
           const sub = [_worldName('power', p.powerName), ideoLabel].filter(Boolean).join(' · ');
           return _wikiEntryTile('party', p.id, `⚖ ${_escapeHtml(p.name)}`, _escapeHtml(sub));
@@ -7072,7 +7114,7 @@
         // column itself is written out in full (_buildArmyHoldingHTML); the
         // party's own army is led by a party member with no article to open,
         // so its tile is a plain row like a pet's.
-        tiles = _listArmies().map(a => {
+        tiles = _listArmiesIn(realm).map(a => {
           const men   = `${a.troopCount} ${T.armySoldiers}`;
           const label = `⚔ ${_escapeHtml(_armyTitle(a, T))}`;
           if (a.kind === 'party' || !a.leaderName) {
@@ -7087,7 +7129,7 @@
         }).join('');
         break;
       case 'ideologies':
-        tiles = Wiki.listIdeologyNames().map(e => {
+        tiles = Wiki.listIn('ideologies', realm).map(e => {
           const label = window.T ? window.T(e.name) : e.id;
           const sub = e.partyCount
             ? T.n('Empathize.ideologyPartyCount', e.partyCount, { n: e.partyCount })

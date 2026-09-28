@@ -70,7 +70,7 @@
     "cryoLevel": "Lv %1",
     "cryoHp": "HP",
     "cryoMp": "MP",
-    "cryoTp": "TP",
+    "cryoTp": "AP",
     "cryoHunger": "Food",
     "cryoSleep": "Rest",
     "cryoHeld": "Held"

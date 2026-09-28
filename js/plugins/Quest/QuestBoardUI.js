@@ -384,7 +384,7 @@
       }
       const loc = this._detailLocation();
       const mapBtn = loc
-        ? `<span class="qb-btn map" data-show-map="1">${T('QuestBoard.showOnMapAt', { x: loc.wx, y: loc.wy })}</span>`
+        ? `<span class="qb-btn map" data-show-map="1">${T('QuestBoard.showOnMapAt', { place: window.WorldMapTransfer.squareLabel(loc.wx, loc.wy) })}</span>`
         : "";
       return `<div id="qb-detail-backdrop"><div id="qb-detail"><div class="qb-d-page">
         <h2>${esc(o.title)}</h2>
@@ -1558,7 +1558,7 @@
             : this.btn("take:" + rec.id, T('QuestBoard.takeNotice'), BQS.btnGo));
         }
       }
-      if (loc) btns.push(this.btn("map:1", T('QuestBoard.showOnMapAt', { x: loc.wx, y: loc.wy })));
+      if (loc) btns.push(this.btn("map:1", T('QuestBoard.showOnMapAt', { place: window.WorldMapTransfer.squareLabel(loc.wx, loc.wy) })));
 
       panel.innerHTML = `
         <h2 style="${BQS.h}">${esc(rec.title)}</h2>

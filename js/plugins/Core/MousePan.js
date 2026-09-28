@@ -955,8 +955,8 @@
     // one of these, so "Transfer 2", "Upstairs B", "AudioEmitter" and the rest
     // of the machinery events stay silent along with the bare name.
     const HIDDEN_NAME_PREFIXES = [
-        "countryname", "transfer","trasferimento", "steal", "exit", "downstairs", "upstairs",
-        "initialize", "audio", "acquire", "door", "puzzlesetup", "debug"
+        "countryname", "tutorial", "enemy", "transfer","trasferimento", "steal", "exit", "downstairs", "upstairs",
+        "initialize", "audio", "acquire", "door", "puzzlesetup", "debug", "EV","NPC"
     ];
 
     function shouldHideEvent(name) {
@@ -1071,19 +1071,10 @@
         const old = this._htmlHoverRoot;
         if (old && old.parentNode) old.parentNode.removeChild(old);
 
+        // Same plate as the NPC thought bubble: .map-tip in theme.css
         const root = document.createElement('div');
-        root.style.cssText =
-            'position:fixed;display:none;z-index:495;pointer-events:none;' +
-            'box-sizing:border-box;overflow:hidden;white-space:nowrap;' +
-            'background:var(--text-danger-hover);' +
-            'border:3px solid var(--border-subtle);border-radius:6px;' +
-            'outline:1px solid var(--border-subtle-translucent-40);outline-offset:-7px;' +
-            'background-image:radial-gradient(ellipse at center,' +
-            'transparent 40%,var(--bg-brown-vignette-10) 100%);' +
-            'color:var(--text-primary-hover);font-family:var(--font-ui);font-weight:bold;' +
-            'box-shadow:0 4px 10px rgba(0,0,0,0.25);' +
-            'display:none;justify-content:center;align-items:center;text-align:center;';
-        
+        root.className = 'map-tip map-hover-tip';
+
         this._htmlHoverRoot = root;
         document.body.appendChild(root);
 
@@ -1166,14 +1157,17 @@
             const el = this._htmlHoverRoot;
 
             // Scaled positioning matching target event bounds
+            // The plate is as tall as its text, like the NPC bubble, and hangs
+            // from the bottom of the old 70px box (.map-hover-tip lifts it by
+            // its own height) so it still sits right over the event.
             _setStyleIfChanged(el, 'left', (sc.ox + x * sc.sx) + 'px');
-            _setStyleIfChanged(el, 'top', (sc.oy + y * sc.sy) + 'px');
+            _setStyleIfChanged(el, 'top', (sc.oy + (y + 70) * sc.sy) + 'px');
             _setStyleIfChanged(el, 'width', (width * sc.sx) + 'px');
-            _setStyleIfChanged(el, 'height', (70 * sc.sy) + 'px');
 
             // Scale padding and font size
-            const padX = Math.round(16 * sc.sx);
-            _setStyleIfChanged(el, 'padding', `0 ${padX}px`);
+            const padX = Math.round(14 * sc.sx);
+            const padY = Math.round(8 * sc.sy);
+            _setStyleIfChanged(el, 'padding', `${padY}px ${padX}px`);
 
             const baseFontSize = 18;
             const scaledFont = Math.round(baseFontSize * sc.sy * 0.85);

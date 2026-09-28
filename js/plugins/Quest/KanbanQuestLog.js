@@ -933,7 +933,7 @@
         _mapButtonHTML(useIt) {
             const loc = this._detailLocation();
             if (!loc) return '';
-            return `<button class="kb-detail-close kb-detail-map">${T('Kanban.showOnMapAt', { x: loc.wx, y: loc.wy })}</button>`;
+            return `<button class="kb-detail-close kb-detail-map">${T('Kanban.showOnMapAt', { place: window.WorldMapTransfer.squareLabel(loc.wx, loc.wy) })}</button>`;
         }
 
         // Leave the log and open the world map (the M map) centred on the site.

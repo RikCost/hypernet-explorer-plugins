@@ -10,7 +10,7 @@
     "halls": "la Sala delle Scale",
     "house": "la casa a {place}",
     "ship": "l’astronave",
-    "vault": "la cripta",
+    "vault": "il bunker",
     "cannotJoin": "{name} non può rimettersi in viaggio adesso."
   }
 }

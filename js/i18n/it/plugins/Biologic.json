@@ -256,7 +256,7 @@
  "en": "it",
  "bodyPart": "Parte",
  "manaFlow": "Flusso Mana",
- "hp": "PV%",
+ "hp": "HP%",
  "activity": "Attività",
  "blocked": "Bloccato",
  "tab": {
@@ -694,8 +694,8 @@
  "bacterial": "Batterica",
  "viral": "Virale",
  "paramNames": [
-  "PV Max",
-  "PM Max",
+  "HP Max",
+  "MP Max",
   "FOR",
   "Precisione",
   "INT",

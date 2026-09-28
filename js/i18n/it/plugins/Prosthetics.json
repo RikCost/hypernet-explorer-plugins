@@ -7,8 +7,8 @@
   "owned": "POSSEDUTA",
   "vitalBadge": "VITALE",
   "vital": {
-    "hp": "PV",
-    "mp": "PM"
+    "hp": "HP",
+    "mp": "MP"
   },
   "yesRemoveIt": "Sì, rimuovi",
   "warningImplantWillBeLost": "Attenzione: l'impianto andrà perso!",
@@ -77,8 +77,8 @@
   "chooseArchetypeCode": "Scegli un codice archetipo biologico o artificiale da cui ricavare le strutture da innestare.",
   "suppliersAvailable": " ({count} fornitori disponibili oggi)",
   "paramNames": [
-    "PV Max",
-    "PM Max",
+    "HP Max",
+    "MP Max",
     "FOR",
     "Precisione",
     "INT",

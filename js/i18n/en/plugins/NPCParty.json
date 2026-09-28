@@ -10,7 +10,7 @@
     "halls": "the Stairs Hall",
     "house": "the house in {place}",
     "ship": "the starship",
-    "vault": "the vault",
+    "vault": "the bunker",
     "cannotJoin": "{name} cannot take the road again right now."
   }
 }

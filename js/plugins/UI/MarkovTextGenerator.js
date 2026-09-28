@@ -2627,6 +2627,14 @@
                 const nextChars = markovModel.model[currentState];
                 const nextChar = nextChars[Math.floor(nextCharRng * nextChars.length)];
 
+                // The LCG runs in plain floats and overflows to Infinity after a
+                // few dozen steps (a short stem that keeps drawing $END burns
+                // two per retry), so the draw comes back NaN and the pick
+                // undefined. Ending the name there keeps every name that
+                // never overflowed exactly as it was, and "Tor" stays "Tor"
+                // instead of becoming "Torundefined".
+                if (nextChar === undefined) break;
+
                 // Check if we reached a natural end
                 if (nextChar === '$END') {
                     if (result.length >= minChars) {
@@ -2651,6 +2659,7 @@
                         generationSeed = generationSeed * 1103515245 + 12345;
                         const paddingRng = seededRandomMarkov(generationSeed);
                         const char = markovModel.model[currentState][Math.floor(paddingRng * markovModel.model[currentState].length)];
+                        if (char === undefined) break;
                         if (char !== '$END') {
                             result += char;
                         }

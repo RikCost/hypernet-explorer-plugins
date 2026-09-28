@@ -236,7 +236,7 @@
     },
     "bodyParts": {
       "title": "Limbs and Organs",
-      "description": "Every character and monster has individual [limbs and organs], each with its own health, taken from its species.\n\nDamage spreads across parts. A part at [0] is [destroyed]: it carries a permanent penalty and changes what the body can do. A lost hand takes its weapon slot. A body with no hands holds a weapon in its mouth. Damaged legs cost movement and evasion. A part at 0, damaged or severed can neither grapple nor be grappled.\n\n[Vital organs] are shielded from ordinary damage and only opened by [targeting].\n\nParts [never heal on their own]. They are treated at a clinic, restored by magic, or replaced with a prosthetic. In [Blood and Oil] a slashing blow can take a part off the body, augment and all.\n\nThe status sheet shows the body part by part under [Anatomy]."
+      "description": "Every character and monster has individual [limbs and organs], each with its own health, taken from its species.\n\nDamage spreads across parts. A part at [0] is [destroyed]: it carries a permanent penalty and changes what the body can do. A lost hand takes its weapon slot. A body with no hands holds a weapon in its mouth. Damaged legs cost movement and evasion. A part at 0, damaged or severed can neither grapple nor be grappled.\n\n[Vital organs] are shielded from ordinary damage and only opened by [targeting]. A blow to one is only lethal under [25% health]; until then it holds at [1].\n\nParts [never heal on their own]. They are treated at a clinic, restored by magic, or replaced with a prosthetic. In [Blood and Oil] a slashing or piercing blow can take a part off the body, augment and all.\n\nThe status sheet shows the body part by part under [Anatomy]."
     },
     "bodyBiologics": {
       "title": "Biologics",
@@ -392,7 +392,7 @@
     },
     "worldStructures": {
       "title": "Structures Under the Map",
-      "description": "Entrances on procedural maps are [walked into], not pressed. What lies behind is rolled from the world seed, the square and the tile, so one stairway always leads to the same place.\n\n- [stairs down]: any structure. Cellar, dungeon, crypt, catacombs, mine, cistern, warren, oubliette, library, forge, bunker, laboratory, shrine, tunnel, grotto, lava tube, barrow, station, salt works, cave den, temple\n- [stairs up]: things built above ground and since buried\n- [cave]: dens, frozen caves, crystal caves, fungal caves, lava tubes, sea grottoes\n- [grate]: a sewer, only in towns that declare one underneath\n- [hatch]: a patron's vault, full of money and rare weapons\n\nThe surface limits the options: ice fields hold frozen caves, a graveyard holds catacombs."
+      "description": "Entrances on procedural maps are [walked into], not pressed. What lies behind is rolled from the world seed, the square and the tile, so one stairway always leads to the same place.\n\n- [stairs down]: any structure. Cellar, dungeon, crypt, catacombs, mine, cistern, warren, oubliette, library, forge, bunker, laboratory, shrine, tunnel, grotto, lava tube, barrow, station, salt works, cave den, temple\n- [stairs up]: things built above ground and since buried\n- [cave]: dens, frozen caves, crystal caves, fungal caves, lava tubes, sea grottoes\n- [grate]: a sewer, only in towns that declare one underneath\n- [hatch]: a Holy Patron Bunker, full of money and rare weapons\n\nThe surface limits the options: ice fields hold frozen caves, a graveyard holds catacombs."
     },
     "worldHouses": {
       "title": "Houses, Inns and Shops",
@@ -688,7 +688,7 @@
     },
     "craftLoot": {
       "title": "How Loot Is Rolled",
-      "description": "Random loot is scored from [0 to 100]: the party's [median level] plus a [difficulty modifier] carried by the place. The score picks the [rarity band], from almost everything common at [0 to 20], through a balanced spread at [50], to almost everything legendary at [100].\n\nRarity is read off [price], and the same ladder colours item names everywhere.\n\nA [patron's vault] pushes the tables toward the expensive end."
+      "description": "Random loot is scored from [0 to 100]: the party's [median level] plus a [difficulty modifier] carried by the place. The score picks the [rarity band], from almost everything common at [0 to 20], through a balanced spread at [50], to almost everything legendary at [100].\n\nRarity is read off [price], and the same ladder colours item names everywhere.\n\nA [Holy Patron Bunker] pushes the tables toward the expensive end."
     },
     "craftContainers": {
       "title": "Containers",
@@ -720,7 +720,7 @@
     },
     "galaxyPatrons": {
       "title": "Patron Worlds",
-      "description": "Some worlds in other galaxies are named after the people who paid for the game. They are habitable, they orbit exotic objects, they sit in [9 planet systems] where no two planets share a type, and the star map lists them under [Patrons].\n\nEach of those people also owns a [hatch] on exactly one world map square. It cannot be dismantled and nothing grows over it. Going down opens their [vault]: a great hall with strongrooms and a deep back chamber, with the loot tables weighted to the expensive end.\n\nHatch locations are [encrypted] in the game data."
+      "description": "Some worlds in other galaxies are named after the people who paid for the game. They are habitable, they orbit exotic objects, they sit in [9 planet systems] where no two planets share a type, and the star map lists them under [Patrons].\n\nEach of those people also owns a [hatch] on exactly one world map square. It cannot be dismantled and nothing grows over it. Going down opens their [Holy Patron Bunker]: a great hall with strongrooms and a deep back chamber, with the loot tables weighted to the expensive end.\n\nHatch locations are [encrypted] in the game data."
     },
     "galaxySky": {
       "title": "The Night Sky",

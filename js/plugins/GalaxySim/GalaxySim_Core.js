@@ -3614,11 +3614,90 @@
   let _shipControlsTab = "current";
   let _shipControlsFilter = "";
   let _shipControlsKeyHandler = null;
+  // The tabs in the order the number keys, Tab and the shoulder buttons walk.
+  const SC_TABS = ["current", "bookmarks", "catalog", "patrons", "life", "spaceports", "galaxies"];
 
   function isShipControlsOpen() {
     return !!_shipControlsOverlay;
   }
   window.GalaxySim.isShipControlsOpen = isShipControlsOpen;
+
+  // THE PANEL OWNS THE PAD WHILE IT IS UP.
+  //
+  // It is a DOM overlay over a Scene_Map that never went away, and it only
+  // ever answered the mouse and a few keys: the d-pad and the stick went
+  // straight through to the map and walked the character around the bridge
+  // underneath it. So the map is held still while it is open - the player
+  // cannot move, the menu is not called - and the panel is walked with the
+  // same focus ring every other DOM overlay wears (window.CCNav).
+  if (typeof Scene_Map !== "undefined" && Scene_Map.prototype) {
+    const _GS_Scene_Map_update = Scene_Map.prototype.update;
+    Scene_Map.prototype.update = function () {
+      if (isShipControlsOpen()) {
+        updateShipControlsInput();
+        return;
+      }
+      if (_GS_Scene_Map_update) _GS_Scene_Map_update.call(this);
+    };
+    const _GS_Scene_Map_updateCallMenu = Scene_Map.prototype.updateCallMenu;
+    Scene_Map.prototype.updateCallMenu = function () {
+      if (isShipControlsOpen()) { this.menuCalling = false; return; }
+      if (_GS_Scene_Map_updateCallMenu) _GS_Scene_Map_updateCallMenu.call(this);
+    };
+  }
+  if (typeof Game_Player !== "undefined" && Game_Player.prototype) {
+    const _GS_Game_Player_canMove = Game_Player.prototype.canMove;
+    Game_Player.prototype.canMove = function () {
+      if (isShipControlsOpen()) return false;
+      return _GS_Game_Player_canMove ? _GS_Game_Player_canMove.call(this) : true;
+    };
+  }
+
+  function switchShipControlsTab(delta) {
+    const at = SC_TABS.indexOf(_shipControlsTab);
+    _shipControlsTab = SC_TABS[((at < 0 ? 0 : at) + delta + SC_TABS.length) % SC_TABS.length];
+    _shipControlsFilter = "";
+    if (window.SoundManager && window.SoundManager.playCursor) SoundManager.playCursor();
+    renderShipControls();
+  }
+
+  // One frame of pad and keyboard input, read off RMMZ's own Input so the
+  // d-pad, the stick (Core/AnalogStickInput folds it into the directions),
+  // the arrows and WASD all do the same thing:
+  //   directions      walk the focus ring over every button on the panel
+  //   A / Enter       press the one that is lit
+  //   B / Escape      close the panel
+  //   L1 / R1, Tab    previous / next tab
+  function updateShipControlsInput() {
+    if (!_shipControlsOverlay || typeof Input === "undefined") return;
+    const nav = window.CCNav;
+    const typing = !!(nav && nav.typing && nav.typing());
+    if (!typing && (Input.isTriggered("cancel") || TouchInput.isCancelled())) {
+      closeShipControls();
+      return;
+    }
+    if (!typing) {
+      const dir = nav && nav.railDir ? nav.railDir()
+        : (Input.isTriggered("pageup") ? -1 : Input.isTriggered("pagedown") ? 1 : 0);
+      if (dir) { switchShipControlsTab(dir); return; }
+    }
+    if (!nav) return;
+    if (nav._root !== _shipControlsOverlay) nav.attach(null, _shipControlsOverlay, { boards: false });
+    if (!nav.active()) nav.enter("right");
+    if (nav.update()) {
+      scrollShipControlsFocus();
+      return;
+    }
+    nav.paint();
+  }
+
+  // The lit button, brought into view inside whichever list is scrolling it.
+  function scrollShipControlsFocus() {
+    const el = _shipControlsOverlay && _shipControlsOverlay.querySelector(".cc-nav-focus");
+    if (el && typeof el.scrollIntoView === "function") {
+      try { el.scrollIntoView({ block: "nearest" }); } catch (e) { /* no layout */ }
+    }
+  }
 
   // Lock map mouse / touch controls so the character does not move when controls are open
   if (typeof Scene_Map !== "undefined" && Scene_Map.prototype) {
@@ -3733,7 +3812,7 @@
         user-select: none;
         border: none;
         border-radius: 6px 6px 0 0;
-        background: var(--bg-secondary-hover, #232a3b);
+        background: var(--bg-black-translucent-96, #000);
         color: var(--text-text-alt-4, #9ca3af);
         font-family: var(--font-ui, sans-serif);
         transition: color 0.12s;
@@ -3742,7 +3821,7 @@
         color: var(--border-focus-hover, #ffd700);
       }
       .gx-sc-tab.active {
-        background: var(--bg-secondary-hover, #232a3b);
+        background: var(--bg-black-translucent-96, #000);
         color: var(--text-primary-hover, #f3f4f6);
         font-weight: bold;
         box-shadow: inset 0 0 0 2px var(--border-focus-hover, #ffd700);
@@ -4320,8 +4399,7 @@
       return;
     }
 
-    const validTabs = ["current", "bookmarks", "catalog", "patrons", "life", "spaceports", "galaxies"];
-    if (initialTab && validTabs.includes(initialTab)) {
+    if (initialTab && SC_TABS.includes(initialTab)) {
       _shipControlsTab = initialTab;
       _shipControlsFilter = "";
     }
@@ -4374,23 +4452,19 @@
         e.stopPropagation();
         closeShipControls();
       } else if (!document.activeElement || document.activeElement.tagName !== "INPUT") {
-        const tabs = ["current", "bookmarks", "catalog", "patrons", "life", "spaceports", "galaxies"];
+        // Tab and the shoulder buttons are read off Input once a frame (see
+        // updateShipControlsInput); here it only has to keep the browser from
+        // moving its own focus.
         if (e.key >= "1" && e.key <= "7") {
           const idx = parseInt(e.key, 10) - 1;
-          if (tabs[idx]) {
-            _shipControlsTab = tabs[idx];
+          if (SC_TABS[idx]) {
+            _shipControlsTab = SC_TABS[idx];
             _shipControlsFilter = "";
             if (window.SoundManager && window.SoundManager.playCursor) SoundManager.playCursor();
             renderShipControls();
           }
         } else if (e.key === "Tab") {
           e.preventDefault();
-          const curIdx = tabs.indexOf(_shipControlsTab);
-          const nextIdx = (curIdx + (e.shiftKey ? -1 : 1) + tabs.length) % tabs.length;
-          _shipControlsTab = tabs[nextIdx];
-          _shipControlsFilter = "";
-          if (window.SoundManager && window.SoundManager.playCursor) SoundManager.playCursor();
-          renderShipControls();
         }
       }
     };
@@ -4428,8 +4502,12 @@
       _shipControlsKeyHandler = null;
     }
     if (_shipControlsOverlay) {
+      if (window.CCNav && window.CCNav._root === _shipControlsOverlay) window.CCNav.detach();
       _shipControlsOverlay.remove();
       _shipControlsOverlay = null;
+      // The press that closed it must not reach the map it closed over as a
+      // fresh one: Escape would open the menu, A would talk to the helm again.
+      if (typeof Input !== "undefined" && Input.clear) Input.clear();
       if (!silent && window.SoundManager && window.SoundManager.playCancel) {
         SoundManager.playCancel();
       }
@@ -4534,7 +4612,7 @@
       <div class="npc-close-btn gx-sc-close-btn" id="gx-ship-controls-close" data-sc-close title="${T('Galaxy.hud.close')}">&times;</div>
 
       <div class="npc-tab-bar gx-sc-tab-bar">
-        <div class="npc-tab-hint gx-sc-tab-hint">1-7 / TAB</div>
+        ${(window.CCNav && window.CCNav.padInHand && window.CCNav.padInHand()) ? "" : `<div class="npc-tab-hint gx-sc-tab-hint">1-7 / TAB</div>`}
         <button class="npc-tab gx-sc-tab ${_shipControlsTab === 'current' ? 'active' : ''}" data-sc-tab="current">
           ${T('Galaxy.shipControls.tabCurrentSystem')} <span class="gx-sc-cat-count">${currentBodiesCount}</span>
         </button>
@@ -4625,6 +4703,8 @@
 
     renderShipControlsContent();
     attachShipControlsEvents();
+    // The markup was just rebuilt under the focus ring; put it back.
+    if (window.CCNav && window.CCNav._root === _shipControlsOverlay) window.CCNav.paint();
   }
 
   function renderShipControlsContent() {

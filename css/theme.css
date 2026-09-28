@@ -1246,7 +1246,7 @@
     text-align: center;
     margin: 0 0 16px 0;
     text-shadow: 1px 1px 1px var(--bg-primary-hover-translucent-35);
-    border-bottom: 2px double var(--border-primary-hover-translucent-15);
+    border-bottom: none;
     padding-bottom: 8px;
     letter-spacing: 1px;
 }
@@ -1255,7 +1255,7 @@
     font-family: var(--font-ui);
     font-size: var(--fs-title);
     font-weight: bold;
-    color: var(--text-disabled);
+    color: var(--text-detail-heading);
     margin-bottom: 12px;
     padding-bottom: 4px;
 }
@@ -1754,14 +1754,13 @@
    thumbnails' own clicks. */
 .cc-skins-hint .cc-key-chip {
     flex: 0 0 auto;
-    padding: 3px 8px;
+    padding: 0 4px;
     font-size: var(--fs-label);
     font-weight: bold;
     letter-spacing: 0.06em;
     color: var(--text-primary-hover);
     border: none;
-    border-radius: 4px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     user-select: none;
     -webkit-user-select: none;
     pointer-events: none;
@@ -3693,14 +3692,14 @@
 .cc-element-badge {
     display: inline-flex;
     align-items: center;
-    background: var(--bg-backdrop);
-    border: 1px solid var(--border-success);
-    padding: 4px 10px;
+    background: transparent;
+    border: none;
+    padding: 2px 4px;
     font-size: var(--fs-heading);
     font-weight: bold;
     color: var(--text-primary-hover);
     text-transform: uppercase;
-    box-shadow: 0 2px 4px var(--shadow-primary-hover-translucent-5);
+    box-shadow: none;
 }
 
 .cc-element-badge img {
@@ -4078,6 +4077,15 @@
     display: none;
 }
 
+/* The ONE even split. A screen whose two halves carry the same weight (the
+   status sheet, the travel confirmation) opts into this modifier instead of
+   writing a private spine + width pair of its own. */
+.book-spread--half { --spine-x: 50%; }
+.book-spread--half > .left-page,
+.book-spread--half > .right-page {
+    width: 50%;
+}
+
 /* SkillMaster full-page list mode: left page spans the whole spread, no center crease. */
 .book-spread.skill-fullpage::before {
     display: none;
@@ -4152,7 +4160,7 @@
     grid-column: 1 / -1;
     margin: 10px 0 2px 0;
     font-family: var(--font-ui);
-    font-size: calc(var(--fs-caption) * 1.2);
+    font-size: var(--fs-heading);
     font-weight: bold;
     letter-spacing: 1.4px;
     text-transform: uppercase;
@@ -6754,6 +6762,9 @@
     line-height: 1.35;
     margin-bottom: 1px;
     font-family: var(--font-ui);
+    /* A row inside a grid track must be allowed to shrink, or a long value
+       runs off the page edge instead of wrapping (the skill tree's card). */
+    min-width: 0;
 }
 
 .inspect-spec-label { color: var(--text-text-alt-4); }
@@ -6770,6 +6781,9 @@
 .inspect-spec-value {
     font-weight: bold;
     color: var(--text-success-active);
+    min-width: 0;
+    text-align: right;
+    overflow-wrap: anywhere;
 }
 
 /* A parameter the item grants or takes away. The two are still told apart, but
@@ -7081,7 +7095,15 @@
 .page-header-bar .title {
     border-bottom: none;
     margin: 0;
-    padding: 0;
+    /* The Back stamp is absolute at the left edge; a long centred title used
+       to run underneath it ("l Workbench"). Symmetric side padding keeps the
+       title centred and clear of the stamp and of anything pinned right. */
+    padding: 0 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* A shorter header for a page whose heading shares the room with something
@@ -7579,11 +7601,11 @@
 }
 
 .cc-party-card {
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     border: none;
     border-radius: 6px;
     padding: 12px 16px;
-    box-shadow: 0 4px 10px var(--shadow-primary-hover-translucent-5);
+    box-shadow: none;
     position: relative;
     transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom;
     box-sizing: border-box;
@@ -7718,16 +7740,15 @@
 }
 
 .cc-inv-chip {
-    color: var(--text-success-active);
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 3px 8px 3px 4px;
-    border: 1px solid var(--border-accent-hover-translucent-5);
-    background: var(--bg-primary-hover-translucent-35);
+    padding: 0 2px;
+    border: none;
+    background: transparent;
     font-family: var(--font-ui);
     font-size: 0.96rem;
-    color: var(--text-pure-white);
+    color: var(--text-success-active);
 }
 
 .cc-inv-chip .cc-inv-name {
@@ -8112,9 +8133,9 @@
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    border: 1px solid var(--border-primary-hover-translucent-15);
+    border: 1px solid transparent;
     border-radius: 3px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     cursor: pointer;
     transition: border-color 0.15s;
 }
@@ -8312,8 +8333,8 @@
     padding: 10px 14px;
     margin-bottom: 8px;
     border-radius: 4px;
-    border: 1px solid var(--border-secondary-hover-translucent-15);
-    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid transparent;
+    background: transparent;
     cursor: pointer;
     transition: 0.2s ease; transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom;
 }
@@ -8378,8 +8399,8 @@
     padding: 8px 12px;
     margin-bottom: 6px;
     border-radius: 4px;
-    border: 1px solid var(--border-secondary-hover-translucent-15);
-    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid transparent;
+    background: transparent;
     cursor: pointer;
     transition: 0.2s ease; transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom;
 }
@@ -9037,7 +9058,7 @@
     justify-content: space-between;
     padding: 6px 10px;
     border-radius: 4px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     border: none;
 }
 
@@ -9501,7 +9522,7 @@
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    text-transform: uppercase;
+    text-transform: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -9540,8 +9561,8 @@
     padding: 8px 12px;
     margin-bottom: 8px;
     border-radius: 4px;
-    border: 1px solid var(--border-secondary-hover-translucent-15);
-    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid transparent;
+    background: transparent;
     cursor: pointer;
     transition: 0.2s ease; transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom;
 }
@@ -9927,7 +9948,7 @@
     padding: 6px 20px;
     border: 1px solid var(--text-primary-hover);
     border-radius: 4px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     font-family: var(--font-ui);
     font-size: 0.964em;
     cursor: pointer;
@@ -10226,9 +10247,9 @@
     flex: 1 1 200px;
     max-width: 250px;
     padding: 8px 10px;
-    border: 1px solid var(--border-focus-hover);
+    border: 1px solid transparent;
     border-radius: 4px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     text-align: left;
 }
 
@@ -10412,9 +10433,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-secondary-hover-translucent-15);
-    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    padding: 6px 2px;
     font-family: var(--font-ui);
     font-weight: bold;
     font-size: 0.928em;
@@ -10430,12 +10451,11 @@
 
 .portfolio-card {
     flex: 1;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-secondary-hover-translucent-15);
-    border-radius: 6px;
+    background: transparent;
+    border: none;
     padding: 12px;
     text-align: center;
-    box-shadow: 0 2px 6px var(--shadow-primary-hover-translucent-5);
+    box-shadow: none;
 }
 
 .card-lbl {
@@ -10452,8 +10472,8 @@
 }
 
 .asset-row {
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-secondary-hover-translucent-15);
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: 6px;
     padding: 12px 16px;
     margin-bottom: 10px;
@@ -10464,7 +10484,7 @@
 }
 
 .asset-row:hover {
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     border-color: var(--border-muted-focus);
 }
 
@@ -11024,12 +11044,11 @@
 
 .status-stat-mod-badge {
     display: inline-block;
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover);
+    background: transparent;
+    color: var(--text-primary-hover);
     font-weight: bold;
     font-size: 0.88em;
-    padding: 0 5px;
-    border-radius: 6px;
+    padding: 0 2px;
 }
 
 /* Bio Tab Styles */
@@ -11411,10 +11430,9 @@
     display: inline-flex;
     align-items: baseline;
     gap: 5px;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    border-radius: 4px;
-    padding: 3px 9px;
+    background: transparent;
+    border: none;
+    padding: 0 2px;
     font-size: 0.876em;
     line-height: 1.25;
     color: var(--text-success-active);
@@ -11435,15 +11453,14 @@
 }
 
 .bodyparts-card {
-    background: var(--bg-primary-hover-translucent-35);
-    border: 2px solid var(--text-primary-hover);
-    border-radius: 8px;
+    background: transparent;
+    border: none;
     padding: 10px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     min-height: 180px;
-    box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5);
+    box-shadow: none;
 }
 
 /* The status sheet is read as a bare page: its cards carry no plate, no rule and
@@ -12021,15 +12038,14 @@
    row: nothing selects it, it only says which part of the book you are in. */
 .topic-group-header {
     font-family: var(--font-ui);
-    font-size: var(--fs-caption);
+    font-size: var(--fs-heading);
     font-weight: bold;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text-secondary-active);
+    color: var(--text-detail-heading);
     padding: 4px 6px 3px 6px;
     margin: 14px 0 6px 0;
     border-bottom: none;
-    opacity: 0.85;
 }
 
 .topic-group-header:first-child {
@@ -12063,6 +12079,7 @@
 
 .help-title {
     font-family: var(--font-ui);
+    font-size: var(--fs-title);
     color: var(--text-primary-hover);
     margin: 0;
     text-align: left;
@@ -12357,8 +12374,8 @@
     font-size: var(--fs-caption);
     background: transparent;
     color: var(--text-text-alt-4);
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    padding: 1px 5px;
+    border: none;
+    padding: 0 2px;
     font-weight: bold;
     letter-spacing: 0.5px;
 }
@@ -12764,8 +12781,7 @@
 
 .brain-region-card {
     background: transparent;
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    border-radius: 6px;
+    border: none;
     padding: 10px;
     margin-bottom: 8px;
 }
@@ -12915,7 +12931,7 @@
     border-bottom: none;
     padding-bottom: 8px;
     margin: 0 0 10px 0;
-    font-size: 2.14em;
+    font-size: var(--fs-title);
     letter-spacing: 1px;
     text-shadow: 1px 1px 1px var(--bg-primary-hover-translucent-35);
 }
@@ -13407,8 +13423,8 @@
     padding: 5px 8px 5px 0;
     margin-bottom: 0;
     border-radius: 4px;
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid transparent;
+    background: transparent;
     cursor: pointer;
     position: relative;
     transition: 0.2s ease; transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom;
@@ -14716,18 +14732,20 @@
    of this file, so nothing is restated here but the split. The list is short
    rows and the map is the content, so the wide half is the map's: 58/42 the
    other way round, and the binding spine moves with it. */
+/* The even split: the list (or the journey confirmation) carries the same
+   weight as the map, so neither half is left mostly empty. */
 .travel-book-spread {
     overflow: hidden;
-    --spine-x: 42%;
+    --spine-x: 50%;
 }
 
 .travel-left-page {
-    width: 42%;
+    width: 50%;
     justify-content: flex-start;
 }
 
 .travel-right-page {
-    width: 58%;
+    width: 50%;
     padding: 0;
     justify-content: flex-start;
 }
@@ -15529,11 +15547,15 @@
     margin-top: 2px;
 }
 
+/* Price and the picked line's steppers share one row, so picking a line never
+   makes it taller than its neighbours. */
 .item-card-right {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    white-space: nowrap;
 }
 
 .item-card-price {
@@ -15564,12 +15586,13 @@
     align-items: center;
     justify-content: flex-end;
     gap: 6px;
-    margin-top: 4px;
+    margin: 0;
 }
 
 .sell-qty-step {
     width: 22px;
     height: 22px;
+    margin: -2px 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15993,28 +16016,29 @@
 }
 
 .action-btn.confirm {
-    background: var(--text-secondary-active);
-    color: var(--bg-secondary-hover);
+    background: transparent;
+    color: var(--text-primary-hover);
     border: 1px solid var(--text-primary-hover);
 }
 
 .action-btn.confirm:hover,
 .action-btn.confirm.selected {
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover);
-    box-shadow: 0 3px 10px var(--shadow-gold-amber-50);
-    filter: brightness(1.06);
+    background: transparent;
+    color: var(--text-primary-hover);
+    border-color: var(--text-primary-hover);
+    box-shadow: none;
+    filter: brightness(1.12);
 }
 
 .action-btn.cancel {
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     color: var(--text-success-active);
     border: 1px solid var(--border-muted-focus);
 }
 
 .action-btn.cancel:hover,
 .action-btn.cancel.selected {
-    background: var(--bg-tertiary-focus-translucent-45);
+    background: transparent;
     border-color: var(--text-primary-hover);
 }
 
@@ -16138,8 +16162,8 @@
 }
 
 .choice-card {
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-primary-hover-translucent-15);
+    background: transparent;
+    border: 1px solid transparent;
     padding: 12px 16px;
     cursor: pointer;
     font-family: var(--font-ui);
@@ -16231,7 +16255,7 @@
 .option-group-header {
     font-family: var(--font-ui);
     font-weight: 700;
-    font-size: var(--fs-caption);
+    font-size: var(--fs-heading);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-detail-heading);
@@ -16536,6 +16560,13 @@
     border: none;
     box-shadow: none;
     flex-grow: 0;
+}
+
+/* `.item-inspect` spreads its children with space-between, and the lore above
+   no longer grows, so the explanation and current value sank to the foot of the
+   page. Stack the whole panel from the top instead. */
+#options-inspect:not(.item-inspect--empty) {
+    justify-content: flex-start;
 }
 
 /* Preferences spread: the option list needs less room than the inspect page,
@@ -19478,7 +19509,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: var(--fs-title); line-height: 1; font-weight: bold;
       color: var(--text-text-alt-4);
-      background: var(--bg-primary-hover-translucent-35);
+      background: transparent;
       border: 1px solid var(--border-primary-hover-translucent-15);
       border-radius: 50%;
       cursor: pointer;
@@ -19626,9 +19657,9 @@
     .npc-badge-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; }
     .npc-badge {
       display: inline-flex; align-items: center; gap: 3px;
-      background: var(--bg-primary-hover-translucent-35);
-      border: 1px solid var(--border-primary-hover-translucent-15);
-padding: 2px 8px; font-size: var(--fs-heading);
+      background: transparent;
+      border: none;
+      padding: 0 2px; font-size: var(--fs-heading);
       color: var(--text-text-alt-4);
     }
     .npc-r-sep { border: none; border-top: 1px solid var(--border-primary-hover-translucent-15); margin: 6px 0; }
@@ -19701,7 +19732,7 @@ padding: 2px 8px; font-size: var(--fs-heading);
     /* The spread of a conversation: the log and what was typed read down the
        left, the verbs stand in their own column on the right. */
     .npc-chat-panel { display: flex; flex-direction: row; flex: 1; min-height: 0; min-width: 0; }
-    .npc-chat-main { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; min-width: 0; max-width: 580px; }
+    .npc-chat-main { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; min-width: 0; }
     .npc-chat-header {
       display: flex; justify-content: space-between; align-items: center;
       padding: 10px 16px 9px;
@@ -19739,9 +19770,12 @@ padding: 2px 8px; font-size: var(--fs-heading);
     }
     /* Bubbles must never be squeezed by the column flex layout, they have to
        overflow so the log scrolls instead of clipping the newest message. */
+    /* The log fills its column right up to the verbs, so a line is held to a
+       reading measure by the bubble, not by capping the column and leaving a
+       dead band between the two. */
     .npc-bubble {
       flex: 0 0 auto;
-      max-width: 84%; padding: 9px 13px; border-radius: 10px;
+      max-width: min(84%, 62ch); padding: 9px 13px; border-radius: 10px;
       font-size: var(--fs-body); line-height: 1.55; word-break: break-word;
     }
     /* The party's own line. It used to be stamped as a solid gold plate with
@@ -19807,10 +19841,6 @@ padding: 2px 8px; font-size: var(--fs-heading);
     }
     .npc-chat-modal {
       width: min(560px, 82%);
-      background: var(--bg-secondary-hover);
-      border: 4px double var(--text-primary-hover);
-      border-radius: 5px;
-      box-shadow: 0 24px 60px var(--shadow-black-translucent-45);
       padding: 16px 18px 14px;
       display: flex; flex-direction: column; gap: 12px;
     }
@@ -19831,6 +19861,13 @@ padding: 2px 8px; font-size: var(--fs-heading);
       user-select: text !important; -webkit-user-select: text !important;
     }
     .npc-chat-modal-input:focus { border-color: var(--border-focus-hover); }
+    /* Single-line uses of the modal input (the rename field, the creed
+       filter): one row tall, no textarea minimum. */
+    input.npc-chat-modal-input {
+      min-height: 0; height: auto;
+      padding: 8px 10px; margin-bottom: 6px;
+    }
+    .npc-hidden { display: none !important; }
     .npc-chat-modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
     .npc-chat-modal-cancel, .npc-chat-modal-send {
       padding: 8px 18px; border-radius: 4px;
@@ -19887,16 +19924,29 @@ padding: 2px 8px; font-size: var(--fs-heading);
       fill: var(--text-primary-hover); font-family: var(--font-ui); font-weight: bold;
       text-anchor: middle; dominant-baseline: central;
     }
+    /* The SVG is scaled whole by --npc-web-zoom, so past 1:1 the names and the
+       meeting tallies are divided back by it: zooming in spreads the web out
+       while they keep their size on screen, shrinking against the graph. */
+    .npc-web-svg {
+      --npc-web-text-scale: max(1, var(--npc-web-zoom, 1));
+      /* Derived type tokens for the zoomed stage: the division lives here
+         once, so every rule below still sizes from a --fs- token. */
+      --fs-web-label: calc(var(--fs-label) / var(--npc-web-text-scale, 1));
+      --fs-web-caption: calc(var(--fs-caption) / var(--npc-web-text-scale, 1));
+    }
     .npc-web-label {
-      fill: var(--text-primary-hover); font-family: var(--font-ui); font-size: var(--fs-label);
+      fill: var(--text-primary-hover); font-family: var(--font-ui);
+      font-size: var(--fs-web-label);
       text-anchor: middle; pointer-events: none;
     }
     .npc-web-node--center .npc-web-label { font-weight: bold; fill: var(--border-focus-hover); }
     .npc-web-tally circle {
+      r: calc(12px / var(--npc-web-text-scale, 1));
       fill: var(--bg-secondary-hover); stroke: var(--border-primary-hover-translucent-15); stroke-width: 1;
     }
     .npc-web-tally text {
-      fill: var(--text-text-alt-4); font-family: var(--font-ui); font-size: var(--fs-caption);
+      fill: var(--text-text-alt-4); font-family: var(--font-ui);
+      font-size: var(--fs-web-caption);
       text-anchor: middle; dominant-baseline: central;
     }
     /* Web legend */
@@ -19910,11 +19960,11 @@ padding: 2px 8px; font-size: var(--fs-heading);
     .npc-steal-item {
       display: flex; align-items: center; gap: 7px;
       padding: 8px 11px;
-      border: 1px solid var(--border-primary-hover-translucent-15);
+      border: 1px solid transparent;
       border-radius: 4px; margin-bottom: 4px;
       cursor: pointer; font-size: var(--fs-body);
       color: var(--text-primary-hover);
-      background: var(--bg-primary-hover-translucent-35);
+      background: transparent;
     }
     .npc-steal-item:hover { border-color: var(--border-focus-hover); }
     .npc-steal-item.done { opacity: 0.42; cursor: default; pointer-events: none; }
@@ -20038,7 +20088,7 @@ padding: 2px 8px; font-size: var(--fs-heading);
       color: var(--text-text-alt-4);
       border: none;
       border-radius: 4px;
-      background: var(--bg-primary-hover-translucent-35);
+      background: transparent;
       user-select: none; -webkit-user-select: none;
       pointer-events: none;
       white-space: nowrap;
@@ -20072,13 +20122,13 @@ padding: 2px 8px; font-size: var(--fs-heading);
       transition: background 0.1s, color 0.1s;
     }
     .npc-focus-chip:hover {
-      background: var(--bg-primary-hover-translucent-35);
+      border-color: var(--text-primary-hover);
     }
     .npc-focus-chip.on {
       font-weight: bold;
       color: var(--text-primary-hover);
       border-color: var(--text-primary-hover);
-      background: var(--bg-primary-hover-translucent-35);
+      background: transparent;
     }
     /* The shared .char-switch-hint sits at 0.732rem/0.7 opacity, which this
        panel's black page turns into a smudge. */
@@ -20095,6 +20145,7 @@ padding: 2px 8px; font-size: var(--fs-heading);
       display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 6px;
       padding: 10px 14px;
       border-top: none;
+      border-left: 1px solid var(--border-primary-hover-translucent-15);
       /* A column of its own beside the log: a fixed measure so the verbs keep
          one edge however long their labels run, and never so wide that the
          conversation is squeezed into a gutter. */
@@ -20202,9 +20253,9 @@ padding: 2px 8px; font-size: var(--fs-heading);
       font-size: var(--fs-display); font-weight: bold;
       font-family: var(--font-ui);
       border: 5px double var(--text-primary-hover);
-      background: var(--bg-primary-hover-translucent-35);
+      background: transparent;
       color: var(--text-primary-hover);
-      box-shadow: inset 0 0 24px var(--border-primary-hover-translucent-15);
+      box-shadow: none;
       flex-shrink: 0;
       user-select: none; -webkit-user-select: none;
     }
@@ -20285,6 +20336,9 @@ padding: 2px 10px;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 6px;
     }
+    /* Earth, then the Omega Tower: one heading over each half of the cards. */
+    .npc-wiki-realm-hdr { margin: 6px 0 4px; }
+    .npc-wiki-grid--cards + .npc-wiki-realm-hdr { margin-top: 18px; }
     .npc-wiki-card {
       display: flex; flex-direction: row; align-items: center; gap: 8px;
       padding: 5px 10px;
@@ -20459,10 +20513,9 @@ padding: 2px 10px;
     .npc-cc-note {
       font-size: var(--fs-body); font-weight: bold;
       color: var(--text-primary-hover);
-      background: var(--bg-primary-hover-translucent-35);
-      border: 1px solid var(--border-primary-hover-translucent-15);
-      border-radius: 4px;
-      padding: 3px 9px; margin: 0 0 6px;
+      background: transparent;
+      border: none;
+      padding: 3px 2px; margin: 0 0 6px;
       display: inline-block;
     }
     /* A level the character cannot afford yet: still readable, not clickable. */
@@ -20501,16 +20554,15 @@ padding: 2px 10px;
 .mod-slot {
     display: flex; align-items: center; gap: 10px;
     padding: 8px 12px;
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid transparent;
+    background: transparent;
     cursor: pointer; -webkit-user-select: none; user-select: none;
-    transition: border-color 0.12s, box-shadow 0.12s;
+    transition: border-color 0.12s;
 }
 .mod-slot:hover,
 .mod-slot.selected {
     border-color: var(--border-focus-hover);
-    box-shadow: 0 0 0 1.5px var(--border-focus-hover);
-    background: var(--bg-focus-hover-translucent-15);
+    background: transparent;
 }
 .mod-slot-order {
     font-size: 0.82em; color: var(--text-text-alt-4);
@@ -21532,6 +21584,17 @@ padding: 2px 10px;
 
 .rf-label {
     flex: 1;
+    /* The refuel rows are .item-slot rows but carry their text in .rf-label,
+       not .item-slot-name, so they inherited the browser default black and
+       vanished on the dark presets. Same ink as .item-slot-name. */
+    font-family: var(--font-ui);
+    font-weight: 700;
+    color: var(--text-success-active);
+}
+
+.rf-option-row:hover .rf-label,
+.rf-option-row.selected .rf-label {
+    color: var(--text-primary-hover);
 }
 
 .rf-cost {
@@ -22218,9 +22281,9 @@ padding: 2px 10px;
     font-weight: bold;
     font-family: var(--font-ui);
     color: var(--text-primary-hover);
-    border: 2px solid var(--border-focus-hover);
+    border: 1px solid var(--border-focus-hover);
     border-radius: 6px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     cursor: pointer;
     transition: 0.18s ease; transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom;
     user-select: none;
@@ -23257,21 +23320,17 @@ body, canvas {
 }
 
 /* ==========================================================================
-   NPCConversation, NPC thought bubble overlay
+   Map tip plate: the one look shared by the hover name (MousePan.js) and the
+   NPC thought bubble (NPCConversation.js). See-through, no pointer tail.
    ========================================================================== */
+.map-tip,
 .npc-thought-bubble {
     position: fixed;
     display: none;
     pointer-events: none;
-    z-index: 480;
     box-sizing: border-box;
-    /* Size to content (capped by max-width) rather than shrink-to-fit against the
-       viewport edge, so the bubble keeps its width and never reflows when the NPC
-       is off-screen left/right. */
-    width: max-content;
-    max-width: 260px;
     padding: 8px 14px;
-    background: var(--text-danger-hover);
+    background: var(--map-tip-bg);
     border: 2px solid var(--border-subtle);
     border-radius: 10px;
     outline: 1px solid var(--border-subtle-translucent-40);
@@ -23279,27 +23338,42 @@ body, canvas {
     color: var(--text-primary-hover);
     font-family: var(--font-ui);
     font-style: normal;
-    font-size: var(--fs-body);
+    font-weight: bold;
     line-height: 1.4;
     text-align: center;
+    box-shadow: 0 3px 8px var(--shadow-black-translucent-25);
+}
+
+/* The hover name: sized and placed by Window_EventHover, anchored by its
+   bottom edge so a short plate still sits right over the event. */
+.map-hover-tip {
+    z-index: 495;
+    overflow: hidden;
+    white-space: nowrap;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(-100%);
+}
+
+/* ==========================================================================
+   NPCConversation, NPC thought bubble overlay
+   ========================================================================== */
+.npc-thought-bubble {
+    z-index: 480;
+    /* Size to content (capped by max-width) rather than shrink-to-fit against the
+       viewport edge, so the bubble keeps its width and never reflows when the NPC
+       is off-screen left/right. */
+    width: max-content;
+    max-width: 260px;
+    font-size: var(--fs-body);
     white-space: normal;
     word-break: break-word;
-    box-shadow: 0 3px 8px var(--shadow-black-translucent-25);
     opacity: 0;
     transform: translateX(-50%) translateY(4px);
     transition: opacity 0.35s ease-out, transform 0.35s ease-out;
 }
 .npc-thought-bubble.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 .npc-thought-bubble.fading  { opacity: 0; transform: translateX(-50%) translateY(-6px); }
-.npc-thought-bubble::after {
-    content: '';
-    position: absolute;
-    left: 50%; bottom: -7px;
-    width: 0; height: 0;
-    margin-left: -6px;
-    border: 6px solid transparent;
-    border-top-color: var(--border-subtle);
-}
 
 /* ==========================================================================
    Bestiary, creature lexicon grid (left-page viewport)
@@ -24190,9 +24264,9 @@ body.ascii-ui-active .ascii-passthrough {
     padding: 10px 12px;
     box-sizing: border-box;
     cursor: pointer;
-    border: 1px solid var(--border-primary-hover-translucent-15);
+    border: 1px solid transparent;
     border-radius: 4px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     transition: border-color 0.12s ease, background 0.12s ease;
 }
 
@@ -24390,11 +24464,10 @@ body.ascii-ui-active .ascii-passthrough {
 }
 
 .dz-card {
-    border: 1px solid var(--border-primary-hover-translucent-15);
+    border: none;
     border-left: 4px solid var(--text-primary-hover);
-    border-radius: 6px;
     padding: 8px 10px;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
 }
 
 .dz-card.dz-sev-severe { border-left-color: var(--accent-gold-pure); }
@@ -24491,13 +24564,13 @@ body.ascii-ui-active .ascii-passthrough {
     gap: 6px;
     font-size: 0.856em;
     padding: 2px 4px;
-    border-radius: 4px;
-    opacity: 0.55;
 }
 
-.dz-remedy.dz-have {
-    opacity: 1;
-    background: var(--border-primary-hover-translucent-15);
+/* A remedy the party holds is marked by its count turning gold, not by a
+   plate; the unheld ones stay at full ink (no grey text). */
+.dz-remedy.dz-have .dz-remedy-have {
+    color: var(--text-primary-hover);
+    font-weight: bold;
 }
 
 .dz-remedy-none { font-style: normal; opacity: 0.7; }
@@ -25781,11 +25854,12 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 
 /* How many copies the working deck has already taken off this card, which is
    the one number a deck builder is read for. */
+/* The deck count sits in the cell's caption row with the copy count and the
+   kind, instead of a plated corner stamp that landed on top of the kind. */
 .cgc-indeck {
-  position: absolute; right: 0; top: 0; z-index: 3;
-  padding: 1px var(--sp-2); border-bottom-left-radius: 6px;
-  background: var(--plate-inset-soft); color: var(--text-primary-hover);
+  color: var(--text-primary-hover);
   font-size: calc(var(--fs-caption) * 0.78); font-weight: bold;
+  white-space: nowrap;
 }
 
 /* ---- the dossier ----
@@ -26766,17 +26840,10 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     align-items: center; z-index: 1000; box-sizing: border-box; padding: 24px;
     background: var(--gradient-33); user-select: none; -webkit-user-select: none;
 }
-#arena-ui-container .arena-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 12px; gap: 12px;
-}
-#arena-ui-container .arena-back {
-    font-family: var(--font-ui); font-size: 0.915rem; background: var(--text-primary-hover);
-    color: var(--bg-panel); border-radius: 4px; padding: 4px 10px; cursor: pointer;
-    font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;
-    border: 1px solid var(--border-subtle);
-}
-#arena-ui-container .arena-back:hover { filter: brightness(1.12); }
+/* The arena header is the shared .page-header-bar with the one .back-button;
+   its private plated BACK chip is gone. */
+#arena-ui-container .arena-action-btn--wide { width: 85%; }
+#arena-ui-container .arena-action-btn--push { margin-top: auto; }
 #arena-ui-container .arena-subtitle {
     font-family: var(--font-ui); font-size: 0.952rem; color: var(--text-info);
     margin: -6px 0 10px 0; letter-spacing: 0.4px;
@@ -26787,15 +26854,15 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 }
 #arena-ui-container .arena-row {
     display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-subtle-translucent-25); border-radius: 6px;
+    background: transparent;
+    border: 1px solid transparent; border-radius: 6px;
     cursor: pointer; font-family: var(--font-ui);
     transition: border-color 0.15s ease, background 0.15s ease;
 }
 #arena-ui-container .arena-row:hover { border-color: var(--text-primary-hover); }
 #arena-ui-container .arena-row.selected {
     border-color: var(--text-primary-hover);
-    background: var(--bg-tertiary-focus-translucent-45);
+    background: transparent;
 }
 #arena-ui-container .arena-row-text { flex: 1; min-width: 0; }
 #arena-ui-container .arena-row-label {
@@ -26834,8 +26901,8 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     text-transform: uppercase; letter-spacing: 0.5px;
 }
 #arena-ui-container .arena-info-card {
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-subtle-translucent-25); border-radius: 6px;
+    background: transparent;
+    border: none;
     padding: 12px; text-align: left; font-size: var(--fs-detail-body); line-height: 1.5;
     color: var(--text-success-active); box-sizing: border-box; width: 100%;
 }
@@ -26843,8 +26910,8 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 #arena-ui-container .arena-info-card ul { margin: 0; padding-left: 18px; }
 #arena-ui-container .arena-member {
     display: flex; align-items: center; gap: 12px; padding: 8px 10px;
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-subtle-translucent-25); border-radius: 6px;
+    background: transparent;
+    border: none;
 }
 #arena-ui-container .arena-member-name {
     font-family: var(--font-ui); font-weight: bold; color: var(--text-primary-hover); font-size: 1.15rem;
@@ -26852,14 +26919,14 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 #arena-ui-container .arena-member-meta { font-size: 0.96rem; color: var(--text-text-alt-2); }
 #arena-ui-container .arena-action-btn {
     display: flex; justify-content: center; align-items: center; padding: 12px 24px;
-    background: var(--text-primary-hover); color: var(--bg-panel);
-    border: 1px solid var(--border-subtle); border-radius: 6px; cursor: pointer;
-    font-weight: bold; text-transform: uppercase; font-family: var(--font-ui);
-    font-size: 1.322rem; box-shadow: 0 3px 6px var(--shadow-black-translucent-25);
-    transition: filter 0.15s ease, box-shadow 0.15s ease; box-sizing: border-box;
+    background: transparent; color: var(--text-primary-hover);
+    border: 1px solid var(--border-focus-hover); border-radius: 6px; cursor: pointer;
+    font-weight: bold; font-family: var(--font-ui);
+    font-size: 1.322rem; box-shadow: none;
+    transition: border-color 0.15s ease; box-sizing: border-box;
 }
 #arena-ui-container .arena-action-btn:hover {
-    filter: brightness(1.12); box-shadow: 0 0 10px var(--shadow-gold-amber-50);
+    border-color: var(--text-primary-hover);
 }
 #arena-ui-container .arena-preview {
     width: 100%; aspect-ratio: 16 / 9; object-fit: cover;
@@ -27799,40 +27866,51 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
    The spell-draw page, scoped to #menu-container. Was injected as
    <style id="grimoire-style"> on first open.
    ========================================================================== */
-#menu-container .grim-list { display:flex; flex-direction:column; gap:8px; overflow-y:auto; padding-right:6px; flex-grow:1; }
+/* The grimoire spread reads top-down on both leaves: the reader list under
+   its heading, the offers filling the right page from the top instead of
+   settling at its foot. The fade is a class, never a style write on the
+   shared container id. */
+#menu-container.grim-fade { opacity: 0; transition: opacity .22s ease-out; }
+#menu-container.grim-fade.grim-open { opacity: 1; }
+#menu-container.grim-fade.grim-closing { opacity: 0; pointer-events: none; }
+#menu-container .grim-page { justify-content: flex-start; }
+#menu-container .grim-blurb { margin-bottom: var(--sp-4); }
+#menu-container .grim-list { display:flex; flex-direction:column; gap:8px; overflow-y:auto; padding-right:6px; flex-grow:0; min-height:0; }
+#menu-container .right-page .grim-list { flex-grow:1; }
 #menu-container .grim-actor, #menu-container .grim-card {
-    font-family:var(--font-ui); cursor:pointer; border-radius:5px;
-    border:1.5px solid var(--border-primary-hover-translucent-15);
-    background:var(--bg-card-translucent-5);
-    transition: .15s ease; transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom; color:var(--text-primary-hover);
+    font-family:var(--font-ui); cursor:pointer;
+    border:1px solid transparent;
+    background:transparent;
+    transition: border-color .15s ease, opacity .15s ease;
+    color:var(--text-primary-hover);
 }
 #menu-container .grim-actor { padding:8px 12px; display:flex; justify-content:space-between; align-items:center; }
 #menu-container .grim-card  { padding:10px 14px; display:flex; flex-direction:column; gap:4px; }
 #menu-container .grim-actor.sel, #menu-container .grim-card.sel {
     border-color:var(--accent-gold-pure);
-    background:var(--bg-tertiary-focus-translucent-45);
-    box-shadow:0 0 8px var(--border-primary-hover-translucent-15);
+    background:transparent;
+    box-shadow:none;
 }
-#menu-container .grim-card.learned { border-color:#2e7d32; background:rgba(46,125,50,0.18); }
+#menu-container .grim-card.learned { border-color:var(--border-forest-green); }
 #menu-container .grim-card.blocked { opacity:0.45; }
 #menu-container .grim-card.blocked.sel { opacity:0.7; }
-#menu-container .grim-blocked { font-size:0.798em; text-transform:uppercase; letter-spacing:0.5px; font-style: normal; opacity:0.9; }
+#menu-container .grim-blocked { font-size:var(--fs-caption); text-transform:uppercase; letter-spacing:0.5px; font-style: normal; }
 /* the span is always in the card so it can be rewritten in place; an
    unblocked card must not pay for it with a blank row + flex gap */
 #menu-container .grim-blocked:empty { display:none; }
-#menu-container .grim-name { font-weight:bold; font-size:1.019em; display:flex; justify-content:space-between; gap:8px; }
+#menu-container .grim-name { font-weight:bold; font-size:var(--fs-body); display:flex; justify-content:space-between; gap:8px; }
 #menu-container .grim-mp   { color:var(--accent-gold-pure); font-weight:bold; }
 #menu-container .grim-desc { font-size: var(--fs-detail-prose); color: var(--text-success-active); line-height:1.35; }
 /* The base stat a spell is written in (<StatReq:>, window.SkillStatReq):
    the book will not open for a reader short of it. */
-#menu-container .grim-req  { font-size:0.82em; font-weight:bold; color:var(--accent-gold-pure); letter-spacing:0.4px; }
-#menu-container .grim-forbidden { color:#a01818; font-weight:bold; letter-spacing:0.5px; font-size:0.798em; text-transform:uppercase; }
-#menu-container .grim-empty { text-align:center; padding:40px 20px; font-style: normal; opacity:0.7; font-family:var(--font-ui); color:var(--text-primary-hover); }
-#menu-container .grim-psi { padding:10px 12px; border-radius:4px; margin-top:auto;
-    background:var(--bg-card-translucent-5);
-    border:1px solid var(--border-primary-hover-translucent-15);
-    font-family:var(--font-ui); font-size:0.87em; color:var(--text-primary-hover); }
-#menu-container .grim-psi .row { display:flex; justify-content:space-between; margin-top:4px; }
+#menu-container .grim-req  { font-size:var(--fs-caption); font-weight:bold; color:var(--accent-gold-pure); letter-spacing:0.4px; }
+#menu-container .grim-forbidden { color:var(--text-cost-bad); font-weight:bold; letter-spacing:0.5px; font-size:var(--fs-caption); text-transform:uppercase; }
+#menu-container .grim-empty { text-align:center; padding:40px 20px; font-style: normal; font-family:var(--font-ui); color:var(--text-primary-hover); }
+#menu-container .grim-psi {
+    margin-top:auto; padding-top: var(--sp-3);
+    background:transparent; border:none;
+    font-family:var(--font-ui); color:var(--text-primary-hover);
+}
 
 /* Esoteric and forbidden offers wear a live background so a dangerous page is
    recognisable before its name is read: violet for <Esoteric>, ember red for
@@ -27877,7 +27955,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     0%   { transform: translateX(0); }
     100% { transform: translateX(400%); }
 }
-#menu-container .grim-esoteric { color:#8f6fd6; font-weight:bold; letter-spacing:0.5px; font-size:0.798em; text-transform:uppercase; }
+#menu-container .grim-esoteric { color:var(--rarity-epic); font-weight:bold; letter-spacing:0.5px; font-size:var(--fs-caption); text-transform:uppercase; }
 
 
 /* ==========================================================================
@@ -28084,10 +28162,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 .inspect-meta-grid--stacked {
     grid-template-columns: 1fr;
 }
-/* The square in the card carries no frame of its own. *//* The square only frames itself under the cursor, as a hint that it opens. */
-.item-3d-viewport--borderless:hover {
-    border-color: var(--accent-amber-glow, #d8a657);
-}
+/* The square in the card carries no frame of its own, hovered or not. */
 
 /* The piece full screen, turned by hand. */
 .item-model-fullscreen {
@@ -28428,7 +28503,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
   width: fit-content;
   border: 1px solid var(--text-primary-hover);
   border-radius: 4px;
-  background: var(--bg-primary-hover-translucent-35);
+  background: transparent;
   color: var(--text-success-active);
   cursor: pointer;
 }
@@ -30534,11 +30609,10 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 
 .ui-chip {
     font-family: var(--font-ui);
-    font-size: 0.875rem;
+    font-size: var(--fs-chip);
     line-height: 1.25;
-    padding: 3px 9px;
-    border-radius: 4px;
-    background: var(--bg-primary-hover-translucent-35);
+    padding: 0 2px;
+    background: transparent;
     border: none;
     color: var(--text-success-active);
     font-weight: bold;
@@ -33229,11 +33303,10 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 
 .aug-socket-chip {
     font-family: var(--font-ui);
-    font-size: 0.72rem;
+    font-size: var(--fs-caption);
     letter-spacing: 0.04em;
-    padding: 1px 6px;
-    border-radius: 8px;
-    background: var(--bg-primary-hover-translucent-35);
+    padding: 0 2px;
+    background: transparent;
     color: var(--text-success-active);
     white-space: nowrap;
 }
@@ -33463,8 +33536,8 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     font-family: inherit;
     font-size: var(--fs-detail-body);
     color: var(--text-detail-heading);
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-primary-hover-translucent-15);
+    background: transparent;
+    border: 1px solid var(--border-focus-hover);
     border-radius: 3px;
     cursor: pointer;
 }
@@ -33614,7 +33687,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 }
 
 .army-19 {
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     margin-bottom: 12px;
 }
 
@@ -33697,10 +33770,9 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     font-family: var(--font-ui);
     font-size: 0.892em;
     color: var(--text-primary-hover);
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     border: none;
     padding: 10px 14px;
-    border-radius: 4px;
     margin-bottom: 12px;
     line-height: 1.4;
     text-align: justify;
@@ -33841,8 +33913,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     font-size: 0.892em;
     padding: 8px;
     border: none;
-    background: var(--bg-primary-hover-translucent-35);
-    border-radius: 4px;
+    background: transparent;
     margin-top: 10px;
     color: var(--text-primary-hover);
     animation: fadeIn 0.2s ease;
@@ -33943,10 +34014,9 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     font-family: var(--font-ui);
     font-size: 0.83em;
     color: var(--text-muted-hover);
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    border-radius: 3px;
-    padding: 2px 8px;
+    background: transparent;
+    border: none;
+    padding: 0 2px;
 }
 
 .army-regiment-chip b {
@@ -34296,20 +34366,23 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     flex-direction: column;
     gap: 6px;
     padding: 12px 14px;
-    border: 1px solid var(--border-subtle);
+    border: none;
     border-radius: 4px;
     cursor: pointer;
     min-width: 0;
 }
 
+/* No frame around a card: the chosen one is told by its gold name alone. */
 .vehicle-card.selected,
 .vehicle-card:hover,
 .vehicle-card:focus {
-    border-color: var(--text-primary-hover);
+    border: none;
+    outline: none;
+    box-shadow: none;
 }
 
-.vehicle-card--broken {
-    border-color: var(--text-danger-dark);
+.vehicle-card--broken .vehicle-card-head .entity-name {
+    color: var(--text-danger-dark);
 }
 
 .vehicle-card-head {
@@ -34322,7 +34395,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 .vehicle-card-head .entity-name {
     font-size: var(--fs-heading);
     font-weight: bold;
-    color: var(--text-primary-hover);
+    color: var(--text-text-alt-13);
     margin-bottom: 0;
     flex: 1 1 auto;
     min-width: 0;
@@ -34355,11 +34428,13 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     color: var(--text-text-alt-13);
 }
 
+/* The same slim track the status sheet's anatomy grid is drawn in. */
 .vehicle-meter {
     display: block;
-    height: 5px;
+    height: 7px;
     width: 100%;
-    border: 1px solid var(--border-subtle);
+    background: var(--border-primary-hover-translucent-15);
+    border: 1px solid var(--border-primary-hover-translucent-15);
     border-radius: 3px;
     overflow: hidden;
 }
@@ -34368,9 +34443,11 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     display: block;
     height: 100%;
     width: var(--ui-bar-w, 0%);
+    border-radius: 3px;
+    transition: width 0.3s ease;
 }
 
-.vehicle-meter-fill.band-good { background: var(--text-forest-green); }
+.vehicle-meter-fill.band-good { background: var(--gauge-ok); }
 .vehicle-meter-fill.band-warn { background: var(--text-text-alt-15); }
 .vehicle-meter-fill.band-bad  { background: var(--text-danger-dark); }
 
@@ -34422,30 +34499,63 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     margin-bottom: 0;
 }
 
-/* The right page: every part of the selected vehicle, one row apiece. */
+/* The right page: every part of the selected vehicle, laid out as the status
+   sheet lays out the anatomy, three to a line with the bar under the name. */
 .vehicle-parts-panel {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.vehicle-part-row {
+.vehicle-parts-grid {
     display: grid;
-    grid-template-columns: 1fr 90px 44px;
-    align-items: center;
-    gap: var(--sp-3);
-    font-family: var(--font-ui);
-    font-size: var(--fs-body);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--sp-4);
+    row-gap: var(--sp-2);
+    align-content: start;
+    padding-top: var(--sp-2);
 }
 
-.vehicle-part-critical {
-    font-size: var(--fs-caption);
+.vehicle-part-cell {
+    min-width: 0;
+}
+
+.vehicle-part-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--sp-1);
+    min-width: 0;
+}
+
+.vehicle-part-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* An essential part is named in red: the car does not move without it. */
+.vehicle-part-cell.is-critical .vehicle-part-name {
     color: var(--text-danger-dark);
-    margin-left: 6px;
+}
+
+.vehicle-part-cell.destroyed .vehicle-part-name {
+    text-decoration: line-through;
+    opacity: 0.55;
 }
 
 .vehicle-part-pct {
-    text-align: right;
+    flex: 0 0 auto;
+    font-family: var(--font-ui);
+    font-size: var(--fs-caption);
+    white-space: nowrap;
+}
+
+.vehicle-part-cell .vehicle-meter {
+    margin-top: 2px;
 }
 
 /* Spawn, repair and board stay on one line at the foot of the card. */
@@ -34792,16 +34902,16 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     box-shadow: none !important;
 }
 
-/* The spread is mirrored against every other book menu in the game: the
-   sections (attributes, bio, backstory, traits, passives, illnesses) are the
-   narrow leaf on the left, and the character themself - portrait, gauges,
-   needs and the body part by part - takes the wide leaf on the right, which is
-   what all of that content actually needed. The margins swap with the pages so
-   the outer edge stays the deep one, and the crease moves to the new seam.
+/* The character themself - portrait, vitals and needs - holds the left leaf,
+   and the sections (body parts, attributes, bio, backstory, traits, passives,
+   illnesses) are read one tab at a time on the right. The margins keep the
+   outer edge the deep one, and the crease sits on the seam.
 
    BACK and the character's name stay at the top left of the spread, and the
    companion switcher at the top right, because that is where every other
    parchment menu puts them. */
+/* The even split itself comes from the shared .book-spread--half modifier;
+   only this screen's own padding and flow stay here. */
 #status-menu-container .left-page {
     width: 50%;
     padding: 35px 45px 35px 50px;
@@ -34826,7 +34936,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 }
 
 /* The switcher keeps the top right of the right page it has in every other
-   book menu, now that the right page is the character themself. */
+   book menu, above the section tabs. */
 #status-menu-container .status-right-header,
 #status-menu-container .status-right-header .companion-switcher {
     justify-content: flex-end;
@@ -34839,10 +34949,8 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     overflow-wrap: anywhere;
 }
 
-/* The right page reads top to bottom: what they look like, how they are
-   holding up, and then the body itself part by part. The anatomy block is the
-   only thing allowed to scroll, so the portrait and the gauges never move as a
-   character is read. */
+/* The left page reads top to bottom: what they look like, then how they are
+   holding up. The gauges keep their height and the portrait takes the rest. */
 
 #status-menu-container .status-left-body {
     display: flex;
@@ -34852,14 +34960,13 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     min-height: 0;
 }
 
-/* Who they are and how they are holding up: the portrait and the four vitals
-   stand together at the head of the left leaf, over the tabs, so the first
-   thing the page says is the character rather than a panel of text. */
+/* Who they are: the portrait stands at the head of the left leaf, over the
+   gauges, so the first thing the page says is the character. */
 #status-menu-container .status-portrait-column {
     display: flex;
     flex-direction: column;
     gap: var(--sp-3);
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     min-height: 0;
     margin-bottom: var(--sp-3);
 }
@@ -34873,17 +34980,17 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     width: 100%;
     max-width: none;
     margin: 0;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     min-height: 120px;
-    height: 34vh;
-    max-height: 38%;
+    height: auto;
+    max-height: 100%;
 }
 
-/* Health, mana, action points and experience, laid out the way the gauge block
-   they came from was: the two pools full width, the other two sharing a line. */
+/* Health, mana, action points and experience sit under the portrait, the four
+   of them sharing one line above the needs. */
 #status-menu-container .status-vitals-box {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     column-gap: 20px;
     row-gap: 10px;
     align-content: start;
@@ -34892,11 +34999,6 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 
 #status-menu-container .status-vitals-box > .status-gauge-row {
     margin-bottom: 0;
-}
-
-#status-menu-container .status-vitals-box > .status-gauge-row:nth-child(1),
-#status-menu-container .status-vitals-box > .status-gauge-row:nth-child(2) {
-    grid-column: 1 / -1;
 }
 
 /* A gauge with no track: action points are counted, not measured, so the row
@@ -34920,8 +35022,8 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     flex: 0 0 auto;
 }
 
-/* The anatomy takes whatever is left and scrolls inside it, so no part of it is
-   ever pushed past the bottom edge of the page. */
+/* The anatomy fills its tab and scrolls inside it, so no part of it is ever
+   pushed past the bottom edge of the page. */
 #status-menu-container .status-anatomy-panel {
     flex: 1 1 auto;
     display: flex;
@@ -35431,12 +35533,39 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
    The dossier: the right page of the Dynamics board. Whoever is picked on the
    board, travelling or in the reserves, read as one card.
    --------------------------------------------------------------------------- */
+/* The page's own face: without it every line under the name fell back to the
+   browser serif while the board on the left page reads in the UI face. */
 .dyn-dossier {
     display: flex;
     flex-direction: column;
     gap: 8px;
     min-height: 0;
+    overflow: hidden;
+    font-family: var(--font-ui);
+}
+
+/* Everything above the export buttons scrolls; the buttons stay put. */
+.dyn-dossier-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
+}
+
+.dyn-dossier-foot {
+    flex: 0 0 auto;
+}
+
+/* HP and MP beside the name, as on the party bio cards, not on a line alone. */
+.dyn-dossier-head > .dyn-dossier-vitals {
+    align-self: flex-start;
+}
+
+.dyn-dossier-param[onmouseenter],
+.dyn-chip[onmouseenter] {
+    cursor: help;
 }
 
 .dyn-dossier-head {
@@ -35795,19 +35924,19 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 }
 
 .sm-skill-badge--learned {
-    background: var(--text-forest-complete);
-    color: var(--bg-secondary-hover);
+    background: transparent;
+    color: var(--text-forest-complete);
 }
 
 .sm-skill-badge--lent {
     background: transparent;
-    border: 1px dashed var(--border-forest-green);
+    border: none;
     color: var(--text-secondary-active);
 }
 
 .sm-skill-badge--locked {
     background: transparent;
-    border: 1px solid var(--border-primary-hover-translucent-15);
+    border: none;
     color: var(--text-detail-label);
 }
 
@@ -36241,39 +36370,22 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     margin-left: auto;
 }
 
+/* The bench rails (Spell / Skill, Weapon / Equipment / Book, Grimorie / Skill
+   Book) ride the shared category rail (.backpack-tab), the Bestiary's look.
+   Only the spread across the page and the cursor's frame are their own. */
 .sm-bench-tabs {
-    display: flex;
-    gap: 6px;
+    flex-wrap: nowrap;
     margin-bottom: var(--sp-2);
     flex-shrink: 0;
 }
 
 .sm-bench-tab {
-    flex: 1;
+    flex: 1 1 auto;
     text-align: center;
-    padding: 4px 8px;
-    font-size: var(--fs-caption);
-    font-weight: bold;
-    font-family: var(--font-ui);
-    background: var(--bg-card-translucent-5);
-    border: 1px solid var(--border-secondary-hover-translucent-15);
-    border-radius: 4px;
-    color: var(--text-card-medium);
-    cursor: pointer;
-    transition: all 0.15s ease;
 }
 
-.sm-bench-tab:hover,
 .sm-bench-tab.focused {
-    border-color: var(--border-focus-hover);
-    color: var(--text-primary-hover);
-}
-
-.sm-bench-tab.active {
-    background: var(--bg-tertiary-focus-translucent-45);
-    border-color: var(--border-focus-hover);
-    color: var(--text-primary-hover);
-    box-shadow: inset 0 0 0 1px var(--border-focus-hover);
+    border-color: var(--text-primary-hover);
 }
 
 .sm-bench-subhead {
@@ -37104,10 +37216,9 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 }
 
 #biologic-container .brain-nt-chip {
-    padding: 1px 5px;
-    border-radius: 6px;
-    background: var(--shadow-primary-hover-translucent-5);
-    border: 1px solid var(--border-primary-hover-translucent-15);
+    padding: 0 2px;
+    background: transparent;
+    border: none;
     white-space: nowrap;
 }
 
@@ -40424,9 +40535,9 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     display: flex;
     flex-direction: column;
     gap: var(--sp-2);
-    padding: var(--sp-3);
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    background: var(--bg-primary-hover-translucent-10);
+    padding: var(--sp-2) var(--sp-3);
+    border: 1px solid transparent;
+    background: transparent;
     cursor: pointer;
 }
 
@@ -40562,23 +40673,10 @@ select option:hover {
 }
 
 /* What the gun is, said in one line over the grid rather than in a footer
-   fighting the grid for the last inch of the page. */
+   fighting the grid for the last inch of the page. The chips themselves are
+   the shared .ui-chip. */
 .vg-status {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-3);
-    margin: 4px 0 8px 0;
     flex: 0 0 auto;
-}
-
-.vg-status-chip {
-    font-size: 12px;
-    letter-spacing: 0.02em;
-    color: var(--text-secondary, #b9ac92);
-}
-
-.vg-status-chip:first-child {
-    color: var(--text-primary, #f0c674);
 }
 
 /* Three cards across, the skills menu's own roll. */
@@ -40590,15 +40688,10 @@ select option:hover {
 }
 
 /* The one heading the grid carries: the form page holds the shapes and the
-   element, and the line between them spans the whole roll. */
+   element, and the line between them spans the whole roll. The type is the
+   shared .inspect-section-title. */
 .vg-grid-head {
     grid-column: 1 / -1;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-primary, #f0c674);
-    opacity: 0.75;
-    margin: 8px 0 2px 0;
 }
 
 .vg-grid-head:first-child {
@@ -41978,6 +42071,31 @@ body.pad-input .kb-only {
     border-bottom: none;
 }
 
+/* The folder tabs of the Empathize panel and the star catalog are the one
+   exception: each label is its own black tab, held apart from its neighbours
+   and standing flush on the panel below, with no gap under it. */
+.npc-tab-bar {
+    align-items: flex-end;
+    gap: 6px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.npc-tab,
+.npc-tab:hover {
+    background: var(--bg-black-translucent-96, #000);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 0;
+    padding: 7px 14px 8px;
+}
+.npc-tab.active, .npc-tab.selected {
+    background: var(--bg-black-translucent-96, #000);
+    border-bottom-color: transparent;
+}
+.npc-tab-hint {
+    align-self: center;
+}
+
 
 /* ==========================================================================
    THE ONE MODAL LOOK -- the whole authority
@@ -42001,7 +42119,9 @@ body.pad-input .kb-only {
 .cc3d-modal,
 .ui-overlay.travel-custom-modal,
 #diary-container .diary-write-backdrop,
-.sm-craft-write-backdrop {
+.sm-craft-write-backdrop,
+.npc-chat-modal-backdrop,
+.lodging-modal {
     background: var(--modal-scrim);
 }
 
@@ -42019,7 +42139,15 @@ body.pad-input .kb-only {
 #world-manage-container .wm-modal,
 #world-manage-container .wm-create-modal,
 #diary-container .diary-write,
-.sm-craft-write {
+.sm-craft-write,
+.ui-overlay .ui-panel,
+.npc-chat-modal,
+.lodging-modal-sheet,
+#cs-mini .cs-qty-box,
+#hv-mini .cs-qty-box,
+#dice3d-prompt .dice3d-prompt-card,
+.item-target-card .htp-panel,
+.pas-adv-panel {
     border: var(--modal-border);
     border-radius: var(--modal-radius);
     background: var(--modal-bg);
@@ -42056,7 +42184,10 @@ body.pad-input .kb-only {
 }
 
 /* One button, whatever the modal calls it. Matches .inspect-btn so a
-   confirmation reads as the same furniture as the card that opened it. */
+   confirmation reads as the same furniture as the card that opened it.
+   The inventory's discard and medicine dialogs (.army-dialog-btn) are the
+   reference; every other popup's press is listed here so it wears the same
+   plate, and its own meaning (send, map, move, cancel) stays in the label. */
 .save-modal-btn,
 .army-dialog-btn,
 .sm-craft-write-btn,
@@ -42064,7 +42195,27 @@ body.pad-input .kb-only {
 .cc-modal-actions .cc-sidebar-btn,
 .cc-modal-actions .army-dialog-btn,
 .cc-modal-actions button,
-#diary-container .diary-write-btns button {
+#diary-container .diary-write-btns button,
+.item-target-card .htp-cancel,
+.quantity-actions .action-btn,
+#cs-mini .cs-qty-btns .cs-qty-btn,
+#hv-mini .cs-qty-btns .cs-qty-btn,
+#alc-modal .target-overlay > .target-option,
+.target-overlay .inspect-actions .inspect-btn,
+#world-manage-container .wm-modal .inspect-btn,
+#world-manage-container .wm-create-modal .inspect-btn,
+.ui-panel.travel-custom-box .inspect-btn,
+.ui-panel.wm-note-box .inspect-btn,
+.ui-panel-actions .inspect-btn,
+.ui-panel .ui-panel-dismiss,
+#ts-prompt .cc-btn-treaty,
+.cc3d-modal .cc3d-modal-head .cc-btn-treaty,
+.dice3d-prompt-buttons .dice3d-prompt-btn,
+.kb-detail-btns .kb-detail-close,
+.qb-d-btns .qb-btn,
+#qb-detail .qb-d-btns .qb-btn,
+.npc-chat-modal-btns button,
+.lodging-modal-sheet .command-item.lodging-modal-close {
     font-family: var(--font-ui);
     font-size: var(--fs-body);
     font-weight: bold;
@@ -42072,9 +42223,10 @@ body.pad-input .kb-only {
     padding: 10px 22px;
     min-height: 44px;
     border-radius: 4px;
-    border: 2px solid var(--text-primary-hover);
-    background: var(--bg-secondary-hover);
-    color: var(--text-primary-hover);
+    border: var(--modal-btn-border);
+    background: var(--modal-btn-bg);
+    color: var(--modal-btn-fg);
+    box-shadow: none;
     cursor: pointer;
     user-select: none;
     letter-spacing: normal;
@@ -42106,12 +42258,77 @@ body.pad-input .kb-only {
 .cc-modal-actions button.selected,
 .cc-modal-actions button.cc-nav-focus,
 #diary-container .diary-write-btns button:hover,
-#diary-container .diary-write-btns button.focused {
-    background: var(--chip-active-bg);
-    color: var(--chip-active-fg);
-    border-color: var(--text-primary-hover);
-    box-shadow: 0 4px 8px var(--shadow-primary-hover-translucent-5);
+#diary-container .diary-write-btns button.focused,
+.item-target-card .htp-cancel:hover,
+.item-target-card .htp-cancel.selected,
+.quantity-actions .action-btn:hover,
+.quantity-actions .action-btn.selected,
+#cs-mini .cs-qty-btns .cs-qty-btn:hover,
+#cs-mini .cs-qty-btns .cs-qty-btn.selected,
+#hv-mini .cs-qty-btns .cs-qty-btn:hover,
+#hv-mini .cs-qty-btns .cs-qty-btn.selected,
+#alc-modal .target-overlay > .target-option:hover,
+#alc-modal .target-overlay > .target-option.selected,
+.target-overlay .inspect-actions .inspect-btn:hover,
+.target-overlay .inspect-actions .inspect-btn.selected,
+#world-manage-container .wm-modal .inspect-btn:hover,
+#world-manage-container .wm-modal .inspect-btn.selected,
+#world-manage-container .wm-modal .inspect-btn.kb-focus,
+#world-manage-container .wm-create-modal .inspect-btn:hover,
+#world-manage-container .wm-create-modal .inspect-btn.selected,
+#world-manage-container .wm-create-modal .inspect-btn.kb-focus,
+.ui-panel.travel-custom-box .inspect-btn:hover,
+.ui-panel.travel-custom-box .inspect-btn.selected,
+.ui-panel.wm-note-box .inspect-btn:hover,
+.ui-panel.wm-note-box .inspect-btn.selected,
+.ui-panel-actions .inspect-btn:hover,
+.ui-panel-actions .inspect-btn.selected,
+.ui-panel .ui-panel-dismiss:hover,
+.ui-panel .ui-panel-dismiss.selected,
+#ts-prompt .cc-btn-treaty:hover,
+#ts-prompt .cc-btn-treaty.highlighted,
+.cc3d-modal .cc3d-modal-head .cc-btn-treaty:hover,
+.dice3d-prompt-buttons .dice3d-prompt-btn:hover,
+.dice3d-prompt-buttons .dice3d-prompt-btn.selected,
+.kb-detail-btns .kb-detail-close:hover,
+.kb-detail-btns .kb-detail-close.selected,
+.qb-d-btns .qb-btn:hover,
+.qb-d-btns .qb-btn.selected,
+#qb-detail .qb-d-btns .qb-btn:hover,
+#qb-detail .qb-d-btns .qb-btn.selected,
+.npc-chat-modal-btns button:hover,
+.lodging-modal-sheet .command-item.lodging-modal-close:hover,
+.lodging-modal-sheet .command-item.lodging-modal-close.selected {
+    background: var(--modal-btn-hover-bg);
+    color: var(--modal-btn-hover-fg);
+    border-color: var(--modal-btn-hover-border);
+    box-shadow: var(--modal-btn-hover-shadow);
     outline: none;
+}
+
+/* The character creation presses: both presets force .cc-sidebar-btn (and its
+   .primary gold plate) with !important, so inside a modal the plate is forced
+   back, more specifically, the same way. */
+.cc-modal-actions .cc-sidebar-btn,
+.cc-modal-actions .cc-sidebar-btn.primary {
+    background: var(--modal-btn-bg) !important;
+    border: var(--modal-btn-border) !important;
+    color: var(--modal-btn-fg) !important;
+    box-shadow: none !important;
+}
+
+.cc-modal-actions .cc-sidebar-btn:hover,
+.cc-modal-actions .cc-sidebar-btn.selected,
+.cc-modal-actions .cc-sidebar-btn.focused,
+.cc-modal-actions .cc-sidebar-btn.cc-nav-focus,
+.cc-modal-actions .cc-sidebar-btn.primary:hover,
+.cc-modal-actions .cc-sidebar-btn.primary.selected,
+.cc-modal-actions .cc-sidebar-btn.primary.focused,
+.cc-modal-actions .cc-sidebar-btn.primary.cc-nav-focus {
+    background: var(--modal-btn-hover-bg) !important;
+    border-color: var(--modal-btn-hover-border) !important;
+    color: var(--modal-btn-hover-fg) !important;
+    box-shadow: var(--modal-btn-hover-shadow) !important;
 }
 
 .cc-modal-actions .cc-sidebar-btn,
@@ -42122,17 +42339,54 @@ body.pad-input .kb-only {
 
 /* The one refusal: a press that destroys something wears the danger frame. */
 .save-modal-btn.danger,
-.army-dialog-btn.danger {
+.army-dialog-btn.danger,
+.ui-panel.wm-note-box .inspect-btn--danger,
+.qb-d-btns .qb-btn.danger,
+#qb-detail .qb-d-btns .qb-btn.danger {
     border-color: var(--border-danger-active);
     color: var(--text-text-alt-10);
     background: var(--bg-secondary-hover);
 }
 
-/* The save press of the grimorie sheet: the gold plate, the one affirmative. */
+/* What the families above still carry on top of the plate: the treaty and
+   dice lifts, the chat send's fade, the grimorie row's pseudo cursor, and the
+   faction dismiss that used to be a text link and sits on its own line. */
+#ts-prompt .cc-btn-treaty,
+.cc3d-modal .cc3d-modal-head .cc-btn-treaty,
+.dice3d-prompt-buttons .dice3d-prompt-btn,
+.npc-chat-modal-btns button,
+.npc-chat-modal-btns button:hover,
+.lodging-modal-sheet .command-item.lodging-modal-close {
+    transform: none;
+    opacity: 1;
+    min-width: 0;
+}
+
+.lodging-modal-sheet .command-item.lodging-modal-close::before {
+    content: none;
+}
+
+.ui-panel .ui-panel-dismiss {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: 14px auto 0 auto;
+}
+
+/* The save press of the grimorie sheet: its family block forces a gold plate
+   with !important, so the modal press is forced back here. */
+#diary-container .diary-write-btns button.diary-write-save:hover,
+#diary-container .diary-write-btns button.diary-write-save.focused {
+    background: var(--modal-btn-hover-bg) !important;
+    border-color: var(--modal-btn-hover-border) !important;
+    color: var(--modal-btn-hover-fg) !important;
+}
+
 #diary-container .diary-write-btns button.diary-write-save {
-    background: var(--chip-active-bg) !important;
-    border-color: var(--text-primary-hover) !important;
-    color: var(--chip-active-fg) !important;
+    background: var(--modal-btn-bg) !important;
+    border: var(--modal-btn-border) !important;
+    color: var(--modal-btn-fg) !important;
 }
 
 
@@ -42429,7 +42683,31 @@ body.pad-input .kb-only {
     overflow-y: auto;
 }
 
-.sm-action-rail .inspect-btn { width: 100%; text-align: center; }
+.sm-forged-list--fill { flex: 1 1 0; min-height: 0; }
+
+/* The Grange site's growth bar (Farming/BrewingSystem.js): the track and its
+   fill are classes so the browser page paints no colour of its own. The
+   greens are the site's own crop inks, not the game palette. */
+.gr-bar {
+    display: inline-block; width: 90px; height: 9px;
+    background: #e3e0d4; border: 1px solid #c9c5b6;
+    border-radius: 2px; vertical-align: middle; margin-right: 6px;
+}
+.gr-bar-fill { display: block; width: var(--gr-w, 0%); height: 100%; }
+.gr-bar-fill--ready { background: #2e7d32; }
+.gr-bar-fill--grow { background: #4c8339; }
+.gr-bar-fill--rest { background: #8a6d3b; }
+.gr-bar-fill--dry { background: #9c8d5f; }
+
+.sm-action-rail .inspect-btn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    /* A long bench name ("Enchant Equipment") wraps inside the rail instead
+       of running out of the page. */
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
 
 
 /* ==========================================================================

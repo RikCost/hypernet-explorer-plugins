@@ -156,7 +156,13 @@
       ],
       equips: [459, null, 577, 117, 115],
       skills: [10],
-      traits: [],
+      // Fixed, not rolled: the man off his own record (docs/Lore.md). The
+      // mechanic who built the Liminarity Engine and won a god's compass is a
+      // genius; the legend who is only in it to sign the divorce papers is
+      // honest, humble and loyal. Written down so the status sheet's random
+      // companion roll never invents a build - and the skills that come with
+      // it - for a seat that already knows who it is.
+      traits: [7, 171, 92, 89], // Genius, Honest, Humble, Loyal
       specializations: [
         { id: 173, level: 5 }, // Mechanics (Master)
         { id: 296, level: 3 }, // Welding
@@ -719,6 +725,21 @@
   // ids are added the moment that list is built, below).
   function isAuthoredPreset(presetId) {
     return AUTHORED_PRESET_IDS.has(Number(presetId));
+  }
+
+  // Whether a person (a live actor, or a benched dossier snapshotted off one)
+  // is one of the game's own written characters: Em, Bubba or any other
+  // hand-authored dossier. They belong to the game, so nothing lets the player
+  // take them out of it. Em and Bubba are matched by name too, since the story
+  // can seat them without a dossier stamp.
+  const AUTHORED_CHARACTER_NAMES = ["Em", "Bubba"]; // i18n-ignore: preset ids
+  function isAuthoredCharacter(subject) {
+    if (!subject) return false;
+    const isActor = typeof subject.name === "function";
+    const name = String(isActor ? subject.name() : subject.name || "").trim();
+    if (AUTHORED_CHARACTER_NAMES.includes(name)) return true;
+    if (isActor) return !!subject._isPresetActor && isAuthoredPreset(subject._presetId);
+    return isAuthoredPreset(subject.sourcePresetId);
   }
 
   //=============================================================================
@@ -1679,6 +1700,7 @@
   const EM_PRESET_ID = 2;
   const EM_STORY_CLASS_ID = 16;      // Gunmancer
   const EM_STORY_GENDER = 1;         // Female
+  const EM_STORY_REPRODUCTION = 1;   // REPRODUCTION_TYPES.UTERUS
   // What she wakes up believing: Thelema, the creed of a witch who was left
   // with her will and nothing else: the creed her sheet opens on. The list under it is the shelf her dossier was written against,
   // a handful of creeds a memory-wiped, gun-casting anarchist witch plausibly
@@ -1847,13 +1869,14 @@
   /**
    * The fields story mode holds Em to, for the controls that need to show them
    * as fixed rather than editable.
-   * @returns {object} { presetId, classId, gender, ideologyId, jobId }
+   * @returns {object} { presetId, classId, gender, reproduction, ideologyId, jobId }
    */
   function storyModeEmLocks() {
     return {
       presetId: EM_PRESET_ID,
       classId: EM_STORY_CLASS_ID,
       gender: EM_STORY_GENDER,
+      reproduction: EM_STORY_REPRODUCTION,
       ideologyId: EM_STORY_IDEOLOGY,
       ideologyChoices: EM_STORY_IDEOLOGY_CHOICES.slice(),
       jobId: EM_STORY_JOB_ID
@@ -1887,6 +1910,10 @@
     if (typeof $gameVariables !== "undefined" && $gameVariables) {
       const idx = (typeof Scene_CharacterCreation !== "undefined" && Scene_CharacterCreation._currentPartyMemberIndex) || 0;
       $gameVariables.setValue(38 + idx, locks.gender);
+      // Her organs are no longer asked on the story sheet, so they are held
+      // to the dossier's own answer rather than to whatever a step wrote.
+      const CCU = window.CharacterCreationUtils;
+      if (CCU && CCU.setReproductionType) CCU.setReproductionType(idx, locks.reproduction);
     }
     // The creed and the trade are defaults, not locks: the Ritual left her a
     // will and a living to make, and both are the player's to write. Only an
@@ -3147,6 +3174,9 @@
       isCreature: isCreatureSlot(actor),
       gender: actor.gender ? actor.gender() : 0,
       hidden: !!(actor && typeof actor.name === "function" && actor.name() === "Bubba"), // i18n-ignore: preset id
+      // The written dossier they were played from, if any, so a benched Selene
+      // is still known to be the game's own (isAuthoredCharacter).
+      sourcePresetId: actor._isPresetActor ? (actor._presetId || 0) : 0,
       retired: true,
       retiredAtMin: minute,
       retiredDate: dateStr,
@@ -3930,6 +3960,38 @@
     return "hx" + hash.toString(36); // i18n-ignore: identifier
   }
 
+  // What a dossier carries that says where or when it was filed rather than who
+  // the person is: the id and flags a shelf stamps on it, the landing spot and
+  // the moment it was benched.
+  const EXPORT_VOLATILE_KEYS = ["id", "retired", "retiredAtMin", "retiredDate",
+    "importedUid", "imported", "playerMade", "fromFolder", "folderFile",
+    "endless", "hidden", "mapId", "x", "y", "switches"];
+
+  function exportCanonical(value) {
+    if (Array.isArray(value)) return "[" + value.map(exportCanonical).join(",") + "]";
+    if (value && typeof value === "object") {
+      return "{" + Object.keys(value).sort()
+        .filter((key) => value[key] !== undefined)
+        .map((key) => JSON.stringify(key) + ":" + exportCanonical(value[key]))
+        .join(",") + "}";
+    }
+    return JSON.stringify(value === undefined ? null : value);
+  }
+
+  /**
+   * Who a dossier describes, as one string: two dossiers are the same person
+   * only when every field of them matches. Filing details are left out, and so
+   * is the lore a bench writes, since it only restates the date it was benched.
+   * @param {object} character - Dossier
+   * @returns {string} Canonical text of the dossier
+   */
+  function exportFingerprint(character) {
+    const person = Object.assign({}, character || {});
+    EXPORT_VOLATILE_KEYS.forEach((key) => delete person[key]);
+    if (character && character.retiredAtMin !== undefined) delete person.lore;
+    return exportCanonical(person);
+  }
+
   /**
    * The dossier of a live party member, ready to be written out. Built by the
    * same snapshotter the reserves are filled with, so an exported character and
@@ -4397,9 +4459,10 @@
     canvas.width = side;
     canvas.height = side;
     const ctx = canvas.getContext("2d");
+    // A QR code must stay pure black on white to scan, whatever the theme.
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, side, side);
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = "rgb(0,0,0)";
     for (let row = 0; row < code.size; row++) {
       for (let col = 0; col < code.size; col++) {
         if (!code.modules[row][col]) continue;
@@ -4527,22 +4590,35 @@
     canvas.height = height;
     const ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#12100c";
+    // The card is painted in the theme's own inks, read as strings the way
+    // every canvas window reads them; the rgb() values are the fallbacks for
+    // a headless export with no stylesheet up.
+    const rootCss = (typeof getComputedStyle === "function" && document.body)
+      ? getComputedStyle(document.body) : null;
+    const tk = (name, fb) => {
+      const v = rootCss ? String(rootCss.getPropertyValue(name) || "").trim() : "";
+      return v || fb;
+    };
+    const cardGround = tk("--bg-panel", "rgb(18,16,12)");
+    const cardGold = tk("--accent-gold-pure", "rgb(201,162,39)");
+    const cardInk = tk("--accent-cream-warm", "rgb(242,230,200)");
+
+    ctx.fillStyle = cardGround;
     ctx.fillRect(0, 0, width, height);
-    ctx.strokeStyle = "#c9a227";
+    ctx.strokeStyle = cardGold;
     ctx.lineWidth = 3;
     ctx.strokeRect(6, 6, width - 12, height - 12);
 
     const className = preset.retiredClassName
       || ($dataClasses[preset.classId] ? $dataClasses[preset.classId].name : "");
-    ctx.fillStyle = "#f2e6c8";
+    ctx.fillStyle = cardInk;
     ctx.font = "bold 28px serif"; // i18n-ignore: canvas font
     ctx.fillText(String(preset.name || ""), 24, 48);
-    ctx.fillStyle = "#c9a227";
+    ctx.fillStyle = cardGold;
     ctx.font = "18px serif"; // i18n-ignore: canvas font
     ctx.fillText(`${className} · ${T('MainMenu.roster.levelAbbr')}${preset.level || 1}`, 24, 76);
 
-    ctx.fillStyle = "#f2e6c8";
+    ctx.fillStyle = cardInk;
     ctx.font = "16px serif"; // i18n-ignore: canvas font
     const gear = exportEquipmentNames(preset);
     ctx.fillText(T('CharPresets.exportCardEquipment'), 24, 430);
@@ -4609,7 +4685,53 @@
     if (!io || !dir) return "";
     const full = io.path.join(dir, fileName);
     io.fs.writeFileSync(full, Buffer.from(bytes));
+    exportScanCache = null;
     return full;
+  }
+
+  // The dossier a file in the folder holds, or null when it holds none.
+  function exportReadFile(full) {
+    const io = exportFs();
+    if (!io) return null;
+    const lower = full.toLowerCase();
+    let text = "";
+    try {
+      if (lower.endsWith(".json")) text = io.fs.readFileSync(full, "utf8");
+      else if (lower.endsWith(".png")) text = pngReadText(new Uint8Array(io.fs.readFileSync(full)));
+    } catch (e) {
+      text = "";
+    }
+    if (!text) return null;
+    try {
+      const payload = JSON.parse(text);
+      return payload && payload.kind === "character" && payload.character ? payload : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * The file name a dossier is written under: its own name, unless another
+   * person already sits there, in which case the next free numbered one. The
+   * same person re-exported overwrites their own file.
+   * @param {object} preset - Dossier
+   * @param {string} ext - Extension with its dot (".png", ".qr.png", ".json")
+   * @returns {string} File name inside the characters folder
+   */
+  function exportFileName(preset, ext) {
+    const slug = exportSlug(preset.name);
+    const io = exportFs();
+    const dir = exportFolder();
+    if (!io || !dir) return slug + ext;
+    const mine = exportFingerprint(exportPayload(preset).character);
+    for (let n = 1; n < 1000; n++) {
+      const name = slug + (n > 1 ? "_" + n : "") + ext;
+      const full = io.path.join(dir, name);
+      if (!io.fs.existsSync(full)) return name;
+      const held = exportReadFile(full);
+      if (!held || exportFingerprint(held.character) === mine) return name;
+    }
+    return slug + "_" + Date.now() + ext;
   }
 
   /**
@@ -4623,7 +4745,7 @@
     const bytes = [];
     const utf8 = unescape(encodeURIComponent(text));
     for (let i = 0; i < utf8.length; i++) bytes.push(utf8.charCodeAt(i) & 0xff);
-    return exportWrite(exportSlug(preset.name) + ".json", Uint8Array.from(bytes));
+    return exportWrite(exportFileName(preset, ".json"), Uint8Array.from(bytes));
   }
 
   /**
@@ -4635,19 +4757,22 @@
     return exportCardCanvas(preset).then((canvas) => {
       const png = dataUrlToBytes(canvas.toDataURL("image/png"));
       const withText = pngWithText(png, JSON.stringify(exportPayload(preset)));
-      return exportWrite(exportSlug(preset.name) + ".png", withText);
+      return exportWrite(exportFileName(preset, ".png"), withText);
     });
   }
 
   /**
-   * Write a dossier out as a QR code.
+   * Write a dossier out as a QR code. The whole dossier is written into the
+   * PNG as well, exactly as on a card, so the folder reads the file back
+   * without having to scan the code.
    * @param {object} preset - Dossier
    * @returns {string} The file written
    */
   function exportToQr(preset) {
     const canvas = qrCanvas(exportQrCode(preset), 6);
     const png = dataUrlToBytes(canvas.toDataURL("image/png"));
-    return exportWrite(exportSlug(preset.name) + ".qr.png", png);
+    const withText = pngWithText(png, JSON.stringify(exportPayload(preset)));
+    return exportWrite(exportFileName(preset, ".qr.png"), withText);
   }
 
   /**
@@ -4665,8 +4790,9 @@
 
   /**
    * Every character sitting in the folder, whether this game already holds them
-   * or not. A card and a JSON file of the same person count once.
-   * @returns {array} [{ file, payload, uid, known }]
+   * or not. Files that describe exactly the same person (a card, its QR and its
+   * JSON) count once; anybody who differs in any field is listed.
+   * @returns {array} [{ file, payload, uid, fingerprint, known }]
    */
   // The board asks who is waiting every time it is redrawn, and a card is a
   // whole PNG to read, so the answer is held for a moment rather than read off
@@ -4691,43 +4817,26 @@
       return [];
     }
     names.forEach((file) => {
-      const lower = file.toLowerCase();
-      let text = "";
-      try {
-        if (lower.endsWith(".json")) {
-          text = io.fs.readFileSync(io.path.join(dir, file), "utf8");
-        } else if (lower.endsWith(".png")) {
-          text = pngReadText(new Uint8Array(io.fs.readFileSync(io.path.join(dir, file))));
-        }
-      } catch (e) {
-        text = "";
-      }
-      if (!text) return;
-      let payload = null;
-      try {
-        payload = JSON.parse(text);
-      } catch (e) {
-        return;
-      }
-      if (!payload || payload.kind !== "character" || !payload.character) return;
+      const payload = exportReadFile(io.path.join(dir, file));
+      if (!payload) return;
+      const fingerprint = exportFingerprint(payload.character);
+      if (seen.has(fingerprint)) return;
+      seen.add(fingerprint);
       const uid = payload.uid || exportUid(payload.character);
-      if (seen.has(uid)) return;
-      seen.add(uid);
-      found.push({ file, payload, uid, known: exportIsKnown(uid, payload.character) });
+      found.push({ file, payload, uid, fingerprint, known: exportIsKnown(payload.character) });
     });
     exportScanCache = found;
     exportScanAt = Date.now();
     return found;
   }
 
-  // Whether this game already holds the person in a file: the uid it was
-  // exported with is kept on the dossier it was imported into, and a dossier of
-  // the same name and class counts as the same person as well, so importing
-  // twice never doubles anybody.
-  function exportIsKnown(uid, character) {
+  // Whether this game already holds the person in a file: only a dossier that
+  // matches them in every field counts, so importing twice never doubles
+  // anybody, while a namesake of the same class is still somebody new.
+  function exportIsKnown(character) {
+    const mine = exportFingerprint(character);
     const holds = (list) => (list || []).some((entry) => entry
-      && (entry.importedUid === uid
-        || (entry.name === character.name && entry.classId === character.classId)));
+      && exportFingerprint(entry) === mine);
     return holds(getPlayerPresets()) || holds(getRetiredPresets()) || holds(getBasePresets());
   }
 
@@ -4743,7 +4852,7 @@
     }
     const character = payload.character;
     const uid = payload.uid || exportUid(character);
-    if (exportIsKnown(uid, character)) return { ok: false, reason: "alreadyHere" };
+    if (exportIsKnown(character)) return { ok: false, reason: "alreadyHere" };
 
     const preset = Object.assign({}, character, {
       id: getNextPlayerPresetId(),
@@ -4828,7 +4937,7 @@
       .filter((entry) => entry && !entry.known && entry.payload && entry.payload.character)
       .map((entry) => {
         const preset = Object.assign({}, entry.payload.character, {
-          id: folderPresetId(entry.uid),
+          id: folderPresetId(entry.fingerprint || entry.uid),
           importedUid: entry.uid,
           playerMade: true,
           fromFolder: true,
@@ -5295,6 +5404,7 @@
     payload: exportPayload,
     compactPayload: exportCompactPayload,
     uid: exportUid,
+    fingerprint: exportFingerprint,
     slug: exportSlug,
     toJson: exportToJson,
     toCard: exportToCard,
@@ -5376,6 +5486,7 @@
     getNextPresetId,
     removePresetById,
     isAuthoredPreset,
+    isAuthoredCharacter,
     applyPresetIdentity,
     applyPresetVehicle,
     saveCurrentCharacterAsPreset,

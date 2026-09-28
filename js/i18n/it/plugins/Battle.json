@@ -689,7 +689,8 @@
       "regen": "Il libro aperto rilegge {actor}, pagina dopo pagina.",
       "pact": "Il libro non restituisce niente. Non l'ha mai promesso.",
       "pactOpen": "{actor} entra già leggendo. Ci sono {count} pagine aperte.",
-      "pactPrice": "La pagina si prende {cost} da {actor}."
+      "pactPrice": "La pagina si prende {cost} da {actor}.",
+      "natural": "Il Dado di YHWH cade sul 20. Il Grimorio di Salomone si apre per {actor}, e non chiede niente in cambio."
     },
     "em": {
       "enter": [

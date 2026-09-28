@@ -412,8 +412,7 @@
 
       // The story mode does not pick a difficulty: it is locked to roguelite,
       // so that row is dropped from the page rather than shown as a choice
-      // that is not one. The map tooltips are Bubba's there, always on.
-      if (storyMode && window.MapLegend) window.MapLegend.setNoticesMode('first');  // i18n-ignore: setting value
+      // that is not one.
       return storyMode ? rows.filter(r => r.key !== 'difficulty') : rows;
     }
 

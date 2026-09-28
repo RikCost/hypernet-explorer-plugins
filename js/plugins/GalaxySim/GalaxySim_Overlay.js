@@ -1294,7 +1294,7 @@
           let hide = surfaceless && ground;
           if (isPort && !port) hide = true;
           if (mode === 'land' && port) hide = true;
-          b.style.display = hide ? 'none' : '';
+          b.classList.toggle('ui-closed', hide);
         });
       if (this.els.landingChoiceSub) {
         this.els.landingChoiceSub.textContent = surfaceless
@@ -1330,7 +1330,7 @@
       // ground ones are taken out of the modal (see _openLandingChoice), and a
       // button that is not shown must not be walked onto by the pad either.
       return Array.prototype.slice.call(el.querySelectorAll('[data-action]'))
-        .filter((b) => b.style.display !== 'none');
+        .filter((b) => !b.classList.contains('ui-closed'));
     }
 
     _syncLandingChoice() {

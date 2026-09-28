@@ -100,8 +100,17 @@
     const maxEdgeDepth = 12; // Depth of water/beach gradient from edge
     const beachSandWidth = 4; // Width of sandy beach area
 
+    // A prefab the settlement already stood on this square keeps its cells: the
+    // shoreline is laid after the lots, and used to wash straight through them.
+    const prefabMask = mapData.prefabMask;
+    const isPrefab = (x, y) => !!(prefabMask && prefabMask[y * width + x]);
+    function paint(idx, x, y, tile) {
+      if (!isPrefab(x, y)) mapData[idx] = tile;
+    }
+
     // Helper to place seashells on a beach tile
     function placeSeashell(x, y) {
+      if (isPrefab(x, y)) return;
       if (seashellTiles && seashellTiles.length > 0 && rng() < 0.08) {
         const idx = calculateIndex(x, y, 1, width, height);
         if (idx >= 0 && idx < mapData.length) {
@@ -122,10 +131,10 @@
           const idx = calculateIndex(x, y, 0, width, height);
           if (y < actualDepth - beachSandWidth) {
             // Water area
-            mapData[idx] = waterTile;
+            paint(idx, x, y, waterTile);
           } else {
             // Beach sand area
-            mapData[idx] = beachTile;
+            paint(idx, x, y, beachTile);
             placeSeashell(x, y);
           }
         }
@@ -144,10 +153,10 @@
           const idx = calculateIndex(x, y, 0, width, height);
           if (y > height - actualDepth + beachSandWidth) {
             // Water area
-            mapData[idx] = waterTile;
+            paint(idx, x, y, waterTile);
           } else {
             // Beach sand area
-            mapData[idx] = beachTile;
+            paint(idx, x, y, beachTile);
             placeSeashell(x, y);
           }
         }
@@ -166,10 +175,10 @@
           const idx = calculateIndex(x, y, 0, width, height);
           if (x > width - actualDepth + beachSandWidth) {
             // Water area
-            mapData[idx] = waterTile;
+            paint(idx, x, y, waterTile);
           } else {
             // Beach sand area
-            mapData[idx] = beachTile;
+            paint(idx, x, y, beachTile);
             placeSeashell(x, y);
           }
         }
@@ -187,10 +196,10 @@
           const idx = calculateIndex(x, y, 0, width, height);
           if (x < actualDepth - beachSandWidth) {
             // Water area
-            mapData[idx] = waterTile;
+            paint(idx, x, y, waterTile);
           } else {
             // Beach sand area
-            mapData[idx] = beachTile;
+            paint(idx, x, y, beachTile);
             placeSeashell(x, y);
           }
         }
@@ -213,9 +222,9 @@
         for (let x = width - limit; x < width; x++) {
           const idx = calculateIndex(x, y, 0, width, height);
           if (y + (width - x) < 3) {
-            mapData[idx] = waterTile;
+            paint(idx, x, y, waterTile);
           } else {
-            mapData[idx] = beachTile;
+            paint(idx, x, y, beachTile);
             placeSeashell(x, y);
           }
         }
@@ -231,9 +240,9 @@
         for (let x = 0; x < depth; x++) {
           const idx = calculateIndex(x, y, 0, width, height);
           if (y + x < 3) {
-            mapData[idx] = waterTile;
+            paint(idx, x, y, waterTile);
           } else {
-            mapData[idx] = beachTile;
+            paint(idx, x, y, beachTile);
             placeSeashell(x, y);
           }
         }
@@ -250,9 +259,9 @@
         for (let x = width - limit; x < width; x++) {
           const idx = calculateIndex(x, y, 0, width, height);
           if ((height - y) + (width - x) < 3) {
-            mapData[idx] = waterTile;
+            paint(idx, x, y, waterTile);
           } else {
-            mapData[idx] = beachTile;
+            paint(idx, x, y, beachTile);
             placeSeashell(x, y);
           }
         }
@@ -268,9 +277,9 @@
         for (let x = 0; x < depth; x++) {
           const idx = calculateIndex(x, y, 0, width, height);
           if ((height - y) + x < 3) {
-            mapData[idx] = waterTile;
+            paint(idx, x, y, waterTile);
           } else {
-            mapData[idx] = beachTile;
+            paint(idx, x, y, beachTile);
             placeSeashell(x, y);
           }
         }

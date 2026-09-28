@@ -925,6 +925,15 @@
         this._dndActionsList.push('equip'); btnIdx++;
       }
 
+      // The item's own verbs (<Special: Read>, <Special: Study>) are buttons
+      // of their own in the row, not rows hidden in the Use target card.
+      for (const cmd of this.parseSpecialCommands(selectedItem)) {
+        const isFocused = (this._dndActiveSection === 'actions' && this._selectedActionIndex === btnIdx) ? 'selected' : '';
+        const key = 'special:' + cmd;
+        actionBtnsHTML += `<div class="inspect-btn ${isFocused}" onclick="SceneManager._scene.triggerUIItemAction('${escapeHtml(key)}')">${this.translateSpecialCommand(cmd)}</div>`;
+        this._dndActionsList.push(key); btnIdx++;
+      }
+
       // Em's vector gun is never thrown and never discarded: it is the one
       // thing she does not put down (Weapon/VectorGunSystem.js).
       const isBoundGear = !!(window.VectorGun && window.VectorGun.isBound(selectedItem));
@@ -1069,7 +1078,7 @@
     const stackKg    = stackGrams / 1000;
     const weightText = stackKg >= 0.01 ? `${stackKg.toFixed(2)} kg` : `${stackGrams} g` /* i18n-ignore: unit */;
     return `
-          <div class="item-slot ${isFocused}" data-idx="${idx}" data-icon-index="${item.iconIndex}" data-canvas-id="${canvasId}" draggable="true" onclick="SceneManager._scene.selectUIItem(${idx})" onmouseenter="SceneManager._scene.hoverUIItem(${idx})" ondragstart="SceneManager._scene.onUIItemDragStart(event, ${idx})" ondragend="SceneManager._scene.onUIItemDragEnd(event)">
+          <div class="item-slot ${isFocused}" data-idx="${idx}" data-icon-index="${item.iconIndex}" data-canvas-id="${canvasId}" draggable="true" onclick="SceneManager._scene.selectUIItem(${idx})" ondblclick="SceneManager._scene.useUIItemAt(${idx})" onmouseenter="SceneManager._scene.hoverUIItem(${idx})" ondragstart="SceneManager._scene.onUIItemDragStart(event, ${idx})" ondragend="SceneManager._scene.onUIItemDragEnd(event)">
             <div class="item-rarity-bar" style="background:${rarity.color};"></div>
             <div class="item-slot-icon">
               <canvas id="${canvasId}" class="item-slot-icon-canvas--sm" width="32" height="32"></canvas>
@@ -1311,13 +1320,10 @@
     if (this._dndTargetingAction) {
       return window.ItemTargetCard.rows(item, { includeAll: false, special: [] });
     }
-    const special   = studyPick ? [] : this.parseSpecialCommands(item).map(cmd => ({
-      command: cmd,
-      label:   T('Inventory.ui.special', { command: this.translateSpecialCommand(cmd) }),
-    }));
+    // The item's special verbs are buttons on the card, never rows here.
     return window.ItemTargetCard.rows(item, {
       includeAll: !studyPick && (item.scope === 8 || item.scope === 10),
-      special,
+      special:    [],
     });
   };
 
@@ -1454,9 +1460,12 @@
       }
       return;
     }
+    if (String(action).indexOf('special:') === 0) {
+      this.triggerUISpecialAction(String(action).slice(8));
+      return;
+    }
     if (action === 'use') {
-      const specialCommands = this.parseSpecialCommands(item);
-      if (this.isItemTargetRequired(item) || specialCommands.length > 0) {
+      if (this.isItemTargetRequired(item)) {
         SoundManager.playOk();
         this._dndTargetingMode = true; this._dndTargetingItem = item;
         this._dndActiveSection = 'targets'; this._selectedTargetIndex = 0;
@@ -1674,6 +1683,23 @@
     this._dndActiveSection = 'items';
     this._dndSelectedIndex = idx;
     this.refreshUIbackpack();
+  };
+
+  // A double click on a pocket uses what is in it: the card's first verb
+  // (its own action, Use, or Equip), exactly as pressing that button does.
+  // The two single clicks before it have already selected the slot.
+  Scene_EnhancedItem.prototype.useUIItemAt = function (idx) {
+    if (this._dndTargetingMode || this._discardModalOpen) return;
+    if (this._dndSelectedIndex !== idx) {
+      this._dndSelectedIndex = idx;
+      this.refreshUIbackpack();
+    }
+    const list = this._dndActionsList || [];
+    const action = list.find(a => a === 'use' || a === 'equip' || String(a).indexOf('action:') === 0);
+    if (!this._dndSelectedItem || !action) { SoundManager.playBuzzer(); return; }
+    this._dndActiveSection    = 'actions';
+    this._selectedActionIndex = list.indexOf(action);
+    this.triggerUIItemAction(action);
   };
 
   // Dragging a grid slot onto a quick slot (ItemSystemHotbar.js's backpack
@@ -2002,12 +2028,7 @@
         }
 
       } else if (section === 'targets') {
-        const item         = scene._dndTargetingItem;
-        const partySize    = $gameParty.members().length;
-        const studyPick    = !!scene._dndStudyPicking;
-        const specCmds     = studyPick ? [] : scene.parseSpecialCommands(item);
-        const hasAllParty  = !studyPick && (item.scope === 8 || item.scope === 10);
-        const totalTargets = partySize + (hasAllParty ? 1 : 0) + specCmds.length;
+        const totalTargets = scene.targetModalRows().length;
 
         if (dir === 'up' && scene._selectedTargetIndex > 0) {
           SoundManager.playCursor(); scene._selectedTargetIndex--; scene.refreshUIbackpack();

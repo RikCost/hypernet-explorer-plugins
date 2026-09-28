@@ -587,7 +587,7 @@
       get label() { return T('DailyShop.shopType.magicShop'); },
       ids: [649, 650, 652, 653, 654, 655, 656, 657, 658, 661, 662, 663, 664,
             673, 675, 679, 685, 686],
-      fixed: [648, 651],        // health potion, mana potion
+      fixed: [648, 651, 168],   // health potion, mana potion, flying broom
       categories: ["magic", "monsters", "potion"],
       curatedShare: 0.5,
       artifacts: "item"

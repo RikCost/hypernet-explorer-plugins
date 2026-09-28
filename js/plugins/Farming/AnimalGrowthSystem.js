@@ -1009,7 +1009,7 @@
         if (name && name !== "Unknown") return name; // i18n-ignore: Markov generator sentinel
       } catch (e) { /* fall through to the plain label */ }
     }
-    return T('AnimalGrowth.farmerOf', { x: wx, y: wy });
+    return T('AnimalGrowth.farmerOf', { place: window.WorldMapTransfer.squareLabel(wx, wy) });
   }
 
   // The farmer of the square the party is standing on, minted and registered as

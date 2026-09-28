@@ -916,8 +916,46 @@
     // "dyson": "active" against each of them - and it is built by the same
     // routine the star map builds it with, off the same record, so the thing
     // in the window on the way in is the thing the star map shows.
+    //
+    // AND THE STAR INSIDE IT. The shell is a lattice of plates with the star
+    // meant to burn through the gaps, and the star map draws that star as a
+    // body of its own - so a shell built on its own was an empty cage, and a
+    // build without GalaxySim's record drew nothing at all. The sun comes
+    // first and the shell goes round it when the record says there is one.
     _buildDyson() {
       const sys = worldSystem(this.profile.world);
+      const holder = new THREE.Group();
+      holder.visible = false;
+      this.dysonGroup = holder;
+      this.far.add(holder);
+      // The star map's ratio: the shell stands at 2.4 star radii.
+      const starR = DYSON_VIS_R / 2.4;
+
+      const R3D = this._r3d || (window.GalaxySim && window.GalaxySim.Renderer3D);
+      let star = null;
+      if (sys && R3D && typeof R3D.buildStarGroup === "function") {
+        try { star = R3D.buildStarGroup(sys); } catch (e) { star = null; }
+      }
+      if (star && star.isObject3D) {
+        star.scale.setScalar(starR);
+      } else {
+        // A G star, white-gold, and it makes its own light.
+        star = new THREE.Group();
+        star.add(new THREE.Mesh(
+          this._geo(new THREE.SphereGeometry(starR, 32, 24)),
+          this._basic({ color: 0xfff1c8 })
+        ));
+        star.add(new THREE.Mesh(
+          this._geo(new THREE.SphereGeometry(starR * 1.35, 24, 16)),
+          this._basic({
+            color: 0xffc860, transparent: true, opacity: 0.35,
+            blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.BackSide,
+          })
+        ));
+      }
+      holder.add(star);
+      this.zetaStar = star;
+
       if (!sys || !sys.dyson) return;
       const Cosmos = window.GalaxySim && window.GalaxySim.Scene3DCosmos;
       if (!Cosmos || typeof Cosmos.buildDysonSphere !== "function") return;
@@ -932,9 +970,7 @@
       const group = built && (built.group || built);
       if (!group || !group.isObject3D) return;
       this.dyson = built;
-      this.dysonGroup = group;
-      group.visible = false;
-      this.far.add(group);
+      holder.add(group);
     },
 
     // THE RED MOON. Titania's own, and the mass a charge is dropped against on
@@ -1168,7 +1204,7 @@
     // and eighty-four thousand kilometres out in three seconds, which is the
     // one thing in this plugin that is not a speed.
     _moonRange(ph) {
-      if (!this.profile.lunar) return MOON_DIST_M;
+      if (!this._lunarSky()) return MOON_DIST_M;
       if (ph.key === "liminal") {
         // Geometric, not linear: the range falls by a constant factor per
         // second, so the disc grows at a constant rate rather than arriving
@@ -1214,14 +1250,18 @@
       // pad, while the flight is aimed at the Moon, and on the beats of a way
       // home where the Earth is what is being closed on. Nowhere else.
       const homeId = this._homeId || this._homeWorld();
-      const nearEarth = homeId === "earth" ||
+      // AND NOT ONCE THE ROUND HAS LEFT. A crossing off an Earth pad to Zeta or
+      // Titania is near the Earth only until the corridor or the breach takes
+      // it: after that Luna was still hung over the arrival, and flown in
+      // close on the skim because every crossing is flagged lunar.
+      const nearEarth = !this._leftSol(ph) && (homeId === "earth" ||
         this.profile.world === "moon" ||                              // i18n-ignore  world id
-        HOME_SKY.indexOf(ph.key) >= 0;
+        HOME_SKY.indexOf(ph.key) >= 0);
       this.moonPivot.visible = nearEarth;
       if (!nearEarth) return;
 
       const prof = this.profile;
-      const lunar = !!prof.lunar;
+      const lunar = this._lunarSky();
       // Where the Moon sits relative to the way the camera is looking.
       //
       //   the default     a little over twenty degrees to one side and up,
@@ -1321,6 +1361,24 @@
       this.moonBody.rotation.y = (lunar && (ph.key === "flyby" || ph.key === "skim"))
         ? o.entry + o.dir * this._orbitPhase(ph) * Math.PI * 2 * o.revs
         : this._time * 0.01;
+    },
+
+    // Is the Moon what this flight is flown at? Every crossing carries the
+    // lunar flag, and only the ones aimed at the Moon or home past it close
+    // on the Moon itself.
+    _lunarSky() {
+      const w = this.profile.world;
+      return !!this.profile.lunar && w !== "zeta" && w !== "titania";   // i18n-ignore  world ids
+    },
+
+    // Has a crossing to another star left the Sun's system behind? From the
+    // first beat of the corridor or the breach onward, and for good.
+    _leftSol(ph) {
+      const w = this.profile.world;
+      if (w !== "zeta" && w !== "titania") return false;   // i18n-ignore  world ids
+      const phases = this.profile.phases || [];
+      const gone = phases.findIndex((p) => p.key === "solomon" || p.key === "breach");   // i18n-ignore  phase keys
+      return gone >= 0 && ph.index >= gone;
     },
 
     // How far round the circuit the round is, 0 to 1. The skim is the last of

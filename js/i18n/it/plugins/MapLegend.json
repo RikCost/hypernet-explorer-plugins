@@ -3,15 +3,6 @@
   "foldHint": "richiudi il foglio",
   "unfoldHint": "leggi il foglio",
   "controlsHeading": "Comandi",
-  "setting": {
-    "label": "Descrizioni della mappa",
-    "desc": "Mostra una legenda nell'angolo della mappa con il nome del terreno su cui si trova il gruppo.",
-    "mode": {
-      "first": "La prima volta",
-      "always": "Sempre",
-      "off": "Mai"
-    }
-  },
   "controls": {
     "action": "Azione",
     "holdShift": "Tieni premuto Shift",
@@ -20,6 +11,7 @@
     "leadSwap": "Cambia membro del gruppo",
     "interact": "Interagisci con un oggetto o smontalo",
     "leftClick": "Clic sinistro",
+    "rightClick": "Clic destro",
     "menu": "Menu",
     "move": "Muoviti",
     "dragMap": "Trascina la mappa",

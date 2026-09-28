@@ -968,6 +968,19 @@
                     width: Math.max(right - left, 240 * sx)
                 };
             }
+            // A page with a header bar docks the chip at the bar's right end,
+            // inside the header's own row: the title keeps clear of both ends,
+            // so the chip can never land on top of the page's content the way
+            // the floating corner badge did (the tech tree's description, the
+            // apiary's cross-section).
+            const bar = boxes('.page-header-bar')[0];
+            if (bar) {
+                return {
+                    right: bar.r.right - 4 * sx,
+                    top: bar.r.top + 4 * sy,
+                    width: bar.r.width * 0.4
+                };
+            }
             const page = boxes('.book-spread')[0];
             const rect = page ? page.r : (this._host ? this._host.getBoundingClientRect() : null);
             if (rect && rect.width > 0) {

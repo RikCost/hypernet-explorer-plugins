@@ -34,7 +34,7 @@
     "growing": "Si sta ancora popolando",
     "full": "Del tutto abitata",
     "onPlanet": "su {planet}",
-    "square": "{x}, {y}",
+    "square": "{place}",
     "sectionTowns": "Citta",
     "sectionHouses": "Case",
     "sectionShops": "Negozi",

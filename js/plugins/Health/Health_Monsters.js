@@ -90,9 +90,9 @@
   var checkCommandName = parameters["Check Command Name"] || "Check";
   var targetCommandName = parameters["Target Command Name"] || "Target";
 
-  // Vital body parts are protected from destruction (clamped to 1 HP) while the
-  // enemy still has more than this fraction of HP. Once the enemy drops to this
-  // threshold or below, a destroyed vital part triggers a delayed instakill.
+  // Vital body parts are protected from destruction (clamped to 1 HP) until the
+  // enemy is under this fraction of HP. Only then can a blow to a vital part be
+  // lethal (MonsterHealth.vitalCanFall is the one answer, crits ask it too).
   // Non-vital parts have no such protection and can be severed at any HP.
   var VITAL_INSTAKILL_RATE = 0.25;
 
@@ -465,11 +465,10 @@
 
       // Check if part can be destroyed/severed.
       // Non-vital parts can be severed/destroyed at ANY enemy HP (no protection).
-      // Vital parts are protected: they cannot drop below 1 HP while the enemy
-      // still has more than VITAL_INSTAKILL_RATE HP. Once the enemy reaches that
-      // threshold or below, destroying a vital part triggers the delayed instakill
-      // scheduled in handleDestroyedBodyPart.
-      var canBeDestroyed = !basePart.vital || enemy.hpRate() <= VITAL_INSTAKILL_RATE;
+      // Vital parts are protected: they cannot drop below 1 HP until the enemy
+      // is under VITAL_INSTAKILL_RATE HP. Only then does destroying one trigger
+      // the instakill in handleDestroyedBodyPart.
+      var canBeDestroyed = !basePart.vital || window.MonsterHealth.vitalCanFall(enemy);
 
       // Check if part is now destroyed
       if (part.currentHp <= 0) {
@@ -780,6 +779,12 @@
     },
 
     isVitalPart: isVitalPart,
+
+    // Whether a blow to a vital part may kill this monster yet: only once it
+    // is under a quarter of its HP. Above that a vital part is held at 1 HP.
+    vitalCanFall: function (enemy) {
+      return !!enemy && enemy.hpRate() < VITAL_INSTAKILL_RATE;
+    },
 
     // Everything still attached, filtered by what losing it would mean:
     //   { vital: true|false } - only the parts it could not live without, or

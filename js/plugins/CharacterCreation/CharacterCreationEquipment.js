@@ -48,9 +48,10 @@
   // Constants - Global Starter Skills
   //=============================================================================
 
-  // The basics every character is created knowing, whatever their class: Guard,
-  // Escape and Dodge. All three are <category:Basic> <Nature: Mundane> and cost
-  // nothing but a little TP, so they set a floor without adding a kit.
+  // The basics every character is created knowing, whatever their class: Dodge,
+  // <category:Basic> <Nature: Mundane>, costing nothing but a little TP, so it
+  // sets a floor without adding a kit. Guard (2) and Escape (5) are battle menu
+  // commands, not skills, and are never handed out (SkillMaster refuses them).
   //
   // This list used to read [2, 836, 837, 838, 839, 847], which handed every
   // member five MetaMagic spells out of the 836-847 block, one of them
@@ -59,7 +60,7 @@
   // whose classes had nothing in common into members over half of whose
   // starting book was identical. A member knows their class's skills at
   // starting level plus whatever their traits granted, and nothing else.
-  const GLOBAL_STARTER_SKILLS = [2, 5, 8];
+  const GLOBAL_STARTER_SKILLS = [8];
 
   //=============================================================================
   // Constants - Weapon Type Icons

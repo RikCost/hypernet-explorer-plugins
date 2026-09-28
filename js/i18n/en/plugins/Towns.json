@@ -34,7 +34,7 @@
     "growing": "Still filling up",
     "full": "Fully settled",
     "onPlanet": "on {planet}",
-    "square": "{x}, {y}",
+    "square": "{place}",
     "sectionTowns": "Towns",
     "sectionHouses": "Houses",
     "sectionShops": "Shops",

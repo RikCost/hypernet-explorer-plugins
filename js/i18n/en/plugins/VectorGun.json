@@ -6,7 +6,7 @@
   "tab": {
     "modes": "Operating modes",
     "element": "Element",
-    "form": "Form and element",
+    "form": "Forms",
     "calibrate": "Calibration"
   },
   "slots": "{used} of {max} modes running",
@@ -27,7 +27,8 @@
     "rangeTiles": "{n} tiles",
     "magazine": "Shots",
     "calibrateTitle": "Calibration",
-    "damage": "Damage"
+    "damage": "Damage",
+    "face": "Dice face"
   },
   "mode": {
     "mana": {
@@ -170,14 +171,22 @@
     "reaped": "The scythe takes {name}.",
     "noSky": "No sky in here to turn over.",
     "spent": "{form} spent, folded back into the pistol.",
-    "locked": "{mode} opens at level {n}."
+    "locked": "{mode} opens at level {n}.",
+    "roll": "Dice of YHWH: {n}. {form}.",
+    "natural": "Dice of YHWH: natural {n}. The Grimoire of Solomon opens.",
+    "grimoire": "Grimoire of Solomon",
+    "formLocked": "{form} unlocks at level {n}."
+  },
+  "log": {
+    "switched": "{name} switches to {form}."
   },
   "lock": {
     "title": "Not yet earned",
     "level": "Level {n}",
     "unlocksAt": "Opens at level",
     "current": "Em's level",
-    "remaining": "{n} modes still shut, next at level {next}"
+    "remaining": "{n} modes still shut, next at level {next}",
+    "formsRemaining": "{n} forms still shut, next at level {next}"
   },
   "locked": {
     "equip": "Only Em can equip the vector gun.",
@@ -208,8 +217,9 @@
     "gun": "Gun",
     "blade": "Blade of Thelema",
     "fitted": "Fitted",
-    "gain": "Weapon form: +{bonus}% damage and a gimmick of its own, set on the Calibration page. The element and the operating modes stay on the gun. SWITCH swaps forms for free, any number of times in a round. Only one alternate form can be fitted.",
-    "gunGain": "Base form: the pistol carries the element and is the only shape the operating modes run on. SWITCH racks it out into the coilgun, which carries an element of its own."
+    "gain": "+{bonus}% damage. No element, no modes. SWITCH is free.",
+    "gunGain": "Uses the element and up to 3 modes.",
+    "diceGain": "The pistol keeps the element and modes until the roll."
   },
   "bay": {
     "slot": "Bay {n}",
@@ -217,65 +227,70 @@
     "loaded": "Bay {n}"
   },
   "shape": {
+    "dice": {
+      "name": "Dice of YHWH",
+      "desc": "Rolls a d20 for the form.",
+      "effect": "SWITCH rolls a d20 and turns into that face's form, locked or not. 1: Fists of Em. 20: Grimoire of Solomon, no HP cost. SWITCH again returns to the pistol."
+    },
     "gun": {
-      "name": "Vector pistol",
-      "desc": "Base form. Uses the element and the mode bays.",
-      "effect": "With no other form fitted, SWITCH converts the pistol into a coilgun sniper rifle: 3 shots, 4x range on the battle map. The third shot folds it back into the pistol."
+      "name": "Coilgun of Tesla",
+      "desc": "Base form.",
+      "effect": "SWITCH: coilgun, 3 shots, 4x range. Back to the pistol after the third shot."
     },
     "abrasax": {
       "name": "Athame of Abrasax",
-      "desc": "Alternate form: dagger.",
-      "effect": "SWITCH swaps the gun for a dagger: dagger damage, animation and sound, no ammo."
+      "desc": "Inflicts a status.",
+      "effect": "Hits can inflict the chosen status. Stronger statuses have lower odds. PSI raises the odds."
     },
     "thelema": {
       "name": "Blade of Thelema",
-      "desc": "Alternate form: machete.",
-      "effect": "SWITCH swaps the gun for a machete: machete damage, animation and sound, no ammo."
+      "desc": "Casts a sword skill.",
+      "effect": "Normal attacks can become the chosen sword skill, paying its AP. The skill does not need to be learned."
     },
     "choronzon": {
       "name": "Maul of Choronzon",
-      "desc": "Alternate form: maul.",
-      "effect": "SWITCH swaps the gun for a maul: maul damage, animation and sound, no ammo."
+      "desc": "Chosen damage type.",
+      "effect": "Deals the chosen damage type."
     },
     "babalon": {
       "name": "Axe of Babalon",
-      "desc": "Alternate form: axe.",
-      "effect": "SWITCH swaps the gun for an axe: axe damage, animation and sound, no ammo."
+      "desc": "Hits several targets.",
+      "effect": "Hits the chosen number of targets. More targets, less damage each."
     },
     "nuit": {
       "name": "Scourge of Nuit",
-      "desc": "Alternate form: whip.",
-      "effect": "SWITCH swaps the gun for a whip: whip damage, animation and sound, no ammo."
+      "desc": "Lowers a stat.",
+      "effect": "Hits lower the chosen stat. Less damage."
     },
     "hadit": {
       "name": "Staff of Hadit",
-      "desc": "Alternate form: staff.",
-      "effect": "SWITCH swaps the gun for a staff: staff damage, animation and sound, no ammo."
+      "desc": "Changes the weather.",
+      "effect": "Switching to it sets the chosen weather. No effect indoors."
     },
     "aiwass": {
       "name": "Bow of Aiwass",
-      "desc": "Alternate form: bow.",
-      "effect": "SWITCH swaps the gun for a bow: bow damage, animation and sound, no ammo."
+      "desc": "Adjustable draw.",
+      "effect": "Longer draw: more range, less damage."
     },
     "zos": {
       "name": "Darts of Zos",
-      "desc": "Alternate form: throwing darts.",
-      "effect": "SWITCH swaps the gun for darts: dart damage, animation and sound, no ammo."
+      "desc": "Apply a status.",
+      "effect": "Hits apply the chosen status."
     },
     "baphomet": {
       "name": "Talons of Baphomet",
-      "desc": "Alternate form: claws.",
-      "effect": "SWITCH swaps the gun for claws: claw damage, animation and sound, no ammo."
+      "desc": "Drain the target.",
+      "effect": "Hits drain the chosen resource. Draining AP costs the most."
     },
     "kia": {
       "name": "Gauntlet of Kia",
-      "desc": "Alternate form: gauntlet.",
-      "effect": "SWITCH swaps the gun for a gauntlet: gauntlet damage, animation and sound, no ammo."
+      "desc": "Grants a stance.",
+      "effect": "Grants the chosen stance while equipped. Lowers damage dealt."
     },
     "longinus": {
       "name": "Lance of Longinus",
-      "desc": "Alternate form: lance.",
-      "effect": "SWITCH swaps the gun for a lance: lance damage, animation and sound, no ammo."
+      "desc": "Chosen attack style.",
+      "effect": "Attacks with the chosen style."
     },
     "sniper": {
       "name": "Coilgun",
@@ -284,58 +299,48 @@
     },
     "solomon": {
       "name": "Grimoire of Solomon",
-      "desc": "Alternate form: the open book.",
-      "effect": "Fitted, the book is open when the fight starts: Em begins every battle reading a row of spells out of the grimoire instead of her own. Every spell read costs health, priced on its casting cost, and Graceful Death buys no invulnerability with it. A plain attack fires the book's own pages, four tiles out."
+      "desc": "Grimoire spells.",
+      "effect": "Battles start with grimoire spells instead of Em's own. Spells cost HP based on their cost. Graceful Death gives no invulnerability. Normal attacks reach 4 tiles."
     },
     "fists": {
       "name": "Fists of Em",
-      "desc": "Alternate form: bare hands.",
-      "effect": "SWITCH drops the gun and Em fights bare-handed: unarmed damage, animation and sound, no ammo. A swing may become one of the martial arts forms chosen on the Calibration page, paid for in AP."
-    },
-    "twin": {
-      "name": "Twin vectors",
-      "desc": "Alternate form: paired pistols.",
-      "effect": "SWITCH splits the frame into a pair of pistols: twin-pistol damage, animation and sound, no ammo. The Calibration page sets how many rounds an attack puts out; the more it fires, the less each one carries."
-    },
-    "crossbow": {
-      "name": "Vector crossbow",
-      "desc": "Alternate form: crossbow.",
-      "effect": "SWITCH swaps the gun for a crossbow: crossbow damage, animation and sound, no ammo. It holds exactly one bolt, and the Calibration page sets what is on the end of it."
+      "desc": "Martial arts.",
+      "effect": "Normal attacks can become one of the chosen martial arts skills, paying its AP."
     },
     "eris": {
       "name": "Nunchaku of Eris",
-      "desc": "Alternate form: nunchaku.",
-      "effect": "SWITCH swaps the gun for nunchaku, two batons on a lit chain: nunchaku damage, animation and sound, no ammo. The Calibration page sets how wild the blow is: a wider band does better on average and less reliably."
+      "desc": "Random damage.",
+      "effect": "Wider spread: higher average damage, less consistent."
     },
     "maat": {
       "name": "Mail of Maat",
-      "desc": "Alternate form: flail.",
-      "effect": "SWITCH swaps the gun for a chained flail with an ankh for a head: flail damage, animation and sound, no ammo. The Calibration page sets what it weighs the target against; the further out of balance, the harder it comes down."
+      "desc": "Punishes imbalance.",
+      "effect": "More damage the more the target's chosen stat is out of balance. Less damage to balanced targets."
     },
     "bubba": {
       "name": "Wrench of Bubba",
-      "desc": "Alternate form: wrench.",
-      "effect": "SWITCH swaps the gun for a wrench: wrench damage, animation and sound, no ammo. The Calibration page names the creatures it was built for: far more against those, less against everything else."
+      "desc": "Strong vs one type.",
+      "effect": "Much more damage to the chosen creature type, less to others."
     },
     "yaldabaoth": {
       "name": "Chainsaw of Yaldabaoth",
-      "desc": "Alternate form: chainsaw.",
-      "effect": "SWITCH swaps the gun for a chainsaw: chainsaw damage, animation and sound, no ammo. The bar reads how far gone the body already is and bites the harder for it; the Calibration page sets which reading. Against something untouched it is worth less than a plain swing."
+      "desc": "Strong vs wounded.",
+      "effect": "More damage the more hurt the target is, by the chosen reading. Less damage to unhurt targets."
     },
     "nyarlathotep": {
       "name": "Scythe of Nyarlathotep",
-      "desc": "Alternate form: scythe.",
-      "effect": "SWITCH swaps the gun for a scythe: scythe damage, animation and sound, no ammo. On a critical hit a coin toss takes a life outright; the Calibration page sets which side. It never takes Em, a boss, a petrodemon, or anything more than ten levels above her."
+      "desc": "Crits can kill.",
+      "effect": "Critical hits have a 50% chance to kill outright, on the chosen side. Never Em, bosses, petrodemons or anything over 10 levels above her."
     },
     "freud": {
       "name": "Katana of Freud",
-      "desc": "Alternate form: katana.",
-      "effect": "SWITCH swaps the gun for a katana worked from PSI rather than the arm: katana damage, animation and sound, no ammo. A swing may become the psychic skill chosen on the Calibration page, paid for in AP."
+      "desc": "Scales on PSI.",
+      "effect": "Damage scales on PSI. Normal attacks can become the chosen psychic skill, paying its AP."
     },
     "gautama": {
       "name": "Rosary of Gautama",
-      "desc": "Alternate form: rosary.",
-      "effect": "SWITCH swaps the gun for a rosary, the one shape that does not strike: no ammo, and its attack turns on her own side. The Calibration page sets what the beads mend."
+      "desc": "Heals allies.",
+      "effect": "No damage. Attacks heal allies. Choose what it heals."
     }
   },
   "section": {
@@ -364,8 +369,6 @@
       "cleave": "How wide the swing carries",
       "draw": "How far it is drawn",
       "charge": "How it is brought to bear",
-      "pattern": "How the pair fires",
-      "bolt": "What is on the bolt",
       "discord": "How wild the blow is",
       "measure": "What it weighs them against",
       "reads": "What the bar reads",
@@ -435,38 +438,6 @@
       "overrun": {
         "name": "Run through",
         "desc": "Hits twice at 70% damage each."
-      }
-    },
-    "pattern": {
-      "two": {
-        "name": "Two rounds",
-        "desc": "Two rounds at 70% damage each."
-      },
-      "three": {
-        "name": "Three rounds",
-        "desc": "Three rounds at 55% damage each."
-      },
-      "four": {
-        "name": "Four rounds",
-        "desc": "Four rounds at 44% damage each."
-      }
-    },
-    "bolt": {
-      "piercing": {
-        "name": "Piercing head",
-        "desc": "Ignores the target's guard."
-      },
-      "barbed": {
-        "name": "Barbed head",
-        "desc": "50% chance to inflict Bleeding."
-      },
-      "splitting": {
-        "name": "Splitting head",
-        "desc": "Hits every body part at 70% damage."
-      },
-      "heavy": {
-        "name": "Heavy head",
-        "desc": "115% damage, 25% chance to Stun."
       }
     },
     "discord": {
@@ -648,12 +619,6 @@
       },
       "longinus": {
         "hint": "How the lance attacks. Each mode trades one property for another."
-      },
-      "twin": {
-        "hint": "How many rounds each attack fires. More rounds means less damage per round."
-      },
-      "crossbow": {
-        "hint": "The tip loaded on the bolt. Only one can be loaded at a time."
       },
       "eris": {
         "hint": "Damage variance. Wider variance raises the average damage but makes single hits less predictable."

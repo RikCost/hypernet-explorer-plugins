@@ -318,6 +318,28 @@
     else AudioManager.playBgm({ name: sel, volume: volume, pitch: 100, pan: 0 });
   }
 
+  // A menu audition is only a sample: the music that was playing before the
+  // first one is remembered, and closing the menu puts it back.
+  let preAuditionBgm = null;
+  function auditionTrackValue(value, volume) {
+    if (!preAuditionBgm) preAuditionBgm = AudioManager.saveBgm();
+    previewTrackValue(value, volume);
+  }
+  function endAudition() {
+    if (!preAuditionBgm) return;
+    const bgm = preAuditionBgm;
+    preAuditionBgm = null;
+    if (bgm.name) AudioManager.replayBgm(bgm);
+    else AudioManager.stopBgm();
+  }
+  if (typeof Scene_Options !== "undefined") {
+    const _Scene_Options_terminate = Scene_Options.prototype.terminate;
+    Scene_Options.prototype.terminate = function () {
+      _Scene_Options_terminate.call(this);
+      endAudition();
+    };
+  }
+
   // Plugin command
   PluginManager.registerCommand(pluginName, "openMusicSelectionWindow", () => {
     if (window.Scene_MusicSelection) SceneManager.push(window.Scene_MusicSelection);
@@ -398,7 +420,7 @@
     if (idx < 0) idx = 0;
     ConfigManager.battleMusicMode = MODES[(idx + step + MODES.length) % MODES.length];
     ConfigManager.save();
-    previewTrackValue(ConfigManager.battleMusicName, 60);
+    auditionTrackValue(ConfigManager.battleMusicName, 60);
     const row = this.findSymbol("battleMusicMode");
     if (row >= 0) this.redrawItem(row);
     this.playCursorSound();
@@ -417,7 +439,7 @@
     const next = tracks[(currentIndex + step + tracks.length) % tracks.length];
     ConfigManager.battleMusicTrack = next.value;
     ConfigManager.save();
-    previewTrackValue(next.value, 60);
+    auditionTrackValue(next.value, 60);
     const row = this.findSymbol("battleMusicName");
     if (row >= 0) this.redrawItem(row);
     this.playCursorSound();
@@ -428,6 +450,7 @@
     MUSIC_TRACKS, MUSIC_NONE, MUSIC_MAP, MUSIC_RANDOM, MUSIC_BIOME, MUSIC_DEFAULT, MUSIC_FALLBACK,
     MODES, getLocalizedText, scanCustomTracks,
     playableTracks, selectableTracks, resolveBattleBgmName, rollRandomTrack, previewTrackValue,
+    auditionTrackValue, endAudition,
     currentBiomeName, biomeBattleTrack, currentBiomeBattleTrack
   };
 })();

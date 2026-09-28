@@ -2044,8 +2044,9 @@
       // A bust cached under this event's NAME is dropped rather than kept: the
       // society table is keyed by name alone and several authored events share
       // one, so anything left here is the last same-named event's face and
-      // would be shown for somebody it does not belong to.
-      if (!initSpec?.bust) profile._bustName = null;
+      // would be shown for somebody it does not belong to. In its place goes
+      // the portrait the sheet itself is named after, when there is one.
+      if (!initSpec?.bust) profile._bustName = window.BustPath?.forSheet?.(spriteKey) || null;
       if (initSpec) NPCInitSpec.applyIdentity(profile, initSpec);
       if (initSpec?.bust) profile._bustName = initSpec.bust;
       return;

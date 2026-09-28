@@ -468,8 +468,8 @@
       "desc": "Ti riprendi davanti a un terminale dell'[Hypernet Point] con una borsa di [componenti], un energy drink e nessun ricordo di aver pagato l'ora. L'[Hyperdeck e' montato a meta']. Il resto e' la' fuori, nei negozi, nei cassonetti e nelle case degli altri."
     },
     "originPatronVault": {
-      "name": "Cripta del Patrono",
-      "desc": "Ti svegli al [Piano -1] di una cripta che nessun altro può raggiungere, nove cantine sotto una [botola in aperta campagna]. L'uscita è la botola del patrono, e l'ingresso era sapere dove si trova."
+      "name": "Bunker del Santo Patrono",
+      "desc": "Ti svegli al [Piano -1] di un bunker che nessun altro può raggiungere, nove cantine sotto una [botola in aperta campagna]. L'uscita è la botola del patrono, e l'ingresso era sapere dove si trova."
     }
   },
   "hairStyle": {
@@ -606,8 +606,8 @@
   },
   "selectCharacter": "Seleziona Personaggio",
   "abbrev": {
-    "hp": "PV:",
-    "mp": "PM:",
+    "hp": "HP:",
+    "mp": "MP:",
     "str": "FRZ:",
     "con": "COS:",
     "dex": "DES:",
@@ -878,7 +878,7 @@
   "petNoneFound": "Nessun mostro famiglio corrisponde a questo filtro",
   "petSpecies": "Specie",
   "petClassification": "Classificazione",
-  "petMaxHp": "PV Massimi",
+  "petMaxHp": "HP Massimi",
   "petCombatPower": "Potenza di combattimento",
   "petTraitsTitle": "Tratti",
   "petTraitSentient": "Senziente",
@@ -1070,14 +1070,14 @@
   "patronVaultAskTileHint": "38, 27",
   "patronVaultSave": "Salva coordinate",
   "patronVaultStart": "Inizia qui",
-  "patronVaultSquareLine": "Quadrante {x}, {y} - botola {tileX}, {tileY}",
+  "patronVaultSquareLine": "{place} - botola {tileX}, {tileY}",
   "patronVaultNoneSaved": "Nessuna coordinata salvata.",
   "patronVaultPickSquare": "Scegli prima uno dei quadranti salvati.",
   "padDelete": "Canc",
   "padNext": "Avanti",
   "patronVaultWrongSquare": "Nessuna botola risponde a quelle coordinate.",
-  "patronVaultTravelName": "Cripta Patreon",
-  "floorMinusOneOfAPatronsVault": "Piano -1 della cripta di un patrono",
+  "patronVaultTravelName": "Bunker del Santo Patrono",
+  "floorMinusOneOfAPatronsVault": "Piano -1 di un Bunker del Santo Patrono",
   "thePatronsOwnHatch": "La botola del patrono, sulla superficie sopra",
   "locked": "Chiuso da",
   "theSecretCoordinates": "Le coordinate segrete della botola",

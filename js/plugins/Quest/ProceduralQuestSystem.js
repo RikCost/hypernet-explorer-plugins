@@ -222,6 +222,21 @@
     return null;
   }
 
+  // A place sealed in a spacetime bubble (`"locked": true` in Destinations.json)
+  // cannot be entered, so no notice may send the party there. WorldMapReturn
+  // owns the boundary; this only asks it about a name or a world square.
+  function isLockedPlace(name) {
+    const WMR = window.WorldMapReturn;
+    if (!WMR || !WMR.isLockedPlaceEntry) return false;
+    return WMR.isLockedPlaceEntry(destEntry(name));
+  }
+
+  function isLockedSquare(wx, wy) {
+    const WMR = window.WorldMapReturn;
+    if (!WMR || !WMR.isLockedPlaceSquare) return false;
+    return WMR.isLockedPlaceSquare(wx, wy);
+  }
+
   function groupOfMap(mapId) {
     const groups = window.WorldGen?.MapGroups;
     if (!groups) return null;
@@ -313,7 +328,7 @@
   function pickKnownBoard(rng, hereKey) {
     const here = norm(hereKey);
     const options = Object.keys(knownBoards())
-      .filter(k => norm(k) !== here && isKnownPlace(k));
+      .filter(k => norm(k) !== here && isKnownPlace(k) && !isLockedPlace(k));
     return options.length ? pick(rng, canonicalSort(options)) : null;
   }
 
@@ -902,7 +917,8 @@
     const d = destinations();
     const within = (x, y) => !origin || Math.hypot(x - origin.wx, y - origin.wy) <= SITE_RADIUS;
     const bases = d ? Object.values(d)
-      .filter(v => v && v.base && (v.base.x || v.base.y) && within(v.base.x, v.base.y)) : [];
+      .filter(v => v && v.base && (v.base.x || v.base.y) && within(v.base.x, v.base.y))
+      .filter(v => !(window.WorldMapReturn?.isLockedPlaceEntry?.(v))) : [];
     const clamp = (v) => Math.max(4, Math.min(WORLD_SIZE - 5, v));
     const off = () => (chance(rng, 0.5) ? 1 : -1) * irange(rng, 2, 6);
     let fallback = null;
@@ -921,7 +937,7 @@
       }
       if (!within(site.wx, site.wy)) continue;
       if (!fallback) fallback = site;
-      if (!isWaterSite(site.wx, site.wy)) return site;
+      if (!isWaterSite(site.wx, site.wy) && !isLockedSquare(site.wx, site.wy)) return site;
     }
     return fallback || (origin ? { wx: clamp(origin.wx), wy: clamp(origin.wy) } : { wx: 124, wy: 168 });
   }
@@ -979,29 +995,45 @@
     return parts.length ? ", " + parts.join(" ") : "";
   }
 
-  // "(124, 168), in Italy near Bologna" - how every quest text prints a site.
+  // "Fields at (124 168)" - the square's name and pair, from the one formatter
+  // every world coordinate goes through. Bare pair when it is not loaded.
+  function squareText(wx, wy) {
+    const wmt = window.WorldMapTransfer;
+    return (wmt && wmt.squareLabel) ? wmt.squareLabel(wx, wy) : "(" + wx + " " + wy + ")";
+  }
+
+  // "Fields at (124 168), in Italy near Bologna" - how every quest text prints a site.
   function siteText(site) {
     if (!site) return "";
-    return "(" + site.wx + ", " + site.wy + ")" + sitePlace(site.wx, site.wy);
+    return squareText(site.wx, site.wy) + sitePlace(site.wx, site.wy);
   }
 
   // Annotate the coordinate pair a quest body prints, without every archetype
   // template needing its own slot: after expansion the pair is the literal
-  // "(x, y)", so the place suffix is spliced in after the first occurrence.
+  // "(x, y)", so every occurrence becomes the square's label and the place
+  // suffix is spliced in after the first one.
   function annotateSite(text, ctx) {
     if (!text || !ctx || ctx.X == null || ctx.Y == null) return text;
-    const place = sitePlace(ctx.X, ctx.Y);
-    if (!place) return text;
     const pair = "(" + ctx.X + ", " + ctx.Y + ")";
     const at = text.indexOf(pair);
     if (at < 0) return text;
-    const head = text.slice(0, at + pair.length);
-    const rest = text.slice(at + pair.length);
+    const label = squareText(ctx.X, ctx.Y);
+    const place = sitePlace(ctx.X, ctx.Y);
+    const head = text.slice(0, at) + label;
+    const rest = text.slice(at + pair.length).split(pair).join(label);
+    if (!place) return head + rest;
     // Close the appositive when the sentence carries on ("the ground at (124,
     // 168), in Italy near Bologna, is softer than it should be"), but never
     // double a comma or push one in front of a full stop.
     const suffix = /^\s*[.,;:!?)]/.test(rest) ? place : place + ",";
     return head + suffix + rest;
+  }
+
+  // A title has no room for the country suffix: only the pair is relabelled.
+  function labelSitePair(text, ctx) {
+    if (!text || !ctx || ctx.X == null || ctx.Y == null) return text;
+    const pair = "(" + ctx.X + ", " + ctx.Y + ")";
+    return text.indexOf(pair) < 0 ? text : text.split(pair).join(squareText(ctx.X, ctx.Y));
   }
 
   function pickPlanetTarget(rng) {
@@ -1617,7 +1649,7 @@
     // ---- base gold reward from party median level ----
     let gold = (500 + rng() * 900) * (1 + 0.30 * L) * diffMult;
 
-    const dests = destinationNames();
+    const dests = destinationNames().filter(d => !isLockedPlace(d));
     const hereNorm = norm(boardKey);
     const otherDests = dests.filter(d => norm(d) !== hereNorm);
     const anyDest = () => otherDests.length ? pick(rng, otherDests) : (dests[0] || "Ghent"); // i18n-ignore: Destinations.json key
@@ -1892,7 +1924,7 @@
     ctx.COLOR = pick(rng, LORE_COLOR());
     ctx.COLOR2 = pick(rng, LORE_COLOR());
     if (ctx.FACTION == null) ctx.FACTION = o.factionPlain || o.giverLabel;
-    o.title = composeTitle(rng, o, ctx);
+    o.title = labelSitePair(composeTitle(rng, o, ctx), ctx);
     o.body = annotateSite(composeBody(rng, o, ctx), ctx);
     // The notice reads exactly as its poster wrote it, and then says plainly
     // what the party will find out anyway: nobody is coming to collect it.

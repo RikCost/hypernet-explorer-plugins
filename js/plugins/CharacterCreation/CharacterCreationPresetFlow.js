@@ -341,6 +341,16 @@
         actor.changeLevel(Math.max(1, Math.min(99, preset.level)), false);
       }
 
+      // The seat, not the dossier, may have taught the actor its skills: a class
+      // change here does NOT forget the class being left (see
+      // Game_Actor.changeClass), so a dossier landing on a stock seat inherited
+      // that seat's whole trade. Bubba, a Mechanic, joins seat 2 and kept the
+      // Witch's starting book (DarkChannel, IceDart, PurifyingBlaze, ShadowWisp,
+      // ConvokeFamiliar) on top of his own. Reset the book to the dossier's own
+      // class at its level; its own skills, the global starters and its traits
+      // are written on top below.
+      if (typeof actor.initSkills === "function") actor.initSkills();
+
       // Clear party's current inventory and gold. Never when somebody joins a
       // party already on the road: the dossier is a person, not a new game.
       if (!joining) {

@@ -295,18 +295,19 @@
   }
 
   // A per-tile settlement key reads as the ground it stands on, the nation
-  // that claims it and the square itself: "Forest, Spain (79,134)".
+  // that claims it and the square itself: "Forest at (79 134), Spain".
   function procPlaceLabel(x, y) {
     const gs = (typeof $gameSystem !== "undefined") ? $gameSystem : null;
     let biome = null, country = null;
     try { biome = gs?.getBiomeFromCache ? gs.getBiomeFromCache(x, y) : null; } catch (e) { biome = null; }
     try { country = gs?.getCountryFromWorldCoordinates ? gs.getCountryFromWorldCoordinates(x, y) : null; } catch (e) { country = null; }
     const place = biome
-      ? (window.BiomeNames?.display ? window.BiomeNames.display(biome) : biome)
-      : T('NPCLife.procPlace.frontier');
+      ? T('WorldMapReturn.squareAt', {
+          place: window.BiomeNames?.display ? window.BiomeNames.display(biome) : biome, x: x, y: y })
+      : T('NPCLife.procPlace.frontier', { x: x, y: y });
     return country?.country
-      ? T('NPCLife.procPlace.inCountry', { place: place, country: country.country, x: x, y: y })
-      : T('NPCLife.procPlace.unclaimed', { place: place, x: x, y: y });
+      ? T('NPCLife.procPlace.inCountry', { place: place, country: country.country })
+      : T('NPCLife.procPlace.unclaimed', { place: place });
   }
 
   // ── Where a beast has lived ────────────────────────────────────────────────

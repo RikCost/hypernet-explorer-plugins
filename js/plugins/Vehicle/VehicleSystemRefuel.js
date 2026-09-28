@@ -22,6 +22,12 @@
  * @type number
  * @default 60
  *
+ * @param fuelPricePerLiter
+ * @text Fuel Price Per Liter (gold)
+ * @desc Pump price for one liter, in gold (100 gold = 1 euro).
+ * @type number
+ * @default 120
+ *
  * @command ShowRefuelWindow
  * @text Show Refuel Window
  * @desc Opens the refueling window for car and camper.
@@ -42,7 +48,7 @@
  * It manages:
  * - Refueling menu (Standard MZ Window Style)
  * - Fuel levels for Car and Camper (using MZ Gauge bars)
- * - Fuel price calculations (based on Variable 53)
+ * - Fuel price calculations (fuelPricePerLiter parameter, in gold)
  *
  * Requirements:
  * - FastTravelSystem.js (optional but recommended for travel integration)
@@ -57,6 +63,7 @@
     // VehicleSystem), NOT in RPG Maker variables. Only capacities are read here.
     const fuelCapacity = parseInt(parameters['fuelCapacity']) || 100;
     const carFuelCapacity = parseInt(parameters['carFuelCapacity']) || 60;
+    const fuelPricePerLiter = parseInt(parameters['fuelPricePerLiter']) || 120;
 
     // Effective base capacity honoring the Expanded Tank upgrade (used only in the
     // legacy fallback path; window.VehicleFuel applies the upgrade itself).
@@ -100,7 +107,9 @@
         },
 
         getFuelPrice: function() {
-            return $gameVariables.value(53) || 10;
+            // Variable 53 is the market soul-tendency / tax value (baseline
+            // 66666), NOT a price: reading it here quoted €600+/L at the pump.
+            return fuelPricePerLiter;
         }
     };
 

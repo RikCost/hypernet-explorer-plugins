@@ -1159,14 +1159,23 @@
             ? window.BiomeNames.display(biome) : biome;
     }
 
-    // "Austria - Fields (34, 56)": what a square is called until the party calls
+    // "Austria - Fields at (34 56)": what a square is called until the party calls
     // it something else.
     function defaultCustomName(x, y) {
         return T('FastTravel.custom.defaultName', {
             nation: nationNameAt(x, y) || T('FastTravel.custom.unclaimed'),
-            biome: biomeLabelAt(x, y) || T('FastTravel.custom.unknownBiome'),
-            x: x, y: y,
+            place: T('WorldMapReturn.squareAt', {
+                place: biomeLabelAt(x, y) || T('FastTravel.custom.unknownBiome'), x: x, y: y,
+            }),
         });
+    }
+
+    // "Fields at (48 132)": the shared world-coordinate label, bare pair
+    // when the coordinate service is not up.
+    function squareLabelAt(x, y) {
+        const WMT = window.WorldMapTransfer;
+        return (WMT && typeof WMT.squareLabel === 'function')
+            ? WMT.squareLabel(x, y) : T('WorldMapReturn.squareBare', { x: x, y: y });
     }
 
     // A written-down square, dressed as a destination: its world tile is its
@@ -4257,7 +4266,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             if (from) {
                 const x = $gameVariables ? $gameVariables.value(playerXVar) : 0;
                 const y = $gameVariables ? $gameVariables.value(playerYVar) : 0;
-                from.textContent = T('FastTravel.book.departingFrom', { x: x, y: y });
+                from.textContent = T('FastTravel.book.departingFrom', { place: squareLabelAt(x, y) });
             }
         },
 

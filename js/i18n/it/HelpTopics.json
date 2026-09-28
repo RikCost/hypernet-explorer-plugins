@@ -236,7 +236,7 @@
     },
     "bodyParts": {
       "title": "Arti e organi",
-      "description": "Ogni personaggio e ogni mostro ha [arti e organi] individuali, ciascuno con la propria salute, presi dalla sua specie.\n\nIl danno si distribuisce fra le parti. Una parte a [0] è [distrutta]: porta una penalità permanente finché resta così e cambia ciò che il corpo può fare. Una mano persa toglie il suo slot arma. Un corpo senza mani regge l'arma in bocca. Gambe danneggiate costano movimento ed evasione. Una parte a 0, danneggiata o recisa non può afferrare né essere afferrata.\n\nGli [organi vitali] sono protetti dal danno ordinario e si aprono solo con un [attacco mirato].\n\nLe parti [non guariscono da sole]. Si curano in clinica, si ripristinano con la magia o si sostituiscono con una protesi. In [Sangue e Olio] un colpo tagliente può staccare una parte dal corpo, portandosi via il suo innesto.\n\nLa scheda di stato ha una sezione [Anatomia] che mostra il corpo parte per parte."
+      "description": "Ogni personaggio e ogni mostro ha [arti e organi] individuali, ciascuno con la propria salute, presi dalla sua specie.\n\nIl danno si distribuisce fra le parti. Una parte a [0] è [distrutta]: porta una penalità permanente finché resta così e cambia ciò che il corpo può fare. Una mano persa toglie il suo slot arma. Un corpo senza mani regge l'arma in bocca. Gambe danneggiate costano movimento ed evasione. Una parte a 0, danneggiata o recisa non può afferrare né essere afferrata.\n\nGli [organi vitali] sono protetti dal danno ordinario e si aprono solo con un [attacco mirato]. Un colpo a uno di essi è letale solo sotto il [25% di salute]; fino ad allora resta a [1].\n\nLe parti [non guariscono da sole]. Si curano in clinica, si ripristinano con la magia o si sostituiscono con una protesi. In [Sangue e Olio] un colpo tagliente o perforante può staccare una parte dal corpo, portandosi via il suo innesto.\n\nLa scheda di stato ha una sezione [Anatomia] che mostra il corpo parte per parte."
     },
     "bodyBiologics": {
       "title": "Biologia",
@@ -392,7 +392,7 @@
     },
     "worldStructures": {
       "title": "Strutture sotto la mappa",
-      "description": "Gli ingressi sulle mappe procedurali si attraversano [camminando], non premendo. Cosa c'è dietro è estratto dal seme del mondo, dalla casella e dalla casella-tile, quindi una scala porta sempre allo stesso posto.\n\n- [scale in giù]: qualsiasi struttura. Cantina, dungeon, cripta, catacombe, miniera, cisterna, tana, segreta, biblioteca, fucina, bunker, laboratorio, santuario, tunnel, grotta, tubo di lava, tumulo, stazione, salina, covo, tempio\n- [scale in su]: cose costruite in superficie e poi sepolte\n- [caverna]: tane, caverne di ghiaccio, di cristallo, fungine, tubi di lava, grotte marine\n- [grata]: una fogna, solo nelle città che ne dichiarano una sotto\n- [botola]: il caveau di un mecenate, pieno di denaro e armi rare\n\nLa superficie limita le possibilità: i campi di ghiaccio ospitano caverne gelate, un cimitero ospita catacombe."
+      "description": "Gli ingressi sulle mappe procedurali si attraversano [camminando], non premendo. Cosa c'è dietro è estratto dal seme del mondo, dalla casella e dalla casella-tile, quindi una scala porta sempre allo stesso posto.\n\n- [scale in giù]: qualsiasi struttura. Cantina, dungeon, cripta, catacombe, miniera, cisterna, tana, segreta, biblioteca, fucina, bunker, laboratorio, santuario, tunnel, grotta, tubo di lava, tumulo, stazione, salina, covo, tempio\n- [scale in su]: cose costruite in superficie e poi sepolte\n- [caverna]: tane, caverne di ghiaccio, di cristallo, fungine, tubi di lava, grotte marine\n- [grata]: una fogna, solo nelle città che ne dichiarano una sotto\n- [botola]: un Bunker del Santo Patrono, pieno di denaro e armi rare\n\nLa superficie limita le possibilità: i campi di ghiaccio ospitano caverne gelate, un cimitero ospita catacombe."
     },
     "worldHouses": {
       "title": "Case, locande e negozi",
@@ -688,7 +688,7 @@
     },
     "craftLoot": {
       "title": "Come si tira il bottino",
-      "description": "Il bottino casuale è valutato da [0 a 100]: il [livello mediano] del gruppo più un [modificatore di difficoltà] portato dal luogo stesso. Il punteggio sceglie la [fascia di rarità], da quasi tutto comune a [0-20], passando per una distribuzione equilibrata a [50], fino a quasi tutto leggendario a [100].\n\nLa rarità si legge dal [prezzo], e la stessa scala colora i nomi degli oggetti nello zaino, nel negozio, nella schermata ricompense e nell'elenco dei contenitori.\n\nIl [caveau di un mecenate] spinge le tabelle verso la fascia costosa."
+      "description": "Il bottino casuale è valutato da [0 a 100]: il [livello mediano] del gruppo più un [modificatore di difficoltà] portato dal luogo stesso. Il punteggio sceglie la [fascia di rarità], da quasi tutto comune a [0-20], passando per una distribuzione equilibrata a [50], fino a quasi tutto leggendario a [100].\n\nLa rarità si legge dal [prezzo], e la stessa scala colora i nomi degli oggetti nello zaino, nel negozio, nella schermata ricompense e nell'elenco dei contenitori.\n\nUn [Bunker del Santo Patrono] spinge le tabelle verso la fascia costosa."
     },
     "craftContainers": {
       "title": "Contenitori",
@@ -720,7 +720,7 @@
     },
     "galaxyPatrons": {
       "title": "Mondi dei mecenati",
-      "description": "Alcuni mondi in altre galassie portano il nome delle persone che hanno pagato per il gioco. Sono abitabili e ospitano vita, orbitano oggetti esotici, stanno in [sistemi da 9 pianeti] dove nessun pianeta condivide il tipo con un altro, e sono elencati nel catalogo della mappa stellare sotto [Mecenati].\n\nOgnuna di quelle persone possiede anche una [botola] su esattamente una casella della mappa del mondo. Non si può smontare e nulla ci cresce sopra. Scendere apre il suo [caveau]: un grande salone con camere blindate e una camera profonda sul fondo, pieno di denaro e armi, con le tabelle del bottino pesate verso la fascia costosa.\n\nLe posizioni delle botole sono [cifrate] nei dati di gioco."
+      "description": "Alcuni mondi in altre galassie portano il nome delle persone che hanno pagato per il gioco. Sono abitabili e ospitano vita, orbitano oggetti esotici, stanno in [sistemi da 9 pianeti] dove nessun pianeta condivide il tipo con un altro, e sono elencati nel catalogo della mappa stellare sotto [Mecenati].\n\nOgnuna di quelle persone possiede anche una [botola] su esattamente una casella della mappa del mondo. Non si può smontare e nulla ci cresce sopra. Scendere apre il suo [Bunker del Santo Patrono]: un grande salone con camere blindate e una camera profonda sul fondo, pieno di denaro e armi, con le tabelle del bottino pesate verso la fascia costosa.\n\nLe posizioni delle botole sono [cifrate] nei dati di gioco."
     },
     "galaxySky": {
       "title": "Il cielo notturno",

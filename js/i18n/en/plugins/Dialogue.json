@@ -8,11 +8,6 @@
   "askTell": "Tell",
   "askGroupFixed": "Anytime",
   "askGroupHere": "Here",
-  "askGroupSheet": "The sheet",
-  "askToggleNotices": "Show/hide tips",
-  "askNotice_first": "First time only",
-  "askNotice_always": "Always",
-  "askNotice_off": "Off",
   "askGroupAgain": "Teach me again",
   "askCombat": "Combat",
   "combat": {
@@ -23,7 +18,7 @@
       "Bubba: One action each per round, in order of speed. Pick it off the list and press [CONTINUE].",
       "Bubba: Attack swings whatever you are holding at whoever you point it at. It never greys out: it is the one thing you are never left without.",
       "Bubba: Defense braces you and cuts what lands on you for the round. Carrying a gun, that row is Reload instead: it fills the magazine and covers you all the same.",
-      "Bubba: Skills is the loadout you packed, each row priced in MP or TP. Actions is the plain kit you carry whatever you forget, and four things a body does besides.",
+      "Bubba: Skills is the loadout you packed, each row priced in MP or AP. Actions is the plain kit you carry whatever you forget, and four things a body does besides.",
       "Bubba: Under Actions, Aim names a limb before the swing and costs you no turn, and Wrestle takes hold of the thing with your bare hands.",
       "Bubba: Talk is under there too, and some of them do listen. Item is the backpack, and Throw, beside Talk, is the same bag hurled at somebody's head.",
       "Bubba: Run always works, darlin'. No shame in it either: a corpse learns nothing."

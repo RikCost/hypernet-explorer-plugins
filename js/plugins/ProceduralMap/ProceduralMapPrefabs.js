@@ -1251,6 +1251,12 @@
         const shadowBits = shadowSrcIdx < prefabData.length ? prefabData[shadowSrcIdx] : 0;
 
         if (hasPrefabContent) {
+          // By POSITION, which cells a prefab built on, for the passes that still
+          // run after it (the settlement generators lay their shoreline last):
+          // the building stays, the sand goes round it.
+          if (!mapData.prefabMask) mapData.prefabMask = new Uint8Array(PROC_MAP_WIDTH * PROC_MAP_HEIGHT);
+          mapData.prefabMask[mapY * PROC_MAP_WIDTH + mapX] = 1;
+
           // A tile the party already took apart on this square: the ground the
           // prefab lays down still goes in (no hole in its floor), the scenery
           // it stood on the object layers does not.

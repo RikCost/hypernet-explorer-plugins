@@ -241,7 +241,7 @@
             // the open tree trains, and the party's tier in it.
             if (window.SpecBadge && this.activeTree) {
                 const spec = PTT.treeSpec ? PTT.treeSpec(this.activeTree.id) : null;
-                if (spec) window.SpecBadge.show(spec, { anchor: '.tt-detail-head' });
+                if (spec) window.SpecBadge.show(spec);
             }
         }
 

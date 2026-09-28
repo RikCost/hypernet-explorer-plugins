@@ -17,7 +17,7 @@
     "mpRestored": "ha recuperato tutti gli MP",
     "vomited": "{name} ha vomitato!",
     "collapsed": "{name} è collassato per la fame!",
-    "outOfMp": "{name} ha esaurito i PM!"
+    "outOfMp": "{name} ha esaurito i MP!"
   },
   "sleepMenu": {
     "titleMain": "Riposo",
@@ -70,7 +70,7 @@
     "cryoLevel": "Lv %1",
     "cryoHp": "HP",
     "cryoMp": "MP",
-    "cryoTp": "TP",
+    "cryoTp": "AP",
     "cryoHunger": "Cibo",
     "cryoSleep": "Riposo",
     "cryoHeld": "Bloccato"

@@ -71,7 +71,7 @@
       // counter has left rather than what the party is carrying.
       return this._items.map((entry, i) => {
         const item     = entry.data;
-        const chance   = SS().calcChance(item, this._agi);
+        const chance   = SS().calcChance(item, this._agi, entry);
         const color    = chanceColor(chance);
         const sel      = i === this._idx ? ' selected' : '';
         const canvasId = `steal-ic-${i}`;
@@ -181,7 +181,7 @@
       // before the die is thrown, so nothing is left on screen to pick again.
       this._closeDOM();
       const item   = entry.data;
-      const chance  = SS().calcChance(item, this._agi);
+      const chance  = SS().calcChance(item, this._agi, entry);
       const modifier = SS().rollModifier(this._agi);
       const success = await SS().performSteal(chance, { actionName: 'Shop Shoplift', modifier });
 
@@ -195,6 +195,8 @@
             severity: 'good'
           });
         }
+      } else if (SS().isUnattendedSource?.(entry)) {
+        // Fumbled with nobody watching: no keeper, no report, no bounty.
       } else {
         // Caught. The keeper is the victim, so they report it whatever they
         // thought of the party a moment ago, and they shut their counter to

@@ -89,7 +89,7 @@
         const capacity = typeof TF.capacity === 'function' ? TF.capacity(town) : (town.capacity || 0);
         const rentPerDay = typeof TF.rentPerDay === 'function' ? TF.rentPerDay(town) : 0;
         const rentDue = typeof TF.rentDue === 'function' ? TF.rentDue(town) : 0;
-        const where = T('Towns.deeds.square', { x: town.worldX, y: town.worldY }) +
+        const where = T('Towns.deeds.square', { place: town.planet ? T('WorldMapReturn.squareBare', { x: town.worldX, y: town.worldY }) : window.WorldMapTransfer.squareLabel(town.worldX, town.worldY) }) +
           (town.planet ? ' ' + T('Towns.deeds.onPlanet', { planet: town.planet }) : '');
         const sub = `${where} • ${residents}/${capacity} ${T('Towns.deeds.colResidents')}`;
         const val = town.houseValue || (rentPerDay * 30);

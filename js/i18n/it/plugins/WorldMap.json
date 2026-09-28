@@ -1,11 +1,11 @@
 {
   "pin": {
     "vaultUnnamed": "un mecenate senza nome",
-    "vaultKnown": "cripta di {patron} (sigillata)",
-    "vaultOpen": "cripta di {patron} (aperta)"
+    "vaultKnown": "Bunker del Santo Patrono di {patron} (sigillato)",
+    "vaultOpen": "Bunker del Santo Patrono di {patron} (aperto)"
   },
   "read": {
-    "square": "Riquadro {x}, {y}",
+    "square": "{place}",
     "place": "Qui",
     "nation": "Rivendicato da",
     "unclaimed": "Nessuna nazione",
@@ -30,7 +30,7 @@
     "needVehicle": "Devi essere a bordo di un veicolo per partire dalla carta."
   },
   "note": {
-    "title": "Riquadro {x}, {y}",
+    "title": "{place}",
     "placeholder": "Scrivi qualcosa su questo riquadro",
     "save": "Conserva",
     "delete": "Cancella",
@@ -39,7 +39,7 @@
   },
   "preview": {
     "showMap": "Mostra la mappa",
-    "title": "Riquadro {x}, {y}",
+    "title": "{place}",
     "building": "Disposizione del terreno...",
     "notKept": "Disegnata solo per questa occhiata, e non conservata da nessuna parte.",
     "close": "Chiudi",

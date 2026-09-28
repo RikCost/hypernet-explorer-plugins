@@ -1,0 +1,280 @@
+/* ==========================================================================
+   Dice3D (js/plugins/Core/Dice3D.js)
+   The d20 thrown over the screen, the result card under it and the card that
+   offers a stat check before the throw. Every colour is a theme token, so the
+   card follows whichever preset vars.css holds.
+   ========================================================================== */
+
+/* The stage the die tumbles on. It covers the screen but never takes a click:
+   whatever is under it keeps working while the die is in the air. Pinned with
+   the four longhands, `inset` collapses in this runtime. */
+#dice3d-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.45s ease;
+}
+
+#dice3d-container.fade-out {
+    opacity: 0;
+}
+
+#dice3d-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   The result card: the same modal sheet every other popup wears, with the
+   check named on top, the scoreboard in the middle and the verdict stamped
+   underneath.
+   -------------------------------------------------------------------------- */
+#dice3d-banner {
+    position: absolute;
+    bottom: 12%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 300px;
+    max-width: 78vw;
+    padding: 14px 30px 16px;
+    box-sizing: border-box;
+    border: var(--modal-border);
+    border-radius: var(--modal-radius);
+    background: var(--modal-bg);
+    box-shadow: var(--modal-shadow);
+    color: var(--modal-fg);
+    font-family: var(--font-ui);
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s ease;
+}
+
+#dice3d-banner.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+#dice3d-banner.crit-success {
+    border-color: var(--accent-gold-pure);
+    box-shadow: var(--modal-shadow), 0 0 0 1px var(--accent-gold-pure-translucent-30);
+}
+
+#dice3d-banner.crit-fail {
+    border-color: var(--border-danger-active);
+}
+
+/* The check's name, ruled off from the numbers like a modal title. */
+.dice3d-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--accent-gold-pure-translucent-30);
+}
+
+.dice3d-title {
+    font-size: var(--fs-label);
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-primary-hover);
+}
+
+/* The scoreboard: what was rolled over what it had to reach. */
+.dice3d-score {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 18px;
+    margin: 4px 0 0;
+}
+
+.dice3d-score-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    min-width: 72px;
+}
+
+.dice3d-score-num {
+    font-size: var(--fs-display);
+    line-height: 1;
+    font-weight: bold;
+    color: var(--modal-fg);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.dice3d-score-num.need { color: var(--text-primary-hover); }
+.dice3d-score-num.summed { color: var(--text-primary-hover); transform: scale(1.06); }
+.dice3d-score-num.crit-success { color: var(--accent-gold-pure); }
+.dice3d-score-num.crit-fail { color: var(--text-danger-dark); }
+
+.dice3d-score-label {
+    margin-top: 4px;
+    font-size: var(--fs-caption);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--modal-fg);
+    opacity: 0.65;
+}
+
+.dice3d-slash {
+    align-self: center;
+    margin-bottom: 18px;
+    font-size: var(--fs-title);
+    color: var(--text-primary-hover);
+    opacity: 0.5;
+}
+
+.dice3d-breakdown {
+    font-size: var(--fs-caption);
+    color: var(--modal-fg);
+    opacity: 0.8;
+}
+
+.dice3d-breakdown .mod { color: var(--text-forest-green); font-weight: bold; }
+.dice3d-breakdown .mod.neg { color: var(--text-danger-dark); }
+
+/* The verdict, stamped on a plate the width of its word. */
+.dice3d-status {
+    margin-top: 4px;
+    padding: 4px 16px;
+    font-size: var(--fs-body);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dice3d-status:empty { display: none; }
+.dice3d-status.visible { opacity: 1; transform: scale(1); }
+
+.dice3d-status.success {
+    color: var(--text-forest-green);
+    border-color: var(--border-forest-green);
+    background: var(--bg-success-green-15);
+}
+
+.dice3d-status.failure {
+    color: var(--text-danger-dark);
+    border-color: var(--border-danger-dark);
+    background: var(--bg-danger-medium-10);
+}
+
+.dice3d-status.crit-success {
+    color: var(--accent-gold-pure);
+    border-color: var(--accent-gold-pure);
+    background: var(--accent-gold-pure-translucent-18);
+}
+
+.dice3d-status.crit-fail {
+    color: var(--text-on-danger-plate);
+    border-color: var(--border-danger-active);
+    background: var(--bg-danger-plate);
+}
+
+.dice3d-footer {
+    font-size: var(--fs-caption);
+    color: var(--modal-fg);
+    opacity: 0.7;
+}
+
+/* --------------------------------------------------------------------------
+   The card that offers the check before the die is thrown. It is the only
+   part of this plugin the player can click, so it is the only part that
+   takes pointer events. Ground, frame, shadow and buttons are the one modal
+   sheet in css/theme.css.
+   -------------------------------------------------------------------------- */
+#dice3d-prompt {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--modal-scrim);
+    backdrop-filter: blur(2px);
+    font-family: var(--font-ui);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+#dice3d-prompt.show { opacity: 1; }
+
+.dice3d-prompt-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 340px;
+    max-width: 78vw;
+    padding: 22px 34px 20px;
+    transform: translateY(14px) scale(0.96);
+    transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#dice3d-prompt.show .dice3d-prompt-card { transform: translateY(0) scale(1); }
+
+.dice3d-prompt-title {
+    width: 100%;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--accent-gold-pure-translucent-30);
+    font-size: var(--fs-label);
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--text-primary-hover);
+}
+
+.dice3d-prompt-who {
+    font-size: var(--fs-caption);
+    color: var(--modal-fg);
+    opacity: 0.8;
+}
+
+.dice3d-prompt-target {
+    font-size: var(--fs-display);
+    line-height: 1.1;
+    font-weight: bold;
+    color: var(--modal-fg);
+}
+
+.dice3d-prompt-formula {
+    font-size: var(--fs-body);
+    color: var(--text-forest-green);
+    letter-spacing: 1px;
+}
+
+.dice3d-prompt-buttons {
+    display: flex;
+    gap: var(--modal-gap);
+    margin-top: 8px;
+}

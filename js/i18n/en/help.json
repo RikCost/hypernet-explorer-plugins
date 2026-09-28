@@ -206,7 +206,7 @@
     },
     "limbs_and_organs": {
       "title": "Limbs and Organs",
-      "description": "Every character and monster has individual limbs and organs, each with its own health, taken from its species.\n\nDamage spreads across parts. A part at 0 is destroyed, carries a permanent penalty while it stays that way, and changes what the body can do: a lost hand takes its weapon slot, a body with no hands holds a weapon in its mouth, damaged legs cost movement and evasion. A part at 0, damaged or severed can neither grapple nor be grappled.\n\nVital organs are shielded from ordinary damage and only opened by deliberate targeting.\n\nParts never heal on their own. They are treated at a clinic, restored by magic, or replaced with a prosthetic. In Blood and Oil a slashing blow can take a part off the body, carrying its augment with it.\n\nThe status sheet has an Anatomy section showing the body part by part."
+      "description": "Every character and monster has individual limbs and organs, each with its own health, taken from its species.\n\nDamage spreads across parts. A part at 0 is destroyed, carries a permanent penalty while it stays that way, and changes what the body can do: a lost hand takes its weapon slot, a body with no hands holds a weapon in its mouth, damaged legs cost movement and evasion. A part at 0, damaged or severed can neither grapple nor be grappled.\n\nVital organs are shielded from ordinary damage and only opened by deliberate targeting. A blow to one is only lethal once its owner is under 25% health; until then it holds at 1.\n\nParts never heal on their own. They are treated at a clinic, restored by magic, or replaced with a prosthetic. In Blood and Oil a slashing or piercing blow can take a part off the body, carrying its augment with it.\n\nThe status sheet has an Anatomy section showing the body part by part."
     },
     "biologics": {
       "title": "Biologics",
@@ -362,7 +362,7 @@
     },
     "structures_under_the_map": {
       "title": "Structures Under the Map",
-      "description": "Entrances on procedural maps are walked into, not pressed. What lies behind is rolled from the world seed, the square and the tile, so one stairway always leads to the same place.\n\n- stairs down: any structure. Cellar, dungeon, crypt, catacombs, mine, cistern, warren, oubliette, library, forge, bunker, laboratory, shrine, tunnel, grotto, lava tube, barrow, station, salt works, cave den, temple\n- stairs up: things built above ground and since buried\n- cave: dens, frozen caves, crystal caves, fungal caves, lava tubes, sea grottoes\n- grate: a sewer, only in towns that declare one underneath\n- hatch: a patron's vault, full of money and rare weapons\n\nThe surface limits the options: ice fields hold frozen caves, a graveyard holds catacombs."
+      "description": "Entrances on procedural maps are walked into, not pressed. What lies behind is rolled from the world seed, the square and the tile, so one stairway always leads to the same place.\n\n- stairs down: any structure. Cellar, dungeon, crypt, catacombs, mine, cistern, warren, oubliette, library, forge, bunker, laboratory, shrine, tunnel, grotto, lava tube, barrow, station, salt works, cave den, temple\n- stairs up: things built above ground and since buried\n- cave: dens, frozen caves, crystal caves, fungal caves, lava tubes, sea grottoes\n- grate: a sewer, only in towns that declare one underneath\n- hatch: a Holy Patron Bunker, full of money and rare weapons\n\nThe surface limits the options: ice fields hold frozen caves, a graveyard holds catacombs."
     },
     "houses,_inns_and_shops": {
       "title": "Houses, Inns and Shops",
@@ -658,7 +658,7 @@
     },
     "how_loot_is_rolled": {
       "title": "How Loot Is Rolled",
-      "description": "Random loot is scored from 0 to 100: the party's median level plus a difficulty modifier carried by the place itself. The score picks the rarity band, from almost everything common at 0 to 20, through a balanced spread at 50, to almost everything legendary at 100.\n\nRarity is read off price, and the same ladder colours item names in the backpack, the shop, the reward popup and the container list.\n\nA patron's vault pushes the tables toward the expensive end."
+      "description": "Random loot is scored from 0 to 100: the party's median level plus a difficulty modifier carried by the place itself. The score picks the rarity band, from almost everything common at 0 to 20, through a balanced spread at 50, to almost everything legendary at 100.\n\nRarity is read off price, and the same ladder colours item names in the backpack, the shop, the reward popup and the container list.\n\nA Holy Patron Bunker pushes the tables toward the expensive end."
     },
     "containers": {
       "title": "Containers",
@@ -690,7 +690,7 @@
     },
     "patron_worlds": {
       "title": "Patron Worlds",
-      "description": "Some worlds in other galaxies are named after the people who paid for the game. They are habitable and life bearing, they orbit exotic objects, they sit in nine planet systems where no two planets share a type, and they are listed in the star map catalogue under Patrons.\n\nEach of those people also owns a hatch on exactly one world map square. It cannot be dismantled and nothing grows over it. Going down opens their vault: a great hall with strongrooms and a deep back chamber, filled with money and weapons, with the loot tables weighted to the expensive end.\n\nHatch locations are encrypted in the game data."
+      "description": "Some worlds in other galaxies are named after the people who paid for the game. They are habitable and life bearing, they orbit exotic objects, they sit in nine planet systems where no two planets share a type, and they are listed in the star map catalogue under Patrons.\n\nEach of those people also owns a hatch on exactly one world map square. It cannot be dismantled and nothing grows over it. Going down opens their Holy Patron Bunker: a great hall with strongrooms and a deep back chamber, filled with money and weapons, with the loot tables weighted to the expensive end.\n\nHatch locations are encrypted in the game data."
     },
     "the_night_sky": {
       "title": "The Night Sky",

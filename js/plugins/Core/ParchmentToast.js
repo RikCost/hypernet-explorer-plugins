@@ -910,6 +910,30 @@
     return html;
   }
 
+  // A find sounds like what it is made of: the <PickupSound: folder/file> tag
+  // on the item, weapon or armour. Several things found at once play only the
+  // first one's sound. Battle spoils stay quiet, they are not a find.
+  function pickupSoundOf(raw) {
+    if (!raw) return "";
+    let obj = raw.obj || null;
+    if (!obj && raw.id != null && typeof $dataItems !== "undefined" && $dataItems) obj = $dataItems[raw.id];
+    const tag = obj && obj.meta ? obj.meta.PickupSound : null;
+    return typeof tag === "string" ? tag.trim() : "";
+  }
+
+  function playPickupSound(entries) {
+    if (typeof AudioManager === "undefined") return;
+    if (typeof $gameParty !== "undefined" && $gameParty && $gameParty.inBattle()) return;
+    const first = (entries || []).find((e) => e && (e.qty == null || e.qty > 0) && (e.obj || e.id != null));
+    const name = pickupSoundOf(first);
+    if (!name) return;
+    try {
+      AudioManager.playSe({ name, volume: 90, pitch: 100, pan: 0 });
+    } catch (e) {
+      console.warn("[ParchmentToast] pickup sound failed", e);
+    }
+  }
+
   /**
    * The standard "you got something" popup: battle spoils, harvested terrain,
    * dismantled furniture, opened loot. Every caller renders identically.
@@ -929,6 +953,8 @@
     // came from an event gain in the first place is not remembered: two chests
     // holding the same item, opened one after the other, are two finds.
     if (!opts.fromEventGain) noteRewarded(opts.entries, gold);
+
+    playPickupSound(opts.entries);
 
     const head = [];
     if (exp) head.push(`${exp} EXP`);

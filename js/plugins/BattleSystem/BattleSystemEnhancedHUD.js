@@ -59,6 +59,11 @@
   // is a few pixels out, and a field can fail to settle for reasons none of this
   // can see: a model that never loaded, a scene torn down mid-build.
   const ENEMY_BAR_SETTLE_PATIENCE = 90;
+  // Past that patience a field that still will not settle (a model that never
+  // loaded, one standing off camera) is asked again only this rarely. Every ask
+  // re-measures each living model's whole mesh tree, and at the fast clock that
+  // went on every sixth frame for the rest of the fight.
+  const ENEMY_BAR_LATE_RETRY = 60;
   const MINI = {
     padX: 8,
     thickness: 13, // same bar height as PartyHud's .phud-bars-container .phud-bar
@@ -724,10 +729,23 @@
       // may be paged or scaled, so its live rectangle is the answer; the canvas
       // middle stands in while no bar is up.
       let centreX = sc.ox + (Graphics.width * sc.sx) / 2;
+      // Read at most twice a second: a rectangle read is a forced layout, and
+      // on every frame of the input phase it landed right after the log and
+      // the bars had written their styles, so it paid a full recalc each time.
+      // The bar only moves on a page, a rescale or a resize.
       const barRoot = document.getElementById('html-hotbar-overlay');
       if (barRoot && barRoot.style.display !== 'none') {
-        const barRect = barRoot.getBoundingClientRect();
-        if (barRect.width > 0) centreX = barRect.left + barRect.width / 2;
+        const now = Graphics.frameCount;
+        if (this._helpBarRoot !== barRoot || !(now - this._helpBarReadAt < 30)) {
+          this._helpBarRoot = barRoot;
+          this._helpBarReadAt = now;
+          const barRect = barRoot.getBoundingClientRect();
+          this._helpBarCentre = barRect.width > 0
+            ? barRect.left + barRect.width / 2 : null;
+        }
+        if (this._helpBarCentre != null) centreX = this._helpBarCentre;
+      } else {
+        this._helpBarRoot = null;
       }
       // The line the box's floor rests on; the panel itself is drawn upwards
       // from it (.bse-help-panel translates itself back by its own height).
@@ -2434,7 +2452,9 @@
       if (!this._enemyBarsUnsettled) return;
       this._enemyBarPatience = (this._enemyBarPatience || 0) + 1;
       this._enemyBarSettleWait = (this._enemyBarSettleWait || 0) + 1;
-      if (this._enemyBarSettleWait < ENEMY_BAR_SETTLE_RETRY) return;
+      const retry = this._enemyBarPatience > ENEMY_BAR_SETTLE_PATIENCE
+        ? ENEMY_BAR_LATE_RETRY : ENEMY_BAR_SETTLE_RETRY;
+      if (this._enemyBarSettleWait < retry) return;
     }
     this._enemyBarSettleWait = 0;
     this._enemyBarCount = living.length;

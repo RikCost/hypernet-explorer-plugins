@@ -89,9 +89,9 @@
     "standing": "Social standing: {value}/100."
   },
   "procPlace": {
-    "inCountry": "{place}, {country} ({x},{y})",
-    "unclaimed": "{place} ({x},{y})",
-    "frontier": "Frontier"
+    "inCountry": "{place}, {country}",
+    "unclaimed": "{place}",
+    "frontier": "Frontier at ({x} {y})"
   },
   "wildsNear": "{biome} near {city}",
   "wildBiome": {

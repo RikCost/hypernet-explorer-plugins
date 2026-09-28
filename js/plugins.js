@@ -318,7 +318,7 @@ var $plugins =
 {"name":"Minigames/PeriodicTableSystem","status":true,"description":"Periodic Table Viewer v1.0.0 - asymmetric book layout, esoteric elements","parameters":{}},
 {"name":"Quest/BookViewer","status":true,"description":"Displays a two-page book layout with flipping page animations","parameters":{}},
 {"name":"Map/PeekPlugin","status":true,"description":"v1.0.0 - Simple Peek Plugin: Teleports, makes player invisible/immobile (can turn), and returns on continue key.","parameters":{}},
-{"name":"Map/TeleportCutscene","status":false,"description":"Teleport cutscene with light beam effect","parameters":{}},
+{"name":"Map/TeleportCutscene","status":true,"description":"Teleport cutscene with light beam effect","parameters":{}},
 {"name":"Map/WorldMapReturn","status":true,"description":"World Map Return v1.0.0","parameters":{}},
 {"name":"Map/WorldAtlas","status":true,"description":"World Atlas: SVG political map of the world","parameters":{}},
 {"name":"Debug/PixelArtMaker","status":true,"description":"A complex pixel art maker inspired by Aseprite.","parameters":{}},

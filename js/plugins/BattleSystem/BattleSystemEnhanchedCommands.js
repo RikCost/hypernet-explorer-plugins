@@ -1511,38 +1511,56 @@
   Scene_Battle.prototype.riseVectorSwitch = function () {
     const actor = BattleManager.actor();
     window.VectorGun.switchForm(actor);
+    this.logVectorSwitch(actor);
     // The model in the hand is rebuilt at the pivot of the animation, so the
     // packet of folded hardware that opens out is the NEW weapon.
     const spriteset = this._spriteset;
-    if (spriteset && spriteset.updateWeaponSprite) spriteset.updateWeaponSprite();
+    if (spriteset && spriteset.updateWeaponSprite) {
+      spriteset._vgMorphing = true;
+      try { spriteset.updateWeaponSprite(); } finally { spriteset._vgMorphing = false; }
+    }
     const rise = window.VectorGun.playSwitchFx('rise');
     this._vectorSwitchStage = 'rise';
     this._vectorSwitchWait = framesFor(rise || 300);
   };
 
+  /** Writes the shape the frame now stands as into the battle log. */
+  Scene_Battle.prototype.logVectorSwitch = function (actor) {
+    const VG = window.VectorGun;
+    const log = this._logWindow || BattleManager._logWindow;
+    if (!actor || !VG || !log || !log.addText) return;
+    // The book opened by the limit break has no shape entry of its own: it is
+    // the Grimoire of Solomon's.
+    const key = VG.formKey() || VG.GUN_FORM;
+    const shape = key === VG.GRIMOIRE_FORM ? VG.SOLOMON_FORM : key;
+    log.addText(T('VectorGun.log.switched', {
+      name: actor.name(), form: T('VectorGun.shape.' + shape + '.name'),
+    }));
+  };
+
   /**
-   * Hands the window back once the reconstruction has finished. The switch is
-   * not an action: it neither spends the round nor raises a guard, so the same
-   * battler is still choosing and may fold the frame again as many times as she
-   * likes before doing something with it.
+   * Passes the turn once the reconstruction has finished. The switch costs the
+   * round: it raises no guard and does nothing else, so the frame can be
+   * folded only once per turn. A Dice of YHWH still tumbling on screen is
+   * waited out first, so its face is read before anyone moves.
    */
   Scene_Battle.prototype.finishVectorSwitch = function () {
+    const D3 = window.Dice3D;
+    if (D3 && D3.isRolling && D3.isRolling()) {
+      this._vectorSwitchWait = 1;
+      return;
+    }
     this._vectorSwitchWait = 0;
     this._vectorSwitchStage = null;
     const actorId = this._vectorSwitchActorId;
     this._vectorSwitchActorId = null;
     const actor = BattleManager.actor();
     // The turn may have been taken away from under the animation (a forced
-    // action, the actor going down): there is then nothing to hand back to.
+    // action, the actor going down): there is then nothing to pass.
     if (!actor || actor.actorId() !== actorId) return;
-    const win = this._actorCommandWindow;
-    if (!win) return;
-    // The list is rebuilt (the icon and the row's own word follow the shape),
-    // so the cursor is put back on SWITCH by symbol rather than by index.
-    win.refresh();
-    const index = win.findSymbol("vectorSwitch");
-    if (index >= 0) win.select(index);
-    win.activate();
+    const action = BattleManager.inputtingAction();
+    if (action) action.clear();
+    this.selectNextCommand();
   };
 
   /**

@@ -16,13 +16,13 @@
     "thinker": "Assembla",
     "pets": "Seguaci",
     "workforce": "Manodopera",
-    "worldMap": "Mappa del Mondo",
+    "worldMap": "Mappa",
     "vehicles": "Veicoli",
     "wait": "Aspetta",
     "cooking": "Cucina",
     "alchemistry": "Alchimica",
     "build": "Costruisci",
-    "training": "Spellcrafting",
+    "training": "Spellcraft",
     "research": "Ricerca",
     "questLog": "Missioni",
     "diary": "Diario",
@@ -233,9 +233,9 @@
     "vehicles": "Veicoli"
   },
   "vital": {
-    "hp": "PV",
-    "mp": "PM",
-    "ap": "PA"
+    "hp": "HP",
+    "mp": "MP",
+    "ap": "AP"
   },
   "label": {
     "location": "Posizione:",
@@ -311,7 +311,7 @@
     "none": "Nessun veicolo posseduto. Procurati l'oggetto di richiamo di un veicolo per aggiungerlo qui.",
     "parkedAt": "Lasciato a",
     "show": "Mostralo sulla pagina di destra",
-    "integrity": "{hp} / {max} PV",
+    "integrity": "{hp} / {max} HP",
     "broken": "In panne: un componente critico è guasto",
     "allPartsSound": "Tutti i componenti integri",
     "morePartsWorn": "+{count} altri usurati",
@@ -390,12 +390,12 @@
     "wantedLevel": "Ricercati {pct}%"
   },
   "omegaTowerChoice": {
-    "teleport": "Teletrasportati alla Torre Omega",
+    "teleport": "Richiedi teletrasporto",
     "cancel": "Annulla"
   },
   "group": {
     "party": "Gruppo",
-    "worldMap": "Mappa del mondo",
+    "worldMap": "Mappa",
     "create": "Creare",
     "archive": "Archivio",
     "manageParty": "Gestione gruppo",

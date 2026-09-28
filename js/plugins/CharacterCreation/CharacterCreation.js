@@ -42,6 +42,7 @@
   // as they did while all of it sat in this file.
   const {
     giveStartingSupplies,
+    giveStoryModeEmKnowledge,
     CC_BASE_START_GOLD,
     classStartingMoney,
     selectedTraitObjects,
@@ -441,6 +442,7 @@
     applyWorldStartingLevel();
     giveStartingSupplies();
     giveStartingMoney();
+    giveStoryModeEmKnowledge();
     // Every member finishes fully equipped: fill any empty equip slot with a
     // random low-stat compatible piece (weapon + every armor slot). Preset and
     // class-chosen gear already in a slot is left untouched. Idempotent, so it
@@ -827,8 +829,19 @@
     const primary = actorArchetypeKey(actor) ||
       (actor && actor._isCreatureActor ? null : "Humanoid"); // i18n-ignore: Archetypes.json key
     if (!primary) return false;
-    if (!key) return applyArchetypesToActor(actor, [primary]);
-    return applyArchetypesToActor(actor, [primary, key]);
+    if (key) return applyArchetypesToActor(actor, [primary, key]);
+    if (!applyArchetypesToActor(actor, [primary])) return false;
+    // A person back on a plain Humanoid body is drawn by their bust again: the
+    // model and the grafts the second half implied go with it, exactly as they
+    // do when a member is switched back from a creature.
+    if (!actor._isCreatureActor && primary === "Humanoid") { // i18n-ignore: Archetypes.json key
+      actor._ccGraftedParts = null;
+      actor._ccReplacedParts = null;
+      const CC3D = window.CC3DModel;
+      if (CC3D && CC3D.setConfig) CC3D.setConfig(actor.actorId(), null);
+      if (actor.setPortraitMode) actor.setPortraitMode("bust");
+    }
+    return true;
   }
 
   // The whole sentient roster, which is what the board modes' class step lists.
@@ -1831,6 +1844,27 @@
   const STORY_MODE_WEAPON_ID = 525;
 
   /**
+   * Empties every hand Em is not carrying the gun in, so she walks out of the
+   * story mode's opening with one weapon and the hand beside it free. Slot 0 is
+   * the hand the gun goes in (Em's body always lays a hand out first), and a
+   * second blade left in any other hand or mouth slot - the class's own
+   * <StartWeapon:> pair, or anything else that armed her on the way in - is
+   * what this takes back, since changeEquip(0, ...) only ever touches slot 0.
+   * @param {Game_Actor} actor
+   */
+  function clearStoryModeSpareHands(actor) {
+    if (!actor || typeof actor.equipSlots !== 'function' || typeof actor.equips !== 'function') return;
+    const HS = window.HandSlots;
+    const slots = actor.equipSlots() || [];
+    const worn = actor.equips() || [];
+    for (let i = 1; i < slots.length; i++) {
+      if (!worn[i]) continue;
+      const kind = HS && HS.slotKind ? HS.slotKind(actor, i) : (slots[i] === 1 ? 'hand' : null);
+      if (kind === 'hand' || kind === 'mouth') actor.changeEquip(i, null);
+    }
+  }
+
+  /**
    * Arms the story mode's character with the Vector Gun and nothing else.
    * @param {Game_Actor} actor
    * @returns {boolean} whether the gun ended up in a hand
@@ -1843,6 +1877,9 @@
     if (SE && typeof SE.recordClassGrant === 'function') {
       SE.recordClassGrant(actor, 'weapon', 'weapon', weapon.id, 1);
     }
+    // One weapon, one hand: whatever else armed her comes off before the gun
+    // goes on, or a second blade in the off hand would survive the pass.
+    clearStoryModeSpareHands(actor);
     try {
       actor.changeEquip(0, weapon);
       return true;
@@ -2086,12 +2123,24 @@
     // it exists only to open the sprite board, so landing on it would put the
     // player right back where they came from and there would be no way out.
     static backLandingStep(step) {
-      const first = this.getStartingStep();
+      const s = this.backWalkStep(step);
+      // Nothing to go back to: the seat already carries a seeded sprite, so the
+      // character's own sheet is where backing out of its first screen lands.
+      return s >= 0 ? s : STEP.BIO;
+    }
+
+    // The first step at or before `step` that Back can land on and stay on,
+    // or -1 when there is none. The character-type step is walked past like
+    // the gender slot: setupStep() never shows it, it goes straight on into
+    // the gender slot and so onto the sprite board. Every step below the
+    // starting step is one of these, so the walk never needs that bound.
+    static backWalkStep(step) {
       let s = step;
-      while (s > first && (this._stepAutoAdvances(s) || this._stepHandsOverImmediately(s))) {
+      while (s >= 0 && (this._stepAutoAdvances(s) || this._stepHandsOverImmediately(s) ||
+                        s === STEP.CHARACTER_TYPE)) {
         s--;
       }
-      return Math.max(first, s);
+      return s;
     }
 
     static _stepHandsOverImmediately(step) {
@@ -2259,6 +2308,9 @@
       // Her class is the story's, so its page is walked past whether or not her
       // dossier has been taken: the strip draws no tab that could open it.
       if (Scene_CharacterCreation._storyMode && step === STEP.CLASS) return true;
+      // Same for her traits and specializations: no tab opens either page.
+      if (Scene_CharacterCreation._storyMode &&
+          (step === STEP.TRAITS || step === STEP.SPECIALIZATIONS)) return true;
 
       // Detailed mode: the character-type step hands the whole member over to
       // the Empathize editor, so every step it covers is walked past by
@@ -2609,7 +2661,13 @@
     static isCreatureActor(actor) {
       if (!actor) return false;
       if (actor._isCreatureActor) return true;
-      if (actor._creatureArchetypes && actor._creatureArchetypes.length) return true;
+      // A person's body is Humanoid, and every sprite writes that onto the
+      // member, so only an archetype other than Humanoid (a spliced second
+      // half) makes the member a body drawn as a model. Counting any list at
+      // all left a person who once picked a second half, then put it back to
+      // None, drawn as a 3D model for good.
+      if ((actor._creatureArchetypes || []).some((k) =>
+        k && String(k).toLowerCase() !== "humanoid")) return true; // i18n-ignore: Archetypes.json key
       const CC = window.CreatureClasses;
       if (CC && CC.isCreatureClass && actor._classId && CC.isCreatureClass(actor._classId)) return true;
       const NC = window.NPCCreature;
@@ -3158,7 +3216,9 @@
     // True while the left slot is a way OUT of the wizard rather than a way
     // back through it, which is the only time it is labelled Exit.
     _actionBarBackExits() {
-      return this._step <= Scene_CharacterCreation.getStartingStep() && this.canExitToTitle();
+      if (!this.canExitToTitle()) return false;
+      return this._step <= Scene_CharacterCreation.getStartingStep() ||
+        Scene_CharacterCreation.backWalkStep(this._step - 1) < 0;
     }
 
     // ── Helper methods for connected busts and currency ──
@@ -3214,6 +3274,7 @@
         Scene_CharacterCreation.ensureSpriteAndBust(Scene_CharacterCreation.getCurrentActor());
       }
       if (_curStepData.isSettingsStep) {
+        this._settingsPageOpen = true;
         this._refreshSettingsDOM();
         return;
       }
@@ -3221,6 +3282,7 @@
       // Leaving the settings page gives the character's sidebar back, and the
       // tab bar is due a rewrite the next time settings is opened.
       this._tabsShowSettings = false;
+      this._leaveSettingsAudio();
       const _openLayout = this._dndContainer.querySelector(".cc-unified-layout");
       if (_openLayout) _openLayout.classList.remove("cc-settings-mode");
 
@@ -3244,6 +3306,11 @@
           this._lastScenarioMode === isScenario) {
         return;
       }
+
+      // The page is about to be rebuilt, and the row a hover card was raised
+      // from goes with it without ever firing its mouseleave, so the card
+      // stayed on screen until another row was hovered.
+      if (this.onItemLeave) this.onItemLeave();
 
       if (this._presetTitleWindow) {
         this._presetTitleWindow.visible = false;
@@ -3532,10 +3599,9 @@
       // (see _ensureSimpleModeStatsAndTraits).
       if (isSimple) {
         // Story mode is played as a written character: her traits and the
-        // specializations her history gave her are already on the sheet, so
-        // both pages are offered to be read even in the simple strip. The ties
-        // page is offered too, and it is the one page there she is actually
-        // written on (see _presetLockFreeStep).
+        // specializations her history gave her are the dossier's, so neither
+        // page is offered. The ties page is, and it is the one page there she
+        // is actually written on (see _presetLockFreeStep).
         if (Scene_CharacterCreation._storyMode) {
           return [bio, {
             id: "romance",
@@ -3543,12 +3609,6 @@
             title: ccT('CharCreate.romanceTab'),
             subtitle: (actor && actor._ccRomance) ? ccT('CharCreate.customized') : ccT('CharCreate.optional'),
             step: STEP.ROMANCE
-          }, traits, {
-            id: "specializations",
-            iconIndex: 126,
-            title: ccT('CharCreate.specializations'),
-            subtitle: (actor && actor._specPointsSpent ? `${actor._specPointsSpent} pts` : ccT('CharCreate.optional')),
-            step: STEP.SPECIALIZATIONS
           }];
         }
         // Simple mode is ONE sheet per character. The vocation, the traits and
@@ -3597,9 +3657,12 @@
       // her: the page that would change it is not drawn at all there, in any
       // mode, rather than drawn and then refused.
       const klassTab = Scene_CharacterCreation._storyMode ? [] : [klass];
+      // Her traits and specializations are the dossier's too, so the story
+      // mode draws neither tab.
+      const buildTabs = Scene_CharacterCreation._storyMode ? [] : [traits, specializations];
       return isCreature
-        ? [...dossier, archetype, ...klassTab, traits, specializations]
-        : [...dossier, ...klassTab, traits, specializations];
+        ? [...dossier, archetype, ...klassTab, ...buildTabs]
+        : [...dossier, ...klassTab, ...buildTabs];
     }
 
     _isTabCompleted(tabId) {
@@ -4487,26 +4550,30 @@
       return new Rectangle(x, y, width, height);
     }
 
+    // ── Leaving the initial settings (options) page ──
+    // The page's Battle Music row auditions a track as its value is cycled,
+    // and that preview plays only while the settings tab is open. The channel
+    // is handed back to the wizard's own theme the moment the page is left, no
+    // matter how: setupStep and every overlay render off the settings page call
+    // this, since plenty of routes (tabs, rail, roster, presets, dossier) set
+    // _step and redraw without passing through setupStep. Nothing is stopped
+    // first: AudioManager.playBgm leaves an identical track playing where it
+    // is, so the call is a no-op when the theme already has the channel.
+    _leaveSettingsAudio() {
+      if (!this._settingsPageOpen) return;
+      const stepData = CharacterCreationData[this._step];
+      if (this._step === STEP.SETTINGS || (stepData && stepData.isSettingsStep)) return;
+      this._settingsPageOpen = false;
+      AudioManager.playBgm({ name: CREATION_BGM, volume: 90, pitch: 100, pan: 0 });
+    }
+
     setupStep() {
       if (this._step >= CharacterCreationData.length) {
         this.popScene();
         return;
       }
 
-      // ── Leaving the initial settings (options) page ──
-      // The page's Battle Music row auditions a track as its value is cycled,
-      // and that preview must not follow the player onto the next step. The
-      // channel is handed back to the wizard's own theme the moment the page
-      // is left, no matter how it is left: confirming it (its handler advances
-      // through nextStep) and clicking any other tab (onTabClick, the rail,
-      // a party tab) all land here, so the theme starts exactly once, on the
-      // way out. Nothing is stopped first: AudioManager.playBgm leaves an
-      // identical track playing where it is, so the call is a no-op when the
-      // theme already has the channel.
-      if (this._settingsPageOpen && this._step !== STEP.SETTINGS) {
-        this._settingsPageOpen = false;
-        AudioManager.playBgm({ name: CREATION_BGM, volume: 90, pitch: 100, pan: 0 });
-      }
+      this._leaveSettingsAudio();
 
       // Skip purely static steps that carry no interactive UI: autoSkip steps,
       // and once-only steps already completed on a prior playthrough. This
@@ -4853,15 +4920,6 @@
         return;
       }
 
-      // If we're in creature mode and at the gender step, go back to character
-      // type selection and exit creature mode.
-      if (Scene_CharacterCreation._isCreatureMode && this._step === STEP.GENDER) {
-        this._step = STEP.CHARACTER_TYPE;
-        Scene_CharacterCreation._isCreatureMode = false; // Exit creature mode
-        this.setupStep();
-        return;
-      }
-
       // If we're in creature mode and at the traits step, go back to gender,
       // skipping the (creature-only) creation method and class steps.
       if (Scene_CharacterCreation._isCreatureMode && this._step === STEP.TRAITS) {
@@ -4871,19 +4929,27 @@
       }
 
       // Walk back to the previous interactive step, skipping every step that
-      // setupStep() would immediately auto-advance past, and every step that
-      // asks nothing of its own but hands straight over to another screen (the
-      // gender slot of a person, which only opens the sprite and name screens).
-      // Otherwise Back lands on a step that jumps forward again, making it a
-      // no-op. Never go below the first interactive step.
-      const firstStep = Scene_CharacterCreation.getStartingStep();
-      this._step--;
-      while (this._step > firstStep &&
-             (Scene_CharacterCreation._stepAutoAdvances(this._step) ||
-              Scene_CharacterCreation._stepHandsOverImmediately(this._step))) {
-        this._step--;
+      // setupStep() would immediately auto-advance past, every step that asks
+      // nothing of its own but hands straight over to another screen (the
+      // gender slot of a person, which only opens the sprite and name screens)
+      // and the character-type step, which setupStep() walks straight past
+      // into that same gender slot. Landing on either of the last two put the
+      // player on the sprite board from the Bio page, and backing out of the
+      // board landed there again.
+      const landing = Scene_CharacterCreation.backWalkStep(this._step - 1);
+      if (landing < 0) {
+        // Nothing asks a question behind this page. A later member still has
+        // the previous member's "add another?" prompt to go back to; the
+        // leader of a new game leaves for the title; anyone else stays put.
+        if ((Scene_CharacterCreation._currentPartyMemberIndex || 0) > 0) {
+          this._step = STEP.CHARACTER_TYPE;
+          this.previousStep();
+          return;
+        }
+        if (this.canExitToTitle()) this.exitToTitle();
+        return;
       }
-      if (this._step < firstStep) this._step = firstStep;
+      this._step = landing;
       this.setupStep();
     }
     // The story mode's last button: the sheet is read, the party is Em, and there
@@ -5097,7 +5163,8 @@
         entries: () => patronVaultSavedSquares().map((square) => ({
           square,
           label: ccTp('CharCreate.patronVaultSquareLine', {
-            x: square.x, y: square.y, tileX: square.hatchX, tileY: square.hatchY,
+            place: window.WorldMapTransfer.squareLabel(square.x, square.y),
+            tileX: square.hatchX, tileY: square.hatchY,
           }),
         })),
       }, (entry) => {
@@ -5313,6 +5380,18 @@
       this.refreshUIOverlayDOM();
     }
 
+    // True while the open page is one of the member's own sheet tabs (Bio,
+    // Class, Traits, Specializations and the rest of the strip), rather than
+    // a board over it (a preset, a follower, the garage, the scenario).
+    _isSheetPage() {
+      const SC = Scene_CharacterCreation;
+      if (this._presetWindow || SC._isPetMode || SC._isVehicleMode ||
+          SC._isPartyPresetMode || SC._isScenarioMode) return false;
+      if (this._step === STEP.BIO) return true;
+      return this._getCreationTabs().some((t) => t && t.id !== "origin" &&
+        (t.step === this._step || (t.id === "archetype" && this._step === STEP.GENDER)));
+    }
+
     updateUIInput() {
       // A confirmation sheet is modal too, and is read first for the same
       // reason: the OK that answers it must not also reach the board.
@@ -5321,6 +5400,15 @@
       // A pick sheet is modal. It is read before anything else on the page so
       // the press that walks its list never also moves the board behind it.
       if (window.CCPick && window.CCPick.pollInput()) return;
+
+      // A right-click on the character's own sheet is swallowed. The sheet is
+      // a row of tabs a mouse walks by clicking them, and the right button
+      // reading as Back flipped the page to the tab on the left (or off the
+      // sheet entirely) whenever it was pressed over a row. Escape, the pad's
+      // B and the Back button still step back.
+      if (this._isSheetPage() && TouchInput.isCancelled() && !Input.isTriggered("cancel")) {
+        return;
+      }
 
       // Settings step: use dedicated input handler instead of grid navigation
       const _sd = this._step < CharacterCreationData.length ? CharacterCreationData[this._step] : null;

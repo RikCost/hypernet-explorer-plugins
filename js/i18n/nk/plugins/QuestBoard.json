@@ -23,5 +23,5 @@
   "objectives2": "OBJECTIVES",
   "terms": "TERMS",
   "back": "BACK",
-  "showOnMapAt": "SHOW ON MAP ({x}, {y}) · SHIFT"
+  "showOnMapAt": "SHOW ON MAP: {place} · SHIFT"
 }

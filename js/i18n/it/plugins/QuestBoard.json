@@ -24,7 +24,7 @@
   "objectives2": "Obiettivi",
   "terms": "Condizioni",
   "back": "Indietro",
-  "showOnMapAt": "Mostra sulla mappa ({x}, {y})",
+  "showOnMapAt": "Mostra sulla mappa: {place}",
   "posted": "Affissi",
   "writeANotice": "Scrivi un annuncio",
   "writeANoticeHint": "Pubblica il tuo contratto. La ricompensa viene pagata al momento della pubblicazione.",

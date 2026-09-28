@@ -190,6 +190,22 @@
     });
   }
 
+  // --- Story mode Em's knowledge -----------------------------------------
+  // The story's Em wakes up with a head full of half-remembered craft: she
+  // opens on a pool of Knowledge Points to spend at the SkillMaster. Handed out
+  // once per savegame, from markFirstCreationComplete like the supplies.
+  const STORY_EM_START_KP = 1000;
+
+  function giveStoryModeEmKnowledge() {
+    if (!$gameSystem || $gameSystem._ccStoryEmKnowledgeGiven) return;
+    if (!isStoryModeStart()) return;
+    const CP = window.CharacterPresets;
+    if (!CP || !CP.isEmPlaythrough || !CP.isEmPlaythrough()) return;
+    if (typeof $gameSystem.addKnowledge !== "function") return;
+    $gameSystem._ccStoryEmKnowledgeGiven = true;
+    $gameSystem.addKnowledge(STORY_EM_START_KP);
+  }
+
   // --- Starting money ----------------------------------------------------
   // Every party begins with a flat 100€ purse (100 gold = €1) on top of the
   // money each of its members brings in from their class <Money:> notetag and
@@ -2096,7 +2112,7 @@
   }
 
   // ==========================================================================
-  // Patron Vault origin
+  // Holy Patron Bunker origin
   // ==========================================================================
   // The party wakes on Floor -1 of a patron's own vault, the nine hand-made
   // cellars PatreonRewards stacks under that patron's hatch. Nothing about it
@@ -2277,7 +2293,7 @@
         if (typeof res === "string" && res.trim()) return res;
       }
     } catch (e) { /* no localization loaded */ }
-    return "Patreon vault";
+    return "Holy Patron Bunker";
   }
   function startPatronVaultOrigin() {
     const square = patronVaultSquare();
@@ -2560,6 +2576,8 @@
 
   window.CCOrigins = {
     giveStartingSupplies,
+    giveStoryModeEmKnowledge,
+    STORY_EM_START_KP,
     rollStarterFoods,
     starterFoodPool,
     CC_START_LOAD_TARGET,

@@ -1453,8 +1453,8 @@
     "none": "niente"
   },
   "param": {
-    "mhp": "PV",
-    "mmp": "PM",
+    "mhp": "HP",
+    "mmp": "MP",
     "atk": "ATT",
     "def": "DIF",
     "mat": "M.ATT",

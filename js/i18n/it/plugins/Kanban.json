@@ -28,7 +28,7 @@
     "Risolto",
     "Fallite"
   ],
-  "showOnMapAt": "Mostra sulla mappa ({x}, {y}) · Shift",
+  "showOnMapAt": "Mostra sulla mappa: {place} · Shift",
   "moveToInProgress": "Sposta in In Corso · →",
   "moveToToDo": "Riporta in Da Fare · ←",
   "boardHint": "Trascina un foglio, o tieni premuto OK e premi ←/→, per spostarlo tra le colonne",

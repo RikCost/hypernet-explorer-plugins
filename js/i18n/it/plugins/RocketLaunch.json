@@ -9,10 +9,10 @@
       "blurb": "Torre di lancio sul meridiano."
     },
     "vault": {
-      "name": "Cripta di {patron}",
-      "blurb": "Lanciatore a pozzo sotto il caveau.",
-      "nameUnknown": "La Cripta",
-      "blurbUnknown": "Lanciatore a pozzo sotto un caveau."
+      "name": "Bunker del Santo Patrono di {patron}",
+      "blurb": "Lanciatore a pozzo sotto il bunker.",
+      "nameUnknown": "Il Bunker del Santo Patrono",
+      "blurbUnknown": "Lanciatore a pozzo sotto un Bunker del Santo Patrono."
     },
     "omega": {
       "name": "Torre Omega",

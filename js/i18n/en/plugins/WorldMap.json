@@ -1,11 +1,11 @@
 {
   "pin": {
     "vaultUnnamed": "an unnamed patron",
-    "vaultKnown": "{patron}'s vault (sealed)",
-    "vaultOpen": "{patron}'s vault (open)"
+    "vaultKnown": "{patron}'s Holy Patron Bunker (sealed)",
+    "vaultOpen": "{patron}'s Holy Patron Bunker (open)"
   },
   "read": {
-    "square": "Square {x}, {y}",
+    "square": "{place}",
     "place": "Here",
     "nation": "Claimed by",
     "unclaimed": "No nation",
@@ -30,7 +30,7 @@
     "needVehicle": "You need to be aboard a vehicle to set off from the chart."
   },
   "note": {
-    "title": "Square {x}, {y}",
+    "title": "{place}",
     "placeholder": "Write something about this square",
     "save": "Keep",
     "delete": "Rub out",
@@ -39,7 +39,7 @@
   },
   "preview": {
     "showMap": "Show map",
-    "title": "Square {x}, {y}",
+    "title": "{place}",
     "building": "Laying the ground out...",
     "notKept": "Drawn for this look only, and kept nowhere.",
     "close": "Close",

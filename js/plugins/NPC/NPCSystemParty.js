@@ -1871,6 +1871,14 @@
         }
     };
 
+    // Not walking with the party, he is not drawn at all: whatever dressed him
+    // since the last refresh (a sprite pass over every follower) is undone, or
+    // a second Bubba stands on the tile the party last arrived on.
+    Game_BubbaFollower.prototype.update = function() {
+        if (!this.isVisible() && this.characterName()) this.setImage("", 0);
+        Game_Follower.prototype.update.call(this);
+    };
+
     Game_BubbaFollower.prototype.chaseCharacter = function(character) {
         if (!this.isVisible()) return;
         let target = character;

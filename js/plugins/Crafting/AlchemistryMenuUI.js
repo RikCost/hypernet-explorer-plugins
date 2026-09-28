@@ -255,7 +255,6 @@
         const modalOptions = el('div', 'inspect-actions', modalBox);
         const modalCancel = el('div', 'target-option', modalBox);
         modalCancel.style.marginTop = '10px';
-        modalCancel.style.opacity = '0.85';
         setText(modalCancel, t.cancel);
         modalCancel.addEventListener('click', () => { SoundManager.playCancel(); this.closeModal(); });
         setShown(modalLayer, false);

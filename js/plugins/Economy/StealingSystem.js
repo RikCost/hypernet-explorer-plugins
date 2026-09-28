@@ -191,8 +191,19 @@
             return Math.floor(((agility || 10) - 10) / 2) + this.invisibleBonus() + nightMod;
         }
 
-        static calculateStealChance(item, agility) {
+        // Nobody is minding the counter this row came off (an abandoned or
+        // off-shift till in a zombie world, a blanked one in an empty world),
+        // so there is nobody to catch the party and nobody to report it.
+        static isUnattendedSource(entry) {
+            if (!entry || entry.sourceMapId == null || entry.sourceEventId == null) return false;
+            const SSM = window.NPCSim && window.NPCSim.ShopShiftManager;
+            return !!(SSM && typeof SSM.isUnattendedCounter === "function" &&
+                SSM.isUnattendedCounter(entry.sourceMapId, entry.sourceEventId));
+        }
+
+        static calculateStealChance(item, agility, entry) {
             if (this.isEmptyWorld()) return 100;
+            if (this.isUnattendedSource(entry)) return 100;
             const baseChance = 50;
             const dexMod = Math.floor(((agility || 10) - 10) / 2);
             const agilityBonus = dexMod * 5; // 5% per point of DEX modifier
@@ -620,7 +631,8 @@
     // Public API consumed by StealingSystemUI.js
     window.StealingSystem = {
         scanItems:    () => ShopScanner.scanMapForShops(),
-        calcChance:   (item, agi) => StealCalculator.calculateStealChance(item, agi),
+        calcChance:   (item, agi, entry) => StealCalculator.calculateStealChance(item, agi, entry),
+        isUnattendedSource: (entry) => StealCalculator.isUnattendedSource(entry),
         performSteal: (chance, options) => StealCalculator.performSteal(chance, options),
         invisibleBonus: () => StealCalculator.invisibleBonus(),
         rollModifier: (agi) => StealCalculator.rollModifier(agi),

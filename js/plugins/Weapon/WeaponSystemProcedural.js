@@ -515,7 +515,10 @@ var WeaponSystemProcedural = {
     if (root.userData._verletRope || root.userData._verletRopes) return root;
 
     try {
-      this.mergeStaticParts(root);
+      // The vector gun is never merged: SWITCH folds it panel by panel
+      // (startVectorSwitch), and a merged frame is two or three slabs that
+      // swing as one block instead of folding.
+      if (!(window.VectorGun && window.VectorGun.isVectorGun(weapon))) this.mergeStaticParts(root);
       this._protectResources(root);
       this._modelCache.set(key, root);
       while (this._modelCache.size > this.MODEL_CACHE_MAX) {
@@ -790,7 +793,11 @@ var WeaponSystemProcedural = {
       if (window.VectorGun && window.VectorGun.isVectorGun(weapon) && window.VectorGun.inBlade()) {
         const builder = window.VectorGun.formBuilder() ||
           this.TYPE_MODELS[window.VectorGun.formWeaponType()] || 'createSwordModel';
-        const model = this.finish(this.build(builder, weapon, rand), weapon);
+        const built = this.build(builder, weapon, rand);
+        // Stood up before finish: prepareGun measures the muzzle off the
+        // geometry, and a turn applied after it would leave that reading stale.
+        if (window.VectorGun.formBuilder()) this._standVectorForm(built, weapon);
+        const model = this.finish(built, weapon);
         if (!window.VectorGun.formBuilder()) this.applyVectorFrame(model);
         return model;
       }
@@ -844,6 +851,28 @@ var WeaponSystemProcedural = {
    * @param {THREE.Object3D} model - The model the type builder returned
    * @returns {THREE.Object3D} The same model
    */
+  /**
+   * The vector gun's own form builders are drawn the gun's way, long down +Z,
+   * but every melee rest pose and swing is written for a model standing along
+   * +Y. Seen down +Z through the orthographic overlay a machete is its own end:
+   * a slab at the wrong angle and the wrong size. So a form that is swung is
+   * stood up here, baked into its top-level parts because the pose rewrites the
+   * root's own rotation every frame. Aimed and thrown shapes (the bow, the
+   * darts, the coilgun) keep +Z, which is what their poses expect.
+   */
+  _standVectorForm(model, weapon) {
+    if (!model || typeof THREE === 'undefined') return;
+    const VG = window.VectorGun;
+    const row = VG.formWeaponRow ? VG.formWeaponRow() : null;
+    const wtype = row ? row.wtypeId : 0;
+    if (wtype === 7 || wtype === 8 || wtype === 9 || this.aimsAtTarget(weapon)) return;
+    const turn = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+    for (const child of model.children) {
+      child.position.applyQuaternion(turn);
+      child.quaternion.premultiply(turn);
+    }
+  },
+
   applyVectorFrame(model) {
     if (!model || !model.traverse) return model;
     this.applyVectorFormAccent(model);
@@ -1830,13 +1859,17 @@ var WeaponSystemProcedural = {
   //
   // Both halves work on whatever the builders placed, so any shape folds:
   // nothing here knows what weapon it is folding.
-  VECTOR_FOLD_MS: 360,
-  VECTOR_RISE_MS: 480,
+  VECTOR_FOLD_MS: 900,
+  VECTOR_RISE_MS: 1200,
   VECTOR_FOLD_ANGLE: Math.PI * 0.85,  // how far a panel swings about its crease
   VECTOR_FOLD_STAGGER: 0.5,   // the share of the clip a panel spends waiting its turn
   VECTOR_FOLD_TUCK: 0.7,      // how far in along the spine the packet telescopes
   VECTOR_FOLD_FLAT: 0.55,     // how far onto the spine a shut panel is drawn down
   VECTOR_FOLD_SNAP: 1.9,      // how hard a crease opens past itself before it settles
+  // Where along the weapon, from the hand end, the packet gathers. Not the
+  // hand itself: a held weapon's grip sits below the bottom edge of the
+  // battle overlay, and a fold packed down to it happened entirely off screen.
+  VECTOR_FOLD_PIVOT: 0.55,
 
   /**
    * Starts one half of the fold on a model.
@@ -1846,7 +1879,32 @@ var WeaponSystemProcedural = {
   startVectorSwitch(model, phase) {
     if (!model || typeof THREE === 'undefined') return null;
     const rise = phase === 'rise';
-    const box = new THREE.Box3().setFromObject(model);
+    // A model still held shut from an earlier fold (the swap kept the same
+    // model) is opened back to its builder's layout before it is measured.
+    if (model._vectorFolded) {
+      this._restoreVectorParts(model._vectorFolded);
+      model._vectorFolded = null;
+    }
+    if (model._vectorSwitch) {
+      this._restoreVectorParts(model._vectorSwitch.parts);
+      model._vectorSwitch = null;
+    }
+    // Measured in the model's OWN space. Box3.setFromObject answers in world
+    // space, which in battle carries the overlay's screen offset and scale: the
+    // hand end came out hundreds of units away from every panel, and the
+    // telescoping threw the whole weapon out of frame instead of folding it.
+    model.updateMatrixWorld(true);
+    const toModel = new THREE.Matrix4().copy(model.matrixWorld).invert();
+    const box = new THREE.Box3();
+    const scratchBox = new THREE.Box3();
+    const rel = new THREE.Matrix4();
+    model.traverse((node) => {
+      if (node === model || !node.isMesh || !node.geometry) return;
+      if (!node.geometry.boundingBox) node.geometry.computeBoundingBox();
+      rel.multiplyMatrices(toModel, node.matrixWorld);
+      box.union(scratchBox.copy(node.geometry.boundingBox).applyMatrix4(rel));
+    });
+    if (box.isEmpty()) box.set(new THREE.Vector3(), new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
     // The spine: whichever way the weapon is long is the way it folds, so a
     // lance packs down its own shaft and a gauntlet across the back of a hand.
@@ -1866,7 +1924,20 @@ var WeaponSystemProcedural = {
     let index = 0;
     model.traverse((node) => {
       if (node === model || !node.isMesh) return;
-      const home = node.position.clone();
+      // A part nested in a sub-group is posed in its parent's space but folded
+      // in the model's: its place is carried across both ways.
+      const parent = node.parent;
+      const parentRel = parent === model ? null
+        : new THREE.Matrix4().multiplyMatrices(toModel, parent.matrixWorld);
+      const local = node.position.clone();
+      const home = parentRel ? local.clone().applyMatrix4(parentRel) : local.clone();
+      let toParent = null;
+      let parentQ = null;
+      if (parentRel) {
+        toParent = parentRel.clone().invert();
+        parentQ = new THREE.Quaternion();
+        parentRel.decompose(new THREE.Vector3(), parentQ, new THREE.Vector3());
+      }
       const along = home.dot(spine);
       // The crease this panel is hinged on: the point of the spine level with
       // it. The panel swings about that line rather than flying off it.
@@ -1884,6 +1955,9 @@ var WeaponSystemProcedural = {
       parts.push({
         node: node,
         home: home,
+        local: local,
+        toParent: toParent,
+        parentQ: parentQ,
         hinge: hinge,
         crease: crease.normalize(),
         // Mountain and valley, turn and turn about: a fold, not a collapse.
@@ -1891,7 +1965,9 @@ var WeaponSystemProcedural = {
         // Where it stands between the hand and the far end: its place in the
         // queue, and how far it has to travel when the weapon telescopes.
         order: Math.max(0, Math.min(1, (along - held) / span)),
-        reach: Math.max(0, along - held),
+        // Signed: panels past the pivot telescope back to it, the ones on
+        // the hand side of it come up to meet them.
+        reach: along - (held + span * this.VECTOR_FOLD_PIVOT),
         rest: node.quaternion.clone(),
       });
       index++;
@@ -1903,6 +1979,7 @@ var WeaponSystemProcedural = {
       spine: spine,
       parts: parts,
       _q: new THREE.Quaternion(),
+      _pq: new THREE.Quaternion(),
       _v: new THREE.Vector3(),
     };
     return model._vectorSwitch;
@@ -1944,21 +2021,38 @@ var WeaponSystemProcedural = {
       // than leaving it a bundle of panels at angles.
       v.multiplyScalar(Math.max(0, 1 - this.VECTOR_FOLD_FLAT * k));
       v.add(part.hinge);
-      // and the whole thing telescopes in along the spine as it goes, the far
-      // panels travelling furthest, which is what shortens a long weapon.
+      // and the whole thing telescopes in along the spine towards the pivot
+      // as it goes, the ends travelling furthest, which shortens a long weapon.
       v.addScaledVector(vs.spine, -part.reach * this.VECTOR_FOLD_TUCK * k);
+      if (part.toParent) {
+        // Back into the space of the sub-group the part hangs from.
+        v.applyMatrix4(part.toParent);
+        q.premultiply(vs._pq.copy(part.parentQ).invert()).multiply(part.parentQ);
+      }
       part.node.position.copy(v);
       part.node.quaternion.copy(q).multiply(part.rest);
     }
 
     if (t >= 1) {
-      // Everything back exactly where the builder left it: an animation that
-      // ends a millimetre out leaves the weapon wrong for the rest of the fight.
-      for (const part of vs.parts) {
-        part.node.position.copy(part.home);
-        part.node.quaternion.copy(part.rest);
+      if (vs.rise) {
+        // Everything back exactly where the builder left it: an animation that
+        // ends a millimetre out leaves the weapon wrong for the rest of the fight.
+        this._restoreVectorParts(vs.parts);
+      } else {
+        // A finished fold STAYS a packet until the new shape is swapped in.
+        // Snapping it back open here showed the old weapon whole again for the
+        // frames before the swap, which read as a cut rather than a fold.
+        model._vectorFolded = vs.parts;
       }
       model._vectorSwitch = null;
+    }
+  },
+
+  /** Puts every panel of a fold back where the builder placed it. */
+  _restoreVectorParts(parts) {
+    for (const part of parts) {
+      part.node.position.copy(part.local || part.home);
+      part.node.quaternion.copy(part.rest);
     }
   },
 
@@ -2536,6 +2630,8 @@ var WeaponSystemProcedural = {
   // height its widest visible dimension should cover.
   screenFractionFor(weapon) {
     if (!weapon) return 0.81;
+    // Stated outright by whoever built the row (the vector gun's shapes).
+    if (weapon.screenFraction) return weapon.screenFraction;
     if (weapon.isWhip) return 1.00;
     if (weapon.isFlail) return 0.95;
     // An unarmed fist is measured with its forearm attached (Weapon3D_Unarmed
@@ -6171,7 +6267,11 @@ var WeaponSystemProcedural = {
    * archetype name so the model cache keys on it.
    */
   unarmedWeaponFor(actor) {
-    const archetype = this.archetypeOf(actor);
+    return this.unarmedWeaponForArchetype(this.archetypeOf(actor));
+  },
+
+  /** The same stand-in, for an archetype named outright rather than read off an actor. */
+  unarmedWeaponForArchetype(archetype) {
     if (!this._unarmedWeapons) this._unarmedWeapons = {};
     if (this._unarmedWeapons[archetype]) return this._unarmedWeapons[archetype];
 
@@ -6304,6 +6404,46 @@ var WeaponSystemProcedural = {
     }
   },
 
+  /**
+   * The empty hand that is always the authored rig, whoever is holding it: the
+   * vector gun put down as the Fists of Em (Weapon/VectorGunSystem.js). Null
+   * when the rig file is known to be missing, so the caller builds a fist.
+   */
+  rigFistWeapon() {
+    const spec = this.UNARMED_RIG;
+    if (!spec || spec.unavailable || !spec.archetypes.length) return null;
+    return this.unarmedWeaponForArchetype(spec.archetypes[0]);
+  },
+
+  /**
+   * The rig a menu's 3D stand shows for `weapon`, or null for a built model.
+   * The same answer as the battle's (rigSpecFor); the vector gun widens it to
+   * its Fists of Em form (Weapon/VectorGunSystem.js).
+   */
+  previewRigFor(weapon) {
+    return this.rigSpecFor(weapon);
+  },
+
+  /**
+   * Plays one of a rig's clips on a menu stand (Weapon3DPreview), where there
+   * is no Sprite_3DWeapon to do it.
+   * @param {Object} rig - the stand's record: {mixer, clips}
+   * @param {string} base - the clip's short name
+   * @param {boolean} loop - true for a held pose, false for a one-shot
+   * @returns {number} How long the clip runs, in milliseconds (0 if missing)
+   */
+  playPreviewRig(rig, base, loop) {
+    const action = rig && rig.clips && rig.clips[base];
+    if (!action) return 0;
+    rig.mixer.stopAllAction();
+    action.reset();
+    action.timeScale = 1;
+    action.setLoop(loop ? THREE.LoopRepeat : THREE.LoopOnce, loop ? Infinity : 1);
+    action.clampWhenFinished = !loop;
+    action.play();
+    return Math.ceil(action.getClip().duration * 1000);
+  },
+
   /** The rig an empty hand shows, or null for one that builds its own fist. */
   rigSpecFor(weapon) {
     const spec = this.UNARMED_RIG;
@@ -6369,8 +6509,14 @@ var WeaponSystemProcedural = {
     if (!actors || !actors.length) return;
     const asked = {};
     for (const actor of actors) {
-      if (!actor || (actor.weapons && actor.weapons().length)) continue;
-      const spec = this.rigSpecFor(this.unarmedWeaponFor(actor));
+      if (!actor) continue;
+      // The vector gun can be put down as the Fists of Em at any turn, and
+      // those are always the rig: its holder is warmed like an empty hand.
+      const VG = window.VectorGun;
+      const weapons = actor.weapons ? actor.weapons() : [];
+      const vgHolder = !!(VG && weapons.length && VG.isVectorGun(weapons[0]));
+      if (weapons.length && !vgHolder) continue;
+      const spec = this.rigSpecFor(vgHolder ? this.rigFistWeapon() : this.unarmedWeaponFor(actor));
       if (!spec || asked[spec.file]) continue;
       asked[spec.file] = true;
       // Already warm, or already on its way: acquiring would pop the one copy
@@ -6942,6 +7088,9 @@ var WeaponSystemProcedural = {
         this._clips = WeaponSystemProcedural.rigActionsFor(this._mixer, entry.animations);
         this._mixer.addEventListener('finished', () => {
           this._clipPlaying = false;
+          // Put away for a vector gun SWITCH: they stay down until the new
+          // shape is swapped in (VectorGun.playSwitchFx).
+          if (this._rigSwitchDown) return;
           this._resetToIdle();
         });
         overlay.scene.add(this._model);

@@ -17,6 +17,7 @@
   "noSpaceToSummon": "There is no space to summon the vehicle",
   "noStarshipIndoors": "The Starship is too big to come indoors",
   "noSummonIndoors": "Only the bike and the flying broom can be summoned indoors",
+  "noVehicleInCabin": "There is no room for a vehicle in here",
   "noValidPosition": "No valid position found to summon the vehicle",
   "stopDriving": "Stop driving",
   "startDriving": "Start driving",

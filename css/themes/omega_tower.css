@@ -100,13 +100,21 @@
        mixes in its own ground or its own frame reads as a different game, so
        none of them do it any more. */
     --modal-scrim: rgba(0, 0, 0, 0.55);
-    --modal-bg: var(--bg-panel);
-    --modal-border: none;
-    --modal-radius: 6px;
-    --modal-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    --modal-bg: var(--bg-secondary-hover);
+    --modal-border: 1px solid var(--text-primary-hover);
+    --modal-radius: 5px;
+    --modal-shadow: 0 24px 60px var(--shadow-black-translucent-45);
     --modal-pad: 20px 24px;
     --modal-gap: 12px;
     --modal-fg: var(--text-success-active);
+    /* The modal press: the frame and ink every popup button wears. */
+    --modal-btn-bg: transparent;
+    --modal-btn-border: 2px solid var(--text-primary-hover);
+    --modal-btn-fg: var(--text-primary-hover);
+    --modal-btn-hover-bg: rgba(255, 204, 102, 0.12);
+    --modal-btn-hover-fg: var(--text-primary-hover);
+    --modal-btn-hover-border: var(--accent-gold-pure);
+    --modal-btn-hover-shadow: none;
 }
 
 :root {
@@ -223,6 +231,8 @@
     --npc-option-border: #d4a64e;
 
     /* === Text Colors === */
+    /* Map tooltip and NPC bubble plate: the same fill, see-through */
+    --map-tip-bg: rgba(0, 0, 0, 0.72);
     --text-danger-hover: #000000;
     --text-disabled: #8a8378;
     --text-highlight-active: #ffffff;
@@ -758,9 +768,6 @@
     box-shadow: none !important;
 }
 
-.cc-pockets-spread .cc-subheader {
-    color: var(--accent-amber-glow) !important;
-}
 
 /* Default ink for any dossier label/value that has no inline override
    (base theme paints these dark brown -> invisible on the black page). */
@@ -1122,9 +1129,6 @@
    invisible on the Omega Tower black page. Lift labels to warm cream and the
    subheader to amber glow so the dossier reads clearly.
    ========================================================================== */
-#world-manage-container .cc-subheader {
-    color: var(--accent-amber-glow) !important;
-}
 #world-manage-container .cc-dossier-label {
     color: var(--accent-cream-warm) !important;
 }

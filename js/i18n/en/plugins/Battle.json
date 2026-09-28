@@ -689,7 +689,8 @@
       "regen": "The open book reads {actor} back, page by page.",
       "pact": "The book gives nothing back. It never agreed to.",
       "pactOpen": "{actor} walks in already reading. {count} pages are open.",
-      "pactPrice": "The page takes {cost} out of {actor}."
+      "pactPrice": "The page takes {cost} out of {actor}.",
+      "natural": "The Dice of YHWH lands on 20. The Grimoire of Solomon opens for {actor}, and asks nothing back."
     },
     "em": {
       "enter": [

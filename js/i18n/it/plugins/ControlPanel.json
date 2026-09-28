@@ -6,7 +6,7 @@
   "ramDefault": "256 MB RAM",
   "gpuName": "Cronoacceleratore da {mhz} MHz (scala DES)",
   "gpuDefault": "GPU a clock standard",
-  "psuName": "Rete di alimentazione biologica da {watts}W (scala PV)",
+  "psuName": "Rete di alimentazione biologica da {watts}W (scala HP)",
   "psuDefault": "Alimentatore standard da 250W",
   "hddSize": "{gb} GB di archiviazione nel caveau",
   "tabSpecs": "Specifiche di sistema",

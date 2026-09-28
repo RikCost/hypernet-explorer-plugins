@@ -4,8 +4,8 @@
   "switchPlayer": "← → Cambia Giocatore",
   "statFallback": "Statistica",
   "paramNames": [
-    "PV Max",
-    "PM Max",
+    "HP Max",
+    "MP Max",
     "FOR",
     "Precisione",
     "INT",

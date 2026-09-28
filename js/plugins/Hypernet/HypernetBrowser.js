@@ -725,7 +725,7 @@
         // article was first written never moves.
         record(actor) {
             const store = this.store();
-            if (!store || !actor) return null;
+            if (!store || !actor || isSummonProxy(actor)) return null;
             // A level that is not a number is not a level: an actor stub without one
             // has earned nothing.
             if (!(Number(actor.level) >= this.MIN_LEVEL)) return null;
@@ -810,8 +810,23 @@
     // (changeExp calls levelUp, one level at a time) and a level set outright
     // by an event or by the sandbox. Watching only one of the two would write
     // nobody up for the ordinary business of fighting.
+    // True while changeLevel walks an actor up one levelUp at a time. Every
+    // article write scans the diary and flushes the world folder to disk, so a
+    // jump of thirty levels (a summon dressed at the fight's level) wrote thirty
+    // times over and stalled the frame; the jump is recorded once at its end.
+    let levelJump = 0;
+
+    // The summon proxy is a slot a creature borrows for one fight, not a
+    // person of note: a reflection wearing its caster's name would otherwise
+    // overwrite the caster's own page.
+    function isSummonProxy(actor) {
+        const S = window.SummonSystem;
+        return !!(S && S.isProxyActor && actor.actorId && S.isProxyActor(actor.actorId()));
+    }
+
     function noticeLevel(actor) {
         try {
+            if (levelJump > 0 || isSummonProxy(actor)) return;
             if (!(Number(actor.level) >= People.MIN_LEVEL)) return;
             const written = People.record(actor);
             if (written && written.isNew && window.ParchmentToast) {
@@ -829,7 +844,12 @@
 
     const _Game_Actor_changeLevel = Game_Actor.prototype.changeLevel;
     Game_Actor.prototype.changeLevel = function (level, show) {
-        _Game_Actor_changeLevel.call(this, level, show);
+        levelJump++;
+        try {
+            _Game_Actor_changeLevel.call(this, level, show);
+        } finally {
+            levelJump--;
+        }
         noticeLevel(this);
     };
 

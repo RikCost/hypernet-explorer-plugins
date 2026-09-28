@@ -838,6 +838,13 @@ Imported.DialogueSystem = true;
                 if (b) return `busts/${b}`;
             }
 
+            // A sheet in no catalogue still names its face when a portrait
+            // carries the sheet's own name (Originals/!$Enchantress).
+            if (!SpritesAssociation[spritesheetName]) {
+                const named = window.BustPath?.forSheet?.(spritesheetName);
+                if (named) return `busts/${named}`;
+            }
+
             // Last of all the sim's own record, for a sheet that is in no
             // catalogue at all.
             if (window.NPCSim?.getBustForNPC) {
@@ -3643,6 +3650,49 @@ Imported.DialogueSystem = true;
         return [npcStep(ev, npcName, said)];
     }
 
+    // Em, confronted. Whatever stance a stranger holds her in, the death of God
+    // is the one thing nobody can leave alone: the zealot demands she say it,
+    // the fan wants the details, the gawker wants to know if it is true. Each
+    // stance carries a `confront` pool of its own for that question, and she
+    // answers out of `em.player.confront`: a mistake, she does not remember
+    // it, she is working on it. The other half of the same question is the
+    // `faith` pool: somebody whose faith died with Him, telling her so, and
+    // her answer out of `em.player.faith`. No opinion moves; it is company,
+    // and nothing she says settles it.
+    const EM_CONFRONT_CHANCE = 0.35;
+    const EM_FAITH_SHARE = 0.4;
+
+    function emConfrontLayer(ev, npcName, profile) {
+        const layer = talkLayer(ev, npcName, profile);
+        if (!layer || layer.pair || layer.bubba || !layer.key) return null;
+        const themes = ['confront', 'faith'].map(theme => ({
+            theme,
+            asks: layer.data && layer.data[theme],
+            answers: layer.voice && layer.voice[theme],
+        })).filter(t => t.asks && t.asks.length && t.answers && t.answers.length);
+        if (!themes.length) return null;
+        const faith = themes.find(t => t.theme === 'faith');
+        const pick = (faith && Math.random() < EM_FAITH_SHARE) ? faith
+            : (themes.find(t => t.theme === 'confront') || themes[0]);
+        return Object.assign({ layer }, pick);
+    }
+
+    function buildEmConfrontExchange(ev, npcName, profile) {
+        const EM = window.NPCEmpathize;
+        const H  = EM?._helpers;
+        const actor = (() => { try { return $gameParty.leader(); } catch (err) { return null; } })();
+        const c = H && actor ? emConfrontLayer(ev, npcName, profile) : null;
+        if (!c) return null;
+        seedLayerMeeting(ev, npcName, profile);
+        const ask = vary(String(H._rand(c.asks) || '').replace(/\{name\}/g, actor.name()));
+        const say = vary(String(H._rand(c.answers) || '').replace(/\{name\}/g, npcName || ''));
+        if (!ask || !say) return null;
+        EM.recordNPCLine?.(npcName, ask, 'npc');
+        EM.recordNPCLine?.(npcName, say, 'player');
+        payCompany(ev, npcName);
+        return [npcStep(ev, npcName, ask), playerStep(actor, say)];
+    }
+
     // The two of them, teasing. `bicker` is written as the exchange it is - a
     // line and the answer to it - so it needs no tone, no opinion and no
     // personality lookup: it is the only pair of people in the game who already
@@ -3957,28 +4007,6 @@ Imported.DialogueSystem = true;
         return steps;
     }
 
-    // The sheet Map/MapLegend.js pins to the corner of the map is not a topic
-    // Bubba talks through: the tips half of it is one switch he flips, and he
-    // is the only one who flips it, since the options page carries no row for
-    // it. The controls list is not his: it is always pinned and H folds it.
-    const STORY_SHEET_NOTICES  = 'sheet_notices';  // i18n-ignore: toggle name
-
-    // The tips are not a switch but three states, so the entry says which one
-    // it is standing on and picking it steps to the next.
-    function storyNoticeModeLabel() {
-        const mode = window.MapLegend?.noticesMode?.() || 'first'; // i18n-ignore: setting value
-        return T('Dialogue.askNotice_' + mode);
-    }
-
-    function storyAskToggles() {
-        if (!window.MapLegend) return [];
-        return [
-            { name: STORY_SHEET_NOTICES,
-              title: `${T('Dialogue.askToggleNotices')}: ${storyNoticeModeLabel()}`,
-              run: () => window.MapLegend?.cycleNoticesMode?.() },
-        ];
-    }
-
     function playStoryScript(fileName, sceneName) {
         const label = sceneName ? `${fileName}#${sceneName}` : fileName;
         const text  = storySceneText(fileName, sceneName);
@@ -4092,11 +4120,9 @@ Imported.DialogueSystem = true;
         const groups  = [];
         const fixed   = storyAskFixedScenes();
         const here    = storyAskScenes(mapId);
-        const sheet   = storyAskToggles();
         const lessons = storyAskLessons();
         if (fixed.length)   groups.push({ title: T('Dialogue.askGroupFixed'), scenes: fixed });
         if (here.length)    groups.push({ title: T('Dialogue.askGroupHere'),  scenes: here  });
-        if (sheet.length)   groups.push({ title: T('Dialogue.askGroupSheet'), scenes: sheet, side: true });
         if (lessons.length) groups.push({ title: T('Dialogue.askGroupAgain'), scenes: lessons, side: true });
         return groups;
     }
@@ -4371,9 +4397,6 @@ Imported.DialogueSystem = true;
         // The Ask / Empathize / Cancel menu a party-member Bubba offers.
         askMenu:   openStoryAskMenu,
         askTalk:   storyAskTalk,
-        // The sheet's own switches, offered in the grid beside the topics.
-        askToggles: storyAskToggles,
-        noticeModeLabel: storyNoticeModeLabel,
     };
 
     // -------------------------------------------------------------------------
@@ -4569,6 +4592,12 @@ Imported.DialogueSystem = true;
                 if (Math.random() < 0.5) beats.reverse();
                 builders = [() => buildTopicalExchange(ev, npcName, profile), ...beats,
                             () => buildRumorExchange(ev, npcName, profile)];
+            }
+            // Em in front of a stranger: often enough, whatever else was coming,
+            // they ask her about God first.
+            if (!pair && sentient && Math.random() < EM_CONFRONT_CHANCE
+                && emConfrontLayer(ev, npcName, profile)) {
+                builders.unshift(() => buildEmConfrontExchange(ev, npcName, profile));
             }
             // A builder that has nothing written to work with returns null
             // before it moves anything, so falling through to the next one

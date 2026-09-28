@@ -611,11 +611,10 @@
 
     // A bar that reads as a number as well as a length: the percentage is
     // written on every row, so nothing here rests on the width alone.
-    function grBar(pct, colour) {
+    function grBar(pct, band) {
         const p = Math.max(0, Math.min(100, Math.round(pct)));
-        return `<span style="display:inline-block; width:90px; height:9px; background:#e3e0d4; border:1px solid #c9c5b6;
-            border-radius:2px; vertical-align:middle; margin-right:6px">
-            <span style="display:block; width:${p}%; height:100%; background:${colour || '#4c8339'}"></span></span>${p}%`;
+        return `<span class="gr-bar">
+            <span class="gr-bar-fill gr-bar-fill--${band || 'grow'}" style="--gr-w:${p}%"></span></span>${p}%`;
     }
 
     // Every barrel this world has going, wherever it stands. A barrel is a
@@ -843,7 +842,7 @@
                 <td style="${GR.td}">${grEsc(b.where)}</td>
                 <td style="${GR.td}" ${b.ready ? 'data-ready="1"' : ''}>
                     <span style="color:${b.ready ? '#2e7d32' : 'var(--xp-ink-2)'}; font-weight:${b.ready ? 'bold' : 'normal'}">${grEsc(b.stageText)}</span></td>
-                <td style="${GR.td}">${grBar(b.pct, b.ready ? '#2e7d32' : '#8a6d3b')}</td>
+                <td style="${GR.td}">${grBar(b.pct, b.ready ? 'ready' : 'rest')}</td>
                 <td style="${GR.td}">${b.ready ? T('Brewing.grange.now') : grEsc(formatTimeRemaining(b.remaining))}</td>
             </tr>`).join('');
             return `<h2 style="${GR.h}">${T('Brewing.grange.tab.cellar')}</h2>
@@ -908,7 +907,7 @@
             const rows = plots.map(p => `<tr>
                 <td style="${GR.td}">${grIcon(p.iconIndex)} ${grEsc(p.itemName)}</td>
                 <td style="${GR.td}">${grEsc(p.where)}</td>
-                <td style="${GR.td}">${grBar(p.pct, p.ripe ? '#2e7d32' : (p.inSeason ? '#4c8339' : '#9c8d5f'))}</td>
+                <td style="${GR.td}">${grBar(p.pct, p.ripe ? 'ready' : (p.inSeason ? 'grow' : 'dry'))}</td>
                 <td style="${GR.td}">${p.ripe ? `<b style="color:#2e7d32">${T('Brewing.grange.ripe')}</b>`
                     : p.inSeason ? T('Brewing.grange.daysLeft', { n: p.daysLeft })
                     : `<span style="color:#b04a00">${T('Brewing.grange.outOfSeason')}</span>`}</td>

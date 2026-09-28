@@ -1025,6 +1025,31 @@
         },
 
         /**
+         * A natural 20 on the Dice of YHWH (Weapon/VectorGunSystem.js): the
+         * frame opens into the Grimoire of Solomon as her limit break, and none
+         * of the pact's prices come with it. She is shielded as any Hyper
+         * shields, the book keeps her on her feet, no page is paid for in
+         * blood (solomonPact() is false while the dice is fitted) and whatever
+         * was lowering her is lifted. It is the dice's gift, so the day's
+         * Hyper is left unspent.
+         * @returns {boolean} true when the book opened
+         */
+        diceGrimoire(actor) {
+            if (!holdsVectorGun(actor) || this.isGrimoireOpen(actor)) return false;
+            for (let paramId = 0; paramId < 8; paramId++) {
+                if (actor.isDebuffAffected && actor.isDebuffAffected(paramId)) actor.removeBuff(paramId);
+            }
+            announce(text('act.natural', { actor: actor.name() }));
+            ACTS.grimoire(actor, GRIMOIRE_HYPER);
+            if (!this.isGrimoireOpen(actor)) {
+                if (window.VectorGun && window.VectorGun.closeGrimoire) window.VectorGun.closeGrimoire();
+                return false;
+            }
+            actor._hyperInvulnTurns = INVULNERABLE_TURNS;
+            return true;
+        },
+
+        /**
          * What a page costs to read under the pact: the book takes out of her
          * what the spell would have taken out of anyone else, in blood rather
          * than in magic. It stops at her last point of health; the pact is a

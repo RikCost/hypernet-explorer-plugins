@@ -1883,7 +1883,8 @@
   //
   // WITH NO SHIP. The round is not a starship and does not become one: nothing
   // is parked on the pad, so the party walks out of the bullet onto the
-  // regolith on foot and the way home is the one they can find there.
+  // regolith on foot. The starship is brought into orbit overhead instead
+  // (see shipFollows), so Return to Ship takes them up to it.
   const MOON_ARRIVAL = {
     mapId: 173, x: 31, y: 43, dir: 2,
     // Which square of the Moon's landing grid the base stands on. Authored in
@@ -1949,6 +1950,38 @@
   }
 
   function moonSite() { return worldSite("moon"); }   // i18n-ignore  world id
+
+  // THE SHIP FOLLOWS THE PARTY.
+  //
+  // A round is not a starship, but the starship is the party's, and a crew
+  // that rode a round to the Moon and then asked to be taken back aboard was
+  // taken to a ship still orbiting the Earth - with the star map insisting
+  // they were in Sol, over a world they had left. So every flight that
+  // arrives on a real body moves the ship into orbit of that body, through
+  // the one routine GalaxySim moves it with anywhere else.
+  //
+  // Which body: the world a crossing is aimed at, else the pad it comes down
+  // on, else the pad it went up from (a climb to the ship from the Moon docks
+  // with a ship over the Moon), else the Earth.
+  // i18n-ignore-start  world ids, system and body names from Systems.json
+  const EARTH_ORBIT = { system: "Sol", planet: "Earth" };
+  function arrivalWorld(profile, site, dest) {
+    return (profile && profile.world) || (dest && dest.body) || (site && site.body) || "earth";
+  }
+  // i18n-ignore-end
+
+  function shipFollows(id) {
+    const w = id === "earth" ? EARTH_ORBIT : WORLDS[id];   // i18n-ignore  world id
+    if (!w) return false;
+    try {
+      const GS = window.GalaxySim;
+      const dm = GS && GS.getDataManager && GS.getDataManager();
+      if (!dm || typeof dm.teleportToPlanetOrbit !== "function") return false;
+      const ship = dm.playerShip || {};
+      if (!ship.isMoving && ship.currentSystem === w.system && ship.currentPlanet === w.planet) return true;
+      return !!dm.teleportToPlanetOrbit(w.system, w.planet);
+    } catch (e) { return false; }
+  }
 
   const SUBORBITAL_ARRIVAL = {
     // i18n-ignore-start  site ids
@@ -4729,7 +4762,12 @@
       // THE CLEAN BASIS. The same aim without the jitter, kept for anything in
       // the far scene that is hung at a bearing off the way the camera looks.
       // See _placeFar.
-      const clean = this._cleanCam || (this._cleanCam = new THREE.Object3D());
+      //
+      // IT HAS TO BE A CAMERA. Object3D.lookAt turns a plain object's +Z onto
+      // the target and only a camera's -Z, so a bare Object3D here faced the
+      // wrong way and every body hung off it - the Moon, the world ahead, the
+      // Dyson shell, both galaxies - was placed BEHIND the lens.
+      const clean = this._cleanCam || (this._cleanCam = new THREE.Camera());
       clean.position.set(look.x + cx, look.y + cy, look.z + cz);
       clean.up.set(0, 1, 0);
       clean.lookAt(look.x, look.y, look.z);
@@ -5263,8 +5301,9 @@
     }
 
 
-    // The room the shaft becomes in hexspace. Built with the corridor, because
-    // it IS the corridor for a third of its length.
+    // The room hexspace keeps cutting to. Built with the corridor, because it
+    // is the corridor, seen for a few frames at a time: never a place the
+    // round is in, only a place it flashes through.
     _buildLodge() {
       const g = new THREE.Group();
       this.lodge = g;
@@ -5297,12 +5336,19 @@
         ctx.fillRect(0, h * 0.82, w, h * 0.18);
       }, 6, 1);
 
-      // THE CHEVRON. Not painted flat: the floor of that room is laid, and the
-      // zigzag has to run the length of the shaft rather than tile as squares.
+      // THE CHEVRON, BLACK AND GOLD. Not painted flat: the floor of that room
+      // is laid, and the zigzag has to run the length of the shaft rather than
+      // tile as squares. The gold carries a sheen across each band so it reads
+      // as metal leaf and not as yellow paint.
       const chevron = this._tex(128, 128, (ctx, w, h) => {
-        ctx.fillStyle = "#f2efe6";
+        const gold = ctx.createLinearGradient(0, 0, w, 0);
+        gold.addColorStop(0, "#8a6a1c");
+        gold.addColorStop(0.45, "#e0b84a");
+        gold.addColorStop(0.55, "#f4d77a");
+        gold.addColorStop(1, "#8a6a1c");
+        ctx.fillStyle = gold;
         ctx.fillRect(0, 0, w, h);
-        ctx.fillStyle = "#0b0b0d";
+        ctx.fillStyle = "#060505";
         const band = h / 4;
         for (let b = 0; b < 4; b++) {
           const y = b * band;
@@ -5324,17 +5370,21 @@
         map: velvet, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false,
       }));
       this.lodgeWallMat = wallMat;
+      // The walls, the roof and the floor: the part of the room that flashes.
+      this.lodgeRoom = [];
       [-1, 1].forEach((s) => {
         const m = new THREE.Mesh(this._geo(new THREE.PlaneGeometry(CORRIDOR_LEN, HW * 2.3)), wallMat);
         m.position.set(s * HW * 1.05, 0, CORRIDOR_LEN / 2);
         m.rotation.y = s > 0 ? -Math.PI / 2 : Math.PI / 2;
         g.add(m);
+        this.lodgeRoom.push(m);
       });
       // A ceiling of the same cloth, low, so it is a room and not an alley.
       const roof = new THREE.Mesh(this._geo(new THREE.PlaneGeometry(HW * 2.3, CORRIDOR_LEN)), wallMat);
       roof.position.set(0, HW * 1.15, CORRIDOR_LEN / 2);
       roof.rotation.x = Math.PI / 2;
       g.add(roof);
+      this.lodgeRoom.push(roof);
 
       this.lodgeFloorMat = this._mat(new THREE.MeshBasicMaterial({
         map: chevron, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false,
@@ -5345,9 +5395,10 @@
       floor.rotation.x = -Math.PI / 2;
       g.add(floor);
       this.lodgeFloor = floor;
+      this.lodgeRoom.push(floor);
 
-      // WHAT IS STANDING IN IT. Four cards, reused: the point is that there is
-      // rarely more than one at a time and never a crowd.
+      // WHAT IS STANDING IN IT. Four cards, reused, and only ever caught in a
+      // flash: rarely more than one at a time and never a crowd.
       this.guests = [];
       const faces = (() => {
         try {
@@ -5403,7 +5454,7 @@
       });
     }
 
-    // The room, every frame of the beat it exists in.
+    // The room, every frame of the beat it flashes in.
     _updateLodge(dt, ph, st) {
       const g = this.lodge;
       if (!g) return;
@@ -5412,57 +5463,79 @@
       const inLodge = ph.key === "hexspace";
       g.visible = inLodge;
       if (!inLodge) {
-        this.guests.forEach((m) => { m.visible = false; });
+        this.guests.forEach((m) => { m.visible = false; m.userData.until = null; });
         if (this.rogue) this.rogue.visible = false;
         if (this.rogueLight) this.rogueLight.visible = false;
         this._lodgeT = 0;
+        this._flashAt = null;
+        this._flashEnd = null;
+        this.lodgeFlash = 0;
         return;
       }
       this._lodgeT = (this._lodgeT || 0) + dt;
       const T = this._lodgeT;
-      // In over the first seconds and out at the end, so the shaft becomes the
-      // room and the room becomes the white without either of them cutting.
-      const k = smooth(clamp01(ph.progress / 0.18)) * (1 - smooth(clamp01((ph.progress - 0.82) / 0.18)));
+      // Never in the first or the last moments of the beat, so the shaft and
+      // the white are what the beat opens and closes on.
+      const k = (ph.progress > 0.06 && ph.progress < 0.94) ? 1 : 0;
+
+      // THE FLASHES. The room is not rebuilt around the round: it is cut to,
+      // for a fraction of a second, and cut away from again, the way a frame
+      // spliced into the wrong reel goes past. The gaps are long and uneven so
+      // the eye never learns when the next one is coming.
+      if (this._flashAt == null) this._flashAt = T + 0.8 + this.rng() * 1.6;
+      if (this._flashEnd == null && T >= this._flashAt) {
+        this._flashEnd = T + 0.12 + this.rng() * 0.3;
+      }
+      let flashK = 0;
+      if (this._flashEnd != null) {
+        if (T >= this._flashEnd) {
+          this._flashEnd = null;
+          this._flashAt = T + 1.1 + this.rng() * 2.6;
+        } else {
+          // A hard cut in, a hair of decay out: it is a frame, not a fade.
+          const left = this._flashEnd - T;
+          flashK = clamp01(left / 0.06);
+          // Now and then the splice stutters and the room is there twice.
+          if ((Math.sin(T * 47.0) * 0.5 + 0.5) > 0.9) flashK *= 0.3;
+        }
+      }
+      const on = k * flashK;
+      const shown = on > 0.02;
+      this.lodgeFlash = on;
+      this.lodgeRoom.forEach((m) => { m.visible = shown; });
 
       // The curtain. It moves, and it is not the round moving it.
-      this.lodgeWallMat.opacity = k * 0.95;
+      this.lodgeWallMat.opacity = on * 0.95;
       if (this.lodgeWallMat.map) {
         this.lodgeWallMat.map.offset.x = Math.sin(T * 0.21) * 0.03 + T * 0.004;
         this.lodgeWallMat.map.needsUpdate = true;
       }
-
-      // THE FLOOR COMES AND GOES. A slow beat with a fast flicker in it, so it
-      // is there, then not, then there again before the eye is sure.
-      const slow = Math.sin(T * 0.62) * 0.5 + 0.5;
-      const flick = (Math.sin(T * 11.3) * 0.5 + 0.5) > 0.82 ? 0.35 : 1;
-      const floorK = k * smooth(clamp01((slow - 0.35) / 0.3)) * flick;
-      this.lodgeFloorMat.opacity = floorK * 0.9;
-      this.lodgeFloor.visible = floorK > 0.02;
+      // The black and gold floor, running under the round at the speed the
+      // shaft does.
+      this.lodgeFloorMat.opacity = on;
       if (this.lodgeFloorMat.map) {
         this.lodgeFloorMat.map.offset.y = -T * 0.55;
         this.lodgeFloorMat.map.needsUpdate = true;
       }
 
-      // THE GUESTS, and they are rare. Each card waits out its own timer,
-      // stands somewhere down the room for a second or two, and goes.
+      // THE GUESTS, and only in a flash. A card is stood in the room the
+      // moment it cuts in, and it goes when the room does.
       this.guests.forEach((m) => {
         if (m.userData.until != null) {
-          const left = m.userData.until - T;
-          if (left <= 0) {
+          if (!shown || T >= m.userData.until) {
             m.visible = false;
             m.userData.until = null;
             // A long wait before that card is used again: one at a time, and
             // not often, is the entire point.
-            m.userData.next = T + 7 + this.rng() * 14;
+            m.userData.next = T + 4 + this.rng() * 8;
             return;
           }
-          // It does not approach. It is simply nearer than it was.
-          m.position.z -= dt * 120;
-          m.material.opacity = k * 0.9 * smooth(clamp01(Math.min(left, 0.6) / 0.6));
+          m.material.opacity = on * 0.9;
           m.lookAt(this.camera.position);
           return;
         }
-        if (T < m.userData.next) return;
+        if (!shown || T < m.userData.next) return;
+        if (this.guests.some((o) => o.userData.until != null)) return;
         const faces = m.userData.faces;
         const file = faces[Math.floor(this.rng() * faces.length)];
         let tex = null;
@@ -5480,8 +5553,9 @@
           -CORRIDOR_HW * 0.55 + this.rng() * CORRIDOR_HW * 0.9,
           CORRIDOR_LEN * (0.35 + this.rng() * 0.4)
         );
+        m.material.opacity = on * 0.9;
         m.visible = true;
-        m.userData.until = T + 1.4 + this.rng() * 2.2;
+        m.userData.until = this._flashEnd;
       });
 
       // AND THE WORLD THAT GOES PAST. Once, if at all, and far too fast for
@@ -5573,10 +5647,10 @@
         // is black and the ground it is drawn on is white.
         if (mono > 0) c.lerp(BLACK_COL, mono);
         const near = 1 - clamp01(z / CORRIDOR_LEN);
-        // THE SLABS GET OUT OF THE ROOM'S WAY. In hexspace the shaft is not a
-        // shaft any more, it is a room with cloth on the walls, and a slit scan
-        // running through the curtains would ruin both.
-        const lodge = ph.key === "hexspace" ? smooth(clamp01(ph.progress / 0.18)) : 0;
+        // THE SLABS GET OUT OF THE ROOM'S WAY, for as long as it flashes in.
+        // Hexspace is still the shaft between the cuts; a slit scan running
+        // through the curtains during one would ruin both.
+        const lodge = ph.key === "hexspace" ? (this.lodgeFlash || 0) : 0;
         m.material.opacity = m.userData.key * (0.25 + 0.75 * near) * (1 - mono * 0.15) * (1 - lodge * 0.92);
       });
 
@@ -7421,6 +7495,10 @@
       this._left = true;
       this._releaseAudio();
       if (this._freePlay) { SceneManager.pop(); return; }
+      // A map named by hand is not a body, and says nothing about the ship.
+      if (this._transferred && !this._destination) {
+        shipFollows(arrivalWorld(this._profile, this._site, this._destSite));
+      }
       SceneManager.goto(Scene_Map);
     }
 
@@ -7742,6 +7820,8 @@
     },
     cuesFor,
     MODEL,
+    arrivalWorld,
+    shipFollows,
     Scene: Scene_RocketLaunch,
     // The 3D stage, the HUD and the selection card, published so the test
     // suite can build them against a headless THREE and step a whole flight

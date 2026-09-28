@@ -7291,9 +7291,7 @@
       "night-tone"
     ],
     "bgs": [
-      "room-ambience",
-      "room-tone-4",
-      "room-kitchen"
+      "room-ambience"
     ],
     "dayTemperature": 20,
     "nightTemperature": 17,

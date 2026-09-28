@@ -156,6 +156,13 @@
     // just wherever the autosave caught them walking, and waking up there means
     // waking up on the square that killed them, next to whatever killed them.
     //
+    // The story mode puts its own starting square into the set point the moment
+    // the run begins (Titlescreen.beginStoryRunTransfer), and that is where a
+    // death must put the party back: the story is a journey outward from where
+    // it opens, and an autosave in the wild is not a checkpoint the player
+    // chose. The set point is still what is read, so a camp or the
+    // setRespawnPoint command moves the story's respawn the way it always did.
+    //
     // With nothing resolvable: the default safe location in normal / roguelite
     // play, otherwise the hardcoded fallback passed in by the caller.
     function resolveRespawnLocation(fallbackMapId, fallbackX, fallbackY) {
@@ -174,7 +181,9 @@
             ? respawnCandidate(startLoc.mapId, startLoc.x, startLoc.y, startLoc.proc) : null;
 
         const onProcMap = !!$gameMap && $gameMap.mapId() === PROC_MAP_ID;
+        const storyMode = $gameSwitches.value(100);
         const order = onProcMap ? [setPoint, startPoint, savePoint]
+                    : storyMode ? [setPoint, savePoint, startPoint]
                                 : [savePoint, setPoint, startPoint];
         const chosen = order.find(c => c);
         if (chosen) return chosen;
@@ -350,9 +359,11 @@
             BSE.Helpers.refillPartyNeeds();
         }
 
+        // Story mode needs no branch of its own here: resolveRespawnLocation
+        // reads the set point first while switch 100 is on, and the run's own
+        // starting square was written into it when the story began.
         let dest = resolveRespawnLocation(1, 21, 23);
         if ($gameSwitches.value(34)) dest = { mapId: 557, x: 13, y: 5, proc: null };
-        if ($gameSwitches.value(100)) dest = { mapId: 1415, x: 60, y: 6, proc: null };
 
         $gamePlayer._priorityType = 0;
         $gamePlayer._through = true;

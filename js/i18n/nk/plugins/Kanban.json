@@ -29,7 +29,7 @@
     "DONE",
     "FAILED"
   ],
-  "showOnMapAt": "SHOW ON MAP ({x}, {y}) · SHIFT",
+  "showOnMapAt": "SHOW ON MAP: {place} · SHIFT",
   "notify": {
     "newQuest": "NEW QUEST: {title}",
     "newQuestUnknown": "NEW QUEST:???",

@@ -23,13 +23,19 @@
  *   THE ELEMENT      what the PISTOL is loaded with. The coilgun carries one
  *                    of its own, calibrated separately, which is how the frame
  *                    holds two at once. Everything else strikes plain.
- *   THE FORM         what the gun is. One shape fitted at a time, out of the
- *                    gun's own and the twenty-two it folds into. In battle the
- *                    reload row is SWITCH: it reconstructs the weapon as the
- *                    fitted shape and back, costs no turn and can be done as
- *                    often as she likes. Left as the gun, SWITCH racks it out
- *                    into a coilgun sniper rifle instead: three shots, four
+ *   THE FORM         what the gun is. One choice fitted at a time: the Dice
+ *                    of YHWH (the default), the gun's own shape, or one of the
+ *                    twenty weapon forms it folds into, which come open with
+ *                    Em's level up to the Grimoire of Solomon at 50. In battle
+ *                    the reload row is SWITCH: it reconstructs the weapon as
+ *                    the fitted shape and back, costs no turn and can be done
+ *                    as often as she likes. Left as the gun, SWITCH racks it
+ *                    out into a coilgun sniper rifle instead: three shots, four
  *                    times the reach, and the third round spent folds it back.
+ *                    With the dice fitted, SWITCH rolls a d20 and folds into
+ *                    the form on that face: a 1 is the Fists of Em, and a
+ *                    natural 20 opens the Grimoire of Solomon as her limit
+ *                    break, with none of the pact's prices.
  *   THE CALIBRATION  what each SHAPE carries of its own, in place of the bays
  *                    and the element it gave up: one gimmick apiece, set on
  *                    the Calibrate page and remembered per shape, so refitting
@@ -229,12 +235,6 @@
     // The empty hands: Em drops the gun outright and the game's own unarmed
     // rig is what she fights with, so this shape names no builder at all.
     fists:     { wtypeId: 11, range: 1, unarmed: true, rider: 'MartialArts' },
-    // The frame split down its own seam, a pistol in each hand.
-    twin:      { wtypeId: GUN_WTYPE, range: 6, builder: 'createVectorTwinModel',
-                 gunClass: true, shoots: true },
-    // Cocked rather than drawn, and it holds exactly one bolt.
-    crossbow:  { wtypeId: 7, range: 8, builder: 'createVectorCrossbowModel',
-                 bullets: 1, shoots: true },
     eris:      { wtypeId: 5, range: 1, builder: 'createVectorNunchakuModel' },   // Nunchaku of Eris
     maat:      { wtypeId: 3, range: 2, builder: 'createVectorFlailModel' },      // Mail of Maat
     bubba:     { wtypeId: 3, range: 1, builder: 'createVectorWrenchModel' },     // Wrench of Bubba
@@ -248,8 +248,10 @@
                  rider: 'PsychicAbilities', scale: ['PSI'] },
     // The one shape that mends rather than strikes: a plain attack with it is
     // turned on her own side. Everything it gives up is the price of that.
+    // Held up face-on, the loop open to the camera: posed as the staff its
+    // type is, the loop stood edge-on and read as a skewer of beads.
     gautama:   { wtypeId: 6, range: 4, builder: 'createVectorRosaryModel',       // Rosary of Gautama
-                 mends: true, motion: 'cast',
+                 mends: true, motion: 'cast', pose: { x: 80, y: 0, z: -12 }, fraction: 0.6,
                  sounds: ['Items/bookFlip1', 'Bell1', 'Items/paper_02'] },
     // Grimoire of Solomon: the twelfth shape, and the only one that is not a
     // weapon. Fitted, the book is already open when the fight starts: Em walks
@@ -262,8 +264,10 @@
     // its own pages going downrange off the clasp. That is why it carries a
     // shot's reach, a motion of its own, paper for a sound and a mark of its
     // own where the pages land, instead of borrowing a staff's.
+    // Held open with its pages to the camera: posed as a staff, the covers
+    // were seen from behind and ran off the edge of the screen.
     solomon:   { wtypeId: 6, range: 4, builder: 'createVectorGrimoireModel',
-                 shoots: true, motion: 'cast', hitFX: 'pages',
+                 shoots: true, motion: 'cast', hitFX: 'pages', fraction: 0.5, pose: { x: -60, y: 20, z: -10 },
                  sounds: ['Items/bookFlip1', 'Items/bookFlip2', 'Items/bookFlip3',
                           'Items/paper_02'] },
     // What the gun itself folds into, and the only shape nobody fits: with the
@@ -278,11 +282,62 @@
     // Hyper), whatever it was standing as a moment earlier, and it closes
     // again when the fight ends.
     grimoire:  { wtypeId: 6, range: 4, builder: 'createVectorGrimoireModel', derived: true,
-                 shoots: true, motion: 'cast', hitFX: 'pages',
+                 shoots: true, motion: 'cast', hitFX: 'pages', fraction: 0.5, pose: { x: -60, y: 20, z: -10 },
                  sounds: ['Items/bookFlip1', 'Items/bookFlip2', 'Items/bookFlip3',
                           'Items/paper_02'] },
   };
   const FORM_KEYS = Object.keys(FORM_MODES).filter((k) => !FORM_MODES[k].derived);
+
+  // What Em has earned the right to fit. Twenty weapon forms, one per face of
+  // the Dice of YHWH: she walks in with four of them and the rest come open
+  // one at a time, weakest first, until the Grimoire of Solomon at 50 leaves
+  // nothing shut. The dice and the gun's own shape are always hers.
+  const FORM_UNLOCK = {
+    fists: 1,
+    aiwass: 1,
+    freud: 1,
+    gautama: 1,
+    abrasax: 3,
+    zos: 6,
+    nuit: 9,
+    bubba: 12,
+    choronzon: 15,
+    babalon: 18,
+    hadit: 21,
+    kia: 24,
+    longinus: 27,
+    baphomet: 30,
+    maat: 33,
+    thelema: 36,
+    eris: 39,
+    yaldabaoth: 42,
+    nyarlathotep: 46,
+    solomon: 50,
+  };
+
+  /** The level a weapon form comes open at. */
+  const formUnlockLevel = (key) => FORM_UNLOCK[key] || 1;
+
+  /** Whether a form may be fitted right now. The dice and the gun always may. */
+  const isFormUnlocked = (key) => !FORM_UNLOCK[key] || gunLevel() >= formUnlockLevel(key);
+
+  // The forms in the order they come open, ties kept in the table's own order,
+  // which is also the order of the dice: face 1 is the Fists of Em and face 20
+  // is the Grimoire of Solomon.
+  const UNLOCK_KEYS = Object.keys(FORM_UNLOCK);
+  const FORM_ORDER = FORM_KEYS.slice().sort((a, b) =>
+    formUnlockLevel(a) - formUnlockLevel(b) || UNLOCK_KEYS.indexOf(a) - UNLOCK_KEYS.indexOf(b));
+
+  /** The forms still to come, each with the level it opens at. */
+  const lockedForms = () => FORM_ORDER.filter((key) => !isFormUnlocked(key))
+    .map((key) => ({ key: key, level: formUnlockLevel(key) }));
+
+  // The Dice of YHWH: the default choice in the form bay, and not a weapon at
+  // all. Fitted, SWITCH rolls a d20 and the frame folds into the form on that
+  // face, locked or not: the dice does not ask what she has earned.
+  const DICE_FORM = 'dice';
+  const DICE_SIDES = 20;
+  const DICE_FACES = FORM_ORDER.slice();
   const SNIPER_FORM = 'sniper';
   const FISTS_FORM = 'fists';
   const ROSARY_FORM = 'gautama';
@@ -292,8 +347,9 @@
   /** Whether the pact shape is the one fitted in the form bay. */
   const solomonFitted = () => fittedForm() === SOLOMON_FORM;
 
-  // What the form selector offers: the gun's own shape first, then the rest.
-  const FORM_CHOICES = [GUN_FORM].concat(FORM_KEYS);
+  // What the form selector offers: the dice, the gun's own shape, then the
+  // twenty forms in the order they come open.
+  const FORM_CHOICES = [DICE_FORM, GUN_FORM].concat(FORM_ORDER);
 
   const MODE_KEYS = BASE_MODE_KEYS.slice();
 
@@ -408,32 +464,69 @@
   // form is what it is. The gun's own shape is the default and is always a
   // valid answer, so the weapon is never left without one.
 
-  /** The shape SWITCH reconstructs the weapon into, the gun's own by default. */
+  /**
+   * The choice in the form bay, the Dice of YHWH by default. A form her level
+   * has not reached (a savegame from before the forms were earned) reads as
+   * the dice rather than as a form she could not have fitted.
+   */
   function fittedForm() {
-    if (typeof $gameSystem === 'undefined' || !$gameSystem) return GUN_FORM;
+    if (typeof $gameSystem === 'undefined' || !$gameSystem) return DICE_FORM;
     const key = $gameSystem._vectorGunFitted;
-    return FORM_KEYS.includes(key) ? key : GUN_FORM;
+    if (key === GUN_FORM) return GUN_FORM;
+    return (FORM_KEYS.includes(key) && isFormUnlocked(key)) ? key : DICE_FORM;
   }
 
   /**
-   * Fits one shape. Picking the shape already fitted is not an unfit: the frame
-   * always stands as something, and the gun's own shape is how it is put down.
-   * @param {string} key - GUN_FORM or one of FORM_KEYS
-   * @returns {string} The shape now fitted
+   * Fits one choice. Picking the one already fitted is not an unfit: the frame
+   * always stands as something. A form her level has not reached is refused
+   * and the bay is left as it was.
+   * @param {string} key - DICE_FORM, GUN_FORM or one of FORM_KEYS
+   * @returns {string} The choice now fitted
    */
   function setForm(key) {
-    if (typeof $gameSystem === 'undefined' || !$gameSystem) return GUN_FORM;
-    const next = FORM_KEYS.includes(key) ? key : GUN_FORM;
+    if (typeof $gameSystem === 'undefined' || !$gameSystem) return DICE_FORM;
+    const next = (FORM_KEYS.includes(key) || key === GUN_FORM) ? key : DICE_FORM;
+    if (!isFormUnlocked(next)) return fittedForm();
     if (next !== fittedForm()) unfold();
     $gameSystem._vectorGunFitted = next;
     return next;
   }
 
+  /** The form the dice last landed on and the frame is standing ready for. */
+  function rolledForm() {
+    if (typeof $gameSystem === 'undefined' || !$gameSystem) return null;
+    const key = $gameSystem._vectorGunRolled;
+    return FORM_KEYS.includes(key) ? key : null;
+  }
+
+  /** The face the dice last showed, 0 before it has ever been rolled. */
+  function lastRoll() {
+    if (typeof $gameSystem === 'undefined' || !$gameSystem) return 0;
+    return Number($gameSystem._vectorGunLastRoll) || 0;
+  }
+
   /**
-   * What SWITCH folds the weapon into from here: the fitted shape, or the
-   * coilgun when the frame has been left as the gun.
+   * One roll of the Dice of YHWH.
+   * @param {number} [face] - A face to land on instead of rolling, for tests
+   * @returns {{face: number, key: string, natural: boolean}}
    */
-  const switchTarget = () => (fittedForm() === GUN_FORM ? SNIPER_FORM : fittedForm());
+  function rollDice(face) {
+    const n = (face >= 1 && face <= DICE_SIDES)
+      ? Math.floor(face) : 1 + Math.floor(Math.random() * DICE_SIDES);
+    if (typeof $gameSystem !== 'undefined' && $gameSystem) $gameSystem._vectorGunLastRoll = n;
+    return { face: n, key: DICE_FACES[n - 1], natural: n === DICE_SIDES };
+  }
+
+  /**
+   * What SWITCH folds the weapon into from here: the fitted shape, the coilgun
+   * when the frame has been left as the gun, or whatever the dice landed on.
+   */
+  function switchTarget() {
+    const fitted = fittedForm();
+    if (fitted === GUN_FORM) return SNIPER_FORM;
+    if (fitted === DICE_FORM) return rolledForm();
+    return fitted;
+  }
 
   /**
    * Puts the weapon back together as the gun. Called whenever the fitted shape
@@ -445,6 +538,7 @@
     // A stance the shape was held in comes off with the shape itself.
     onFormWorn(formKey(), wielder(), false);
     $gameSystem._vectorGunForm = null;
+    $gameSystem._vectorGunRolled = null;
     $gameSystem._vectorGunBlade = false;
     $gameSystem._vectorGunSniperShots = 0;
     // The shape it was standing in was carrying an element of its own, or
@@ -481,8 +575,6 @@
     zos:          { venom: 'venom' },
     baphomet:     { take: 'hp' },
     longinus:     { charge: 'brace' },
-    twin:         { pattern: 'two' },
-    crossbow:     { head: 'piercing' },
     eris:         { discord: 'tight' },
     maat:         { measure: 'health' },
     bubba:        { archetypes: [] },
@@ -584,7 +676,9 @@
    * recalibrated must not come back out of the cache wearing the old setting.
    */
   function calibrationKey() {
-    const key = fittedForm();
+    const fitted = fittedForm();
+    // With the dice fitted, what is in her hand is whatever it landed on.
+    const key = fitted === DICE_FORM ? (rolledForm() || GUN_FORM) : fitted;
     if (!isCalibratable(key)) return '';
     const record = calibration(key);
     return Object.keys(record).sort()
@@ -786,17 +880,11 @@
   const KIA_STANCES = [22, 34, 49, 55];   // Counter Attack, Perfect Focus, Dodge, Combo
   const KIA_STANCE_RATE = 0.88;
 
-  // The axe and the pair of pistols: more bodies, or more rounds, and less of
-  // the blow behind each one.
+  // The axe: more bodies, and less of the blow behind each one.
   const CLEAVE_PLANS = {
     single: { repeats: 1, rate: 1.4 },
     double: { repeats: 2, rate: 0.72 },
     triple: { repeats: 3, rate: 0.5 },
-  };
-  const TWIN_PATTERNS = {
-    two: { repeats: 2, rate: 0.7 },
-    three: { repeats: 3, rate: 0.55 },
-    four: { repeats: 4, rate: 0.44 },
   };
 
   // The bow: how far it is drawn. Short is close work and finds the seam,
@@ -812,14 +900,6 @@
     brace: { rate: 0.9, pierceGuard: true },
     reach: { range: 4, rate: 1 },
     overrun: { repeats: 2, rate: 0.7 },
-  };
-
-  // The crossbow: one bolt, and what is on the end of it.
-  const BOLT_HEADS = {
-    piercing: { pierceGuard: true, rate: 1 },
-    barbed: { stateId: 48, chance: 0.5, rate: 1 },
-    splitting: { area: true, rate: 0.7 },
-    heavy: { stateId: 13, chance: 0.25, rate: 1.15 },
   };
 
   // The nunchaku: how wild the blow is. The wider the band the better it does
@@ -1002,14 +1082,10 @@
     switch (key) {
       case 'babalon':
         return (CLEAVE_PLANS[calValue(key, 'cleave')] || CLEAVE_PLANS.single).rate;
-      case 'twin':
-        return (TWIN_PATTERNS[calValue(key, 'pattern')] || TWIN_PATTERNS.two).rate;
       case 'aiwass':
         return (BOW_DRAWS[calValue(key, 'draw')] || BOW_DRAWS.standard).rate;
       case 'longinus':
         return (LANCE_CHARGES[calValue(key, 'charge')] || LANCE_CHARGES.brace).rate;
-      case 'crossbow':
-        return (BOLT_HEADS[calValue(key, 'head')] || BOLT_HEADS.piercing).rate || 1;
       case 'kia':
         return KIA_STANCE_RATE;
       case 'baphomet':
@@ -1039,9 +1115,6 @@
     if (key === 'babalon') {
       return (CLEAVE_PLANS[calValue(key, 'cleave')] || CLEAVE_PLANS.single).repeats || 1;
     }
-    if (key === 'twin') {
-      return (TWIN_PATTERNS[calValue(key, 'pattern')] || TWIN_PATTERNS.two).repeats || 1;
-    }
     if (key === 'longinus') {
       return (LANCE_CHARGES[calValue(key, 'charge')] || LANCE_CHARGES.brace).repeats || 1;
     }
@@ -1053,9 +1126,6 @@
     const key = formKey();
     if (key === 'longinus') {
       return !!(LANCE_CHARGES[calValue(key, 'charge')] || {}).pierceGuard;
-    }
-    if (key === 'crossbow') {
-      return !!(BOLT_HEADS[calValue(key, 'head')] || {}).pierceGuard;
     }
     return false;
   }
@@ -1074,7 +1144,6 @@
       const type = calValue(key, 'damageType');
       return MAUL_TYPES.indexOf(type) >= 0 ? type : 'Blunt';
     }
-    if (key === 'crossbow' && (BOLT_HEADS[calValue(key, 'head')] || {}).area) return 'Area';
     return null;
   }
 
@@ -1129,13 +1198,6 @@
     const paramId = Number(calValue('nuit', 'paramId'));
     if (LASH_PARAMS.indexOf(paramId) < 0 || !target.addDebuff) return;
     target.addDebuff(paramId, 2);
-  }
-
-  /** What is on the end of the bolt. */
-  function applyBoltHead(target) {
-    const head = BOLT_HEADS[calValue('crossbow', 'head')];
-    if (!head || !head.stateId || Math.random() >= (head.chance || 0)) return;
-    if (!target.isStateAffected(head.stateId)) target.addState(head.stateId);
   }
 
   /**
@@ -1201,7 +1263,6 @@
       case 'zos': applyDartVenom(target); break;
       case 'baphomet': drainTalons(subject, target); break;
       case 'nuit': lashParam(target); break;
-      case 'crossbow': applyBoltHead(target); break;
       case ROSARY_FORM: mendWithBeads(subject, target); break;
       default: break;
     }
@@ -1471,8 +1532,6 @@
       case 'babalon': return pick('cleave', Object.keys(CLEAVE_PLANS), 'cleave');
       case 'aiwass': return pick('draw', Object.keys(BOW_DRAWS), 'draw');
       case 'longinus': return pick('charge', Object.keys(LANCE_CHARGES), 'charge');
-      case 'twin': return pick('pattern', Object.keys(TWIN_PATTERNS), 'pattern');
-      case 'crossbow': return pick('head', Object.keys(BOLT_HEADS), 'bolt');
       case 'eris': return pick('discord', Object.keys(DISCORD_BANDS), 'discord');
       case 'maat': return pick('measure', MAAT_MEASURES, 'measure');
       case 'yaldabaoth': return pick('reads', SAW_READS, 'reads');
@@ -1577,6 +1636,31 @@
     };
   }
 
+  // Whatever shape the frame was left in, a fight that ends (won, fled or
+  // lost) and a game over put it back together as the pistol.
+  function resetForm() {
+    if (typeof $gameSystem === 'undefined' || !$gameSystem) return;
+    if (!$gameSystem._vectorGunForm && !$gameSystem._vectorGunRolled &&
+      !$gameSystem._vectorGunBlade) return;
+    unfold();
+  }
+
+  if (typeof BattleManager !== 'undefined' && BattleManager && BattleManager.endBattle) {
+    const _BattleManager_endBattle_VG = BattleManager.endBattle;
+    BattleManager.endBattle = function (result) {
+      resetForm();
+      _BattleManager_endBattle_VG.call(this, result);
+    };
+  }
+
+  if (typeof Scene_Gameover !== 'undefined' && Scene_Gameover.prototype.start) {
+    const _Scene_Gameover_start_VG = Scene_Gameover.prototype.start;
+    Scene_Gameover.prototype.start = function () {
+      resetForm();
+      _Scene_Gameover_start_VG.call(this);
+    };
+  }
+
   //--------------------------------------------------------------------------
   // What may never be done with it
   //--------------------------------------------------------------------------
@@ -1591,10 +1675,8 @@
   // The forms the gun folds into
   //--------------------------------------------------------------------------
   // The shapes reach every weapon type the game knows, and no longer one
-  // apiece: her own hands and the armoured gauntlet are both gloves, the bow
-  // that is drawn and the crossbow that is cocked are both bows, the pair of
-  // pistols is a firearm like the gun itself. What each of them is worth is
-  // its own calibration rather than its type.
+  // apiece: her own hands and the armoured gauntlet are both gloves. What each
+  // of them is worth is its own calibration rather than its type.
   //
   // With one of them fitted, the battle command that would reload becomes
   // SWITCH, and the gun reconstructs itself as that shape: the Blade of
@@ -1656,12 +1738,15 @@
    * plain gun. Savegames written before the coilgun carry a bare blade flag.
    */
   function formKey() {
-    if (_previewForm) return _previewForm === GUN_FORM ? null : _previewForm;
+    // The dice is not a shape: previewed, the frame stands as the pistol.
+    if (_previewForm) {
+      return (_previewForm === GUN_FORM || _previewForm === DICE_FORM) ? null : _previewForm;
+    }
     if (typeof $gameSystem === 'undefined' || !$gameSystem) return null;
     // The book beats everything else the frame could be standing as.
     if ($gameSystem._vectorGunGrimoire) return GRIMOIRE_FORM;
     const target = switchTarget();
-    if ($gameSystem._vectorGunForm === target) return target;
+    if (target && $gameSystem._vectorGunForm === target) return target;
     if (!$gameSystem._vectorGunForm && $gameSystem._vectorGunBlade && target === 'thelema') return target;
     return null;
   }
@@ -1797,6 +1882,10 @@
       _vectorGunFrom: gun,
     });
     delete row.maxBullets;
+    // A shape its weapon type holds wrongly (a rosary is not a staff, nor is a
+    // book) names its own rest pose and size in the battle overlay.
+    if (FORM_MODES[key].pose) row.model3dRotation = FORM_MODES[key].pose;
+    if (FORM_MODES[key].fraction) row.screenFraction = FORM_MODES[key].fraction;
     _formRows[key] = row;
     return row;
   }
@@ -1875,6 +1964,10 @@
   const FOLD_SE = { name: 'Machine', volume: 80, pitch: 130, pan: 0 };
   const RISE_SE = { name: 'Equip1', volume: 90, pitch: 90, pan: 0 };
   const RACK_SE = { name: 'Weapons/Reload5', volume: 80, pitch: 100, pan: 0 };
+  // The rack is heard once the new shape has mostly opened out.
+  const RACK_DELAY_MS = 800;
+  // How many frames a half of the fold waits for the hand's model to exist.
+  const SWITCH_RETRY_FRAMES = 12;
 
   /** Every 3D weapon sprite with the gun in it, whichever hand it is in. */
   function heldGunSprites() {
@@ -1883,7 +1976,9 @@
     if (!sprites) return [];
     return Object.keys(sprites)
       .map((hand) => sprites[hand])
-      .filter((sprite) => sprite && sprite._model && isVectorGun(sprite._weapon));
+      // The Fists of Em hold the actor's own fist, flagged as the gun's hand.
+      .filter((sprite) => sprite && sprite._model &&
+        (isVectorGun(sprite._weapon) || sprite._vgHeld));
   }
 
   /**
@@ -1896,19 +1991,43 @@
     if (!WSP || !WSP.startVectorSwitch) return 0;
     const rise = phase === 'rise';
     const sprites = heldGunSprites();
-    for (const sprite of sprites) WSP.startVectorSwitch(sprite._model, phase);
-    // A procedural model is built the moment its sprite is, so this is only
-    // ever empty when the hand is being rebuilt around us: one frame later it
-    // is there, and the half still has time to play.
-    if (!sprites.length && !retried) {
-      setTimeout(() => playSwitchFx(phase, true), 16);
+    let ms = rise ? WSP.VECTOR_RISE_MS : WSP.VECTOR_FOLD_MS;
+    for (const sprite of sprites) {
+      // The Fists of Em are the authored rig, skinned rather than built of
+      // panels: they are put away and raised with the rig's own clips.
+      if (sprite._rig) ms = Math.max(ms, playRigSwitch(sprite, rise));
+      else WSP.startVectorSwitch(sprite._model, phase);
+    }
+    // Empty only while the hand is being rebuilt around us: the half is tried
+    // again each frame for a short while, so the new shape never appears
+    // whole and unfolded before its rise starts.
+    const tries = typeof retried === 'number' ? retried : (retried ? 0 : SWITCH_RETRY_FRAMES);
+    if (!sprites.length && tries > 0) {
+      setTimeout(() => playSwitchFx(phase, tries - 1), 16);
+      return rise ? WSP.VECTOR_RISE_MS : WSP.VECTOR_FOLD_MS;
     }
     if (typeof AudioManager !== 'undefined') {
       AudioManager.playSe(Object.assign({}, rise ? RISE_SE : FOLD_SE));
       // The rack of the new shape locking up, a beat after it has come together.
-      if (rise) setTimeout(() => AudioManager.playSe(Object.assign({}, RACK_SE)), 220);
+      if (rise) setTimeout(() => AudioManager.playSe(Object.assign({}, RACK_SE)), RACK_DELAY_MS);
     }
-    return rise ? WSP.VECTOR_RISE_MS : WSP.VECTOR_FOLD_MS;
+    return ms;
+  }
+
+  /**
+   * Lowers or raises the rig's hands for a SWITCH.
+   * @param {Object} sprite - a Sprite_3DWeapon holding the rig
+   * @param {boolean} rise - true to raise them, false to put them away
+   * @returns {number} How long the clip runs, in milliseconds
+   */
+  function playRigSwitch(sprite, rise) {
+    const clips = sprite._rig.clips || {};
+    const base = rise ? (clips.Equip || 'Equip') : (clips.Unequip || 'Unequip');
+    sprite._rigSwitchDown = !rise;
+    if (!sprite._playRigClip || !sprite._playRigClip(base)) return 0;
+    const action = sprite._clips && sprite._clips[base];
+    const clip = action && action.getClip ? action.getClip() : null;
+    return clip ? Math.ceil(clip.duration * 1000 / (action.timeScale || 1)) : 0;
   }
 
   /**
@@ -1925,12 +2044,23 @@
     const WSP = window.WeaponSystemProcedural;
     if (!WSP || !WSP.startVectorSwitch) return 0;
     const rise = phase === 'rise';
-    if (model) WSP.startVectorSwitch(model, phase);
+    let ms = rise ? WSP.VECTOR_RISE_MS : WSP.VECTOR_FOLD_MS;
+    // The Fists of Em on the stand are the authored rig: lowered and raised
+    // with its own clips, and held down between the two.
+    const rig = model && model.userData && model.userData.rigPreview;
+    if (rig) {
+      rig.down = !rise;
+      const clips = rig.spec.clips || {};
+      ms = Math.max(ms, WSP.playPreviewRig(rig,
+        rise ? (clips.Equip || 'Equip') : (clips.Unequip || 'Unequip'), false));
+    } else if (model) {
+      WSP.startVectorSwitch(model, phase);
+    }
     if (typeof AudioManager !== 'undefined') {
       AudioManager.playSe(Object.assign({}, rise ? RISE_SE : FOLD_SE));
-      if (rise) setTimeout(() => AudioManager.playSe(Object.assign({}, RACK_SE)), 220);
+      if (rise) setTimeout(() => AudioManager.playSe(Object.assign({}, RACK_SE)), RACK_DELAY_MS);
     }
-    return rise ? WSP.VECTOR_RISE_MS : WSP.VECTOR_FOLD_MS;
+    return ms;
   }
 
   /**
@@ -1998,12 +2128,63 @@
     if (key === 'hadit' && on) turnTheSky();
   }
 
-  function switchForm(actor) {
-    const target = switchTarget();
-    const folded = !formKey();
+  /**
+   * The Dice of YHWH, thrown as the frame folds. The face names the form it
+   * folds into; a natural 20 opens the Grimoire of Solomon as Em's limit break
+   * instead (window.LimitBreak.diceGrimoire), which buys the book with none of
+   * the pact's prices. Should the book not open, the frame folds into the
+   * Solomon shape like any other face.
+   * @param {Game_Actor} holder - whoever threw it
+   * @param {number} [face] - A face to land on instead of rolling, for tests
+   * @returns {{face: number, key: string, natural: boolean, grimoire: boolean}}
+   */
+  function throwDice(holder, face) {
+    const roll = rollDice(face);
+    let grimoire = false;
+    if (roll.natural) {
+      const LB = window.LimitBreak;
+      grimoire = !!(LB && LB.diceGrimoire && LB.diceGrimoire(holder));
+    }
+    $gameSystem._vectorGunRolled = grimoire ? null : roll.key;
+    const D3 = window.Dice3D;
+    if (D3 && typeof D3.rollD20 === 'function') {
+      // The die is thrown on screen, landing on the face already rolled.
+      D3.rollD20({
+        forcedRoll: roll.face,
+        force3D: true,
+        actionName: T('VectorGun.shape.dice.name'),
+        outcomeText: grimoire ? T('VectorGun.toast.grimoire')
+          : T('VectorGun.shape.' + roll.key + '.name'),
+      });
+    } else if (window.ParchmentToast) {
+      window.ParchmentToast.show(grimoire
+        ? T('VectorGun.toast.natural', { n: roll.face })
+        : T('VectorGun.toast.roll', { n: roll.face, form: T('VectorGun.shape.' + roll.key + '.name') }),
+      { key: 'vgdice', severity: grimoire ? 'good' : 'info' });
+    }
+    return Object.assign({ grimoire: grimoire }, roll);
+  }
+
+  function switchForm(actor, face) {
     const holder = actor || wielder();
+    let folded = !formKey();
+    // The dice is thrown only on the way out of the pistol: folding a rolled
+    // form back is the same reconstruction as any other.
+    if (folded && fittedForm() === DICE_FORM) {
+      const roll = throwDice(holder, face);
+      if (roll.grimoire) {
+        const scene = typeof SceneManager !== 'undefined' ? SceneManager._scene : null;
+        if (scene && scene._spriteset && scene._spriteset.updateWeaponSprite) {
+          scene._spriteset.updateWeaponSprite();
+        }
+        return true;
+      }
+    }
+    const target = switchTarget();
     // Whatever it was standing as stops doing whatever that shape does.
     onFormWorn(formKey(), holder, false);
+    if (!folded && fittedForm() === DICE_FORM) $gameSystem._vectorGunRolled = null;
+    folded = folded && !!target;
     $gameSystem._vectorGunForm = folded ? target : null;
     // The old flag is kept in step so a savegame written now still reads right
     // to anything that only ever learned about the blade.
@@ -2142,7 +2323,7 @@
     if (!holdsGun) { _Game_Actor_consumeBullet_VG.call(this); return; }
     // The frame builds its own rounds: nothing it does spends a magazine, and
     // no shape it stands in can be caught empty. What a shape CAN have is a
-    // rack of its own - the coilgun's three, the crossbow's single bolt -
+    // rack of its own - the coilgun's three -
     // which is not ammunition but the length of the shape: the round that
     // empties it is what folds the shape away, and that is its reload.
     const key = formKey();
@@ -2409,6 +2590,18 @@
           return innerCreate.call(this, weapon);
         };
       }
+      // A menu's stand shows the Fists of Em as the authored pair of fists,
+      // the same rig the battle holds them in.
+      const innerPreviewRig = WSP.previewRigFor;
+      if (typeof innerPreviewRig === 'function') {
+        WSP.previewRigFor = function (weapon) {
+          if (isVectorGun(weapon) && formKey() === FISTS_FORM && this.rigFistWeapon) {
+            const fist = this.rigFistWeapon();
+            if (fist) return this.rigSpecFor(fist);
+          }
+          return innerPreviewRig.call(this, weapon);
+        };
+      }
       for (const name of FORM_POSE_READINGS) {
         const readAs = WSP[name];
         if (typeof readAs !== 'function') continue;
@@ -2476,9 +2669,12 @@
     incanting, incantation, isSpell, SOLOMON_INCANT_BONUS,
     // The Blade of Thelema and the element, both read by the screen and by the
     // battle command window.
-    BLADE_SOUNDS, BLADE_ANIMATION, bladeReady, inBlade, switchForm,
+    BLADE_SOUNDS, BLADE_ANIMATION, bladeReady, inBlade, switchForm, resetForm,
     FORM_MODES, FORM_KEYS, FORM_CHOICES, GUN_FORM, GUN_WTYPE, SNIPER_FORM,
     SNIPER_SHOTS, isFormMode, fittedForm, setForm, switchTarget,
+    // The forms she has earned, and the dice that ignores all of it.
+    FORM_UNLOCK, FORM_ORDER, formUnlockLevel, isFormUnlocked, lockedForms,
+    DICE_FORM, DICE_SIDES, DICE_FACES, rollDice, throwDice, rolledForm, lastRoll,
     sniperShotsFired, setSniperShotsFired,
     formKey, formWeaponType, formBuilder, formAnimationId, formSounds,
     formWeaponRow, formMotion, formHitFX, FORM_POSE_READINGS,
@@ -2494,8 +2690,8 @@
     // choices out of. The screen invents no option of its own.
     calibration, calValue, calList, setCalibration, toggleCalibration,
     calibrationKey, isCalibratable, CAL_DEFAULTS, CAL_CAPS, RACK_MODE_KEYS,
-    ATHAME_STATES, KIA_STANCES, CLEAVE_PLANS, TWIN_PATTERNS, BOW_DRAWS,
-    LANCE_CHARGES, BOLT_HEADS, DISCORD_BANDS, MAAT_MEASURES, SAW_READS,
+    ATHAME_STATES, KIA_STANCES, CLEAVE_PLANS, BOW_DRAWS,
+    LANCE_CHARGES, DISCORD_BANDS, MAAT_MEASURES, SAW_READS,
     LASH_PARAMS, TALON_TAKES, MAUL_TYPES, REAP_BARGAINS, ROSARY_MENDS,
     RIDER_CHANCE, inGunShape, inMendingForm, riderSkillIdFor, formDamageRate,
     formRepeats, formOwnRange, FISTS_FORM, ROSARY_FORM, ROSARY_SHARE,

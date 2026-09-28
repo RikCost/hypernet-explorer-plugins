@@ -932,6 +932,32 @@
           "Good. Say it all. I want to know exactly what I am dealing with.",
           "{name} does not raise their voice, and something about that is much worse.",
           "There is nowhere left to send you. You made sure of that."
+        ],
+        "confront": [
+          "You killed God. Say it. I want to hear it in your own mouth.",
+          "Look at me and tell me why you did it. Why the Father.",
+          "My whole family prayed to Him every night for forty years. You ended that in one evening. Explain yourself.",
+          "Do you sleep, witch? After what you did to God, do you actually sleep?",
+          "They say you were there when the spear went in. Were you smiling?",
+          "I lit a candle for Him this morning. It would not stay lit. That is your doing.",
+          "Somebody has to ask you to your face. Was it worth it? Killing God?",
+          "The priest says you should be on your knees until the end of the world. Why are you standing?",
+          "God is dead and you are buying bread. Tell me how that is fair.",
+          "Give Him back. I do not care how. You took Him, you give Him back.",
+          "The bells stopped ringing on their own that night. Did you hear them stop, witch?",
+          "You will answer for Him. If not to me, then to whatever is left up there.",
+          "I spat on your picture in the paper. I would do it again to your face if my mother had not raised me.",
+          "Murderer. That is the word. Not witch, not girl. Murderer of God.",
+          "Every funeral I go to now, there is nobody to hand them to. Thank you for that.",
+          "Tell me you are sorry. Tell me properly, on your knees, where He can not see it any more."
+        ],
+        "faith": [
+          "I prayed this morning out of habit. Nothing answered. Nothing will ever answer again. Do you understand what you took?",
+          "I had my whole life laid out like a road, and at the end of it was Him. Now it just stops. It stops at a cliff.",
+          "What is sin, now? Tell me. Who keeps count, if there is nobody left to keep it?",
+          "My daughter asked me where Grandad went. I used to have an answer. I do not have an answer.",
+          "I still cross myself. My hand does it on its own. It does not know He is gone.",
+          "Forty years a sacristan. I polish the chalice every morning for nobody."
         ]
       },
       "annoyed": {
@@ -1012,6 +1038,27 @@
           "Right. Out. Both of you, and there is only one of you.",
           "{name} has heard worse from suppliers and says so.",
           "Marvellous. Now we are both having the day we expected."
+        ],
+        "confront": [
+          "Before you ask for anything: did you or did you not kill God? Because my shop had a very bad year.",
+          "Everyone keeps asking me what you are like. So. Why did you kill God? I would like an answer I can repeat.",
+          "My aunt will not stop talking about the death of God, and now you are standing in my doorway. Wonderful.",
+          "You killed the Almighty and I still have to pay my taxes. Do you see the problem?",
+          "Just tell me it will not happen again. Whatever you did to God. Not on my street.",
+          "Is it true? The spear, the island, God? I would rather know and be done with it.",
+          "I lost two customers because you killed God and they took it personally. Are you proud of that?",
+          "The church across the road is a bingo hall now. Thanks to you. The noise is unbelievable.",
+          "My husband has not stopped arguing about God since New Year's Eve. Could you not have killed something quieter?",
+          "I do not care about theology. I care that the priest owes me rent and says it is your fault.",
+          "Right, before anything else: are you going to kill anything else important? I need to plan my week.",
+          "People keep leaving flowers on my step because they think the cathedral was here. Sort that out."
+        ],
+        "faith": [
+          "I was never religious. Now I am not religious about nothing, and somehow that is worse.",
+          "Everyone around here is having a crisis of faith and they all want to have it in my kitchen.",
+          "My mother used to pray about my bad choices. Now she just calls me. Every night.",
+          "The whole street has gone strange. Half of them pray to the sky out of spite, the other half have taken up yoga.",
+          "I do not believe in anything any more, which would be fine, except I never had the chance to decide that myself."
         ]
       },
       "fan": {
@@ -1092,6 +1139,27 @@
           "That is the most exciting thing that has ever happened in this shop.",
           "{name} beams, which is the wrong response, and cannot be talked out of it.",
           "You are allowed to be angry. You of all people are allowed."
+        ],
+        "confront": [
+          "Tell me what it felt like. Killing God. Please. Just the first second of it.",
+          "Did He say anything? At the end? Last words? I will not sell it to anybody, I swear.",
+          "You killed God! You! Standing right there with a shopping bag!",
+          "Was there light? There must have been light. When God dies there has to be light.",
+          "Can you do it again? Not to anybody in particular. Just to see.",
+          "I have every newspaper from that week. Every single one. Which one got the God part right?",
+          "How did the spear feel in your hands? Heavy? It must have been heavy.",
+          "I have your face on my wall next to a picture of the island. Is that weird? Tell me it is not weird.",
+          "I started a club. We meet on Thursdays and talk about how you killed God. You should come.",
+          "Did you keep anything? A splinter of the spear? A button? I would trade my car.",
+          "Say something godkilling. Anything. I want to remember exactly how you sound.",
+          "When I heard God was dead I cried for a week, then I saw your photo and I stopped."
+        ],
+        "faith": [
+          "I used to believe in God. Now I think I believe in you. Is that allowed?",
+          "Since He died I pray to you instead. Just small things. Bus times. Is that working, do you think?",
+          "If God is dead, who is in charge? Is it you? You can tell me.",
+          "I lost my faith and found a hobby. The hobby is you. I think it is a fair trade.",
+          "Without God everything feels a bit pointless, except this. Meeting you. This has a point."
         ]
       },
       "clout": {
@@ -1172,6 +1240,26 @@
           "Ha! The temper! I told them about the temper!",
           "{name} treats being insulted by you as a form of introduction.",
           "You could say worse and I would still stand here."
+        ],
+        "confront": [
+          "So, off the record, as friends: how exactly does one kill God?",
+          "I tell everybody I have met the woman who killed God. You could at least give me the details.",
+          "Killing God. Big career move. Was it planned or did it just sort of happen?",
+          "My brother-in-law says the God thing was staged. Tell me it was not staged.",
+          "People would pay good money to hear how you killed God. I know people. Just saying.",
+          "Be honest with me. When you killed God, did you know it was going to be that famous?",
+          "I told my boss I know you. Now he thinks I can get him a quote about killing God. Can I?",
+          "Let us get a picture together. Caption: me and the woman who killed God. Big smiles.",
+          "Nobody in history has done what you did. You should be charging for this conversation.",
+          "Was there a plan B? If God had won, I mean. Asking for an article.",
+          "Everybody wants to know one thing: was God hard to kill, or was He tired?"
+        ],
+        "faith": [
+          "Half my clients stopped believing in anything after New Year's Eve. The other half believe in everything. Business is chaos.",
+          "I used to go to mass for the networking. Now there is no mass and no network. You owe me a social life.",
+          "I am thinking of starting a church. Something modern. Would you put your name on it?",
+          "Without God there is no afterlife, so this is it. Might as well be famous. Might as well stand next to you.",
+          "Everybody is looking for something to believe in now. There is money in that. Big money."
         ]
       },
       "gawker": {
@@ -1252,6 +1340,30 @@
           "{name} apologises for something that was not their fault and means it.",
           "That is fair. I have been rude. I know I have been rude.",
           "Right. Yes. I deserved that and I am going to tell everyone about it."
+        ],
+        "confront": [
+          "So you are the one who killed God. You are shorter than I pictured.",
+          "Sorry, I have to ask. Did you actually kill God, or is that just what they say?",
+          "Is it true what the papers wrote? About you and God and the spear?",
+          "You do not look like somebody who killed God. What does somebody who killed God look like, I wonder.",
+          "My grandmother says you killed God on purpose. My grandfather says it was an accident. Settle it.",
+          "What was God like, before? Up close, I mean. Before you killed Him.",
+          "Does it bother you? People staring? Knowing you killed God?",
+          "How do you kill God, exactly? I have been wondering since New Year's Eve.",
+          "Is it heavy? Being the one who killed God? You carry your shoulders funny.",
+          "My friend bet me ten euros you would not talk about God. Will you? Just a bit?",
+          "Did you meet Him first? Or was it just the spear and then nothing?",
+          "They showed the island on the television every night for a month. Were you watching too?",
+          "I always thought God would die of old age. Never pictured a girl from Wimbledon.",
+          "Do the priests still talk to you? Do you still talk to them?"
+        ],
+        "faith": [
+          "Do you ever wonder where the prayers go now? My aunt says they just pile up somewhere.",
+          "My priest drinks now. Before lunch. He says there is no point waiting for grace.",
+          "I do not know if I believed in God, but I liked knowing He was there. Like a lighthouse you never visit.",
+          "What happens when we die, now? Does anyone know? Do you know? You were closest.",
+          "The nuns down the road took up football. They are very good. It is all very confusing.",
+          "Is there still a heaven, do you think? Or did it go too?"
         ]
       },
       "genuine": {
@@ -1332,6 +1444,26 @@
           "{name} does not flinch, and does not hold it against you either.",
           "You are carrying something heavy and it came out sideways. It happens.",
           "All right. Sit down anyway."
+        ],
+        "confront": [
+          "Can I ask about God? You do not have to answer. I only want to know if you are carrying it alone.",
+          "Everyone talks about what you did to God. Nobody asks what it did to you. What did it do to you?",
+          "Do you think about Him? About what happened on the island?",
+          "If you did not mean to kill God, you should say so. People listen more than you think.",
+          "Is it true you do not remember killing God? That must be a strange thing to be blamed for.",
+          "I do not think you are a monster. But I do think you owe yourself the truth about God.",
+          "I heard you were a sacrifice, not a murderer. Which is it for you, when you are alone?",
+          "If God is dead, then someone should look after the one they blame for it. So: how are you?",
+          "You keep saying you do not remember. Does that make it easier or harder?",
+          "I am not angry at you about God. I just wanted you to hear someone say that once.",
+          "Whatever you did or did not do to God, you are still allowed to rest."
+        ],
+        "faith": [
+          "I lost my faith when He died, and I have not found anything to put in the space. Have you?",
+          "Some nights I sit in the empty chapel just to feel small. Is that stupid?",
+          "I do not blame you. But I do not know what to believe now, and I thought you might understand that.",
+          "I used to talk to God when I could not sleep. Now I talk to the ceiling. The ceiling is a poor listener.",
+          "You lost your memories. I lost my God. Maybe we are both walking around with a hole in us."
         ]
       }
     },
@@ -1974,6 +2106,54 @@
         "Which way to {target}, and is it uphill, because I intend to complain either way.",
         "{target}, please. Directions, not an anecdote, unless the anecdote is short and structurally load-bearing.",
         "You have the face of somebody who knows where {target} is. Do not let me down this early in the day."
+      ],
+      "confront": [
+        "It was a mistake. A very large one, admittedly. I am told it was the largest.",
+        "I do not remember any of it. That is not a figure of speech. They took the memories and made the spear out of them.",
+        "I am working on it. I do not know what working on it looks like yet, but I am doing it.",
+        "Honestly? I was not really there. Most of me was the spear, and the spear does not keep a diary.",
+        "It was an accident. You do not set out to kill God on a Tuesday. It was not even a Tuesday.",
+        "I shall answer that the day somebody gives me back my memories of it. Until then I am as curious as you are.",
+        "Look, I would rather it had not happened either. I had plans for that year.",
+        "It was a mistake, I know it was a mistake, and I am putting it right. Slowly. With a notebook.",
+        "I do not remember killing anybody, let alone God. I remember tennis lessons and a very rude cat.",
+        "I am fixing it. I have not the faintest idea how, but I am fixing it.",
+        "Everyone knows more about that night than I do. It is rather humiliating, if I am honest.",
+        "It was not meant to go like that. Nothing on that island was meant to go like that.",
+        "I am sorry. I genuinely am. I just do not remember what I am sorry for, which makes the apology rather thin.",
+        "Mistake. Capital M. I have said it to priests, I have said it to police, I shall say it to you.",
+        "There is a hole where that night should be. I am trying to fill it in before I explain it to anybody.",
+        "Give me time. I am reading everything, asking everyone, and trying very hard not to make it worse.",
+        "If I had known, I would not have done it. I think. I do not know, because I do not remember knowing anything.",
+        "I did not kill God. Something wearing my memories did. I appreciate that is a fine distinction.",
+        "I am working on it. That is the whole answer. It is a rubbish answer, but it is true.",
+        "It was a mistake, and somebody else's mistake before it was mine, and I shall find out whose.",
+        "I cannot remember the island. I cannot remember the spear. I can remember what I had for breakfast, if that helps.",
+        "I did not want this. Nobody asked me. Well, somebody might have, but I do not remember that either.",
+        "People keep telling me what I did. I keep writing it down. None of the accounts agree.",
+        "If I remembered, I would tell you. I would tell everybody. I would put it in the papers myself.",
+        "I am piecing it together. There is a board in the camper with string on it. It is going terribly.",
+        "It was a mistake. Mine, possibly. Somebody's, certainly.",
+        "I shall be honest: the last thing I clearly remember is a very bad haircut.",
+        "I am not going to pretend I know what happened. I shall find out, and then I shall answer you properly.",
+        "Could we treat it as a work in progress? I am the work. The progress is slow.",
+        "I do not remember. I am sorry. I realise that sounds like the most convenient answer in the world."
+      ],
+      "faith": [
+        "I did not mean to take that from you. I am trying to find out how to give something back.",
+        "I have no faith either, if it helps. I have no memories to keep it in.",
+        "I am working on it. I do not know if God can be put back, but I am rather determined to try.",
+        "I cannot tell you where the prayers go. I can tell you I am sorry they have nowhere to land.",
+        "It was a mistake. Yours is the fourth crisis of faith I have heard today, and I remember every one of them, which is more than I can say for the island.",
+        "I do not remember killing Him. I do remember every person who has told me what He meant to them.",
+        "If there is anything left up there, I shall find it. Give me a little time.",
+        "I am not a replacement for Him. Please do not pray to me. I lose my keys.",
+        "I know it is a poor answer, but I did not choose it. I do not remember choosing anything.",
+        "Keep the habit. Cross yourself, light the candle. Somebody ought to remember how, until I have mended it.",
+        "I am sorry. I shall keep saying it until it means something.",
+        "The space where He was, I have one like it where my life was. We could compare notes.",
+        "I am trying to put it right. I have no idea what right looks like, but I am trying.",
+        "Nobody should have to lose God by reading about it in a newspaper. Least of all you."
       ]
     }
   },

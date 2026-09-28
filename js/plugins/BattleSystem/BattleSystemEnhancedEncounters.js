@@ -4927,6 +4927,50 @@
         this._movementLockTimer = duration || 60;
     };
 
+    // A monster the party has just run from stands where it is for three
+    // seconds: it takes no step of any kind (its own walk, its personality,
+    // a forced route), it is a solid body the party bumps into rather than
+    // walks through, and touching it starts nothing. Without the hold the
+    // party is put back on its pre-battle tile, right beside the thing it
+    // fled, and the next step is the same fight again.
+    const FLEE_HOLD_FRAMES = 180;
+
+    Game_Event.prototype.holdAfterFlee = function(duration) {
+        const frames = duration || FLEE_HOLD_FRAMES;
+        this.lockMovement(Math.max(frames, this._movementLockTimer || 0));
+        this._fleeHoldTimer = frames;
+    };
+
+    Game_Event.prototype.isFleeHeld = function() {
+        return (this._fleeHoldTimer || 0) > 0 && !this._erased;
+    };
+
+    const _Game_Event_isThrough_BSE = Game_Event.prototype.isThrough;
+    Game_Event.prototype.isThrough = function() {
+        if (this.isFleeHeld()) return false;
+        return _Game_Event_isThrough_BSE.call(this);
+    };
+
+    // Collision only counts events at the characters' priority, so a monster
+    // drawn below the party is lifted to it for the length of the hold.
+    const _Game_Event_isNormalPriority_BSE = Game_Event.prototype.isNormalPriority;
+    Game_Event.prototype.isNormalPriority = function() {
+        if (this.isFleeHeld()) return true;
+        return _Game_Event_isNormalPriority_BSE.call(this);
+    };
+
+    const _Game_Event_start_BSE = Game_Event.prototype.start;
+    Game_Event.prototype.start = function() {
+        if (this.isFleeHeld()) return;
+        _Game_Event_start_BSE.call(this);
+    };
+
+    const _Game_Event_updateRoutineMove_BSE = Game_Event.prototype.updateRoutineMove;
+    Game_Event.prototype.updateRoutineMove = function() {
+        if (this.isFleeHeld()) return;
+        _Game_Event_updateRoutineMove_BSE.call(this);
+    };
+
     const _Game_Event_updateSelfMovement = Game_Event.prototype.updateSelfMovement;
     Game_Event.prototype.updateSelfMovement = function() {
         if (this._movementLocked) return;
@@ -5009,6 +5053,7 @@
     };
 
     Game_Event.prototype.updateMovementLock = function() {
+        if (this._fleeHoldTimer > 0) this._fleeHoldTimer--;
         if (this._movementLocked && this._movementLockTimer > 0) {
             this._movementLockTimer--;
             if (this._movementLockTimer <= 0) this._movementLocked = false;

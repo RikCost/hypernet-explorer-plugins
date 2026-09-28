@@ -89,9 +89,9 @@
     "standing": "Reputazione sociale: {value}/100."
   },
   "procPlace": {
-    "inCountry": "{place}, {country} ({x},{y})",
-    "unclaimed": "{place} ({x},{y})",
-    "frontier": "Frontiera"
+    "inCountry": "{place}, {country}",
+    "unclaimed": "{place}",
+    "frontier": "Frontiera a ({x} {y})"
   },
   "wildsNear": "{biome} presso {city}",
   "wildBiome": {

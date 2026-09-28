@@ -1990,13 +1990,15 @@
         margin-top: 9px;
     }
 
+    /* The centred title clears the Back stamp with less air than the desktop's
+       110px: the handheld page is narrower and the stamp is smaller. */
+    .page-header-bar .title {
+        padding: 0 84px;
+    }
+
     .ui-chip-row {
         gap: 4px;
         margin-bottom: 8px;
-    }
-
-    .ui-chip {
-        padding: 1px 6px;
     }
 
     .ui-detail-head {
@@ -2581,11 +2583,6 @@
    ========================================================================== */
 @media (max-width: 1366px) and (max-height: 860px) {
 
-    #arena-ui-container .arena-header {
-        gap: 8px;
-        margin-bottom: 8px;
-    }
-
     #arena-ui-container .arena-scroll {
         gap: 5px;
     }
@@ -2876,10 +2873,6 @@
 
     .npc-bubble {
         padding: 6px 10px;
-    }
-
-    .npc-chat-main {
-        max-width: 520px;
     }
 
     .npc-chat-actions-row {

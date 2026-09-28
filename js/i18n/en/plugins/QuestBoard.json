@@ -24,7 +24,7 @@
   "objectives2": "Objectives",
   "terms": "Terms",
   "back": "Back",
-  "showOnMapAt": "Show on map ({x}, {y})",
+  "showOnMapAt": "Show on map: {place}",
   "posted": "Posted",
   "writeANotice": "Write a notice",
   "writeANoticeHint": "Post your own contract. The reward is paid when you post it.",

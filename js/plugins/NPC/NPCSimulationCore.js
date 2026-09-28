@@ -2812,6 +2812,26 @@
       return this.isShopAbandoned(mapId, evId);
     },
 
+    // Is nobody behind this counter right now? True for a till stripped back to
+    // no graphic at all, whether the rota left it uncovered this shift, the
+    // counter was abandoned for good, or an empty world blanked it. Asked of
+    // the live event where it is on the current map, and off the abandoned
+    // roll for one elsewhere. A counter nobody minds cannot be spoken to, and
+    // taking from it is neither a risk nor a crime (see StealingSystem).
+    isUnattendedEvent(ev) {
+      if (!ev || ev._erased) return false;
+      if (!(ev._npcShopBlank || ev._npcShopBlanked)) return false;
+      return !ev.characterName();
+    },
+
+    isUnattendedCounter(mapId, evId) {
+      if ($gameMap && $gameMap.mapId() === mapId) {
+        const ev = $gameMap.event(evId);
+        if (ev) return this.isUnattendedEvent(ev);
+      }
+      return this.isAbandonedCounter(mapId, evId);
+    },
+
     // The shifts this counter is staffed for at all: every one of them in an
     // ordinary world, the daytime one alone in a zombie world, none where the
     // till was abandoned.
@@ -3782,6 +3802,15 @@
   };
 
   window.NPCSim = NPCSim;
+
+  // An unattended till has nobody to open a shop, answer a question or be
+  // empathised with, so pressing on it does nothing. Its shelf is still
+  // there for the Stealing menu, which reads the page without running it.
+  const _Game_Event_start_unattended = Game_Event.prototype.start;
+  Game_Event.prototype.start = function () {
+    if (ShopShiftManager.isUnattendedEvent(this)) return;
+    _Game_Event_start_unattended.call(this);
+  };
 
   // ============================================================================
   // SECTION 12b, SAVE / LOAD HOOKS

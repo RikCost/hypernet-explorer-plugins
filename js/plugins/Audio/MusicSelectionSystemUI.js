@@ -167,7 +167,7 @@
     _previewTrack(track) {
       if (!track) return;
       // Random auditions one of its draws rather than staying silent.
-      MSS().previewTrackValue(track.value, 60);
+      MSS().auditionTrackValue(track.value, 60);
     }
 
     // ── Confirm and save ──────────────────────────────────────
@@ -178,7 +178,7 @@
       ConfigManager.battleMusicName = track.value;
       ConfigManager.save();
       SoundManager.playOk();
-      MSS().previewTrackValue(track.value, 90);
+      MSS().auditionTrackValue(track.value, 90);
       // Rebuild left to show new ► marker
       const left = this._el ? this._el.querySelector('.left-page') : null;
       if (left) {
@@ -218,6 +218,7 @@
     terminate() {
       if (this._el) { this._el.remove(); this._el = null; }
       super.terminate();
+      MSS().endAudition();
     }
   }
 
