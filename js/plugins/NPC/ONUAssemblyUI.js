@@ -552,4 +552,244 @@
     secretaryHTML,
     seatedHTML,
   };
+
+  // The Chamber portal is drawing, so it lives here; everything it knows it
+  // asks window.ONUAssembly for, late, like the rest of this file.
+  const OA = () => window.ONUAssembly;
+  const catchUpSessions = () => OA().catchUpSessions();
+  const weeksUntilSession = () => OA().weeksUntilSession();
+  const delegations = () => OA().delegations();
+  const delegationByKey = (k) => OA().delegationByKey(k);
+  const standingFor = (a, d) => OA().standingFor(a, d);
+  const leaderOf = (d) => OA().leaderOf(d);
+  const joinableFor = (a) => OA().joinableFor(a);
+  const postOf = (a) => OA().postOf(a);
+  const euros = (g) => M().euros(g);
+  const chamberMotions = () => M().motions();
+  //===========================================================================
+  // Chamber: the assembly's public portal, as a HypernetOS program
+  //===========================================================================
+  // The assembly sits every Monday whether anyone from the party is in the room
+  // or not, and until now the only way to learn any of it was to take a seat.
+  // This is the portal the chamber publishes to: who the powers are, who leads
+  // them, where the party stands with each, which seats the party holds and
+  // what it is paid for them, and the list of business the chamber is even
+  // allowed to put to a vote. Taking a seat, speaking and voting are done in
+  // the chamber, in person, because that is the game.
+  const ONU_APP_ID = 'app-chamber';
+  const ONU_ICON = 192; // Letter, per js/db/Sprites/Icons.json
+
+  // The CH fragments are .chp-* classes in css/hypernet.css.
+
+  const chEsc = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const chIcon = (index, size) => (window.HypernetOS ? window.HypernetOS.getIconHTML(index, size || 16) : '');
+
+  const CHAMBER_TABS = ['floor', 'powers', 'seats', 'business'];
+
+  window.ChamberPortal = {
+    win: null,
+    tab: 'floor',
+
+    launch() {
+      if (!window.HypernetOS || !window.HypernetOS.WindowManager) return;
+      const win = window.HypernetOS.WindowManager.createWindow({
+        id: ONU_APP_ID,
+        title: T('ONUMenu.portal.appName'),
+        icon: ONU_ICON,
+        width: 850,
+        height: 560,
+        contentHTML: `
+          <div class="chp-app">
+            <div class="chp-header">
+              <div class="chp-logo">${chIcon(ONU_ICON, 34)}</div>
+              <div class="chp-grow">
+                <div class="chp-title">${T('ONUMenu.portal.appName')}</div>
+                <div class="chp-subtitle">${T('ONUMenu.portal.subtitle')}</div>
+              </div>
+              <div id="ch-next" class="chp-aside"></div>
+            </div>
+            <div class="chp-body">
+              <div id="ch-nav" class="chp-nav"></div>
+              <div id="ch-panel" class="chp-panel"></div>
+            </div>
+            <div class="chp-status"><span>${T('ONUMenu.portal.inPerson')}</span></div>
+          </div>`
+      });
+      this.win = win;
+      this.bind();
+      // The sittings nobody attended are resolved the same way walking in does
+      // it, so the portal never reports a chamber that is weeks behind.
+      try { catchUpSessions(); } catch (e) { console.warn('[Chamber]', e); }
+      this.render();
+    },
+
+    bind() {
+      if (!this.win || this.win.dataset.chBound) return;
+      this.win.dataset.chBound = '1';
+      this.win.addEventListener('click', ev => {
+        const hit = ev.target.closest('[data-ch-tab]');
+        if (!hit) return;
+        ev.stopPropagation();
+        if (this.tab === hit.dataset.chTab) return;
+        this.tab = hit.dataset.chTab;
+        if (window.SoundManager) SoundManager.playCursor();
+        this.render();
+      });
+    },
+
+    render() {
+      if (!this.win || !this.win.isConnected) return;
+      const nav = this.win.querySelector('#ch-nav');
+      if (nav) {
+        nav.innerHTML = CHAMBER_TABS.map(tab => {
+          const on = this.tab === tab;
+          return `<div class="focusable chp-navItem${on ? ' chp-nav-on' : ''}" tabindex="0" id="ch-tab-${tab}" data-ch-tab="${tab}">
+            ${chEsc(T('ONUMenu.portal.tab.' + tab))}</div>`;
+        }).join('');
+      }
+      const panel = this.win.querySelector('#ch-panel');
+      if (panel) {
+        if (this.tab === 'floor') panel.innerHTML = this.floorHTML();
+        else if (this.tab === 'powers') panel.innerHTML = this.powersHTML();
+        else if (this.tab === 'seats') panel.innerHTML = this.seatsHTML();
+        else panel.innerHTML = this.businessHTML();
+      }
+      const next = this.win.querySelector('#ch-next');
+      if (next) {
+        let weeks = 0;
+        try { weeks = weeksUntilSession(); } catch (e) { weeks = 0; }
+        next.textContent = weeks > 0
+          ? T('ONUMenu.portal.nextSittingIn', { n: weeks })
+          : T('ONUMenu.portal.sittingThisWeek');
+      }
+    },
+
+    ourSeats() {
+      try { return window.ONUAssembly.listPosts() || []; } catch (e) { return []; }
+    },
+
+    powers() {
+      try { return delegations() || []; } catch (e) { console.warn('[Chamber]', e); return []; }
+    },
+
+    floorHTML() {
+      const seats = this.ourSeats();
+      const powers = this.powers();
+      const pay = seats.reduce((n, s) => n + (Number(s.weeklyPay) || 0), 0);
+      return `
+        <h2 class="chp-h">${T('ONUMenu.portal.floorTitle')}</h2>
+        <div class="chp-card">
+          <div>${T('ONUMenu.portal.powersSeated', { n: powers.length })}</div>
+          <div>${seats.length
+            ? T('ONUMenu.portal.weHold', { n: seats.length, pay: euros(pay) })
+            : T('ONUMenu.portal.weHoldNothing')}</div>
+        </div>
+        ${seats.length ? `<div class="chp-card chp-tight"><table class="chp-table">
+          <thead><tr>
+            <th class="chp-th">${T('ONUMenu.portal.colDelegate')}</th>
+            <th class="chp-th">${T('ONUMenu.portal.colFor')}</th>
+            <th class="chp-th">${T('ONUMenu.portal.colStanding')}</th>
+            <th class="chp-th chp-right">${T('ONUMenu.portal.colWeekly')}</th>
+          </tr></thead><tbody>${seats.map(seat => `<tr>
+            <td class="chp-td">${chEsc(seat.actorName)}</td>
+            <td class="chp-td">${chIcon(seat.iconIndex)} ${chEsc(seat.factionName)}</td>
+            <td class="chp-td">${chEsc(seat.standingLabel)}</td>
+            <td class="chp-td chp-right">${chEsc(euros(seat.weeklyPay))}</td>
+          </tr>`).join('')}</tbody></table></div>` : ''}
+        <div class="chp-note">${T('ONUMenu.portal.floorNote')}</div>`;
+    },
+
+    powersHTML() {
+      const powers = this.powers();
+      if (!powers.length) {
+        return `<h2 class="chp-h">${T('ONUMenu.portal.tab.powers')}</h2>
+          <div class="chp-card chp-note">${T('ONUMenu.portal.noChamber')}</div>`;
+      }
+      // Standing is per character, so the column reads for the party leader:
+      // the one who would be shown to the door first.
+      const leader = (window.$gameParty && $gameParty.leader) ? $gameParty.leader() : null;
+      const rows = powers.map(power => {
+        let standing = 0;
+        try { standing = leader ? standingFor(leader, power) : 0; } catch (e) { standing = 0; }
+        const label = ($gameFactions && $gameFactions.reputationLevelOf)
+          ? $gameFactions.reputationLevelOf(standing) : String(standing);
+        return `<tr>
+          <td class="chp-td">${chIcon(power.iconIndex)} ${chEsc(power.name)}</td>
+          <td class="chp-td">${chEsc(leaderOf(power) || '')}</td>
+          <td class="chp-td chp-right">${standing}</td>
+          <td class="chp-td">${chEsc(label)}</td>
+        </tr>`;
+      }).join('');
+      return `<h2 class="chp-h">${T('ONUMenu.portal.tab.powers')}</h2>
+        <div class="chp-note chp-mb">${T('ONUMenu.portal.powersBlurb', {
+          who: leader ? leader.name() : '' })}</div>
+        <div class="chp-card chp-tight"><table class="chp-table">
+          <thead><tr>
+            <th class="chp-th">${T('ONUMenu.portal.colPower')}</th>
+            <th class="chp-th">${T('ONUMenu.portal.colLeader')}</th>
+            <th class="chp-th chp-right">${T('ONUMenu.portal.colPoints')}</th>
+            <th class="chp-th">${T('ONUMenu.portal.colStanding')}</th>
+          </tr></thead><tbody>${rows}</tbody></table></div>`;
+    },
+
+    seatsHTML() {
+      const leader = (window.$gameParty && $gameParty.leader) ? $gameParty.leader() : null;
+      const members = (window.$gameParty && $gameParty.members) ? $gameParty.members() : [];
+      const rows = members.map(actor => {
+        let post = null, open = [];
+        try { post = postOf(actor); } catch (e) { post = null; }
+        try { open = joinableFor(actor) || []; } catch (e) { open = []; }
+        const seat = post
+          ? (post.sg ? T('ONUMenu.role.secretaryGeneral')
+            : (delegationByKey(post.key) || {}).name || '')
+          : T('ONUMenu.portal.unseated');
+        return `<tr>
+          <td class="chp-td">${chEsc(actor.name())}</td>
+          <td class="chp-td">${chEsc(seat)}</td>
+          <td class="chp-td chp-note">${post ? T('ONUMenu.portal.alreadySeated')
+            : (open.length ? open.map(d => chEsc(d.name)).join(', ') : T('ONUMenu.portal.wouldTakeNobody'))}</td>
+        </tr>`;
+      }).join('');
+      return `<h2 class="chp-h">${T('ONUMenu.portal.tab.seats')}</h2>
+        <div class="chp-note chp-mb">${T('ONUMenu.portal.seatsBlurb')}</div>
+        <div class="chp-card chp-tight"><table class="chp-table">
+          <thead><tr>
+            <th class="chp-th">${T('ONUMenu.portal.colWho')}</th>
+            <th class="chp-th">${T('ONUMenu.portal.colSeat')}</th>
+            <th class="chp-th">${T('ONUMenu.portal.colWouldSeat')}</th>
+          </tr></thead><tbody>${rows}</tbody></table></div>
+        ${leader ? '' : `<div class="chp-note">${T('ONUMenu.portal.noParty')}</div>`}`;
+    },
+
+    businessHTML() {
+      const rows = chamberMotions().map(motion => `<tr>
+        <td class="chp-td">${chEsc(T('ONUAssembly.motion.' + motion.key + '.tag'))}</td>
+        <td class="chp-td">${motion.grave
+          ? `<b class="chp-bad">${T('ONUMenu.portal.grave')}</b>`
+          : T('ONUMenu.portal.ordinary')}</td>
+      </tr>`).join('');
+      return `<h2 class="chp-h">${T('ONUMenu.portal.tab.business')}</h2>
+        <div class="chp-note chp-mb">${T('ONUMenu.portal.businessBlurb')}</div>
+        <div class="chp-card chp-tight"><table class="chp-table">
+          <thead><tr>
+            <th class="chp-th">${T('ONUMenu.portal.colMotion')}</th>
+            <th class="chp-th">${T('ONUMenu.portal.colWeight')}</th>
+          </tr></thead><tbody>${rows}</tbody></table></div>
+        <div class="chp-note">${T('ONUMenu.portal.graveNote')}</div>`;
+    },
+  };
+
+  if (window.HypernetOS && window.HypernetOS.registerApp) {
+    window.HypernetOS.registerApp({
+      id: ONU_APP_ID,
+      name: T('ONUMenu.portal.appName'),
+      icon: ONU_ICON,
+      category: 'civic',
+      launchFn: function () { window.ChamberPortal.launch(); },
+      desktopShortcut: true,
+    });
+  }
+
 })();

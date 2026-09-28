@@ -182,7 +182,11 @@
     const _Graphics_resize = Graphics.resize;
     Graphics.resize = function(width, height) {
         _Graphics_resize.call(this, width, height);
-        this._app.stage.scale.set(1, 1);
+        // No stage while a scene is still loading: at boot the title's Eris
+        // camera extracts the sandbox save (which resizes) before the title
+        // has started, and a throw here aborted the camera into a black screen.
+        const stage = this._app && this._app.stage;
+        if (stage) stage.scale.set(1, 1);
     };
 
     // ========================================================================

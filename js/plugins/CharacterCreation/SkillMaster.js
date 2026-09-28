@@ -9097,7 +9097,7 @@
               <h2 class="title">${esc(tr('detailTitle'))}</h2>
               <div class="sm-bench-kp-pill"><strong>${knowledge} KP</strong></div>
             </div>
-            <div style="flex:1 1 0; overflow-y:auto; padding-right:var(--sp-2);">
+            <div class="sm-bench-scroll">
                 ${detailHTML}
             </div>
             <div class="sm-enchant-target">${esc(tr('totalHere', { kp: total }))}</div>

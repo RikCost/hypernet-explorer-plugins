@@ -3278,23 +3278,22 @@
       let filter = '';
 
       const contentHTML = `
-        <div style="display:flex; flex-direction:column; height:100%; font-family:Tahoma,sans-serif; background:var(--xp-bg); overflow:hidden">
-          <div style="background:linear-gradient(135deg, var(--xp-navy-8) 0%, var(--xp-navy-7) 55%, var(--xp-sky) 100%); padding:11px 16px; display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--xp-navy-6); flex-shrink:0">
+        <div class="xpr-app">
+          <div class="xpr-banner">
             <div>
-              <div style="color:var(--xp-white); font-weight:bold; font-size:17px; letter-spacing:2px">${T('Prosthetics.remote.banner')}</div>
-              <div style="color:var(--xp-sky-4); font-size:13px; margin-top:2px">${T('Prosthetics.remote.tagline')}</div>
+              <div class="xpr-banner-title">${T('Prosthetics.remote.banner')}</div>
+              <div class="xpr-tagline">${T('Prosthetics.remote.tagline')}</div>
             </div>
-            <div id="rb-wallet" style="margin-left:auto; text-align:right; color:var(--xp-sky-4); font-size:13px"></div>
+            <div class="xpr-wallet" id="rb-wallet"></div>
           </div>
-          <div id="rb-patients" style="display:flex; gap:1px; background:var(--xp-ink-pale-2); flex-shrink:0"></div>
-          <div id="rb-odds" style="padding:6px 14px; background:#f4f4ec; border-bottom:1px solid #c8c8b8; font-size:13px; color:var(--xp-ink-5); flex-shrink:0"></div>
-          <div style="padding:6px 14px 0 14px; flex-shrink:0">
-            <input id="rb-filter" class="focusable" data-focus-key="rb-filter" tabindex="0" type="text"
-                   placeholder="${T('Prosthetics.remote.filter')}"
-                   style="width:100%; box-sizing:border-box; padding:4px 6px; font-family:Tahoma,sans-serif; font-size:14px; border:1px solid var(--xp-silver-3); background:var(--xp-white)">
+          <div class="xpr-tabs" id="rb-patients"></div>
+          <div class="xpr-odds" id="rb-odds"></div>
+          <div class="xpr-searchbox">
+            <input id="rb-filter" class="focusable xpr-search" data-focus-key="rb-filter" tabindex="0" type="text"
+                   placeholder="${T('Prosthetics.remote.filter')}">
           </div>
-          <div id="rb-body" style="flex:1; padding:8px 14px 12px 14px; overflow-y:auto"></div>
-          <div id="rb-status" style="border-top:1px solid var(--xp-ink-pale-2); padding:3px 10px; background:var(--xp-bg); font-size:13px; color:var(--xp-text-muted); flex-shrink:0">${T('Prosthetics.remote.hint')}</div>
+          <div class="xpr-body xpr-body--tight" id="rb-body"></div>
+          <div class="xpr-status" id="rb-status">${T('Prosthetics.remote.hint')}</div>
         </div>`;
 
       const win = window.HypernetOS.Syscalls.createWindow({
@@ -3324,9 +3323,7 @@
       function renderTabs() {
         tabs.innerHTML = $gameParty.members().map((actor, i) => {
           const active = actor === patient;
-          return `<button class="focusable" data-focus-key="rb-tab-${i}" data-tab="${i}" tabindex="0"
-            style="flex:1; padding:6px 0; font-family:Tahoma,sans-serif; font-size:14px; border:none; cursor:pointer;
-                   background:${active ? 'var(--xp-white)' : 'var(--xp-bg)'}; font-weight:${active ? 'bold' : 'normal'}">${actor.name()}</button>`;
+          return `<button class="focusable xpr-tab${active ? ' xpr-tab--on' : ''}" data-focus-key="rb-tab-${i}" data-tab="${i}" tabindex="0">${actor.name()}</button>`;
         }).join('');
         tabs.querySelectorAll('[data-tab]').forEach((btn) => {
           btn.addEventListener('click', () => {
@@ -3340,7 +3337,7 @@
         wallet.innerHTML = '&euro;' + ($gameParty.gold() / 100).toFixed(2);
         if (blocked) {
           oddsLine.textContent = '';
-          body.innerHTML = `<div style="padding:26px 10px; text-align:center; color:var(--xp-ink-5); font-size:15px">${blocked}</div>`;
+          body.innerHTML = `<div class="xpr-empty">${blocked}</div>`;
           return;
         }
         const odds = rbOdds(patient);
@@ -3350,7 +3347,7 @@
         });
         const rows = rbCatalogue(patient).filter((row) => !filter || row.name.toLowerCase().includes(filter));
         if (!rows.length) {
-          body.innerHTML = `<div style="padding:26px 10px; text-align:center; color:var(--xp-ink-5); font-size:15px">${T('Prosthetics.remote.nothingToFit')}</div>`;
+          body.innerHTML = `<div class="xpr-empty">${T('Prosthetics.remote.nothingToFit')}</div>`;
           return;
         }
         body.innerHTML = rows.map((row, i) => {
@@ -3359,14 +3356,13 @@
             hp: row.hpPercent,
             stat: row.statBonus ? ('+' + row.statBonus) : T('Prosthetics.remote.noBonus'),
           });
-          return `<button class="focusable" data-focus-key="rb-row-${i}" data-row="${i}" tabindex="0"
-              ${row.blockedReason ? 'disabled' : ''}
-              style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; margin-bottom:4px; padding:7px 10px; font-family:Tahoma,sans-serif; font-size:14px; background:var(--xp-white); border:1px solid var(--xp-silver-3); cursor:${row.blockedReason ? 'default' : 'pointer'}; opacity:${row.blockedReason ? '0.6' : '1'}">
-              <span style="flex:1">
-                <span style="color:var(--xp-ink-3)">${row.name}</span><br>
-                <span style="font-size:13px; color:var(--xp-ink-soft)">${note}</span>
+          return `<button class="focusable xpr-row${row.blockedReason ? ' xpr-row--blocked' : ''}" data-focus-key="rb-row-${i}" data-row="${i}" tabindex="0"
+              ${row.blockedReason ? 'disabled' : ''}>
+              <span class="xpr-grow">
+                <span class="xpr-row-label">${row.name}</span><br>
+                <span class="xpr-row-detail">${note}</span>
               </span>
-              <span style="font-weight:bold; color:${affordable ? '#1d6b2f' : 'var(--xp-red-4)'}">&euro;${(row.cost / 100).toFixed(2)}</span>
+              <span class="xpr-price ${affordable ? 'xpr-price--ok' : 'xpr-price--short'}">&euro;${(row.cost / 100).toFixed(2)}</span>
             </button>`;
         }).join('');
         body.querySelectorAll('[data-row]').forEach((btn) => {

@@ -443,9 +443,8 @@
                     if (!item) return '';
                     const have   = $gameParty.numItems(item);
                     const ok     = have >= ing.quantity;
-                    const color  = ok ? '#27ae60' : '#c0392b';
                     const mkIcon = ok ? ic(87, 14) : ic(12, 14);
-                    return `<div class="brewery-ingredient-check" style="color:${color}">${mkIcon} ${item.name} ×${ing.quantity} <span style="opacity:0.65; font-size:0.903rem">(have ${have})</span></div>`;
+                    return `<div class="brewery-ingredient-check ${ok ? 'brewery-ink--ok' : 'brewery-ink--bad'}">${mkIcon} ${item.name} ×${ing.quantity} <span class="brewery-have">(have ${have})</span></div>`;
                 }).join('');
                     ingredientCheckHTML = `
                         <div class="apiary-section" style="margin-top:14px">
@@ -482,10 +481,10 @@
                 const pct = Math.min(100, progress * 100).toFixed(1);
 
                 const stageInfo = {
-                    [STAGES.PRIMARY]:      { text: T('Brewing.stage.primary'),      color: '#c0873f' },
-                    [STAGES.SECONDARY]:    { text: T('Brewing.stage.secondary'),    color: '#d4aa1f' },
-                    [STAGES.CONDITIONING]: { text: T('Brewing.stage.conditioning'), color: '#d4aa1f' },
-                    [STAGES.READY]:        { text: T('Brewing.stage.ready'),        color: '#27ae60' }
+                    [STAGES.PRIMARY]:      { text: T('Brewing.stage.primary'),      band: 'primary' },
+                    [STAGES.SECONDARY]:    { text: T('Brewing.stage.secondary'),    band: 'secondary' },
+                    [STAGES.CONDITIONING]: { text: T('Brewing.stage.conditioning'), band: 'secondary' },
+                    [STAGES.READY]:        { text: T('Brewing.stage.ready'),        band: 'ok' }
                 }[stage];
 
                 const timeLabel = stage === STAGES.READY
@@ -511,7 +510,7 @@
                     <div class="apiary-section">
                         <div class="apiary-section-title">${ic(210, 14)} ${T('Brewing.ui.fermentingTitle')}</div>
                         <div class="apiary-stat-row"><span>${T('Brewing.ui.recipe')}</span><span>${BrewingRecipeLoader.text(recipe.name)}</span></div>
-                        <div class="apiary-stat-row"><span>${T('Brewing.ui.stage')}</span><span style="color:${stageInfo.color}; font-weight:bold">${stageInfo.text}</span></div>
+                        <div class="apiary-stat-row"><span>${T('Brewing.ui.stage')}</span><span class="brewery-ink--${stageInfo.band}">${stageInfo.text}</span></div>
                         <div style="margin:8px 0 4px">
                             <div class="brewery-stage-bar">
                                 <div class="brewery-stage-fill" style="width:${pct}%"></div>
@@ -768,8 +767,8 @@
             const waiting = c.barrelsReady + c.cropsRipe + c.produceReady;
             const alert = this.win.querySelector('#gr-alert');
             if (alert) {
-                alert.style.background = waiting ? '#b04a00' : '#2e7d32';
-                alert.style.color = '#fff';
+                alert.classList.toggle('gr-alert--waiting', !!waiting);
+                alert.classList.toggle('gr-alert--clear', !waiting);
                 alert.textContent = waiting
                     ? T('Brewing.grange.waitingOnYou', { n: waiting })
                     : T('Brewing.grange.nothingWaiting');
@@ -788,9 +787,9 @@
             return 'spring';
         },
 
-        tile(value, label, colour) {
+        tile(value, label, ink) {
             return `<div style="${GR.tile}">
-                <div style="${GR.tileNum} color:${colour || 'var(--xp-ink)'}">${grEsc(value)}</div>
+                <div class="gr-ink gr-ink--${ink || 'plain'}" style="${GR.tileNum}">${grEsc(value)}</div>
                 <div style="${GR.tileLbl}">${grEsc(label)}</div></div>`;
         },
 
@@ -819,11 +818,11 @@
                 <h2 style="${GR.h}">${T('Brewing.grange.overviewTitle')}</h2>
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px">
                     ${this.tile(String(c.barrels.length), T('Brewing.grange.tile.barrels'))}
-                    ${this.tile(String(c.barrelsReady), T('Brewing.grange.tile.barrelsReady'), '#b04a00')}
+                    ${this.tile(String(c.barrelsReady), T('Brewing.grange.tile.barrelsReady'), 'warn')}
                     ${this.tile(String(c.plots.length), T('Brewing.grange.tile.plots'))}
-                    ${this.tile(String(c.cropsRipe), T('Brewing.grange.tile.cropsRipe'), '#2e7d32')}
+                    ${this.tile(String(c.cropsRipe), T('Brewing.grange.tile.cropsRipe'), 'ready')}
                     ${this.tile(String(c.animals.length), T('Brewing.grange.tile.animals'))}
-                    ${this.tile(String(Math.floor(c.honey)), T('Brewing.grange.tile.honey'), '#c8922a')}
+                    ${this.tile(String(Math.floor(c.honey)), T('Brewing.grange.tile.honey'), 'honey')}
                 </div>
                 <h3 style="${GR.h}">${T('Brewing.grange.needsYou')}</h3>
                 ${jobs.length ? `<div style="${GR.card}">${jobs.map(j =>
@@ -841,7 +840,7 @@
                 <td style="${GR.td}">${grIcon(b.icon)} ${grEsc(b.name)}</td>
                 <td style="${GR.td}">${grEsc(b.where)}</td>
                 <td style="${GR.td}" ${b.ready ? 'data-ready="1"' : ''}>
-                    <span style="color:${b.ready ? '#2e7d32' : 'var(--xp-ink-2)'}; font-weight:${b.ready ? 'bold' : 'normal'}">${grEsc(b.stageText)}</span></td>
+                    <span class="gr-ink gr-ink--${b.ready ? 'ready' : 'muted'}">${grEsc(b.stageText)}</span></td>
                 <td style="${GR.td}">${grBar(b.pct, b.ready ? 'ready' : 'rest')}</td>
                 <td style="${GR.td}">${b.ready ? T('Brewing.grange.now') : grEsc(formatTimeRemaining(b.remaining))}</td>
             </tr>`).join('');
@@ -880,9 +879,9 @@
             return `<h2 style="${GR.h}">${T('Brewing.grange.tab.apiary')}</h2>
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px">
                     ${this.tile(String(pop.total), T('Brewing.grange.tile.bees'))}
-                    ${this.tile(String(hive.colony.mood), T('Brewing.grange.tile.mood'), hive.colony.mood < 40 ? '#c0392b' : '#2e7d32')}
+                    ${this.tile(String(hive.colony.mood), T('Brewing.grange.tile.mood'), hive.colony.mood < 40 ? 'bad' : 'ready')}
                     ${this.tile(hive.colony.efficiency + '%', T('Brewing.grange.tile.efficiency'))}
-                    ${this.tile(String(Math.floor(res.honey)), T('Brewing.grange.tile.honey'), '#c8922a')}
+                    ${this.tile(String(Math.floor(res.honey)), T('Brewing.grange.tile.honey'), 'honey')}
                 </div>
                 <div style="${GR.card}">
                     <b>${T('Brewing.grange.queen')}</b>
@@ -908,9 +907,9 @@
                 <td style="${GR.td}">${grIcon(p.iconIndex)} ${grEsc(p.itemName)}</td>
                 <td style="${GR.td}">${grEsc(p.where)}</td>
                 <td style="${GR.td}">${grBar(p.pct, p.ripe ? 'ready' : (p.inSeason ? 'grow' : 'dry'))}</td>
-                <td style="${GR.td}">${p.ripe ? `<b style="color:#2e7d32">${T('Brewing.grange.ripe')}</b>`
+                <td style="${GR.td}">${p.ripe ? `<b class="gr-ink gr-ink--ready">${T('Brewing.grange.ripe')}</b>`
                     : p.inSeason ? T('Brewing.grange.daysLeft', { n: p.daysLeft })
-                    : `<span style="color:#b04a00">${T('Brewing.grange.outOfSeason')}</span>`}</td>
+                    : `<span class="gr-ink gr-ink--warn">${T('Brewing.grange.outOfSeason')}</span>`}</td>
                 <td style="${GR.td}">${grEsc(p.yieldMin + '-' + p.yieldMax)}</td>
             </tr>`).join('');
             return `<h2 style="${GR.h}">${T('Brewing.grange.tab.fields')}</h2>
@@ -933,7 +932,7 @@
             const rows = animals.map(a => {
                 const produce = a.produces.length
                     ? a.produces.map(pr => pr.ready
-                        ? `<b style="color:#2e7d32">${grEsc(pr.name)}</b>`
+                        ? `<b class="gr-ink gr-ink--ready">${grEsc(pr.name)}</b>`
                         : `${grEsc(pr.name)} <span style="${GR.note}">${T('Brewing.grange.daysLeft', { n: pr.daysLeft })}</span>`).join('<br>')
                     : `<span style="${GR.note}">${T('Brewing.grange.noProduce')}</span>`;
                 return `<tr>

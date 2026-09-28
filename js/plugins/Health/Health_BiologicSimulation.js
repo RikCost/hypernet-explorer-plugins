@@ -7453,16 +7453,16 @@
         (window.HypernetOS.getIconHTML ? window.HypernetOS.getIconHTML(index, size) : '');
 
       const contentHTML = `
-        <div style="display:flex; flex-direction:column; height:100%; font-family:Tahoma,sans-serif; background:var(--xp-bg); overflow:hidden">
-          <div style="background:linear-gradient(135deg, var(--xp-navy-8) 0%, var(--xp-navy-7) 55%, var(--xp-sky) 100%); padding:11px 16px; display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--xp-navy-6); flex-shrink:0">
+        <div class="xpr-app">
+          <div class="xpr-banner">
             <div>
-              <div style="color:var(--xp-white); font-weight:bold; font-size:17px; letter-spacing:2px">${T('Biologic.remote.banner')}</div>
-              <div style="color:var(--xp-sky-4); font-size:13px; margin-top:2px">${T('Biologic.remote.tagline')}</div>
+              <div class="xpr-banner-title">${T('Biologic.remote.banner')}</div>
+              <div class="xpr-tagline">${T('Biologic.remote.tagline')}</div>
             </div>
-            <div id="vh-wallet" style="margin-left:auto; text-align:right; color:var(--xp-sky-4); font-size:13px"></div>
+            <div class="xpr-wallet" id="vh-wallet"></div>
           </div>
-          <div id="vh-body" style="flex:1; padding:10px 14px 12px 14px; overflow-y:auto"></div>
-          <div id="vh-status" style="border-top:1px solid var(--xp-ink-pale-2); padding:3px 10px; background:var(--xp-bg); font-size:13px; color:var(--xp-text-muted); flex-shrink:0">${T('Biologic.remote.hint')}</div>
+          <div class="xpr-body" id="vh-body"></div>
+          <div class="xpr-status" id="vh-status">${T('Biologic.remote.hint')}</div>
         </div>`;
 
       const win = window.HypernetOS.Syscalls.createWindow({
@@ -7487,34 +7487,33 @@
       function render() {
         wallet.innerHTML = '&euro;' + ($gameParty.gold() / 100).toFixed(2);
         if (blocked) {
-          body.innerHTML = `<div style="padding:26px 10px; text-align:center; color:var(--xp-ink-5); font-size:15px; line-height:1.6">`
-            + iconHTML(VH_APP_ICON, 32) + `<div style="margin-top:10px">${blocked}</div></div>`;
+          body.innerHTML = `<div class="xpr-empty xpr-empty--tall">`
+            + iconHTML(VH_APP_ICON, 32) + `<div class="xpr-gap-top">${blocked}</div></div>`;
           return;
         }
         const all = vhServices();
         if (!all.length) {
-          body.innerHTML = `<div style="padding:26px 10px; text-align:center; color:var(--xp-ink-5); font-size:15px">${T('Biologic.remote.nothingToDo')}</div>`;
+          body.innerHTML = `<div class="xpr-empty">${T('Biologic.remote.nothingToDo')}</div>`;
           return;
         }
         let html = '';
         for (const key of VH_SECTION_KEYS) {
           const rows = all.filter((row) => row.section === key);
           if (!rows.length) continue;
-          html += `<div style="font-size:13px; letter-spacing:1px; color:var(--xp-ink-soft); margin:8px 0 4px 2px">${T('Biologic.remote.section.' + key)}</div>`;
+          html += `<div class="xpr-section">${T('Biologic.remote.section.' + key)}</div>`;
           for (const row of rows) {
             const slot = all.indexOf(row);
             const price = row.blocked
-              ? `<span style="color:var(--xp-ink-faint)">${row.blocked}</span>`
+              ? `<span class="xpr-faint">${row.blocked}</span>`
               : '&euro;' + (row.cost / 100).toFixed(2);
             const affordable = !row.blocked && $gameParty.gold() >= row.cost;
-            html += `<button class="focusable" data-focus-key="vh-row-${slot}" data-row="${slot}" tabindex="0"
-                ${row.blocked ? 'disabled' : ''}
-                style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; margin-bottom:4px; padding:7px 10px; font-family:Tahoma,sans-serif; font-size:14px; background:var(--xp-white); border:1px solid var(--xp-silver-3); cursor:${row.blocked ? 'default' : 'pointer'}; opacity:${row.blocked ? '0.6' : '1'}">
-                <span style="flex:1">
-                  <span style="color:var(--xp-ink-3)">${row.label}</span><br>
-                  <span style="font-size:13px; color:var(--xp-ink-soft)">${row.detail}</span>
+            html += `<button class="focusable xpr-row${row.blocked ? ' xpr-row--blocked' : ''}" data-focus-key="vh-row-${slot}" data-row="${slot}" tabindex="0"
+                ${row.blocked ? 'disabled' : ''}>
+                <span class="xpr-grow">
+                  <span class="xpr-row-label">${row.label}</span><br>
+                  <span class="xpr-row-detail">${row.detail}</span>
                 </span>
-                <span style="font-weight:bold; color:${affordable ? '#1d6b2f' : 'var(--xp-red-4)'}">${price}</span>
+                <span class="xpr-price ${affordable ? 'xpr-price--ok' : 'xpr-price--short'}">${price}</span>
               </button>`;
           }
         }

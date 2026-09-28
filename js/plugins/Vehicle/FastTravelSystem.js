@@ -4143,26 +4143,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
     };
     // i18n-ignore-end
 
-    const WF = {
-        app: "display:flex; flex-direction:column; height:100%; background:var(--xp-face-5); " +
-             "font-family:'Tahoma',sans-serif; font-size:15px; color:var(--xp-ink-2);",
-        header: "display:flex; align-items:center; gap:12px; padding:10px 14px; " +
-                "background:linear-gradient(to bottom,#2f6b62,#20504a); color:var(--xp-white); border-bottom:2px solid #123430;",
-        nav: "width:196px; flex-shrink:0; overflow-y:auto; background:var(--xp-face-6); " +
-             "border-right:1px solid var(--xp-face-shade); padding:6px 0;",
-        navItem: "padding:7px 10px; cursor:pointer; border-left:4px solid transparent; user-select:none;",
-        panel: "flex:1; overflow-y:auto; padding:14px 16px; background:var(--xp-face-2); min-width:0;",
-        status: "display:flex; gap:16px; align-items:center; border-top:1px solid var(--xp-face-shade); " +
-                "padding:4px 10px; background:var(--xp-face-5); font-size:14px; color:var(--xp-ink-4);",
-        card: "background:var(--xp-white); border:1px solid var(--xp-face-3); border-radius:3px; padding:10px 12px; margin-bottom:8px;",
-        h: "margin:0 0 8px; font-size:17px; font-weight:bold; color:#20504a;",
-        note: "color:var(--xp-ink-soft-2); font-size:14px; line-height:1.5;",
-        table: "width:100%; border-collapse:collapse; font-size:14px;",
-        th: "text-align:left; padding:4px 6px; border-bottom:1px solid var(--xp-face-shade); color:#20504a; font-weight:bold;",
-        td: "padding:4px 6px; border-bottom:1px solid #e6e3d8;",
-        input: "font-family:'Tahoma',sans-serif; font-size:14px; padding:2px 4px; width:100%; " +
-               "border:1px solid var(--xp-face-4); background:var(--xp-white);",
-    };
+    // The WF fragments are .wf-* classes in css/hypernet.css.
 
     const wfEsc = (s) => String(s == null ? '' : s)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -4195,26 +4176,25 @@ Scene_Map.prototype.printTravelCoordinates = function () {
                 width: 880,
                 height: 570,
                 contentHTML: `
-                    <div style="${WF.app}">
-                        <div style="${WF.header}">
-                            <div style="filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5))">${wfIcon(WAY_ICON, 34)}</div>
-                            <div style="flex:1; min-width:0">
-                                <div style="font-size:17px; font-weight:bold; letter-spacing:0.5px">${T('FastTravel.book.appName')}</div>
-                                <div style="font-size:13px; opacity:0.82">${T('FastTravel.book.subtitle')}</div>
+                    <div class="wf-app">
+                        <div class="wf-header">
+                            <div class="wf-logo">${wfIcon(WAY_ICON, 34)}</div>
+                            <div class="wf-grow">
+                                <div class="wf-title">${T('FastTravel.book.appName')}</div>
+                                <div class="wf-subtitle">${T('FastTravel.book.subtitle')}</div>
                             </div>
-                            <div id="wf-from" style="font-size:14px; opacity:0.9"></div>
+                            <div id="wf-from" class="wf-aside"></div>
                         </div>
-                        <div style="display:flex; flex:1; min-height:0">
-                            <div style="display:flex; flex-direction:column; width:196px; flex-shrink:0">
-                                <div style="padding:6px 8px; background:var(--xp-face-6); border-right:1px solid var(--xp-face-shade)">
-                                    <input id="wf-search" class="focusable" tabindex="0" style="${WF.input}"
-                                           placeholder="${T('FastTravel.book.search')}">
+                        <div class="wf-body">
+                            <div class="wf-side">
+                                <div class="wf-searchbox">
+                                    <input id="wf-search" class="focusable wf-input" tabindex="0" placeholder="${T('FastTravel.book.search')}">
                                 </div>
-                                <div id="wf-nav" style="${WF.nav} flex:1"></div>
+                                <div id="wf-nav" class="wf-nav wf-fill"></div>
                             </div>
-                            <div id="wf-panel" style="${WF.panel}"></div>
+                            <div id="wf-panel" class="wf-panel"></div>
                         </div>
-                        <div style="${WF.status}">
+                        <div class="wf-status">
                             <span>${T('FastTravel.book.quotesOnly')}</span>
                         </div>
                     </div>`
@@ -4277,16 +4257,15 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             const rows = this.destinations().filter(d => !q || String(d.name).toLowerCase().includes(q));
             const chosen = this.current();
             if (!rows.length) {
-                nav.innerHTML = `<div style="padding:10px; ${WF.note}">${T('FastTravel.book.noMatch')}</div>`;
+                nav.innerHTML = `<div class="wf-note wf-pad">${T('FastTravel.book.noMatch')}</div>`;
                 return;
             }
             nav.innerHTML = rows.map(dest => {
                 const on = chosen && dest.name === chosen.name;
                 const offline = isDestOffline(dest);
-                return `<div class="focusable" tabindex="0" id="wf-dest-${wfEsc(dest.name)}" data-wf-dest="${wfEsc(dest.name)}"
-                    style="${WF.navItem}${on ? 'background:var(--xp-face-2); border-left-color:#2f6b62; font-weight:bold;' : ''}">
+                return `<div class="focusable wf-navItem${on ? ' wf-nav-on' : ''}" tabindex="0" id="wf-dest-${wfEsc(dest.name)}" data-wf-dest="${wfEsc(dest.name)}">
                     ${wfEsc(dest.name)}
-                    ${offline ? `<div style="${WF.note} color:#c0392b">${T('FastTravel.offline')}</div>` : ''}</div>`;
+                    ${offline ? `<div class="wf-note wf-bad">${T('FastTravel.offline')}</div>` : ''}</div>`;
             }).join('');
         },
 
@@ -4295,7 +4274,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             if (!panel) return;
             const dest = this.current();
             if (!dest) {
-                panel.innerHTML = `<div style="${WF.card} ${WF.note}">${T('FastTravel.book.noDestinations')}</div>`;
+                panel.innerHTML = `<div class="wf-card wf-note">${T('FastTravel.book.noDestinations')}</div>`;
                 return;
             }
             const offline = isDestOffline(dest);
@@ -4325,32 +4304,32 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             };
 
             const body = rows.map(row => `<tr>
-                <td style="${WF.td}">${wfEsc(row.label)}</td>
-                <td style="${WF.td}">${wfEsc(T('FastTravel.book.arrangement.' + row.arrangement))}</td>
-                <td style="${WF.td} text-align:right">${offline || row.fare == null
-                    ? `<span style="color:#c0392b">${T('FastTravel.offline')}</span>`
+                <td class="wf-td">${wfEsc(row.label)}</td>
+                <td class="wf-td">${wfEsc(T('FastTravel.book.arrangement.' + row.arrangement))}</td>
+                <td class="wf-td wf-right">${offline || row.fare == null
+                    ? `<span class="wf-bad">${T('FastTravel.offline')}</span>`
                     : (row.fare > 0 ? wfEsc(wfMoney(row.fare)) : T('FastTravel.book.free'))}</td>
-                <td style="${WF.td} text-align:right">${offline || row.time == null ? '&mdash;' : wfEsc(wfMinutes(row.time))}</td>
-                <td style="${WF.td} ${WF.note}">${wfEsc(noteFor(row))}</td>
+                <td class="wf-td wf-right">${offline || row.time == null ? '&mdash;' : wfEsc(wfMinutes(row.time))}</td>
+                <td class="wf-td wf-note">${wfEsc(noteFor(row))}</td>
             </tr>`).join('');
 
             panel.innerHTML = `
-                <h2 style="${WF.h}">${wfEsc(dest.name)}</h2>
-                <div style="${WF.note} margin-bottom:8px">
+                <h2 class="wf-h">${wfEsc(dest.name)}</h2>
+                <div class="wf-note wf-mb">
                     ${wfEsc(T('FastTravel.book.headline', { type: dest.type || '', level: level || T('FastTravel.book.levelUnknown') }))}
                 </div>
-                ${offline ? `<div style="${WF.card}" ><b style="color:#c0392b">${T('FastTravel.offline')}</b>
-                    <div style="${WF.note}">${T('FastTravel.book.offlineBlurb')}</div></div>` : ''}
-                ${refusedTicket && !offline ? `<div style="${WF.card} ${WF.note}">${T('FastTravel.book.wantedBlurb')}</div>` : ''}
-                <div style="${WF.card} padding:6px 8px"><table style="${WF.table}">
+                ${offline ? `<div class="wf-card" ><b class="wf-bad">${T('FastTravel.offline')}</b>
+                    <div class="wf-note">${T('FastTravel.book.offlineBlurb')}</div></div>` : ''}
+                ${refusedTicket && !offline ? `<div class="wf-card wf-note">${T('FastTravel.book.wantedBlurb')}</div>` : ''}
+                <div class="wf-card wf-tight"><table class="wf-table">
                     <thead><tr>
-                        <th style="${WF.th}">${T('FastTravel.book.colMode')}</th>
-                        <th style="${WF.th}">${T('FastTravel.book.colArranged')}</th>
-                        <th style="${WF.th} text-align:right">${T('FastTravel.book.colFare')}</th>
-                        <th style="${WF.th} text-align:right">${T('FastTravel.book.colTime')}</th>
-                        <th style="${WF.th}">${T('FastTravel.book.colNote')}</th>
+                        <th class="wf-th">${T('FastTravel.book.colMode')}</th>
+                        <th class="wf-th">${T('FastTravel.book.colArranged')}</th>
+                        <th class="wf-th wf-right">${T('FastTravel.book.colFare')}</th>
+                        <th class="wf-th wf-right">${T('FastTravel.book.colTime')}</th>
+                        <th class="wf-th">${T('FastTravel.book.colNote')}</th>
                     </tr></thead><tbody>${body}</tbody></table></div>
-                <div style="${WF.note}">${T('FastTravel.book.footer')}</div>`;
+                <div class="wf-note">${T('FastTravel.book.footer')}</div>`;
         },
     };
 

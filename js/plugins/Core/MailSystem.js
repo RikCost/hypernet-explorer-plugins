@@ -713,26 +713,7 @@
   const NUDGE_APP_ID = 'app-nudge';
   const NUDGE_ICON = 246; // Talk, per js/db/Sprites/Icons.json
 
-  const NG = {
-    app: "display:flex; flex-direction:column; height:100%; background:var(--xp-face-5); " +
-         "font-family:'Tahoma',sans-serif; font-size:15px; color:var(--xp-ink-2);",
-    header: "display:flex; align-items:center; gap:12px; padding:8px 12px; " +
-            "background:linear-gradient(to bottom,#4a8fd4,#2f6cb0); color:var(--xp-white); border-bottom:2px solid #1b3f6b;",
-    list: "width:210px; flex-shrink:0; overflow-y:auto; background:var(--xp-white); " +
-          "border-right:1px solid var(--xp-face-shade);",
-    group: "padding:4px 8px; background:var(--xp-face-6); font-size:13px; font-weight:bold; color:#2f6cb0;",
-    contact: "display:flex; gap:6px; align-items:center; padding:5px 8px; cursor:pointer; border-bottom:1px solid #f0efe8;",
-    talk: "flex:1; min-width:0; display:flex; flex-direction:column; background:var(--xp-face-2);",
-    log: "flex:1; overflow-y:auto; padding:10px 12px; background:var(--xp-white);",
-    line: "margin-bottom:6px; line-height:1.45;",
-    who: "font-weight:bold;",
-    entry: "display:flex; gap:6px; padding:6px 8px; border-top:1px solid var(--xp-face-shade); background:var(--xp-face-5);",
-    input: "flex:1; font-family:'Tahoma',sans-serif; font-size:14px; padding:4px 6px; " +
-           "border:1px solid var(--xp-face-4); background:var(--xp-white);",
-    btn: "padding:4px 12px; background:linear-gradient(to bottom,var(--xp-paper),#dcd8cc); " +
-         "border:1px solid var(--xp-face-4); border-radius:3px; cursor:pointer; font-size:14px; user-select:none;",
-    note: "color:var(--xp-ink-soft-2); font-size:13px;",
-  };
+  // The NG fragments are .ng-* classes in css/hypernet.css.
 
   const ngEsc = (s) => String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -751,7 +732,8 @@
   ];
   // i18n-ignore-end
 
-  const NUDGE_STATUS_COLOUR = { online: '#2e8b3f', away: '#d0a020', busy: '#c0392b', offline: '#8b8b8b' };
+  // Each status is inked by .ng-dot--<status> in css/hypernet.css.
+  const NUDGE_STATUSES = ['online', 'away', 'busy', 'offline'];
 
   function nudgeChats() {
     if (typeof $gameSystem === 'undefined' || !$gameSystem) return {};
@@ -778,17 +760,17 @@
         width: 780,
         height: 540,
         contentHTML: `
-          <div style="${NG.app}">
-            <div style="${NG.header}">
-              <div style="filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5))">${ngIcon(NUDGE_ICON, 28)}</div>
-              <div style="flex:1; min-width:0">
-                <div style="font-size:16px; font-weight:bold">${T('Mail.nudge.appName')}</div>
-                <div id="ng-me" style="font-size:13px; opacity:0.85"></div>
+          <div class="ng-app">
+            <div class="ng-header">
+              <div class="ng-logo">${ngIcon(NUDGE_ICON, 28)}</div>
+              <div class="ng-grow">
+                <div class="ng-title16">${T('Mail.nudge.appName')}</div>
+                <div id="ng-me" class="ng-subtitle85"></div>
               </div>
             </div>
-            <div style="display:flex; flex:1; min-height:0">
-              <div id="ng-list" style="${NG.list}"></div>
-              <div id="ng-talk" style="${NG.talk}"></div>
+            <div class="ng-body">
+              <div id="ng-list" class="ng-list"></div>
+              <div id="ng-talk" class="ng-talk"></div>
             </div>
           </div>`
       });
@@ -943,17 +925,15 @@
       const list = this.win.querySelector('#ng-list');
       if (list) {
         list.innerHTML = this.contacts().map(group => `
-          <div style="${NG.group}">${ngEsc(group.label)}</div>
+          <div class="ng-group">${ngEsc(group.label)}</div>
           ${group.rows.map(row => {
             const on = row.key === this.contactKey;
-            return `<div class="focusable" tabindex="0" id="ng-c-${ngEsc(row.key)}" data-ng-contact="${ngEsc(row.key)}"
-              style="${NG.contact}${on ? 'background:#dce9f7;' : ''}">
-              <span style="width:9px; height:9px; border-radius:50%; flex-shrink:0;
-                    background:${NUDGE_STATUS_COLOUR[row.status] || NUDGE_STATUS_COLOUR.offline}"></span>
-              <span style="flex:1; min-width:0">
-                <span style="${NG.who}">${ngEsc(row.name)}</span>
-                <span style="${NG.note}"> ${ngEsc(this.statusWord(row.status))}</span>
-                ${row.sub ? `<div style="${NG.note}">${ngEsc(row.sub)}</div>` : ''}
+            return `<div class="focusable ng-contact${on ? ' ng-contact-on' : ''}" tabindex="0" id="ng-c-${ngEsc(row.key)}" data-ng-contact="${ngEsc(row.key)}">
+              <span class="ng-dot ng-dot--${NUDGE_STATUSES.includes(row.status) ? row.status : 'offline'}"></span>
+              <span class="ng-grow">
+                <span class="ng-who">${ngEsc(row.name)}</span>
+                <span class="ng-note"> ${ngEsc(this.statusWord(row.status))}</span>
+                ${row.sub ? `<div class="ng-note">${ngEsc(row.sub)}</div>` : ''}
               </span>
             </div>`;
           }).join('')}`).join('');
@@ -962,24 +942,23 @@
       if (talk) {
         const contact = this.contact();
         if (!contact) {
-          talk.innerHTML = `<div style="${NG.log}"><div style="${NG.note}">${T('Mail.nudge.pickSomebody')}</div></div>`;
+          talk.innerHTML = `<div class="ng-log"><div class="ng-note">${T('Mail.nudge.pickSomebody')}</div></div>`;
         } else {
           const me = (window.$gameParty && $gameParty.leader) ? $gameParty.leader().name() : T('Mail.nudge.you');
-          const lines = this.history().map(turn => `<div style="${NG.line}">
-            <span style="${NG.who} color:${turn.role === 'me' ? '#2f6cb0' : '#8b2f5a'}">${ngEsc(turn.role === 'me' ? me : contact.name)}:</span>
+          const lines = this.history().map(turn => `<div class="ng-line">
+            <span class="ng-who ng-who--${turn.role === 'me' ? 'me' : 'them'}">${ngEsc(turn.role === 'me' ? me : contact.name)}:</span>
             ${ngEsc(turn.text)}</div>`).join('')
-            || `<div style="${NG.note}">${T('Mail.nudge.sayHello', { who: contact.name })}</div>`;
+            || `<div class="ng-note">${T('Mail.nudge.sayHello', { who: contact.name })}</div>`;
           talk.innerHTML = `
-            <div style="padding:6px 10px; background:var(--xp-face-6); border-bottom:1px solid var(--xp-face-shade)">
-              <b>${ngEsc(contact.name)}</b> <span style="${NG.note}">${ngEsc(contact.sub || '')}</span>
+            <div class="ng-talkhead">
+              <b>${ngEsc(contact.name)}</b> <span class="ng-note">${ngEsc(contact.sub || '')}</span>
             </div>
-            <div id="ng-log" style="${NG.log}">${lines}
-              ${this.typing[contact.key] ? `<div style="${NG.note}">${T('Mail.nudge.typing', { who: contact.name })}</div>` : ''}</div>
-            <div style="${NG.entry}">
-              <input id="ng-input" class="focusable" tabindex="0" style="${NG.input}"
-                     placeholder="${T('Mail.nudge.placeholder')}">
-              <span class="focusable" tabindex="0" data-ng-send="1" style="${NG.btn}">${T('Mail.nudge.send')}</span>
-              <span class="focusable" tabindex="0" data-ng-nudge="1" style="${NG.btn}">${T('Mail.nudge.nudge')}</span>
+            <div id="ng-log" class="ng-log">${lines}
+              ${this.typing[contact.key] ? `<div class="ng-note">${T('Mail.nudge.typing', { who: contact.name })}</div>` : ''}</div>
+            <div class="ng-entry">
+              <input id="ng-input" class="focusable ng-input" tabindex="0" placeholder="${T('Mail.nudge.placeholder')}">
+              <span class="focusable ng-btn" tabindex="0" data-ng-send="1" >${T('Mail.nudge.send')}</span>
+              <span class="focusable ng-btn" tabindex="0" data-ng-nudge="1" >${T('Mail.nudge.nudge')}</span>
             </div>`;
           const log = talk.querySelector('#ng-log');
           if (log) log.scrollTop = log.scrollHeight;
@@ -1004,18 +983,17 @@
       if (!this.win) return;
       if (window.SoundManager) SoundManager.playBuzzer();
       const start = Date.now();
-      const left = parseInt(this.win.style.left, 10) || 0;
-      const top = parseInt(this.win.style.top, 10) || 0;
+      const win = this.win;
+      win.classList.add('ng-shaking');
       const tick = () => {
-        if (!this.win || !this.win.isConnected) return;
+        if (!win.isConnected) return;
         const t = Date.now() - start;
         if (t > 450) {
-            this.win.style.left = left + 'px';
-            this.win.style.top = top + 'px';
+            win.classList.remove('ng-shaking');
             return;
         }
-        this.win.style.left = (left + Math.round(Math.sin(t / 18) * 8)) + 'px';
-        this.win.style.top = (top + Math.round(Math.cos(t / 14) * 6)) + 'px';
+        win.style.setProperty('--ng-shake-x', Math.round(Math.sin(t / 18) * 8) + 'px');
+        win.style.setProperty('--ng-shake-y', Math.round(Math.cos(t / 14) * 6) + 'px');
         requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
@@ -2252,41 +2230,29 @@
 
   // The desk furniture, in the shell's own tokens so the window follows
   // whichever theme the desktop is wearing.
+  // Class names; the rules are the .hm-* block in css/hypernet.css.
   const HS = {
-    app: "display:flex; flex-direction:column; height:100%; background:var(--xp-face-5); " +
-         "font-family:'Tahoma',sans-serif; font-size:14px; color:var(--xp-ink-2);",
-    bar: "display:flex; align-items:center; gap:4px; padding:4px 6px; " +
-         "background:linear-gradient(to bottom,var(--xp-paper),var(--xp-face-5)); " +
-         "border-bottom:1px solid var(--xp-face-shade);",
-    tool: "display:flex; align-items:center; gap:5px; padding:4px 9px; border:1px solid transparent; " +
-          "border-radius:3px; cursor:pointer; user-select:none;",
-    body: "flex:1; display:flex; min-height:0;",
-    folders: "width:168px; flex-shrink:0; background:var(--xp-face-6); " +
-             "border-right:1px solid var(--xp-face-shade); padding:6px 0; overflow-y:auto;",
-    folder: "padding:6px 10px; cursor:pointer; border-left:4px solid transparent; user-select:none; " +
-            "display:flex; align-items:center; gap:6px;",
-    right: "flex:1; display:flex; flex-direction:column; min-width:0;",
-    list: "height:44%; min-height:96px; overflow-y:auto; background:var(--xp-white); " +
-          "border-bottom:2px solid var(--xp-face-shade);",
-    pane: "flex:1; overflow-y:auto; padding:12px 14px; background:var(--xp-face-2);",
-    row: "display:flex; gap:8px; align-items:baseline; padding:5px 9px; cursor:pointer; " +
-         "border-bottom:1px solid var(--xp-face-6);",
-    rowOn: "background:#316ac5; color:var(--xp-white);",
-    status: "display:flex; gap:14px; align-items:center; border-top:1px solid var(--xp-face-shade); " +
-            "padding:3px 9px; background:var(--xp-face-5); font-size:13px; color:var(--xp-ink-4);",
-    card: "background:var(--xp-white); border:1px solid var(--xp-face-3); border-radius:3px; " +
-          "padding:10px 12px; margin-bottom:8px;",
-    btn: "display:inline-block; padding:4px 12px; background:linear-gradient(to bottom,var(--xp-paper),#dcd8cc); " +
-         "border:1px solid var(--xp-face-4); border-radius:3px; cursor:pointer; color:var(--xp-ink); user-select:none;",
-    h: "margin:0 0 8px; font-size:16px; font-weight:bold; color:#0b3d91;",
-    note: "color:var(--xp-ink-soft-2); font-size:13px; line-height:1.5;",
-    label: "display:block; font-size:12px; text-transform:uppercase; letter-spacing:0.4px; " +
-           "color:var(--xp-ink-soft-2); margin-bottom:2px;",
-    field: "width:100%; box-sizing:border-box; padding:4px 6px; font-family:inherit; font-size:14px; " +
-           "border:1px solid var(--xp-face-4); background:var(--xp-white); color:var(--xp-ink);",
-    table: "width:100%; border-collapse:collapse; font-size:13px;",
-    th: "text-align:left; padding:3px 6px; border-bottom:1px solid var(--xp-face-shade); font-weight:bold;",
-    td: "padding:3px 6px; border-bottom:1px solid #e6e3d8;"
+    app: "hm-app",
+    bar: "hm-bar",
+    tool: "hm-tool",
+    body: "hm-body",
+    folders: "hm-folders",
+    folder: "hm-folder",
+    right: "hm-right",
+    list: "hm-list",
+    pane: "hm-pane",
+    row: "hm-row",
+    rowOn: "hm-rowOn",
+    status: "hm-status",
+    card: "hm-card",
+    btn: "hm-btn",
+    h: "hm-h",
+    note: "hm-note",
+    label: "hm-label",
+    field: "hm-field",
+    table: "hm-table",
+    th: "hm-th",
+    td: "hm-td",
   };
 
   const HM_FOLDERS = ["inbox", "transit", "compose", "book"];
@@ -2371,19 +2337,19 @@
       try { registerSelf(); } catch (e) { console.error("[PostExpress] registerSelf failed", e); }
 
       const contentHTML = `
-        <div style="${HS.app}">
-          <div style="${HS.bar}" id="hm-toolbar"></div>
-          <div style="${HS.body}">
-            <div style="${HS.folders}" id="hm-folders"></div>
-            <div style="${HS.right}">
-              <div style="${HS.list}" id="hm-list"></div>
-              <div style="${HS.pane}" id="hm-pane"></div>
+        <div class="hm-app">
+          <div class="hm-bar" id="hm-toolbar"></div>
+          <div class="hm-body">
+            <div class="hm-folders" id="hm-folders"></div>
+            <div class="hm-right">
+              <div class="hm-list" id="hm-list"></div>
+              <div class="hm-pane" id="hm-pane"></div>
             </div>
           </div>
-          <div style="${HS.status}">
+          <div class="hm-status">
             <span id="hm-account"></span>
             <span id="hm-counts"></span>
-            <span id="hm-message" style="margin-left:auto; color:#0b3d91"></span>
+            <span id="hm-message" class="ng-accent-right"></span>
           </div>
         </div>`;
 
@@ -2414,7 +2380,7 @@
 
     el: function (tag, style, text, id) {
       const node = document.createElement(tag);
-      if (style) node.style.cssText = style;
+      if (style) node.className = style;
       if (text != null) node.textContent = text;
       if (id) node.id = id;
       return node;
@@ -2422,7 +2388,7 @@
 
     button: function (label, style, id, onClick) {
       const b = this.el("div", style, label, id);
-      b.className = "focusable";
+      b.classList.add("focusable");
       b.tabIndex = 0;
       b.addEventListener("click", (e) => { e.stopPropagation(); onClick(); });
       return b;
@@ -2460,12 +2426,6 @@
       tools.forEach((tool) => {
         const b = this.button("", HS.tool, "hm-tool-" + tool.id, tool.run);
         b.innerHTML = `${hmIcon(tool.icon, 16)}<span>${escapeHtml(tool.label)}</span>`;
-        b.addEventListener("mouseenter", () => {
-          b.style.background = "var(--xp-face-2)"; b.style.borderColor = "var(--xp-face-4)";
-        });
-        b.addEventListener("mouseleave", () => {
-          b.style.background = "transparent"; b.style.borderColor = "transparent";
-        });
         bar.appendChild(b);
       });
     },
@@ -2479,8 +2439,7 @@
       HM_FOLDERS.forEach((key) => {
         const on = this.folder === key;
         const count = key === "inbox" ? unread : key === "transit" ? waiting : 0;
-        const item = this.button("", HS.folder +
-          (on ? "background:var(--xp-face-2); border-left-color:#0b3d91; font-weight:bold;" : ""),
+        const item = this.button("", HS.folder + (on ? " hm-folder--on" : ""),
           "hm-folder-" + key, () => {
             if (this.folder === key) return;
             this.folder = key;
@@ -2490,7 +2449,7 @@
           });
         item.innerHTML = `${hmIcon(key === "book" ? 189 : key === "compose" ? 193 : 192, 16)}` +
           `<span>${escapeHtml(T("Mail.app.folder." + key))}</span>` +
-          (count ? `<span style="margin-left:auto; font-weight:bold">${count}</span>` : "");
+          (count ? `<span class="ng-push-bold">${count}</span>` : "");
         box.appendChild(item);
       });
     },
@@ -2525,10 +2484,10 @@
       const list = this.win.querySelector("#hm-list");
       const pane = this.win.querySelector("#hm-pane");
       if (!list || !pane) return;
-      list.style.display = "";
+      list.classList.remove("hm-hidden");
       const rows = this.letters();
       if (!rows.length) {
-        list.innerHTML = `<div style="${HS.note} padding:14px">` +
+        list.innerHTML = `<div class="hm-note hm-pad14">` +
           `${escapeHtml(this.folder === "transit" ? T("Mail.app.nothingInTransit") : T("Mail.inbox.empty"))}</div>`;
         pane.innerHTML = "";
         return;
@@ -2539,7 +2498,7 @@
       rows.forEach((m) => {
         const on = m.id === this.selectedId;
         const crossed = !!(m.from && m.from.world && m.to && m.from.world !== m.to.world);
-        const row = this.button("", HS.row + (on ? HS.rowOn : (m.read ? "" : "font-weight:bold;")),
+        const row = this.button("", HS.row + (on ? " " + HS.rowOn : (m.read ? "" : " hm-bold")),
           "hm-row-" + m.id, () => {
             this.selectedId = m.id;
             if (this.folder === "inbox") markRead(m.id);
@@ -2548,14 +2507,13 @@
           });
         const enclosed = (m.gold > 0 || (m.items || []).length) && !m.collected;
         row.innerHTML =
-          `<span style="width:16px; flex-shrink:0">${enclosed ? hmIcon(191, 14) : ""}</span>` +
-          `<span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">` +
+          `<span class="hm-icon-col">${enclosed ? hmIcon(191, 14) : ""}</span>` +
+          `<span class="hm-ellipsis">` +
             `${escapeHtml(m.subject || T("Mail.noSubject"))}</span>` +
-          `<span style="width:34%; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; ` +
-            `font-size:13px; ${on ? "" : "color:var(--xp-ink-soft-2)"}">` +
+          `<span class="hm-from${on ? "" : " hm-soft"}">` +
             `${escapeHtml((m.from && m.from.label) || T("Mail.unknownParty"))}` +
             `${crossed ? " " + escapeHtml(T("Mail.inbox.crossed")) : ""}</span>` +
-          `<span style="flex-shrink:0; font-size:12px; ${on ? "" : "color:var(--xp-ink-soft-2)"}">` +
+          `<span class="hm-stamp${on ? "" : " hm-soft"}">` +
             `${escapeHtml(stampOf(m.deliverAt))}</span>`;
         list.appendChild(row);
       });
@@ -2565,7 +2523,7 @@
 
     renderLetter: function (pane, m) {
       if (!pane) return;
-      if (!m) { pane.innerHTML = `<div style="${HS.note}">${T("Mail.inbox.pickOne")}</div>`; return; }
+      if (!m) { pane.innerHTML = `<div class="hm-note">${T("Mail.inbox.pickOne")}</div>`; return; }
       const crossed = !!(m.from && m.from.world && m.to && m.from.world !== m.to.world);
       const goods = (m.items || []).map((ref) => {
         const obj = resolveRef(ref);
@@ -2577,31 +2535,31 @@
       const hasEnclosure = m.gold > 0 || goods.length > 0;
 
       pane.innerHTML = `
-        <div style="${HS.card}">
-          <div style="font-size:17px; font-weight:bold; margin-bottom:4px">${escapeHtml(m.subject || T("Mail.noSubject"))}</div>
-          <div style="${HS.note}">${escapeHtml(m.from && m.from.partyId === partyId() && !crossed
+        <div class="hm-card">
+          <div class="ng-subject">${escapeHtml(m.subject || T("Mail.noSubject"))}</div>
+          <div class="hm-note">${escapeHtml(m.from && m.from.partyId === partyId() && !crossed
               ? T("Mail.inbox.fromSelf")
               : T("Mail.inbox.fromLine", {
                   who: (m.from && m.from.label) || T("Mail.unknownParty"),
                   world: (m.from && m.from.world) || "?" }))}</div>
-          <div style="${HS.note}">${escapeHtml(T("Mail.inbox.written", { date: stampOf(m.sentMinute) }))}</div>
-          <div style="${HS.note}">${escapeHtml(late
+          <div class="hm-note">${escapeHtml(T("Mail.inbox.written", { date: stampOf(m.sentMinute) }))}</div>
+          <div class="hm-note">${escapeHtml(late
               ? T("Mail.app.arrivesOn", { date: stampOf(m.deliverAt) })
               : T("Mail.inbox.arrived", { date: stampOf(m.deliverAt) }))}</div>
-          ${held ? `<div style="${HS.note}">${escapeHtml(held)}</div>` : ""}
-          ${crossed ? `<div style="${HS.note}">${escapeHtml(T("Mail.inbox.crossedFrom",
+          ${held ? `<div class="hm-note">${escapeHtml(held)}</div>` : ""}
+          ${crossed ? `<div class="hm-note">${escapeHtml(T("Mail.inbox.crossedFrom",
               { world: m.from.world, fee: euroLabel(m.fee || 0) }))}</div>` : ""}
         </div>
-        <div style="${HS.card} white-space:pre-wrap; line-height:1.55; font-size:15px">${escapeHtml(m.body || "")}</div>
-        <div style="${HS.card}">
-          <div style="font-weight:bold; margin-bottom:4px">${escapeHtml(T("Mail.inbox.enclosed"))}</div>
+        <div class="hm-card hm-letter">${escapeHtml(m.body || "")}</div>
+        <div class="hm-card">
+          <div class="ng-strong-mb">${escapeHtml(T("Mail.inbox.enclosed"))}</div>
           ${hasEnclosure ? `
             ${m.gold > 0 ? `<div>${escapeHtml(T("Mail.inbox.moneyLine"))}: ${escapeHtml(moneyLabel(m.gold))}</div>` : ""}
             ${goods.length ? `<div>${escapeHtml(goods.join(", "))}</div>` : ""}
-            ${m.collected ? `<div style="${HS.note} margin-top:4px">${escapeHtml(T("Mail.inbox.collectedAlready"))}</div>` : ""}
-          ` : `<div style="${HS.note}">${escapeHtml(T("Mail.inbox.nothingEnclosed"))}</div>`}
+            ${m.collected ? `<div class="hm-note hm-mt4">${escapeHtml(T("Mail.inbox.collectedAlready"))}</div>` : ""}
+          ` : `<div class="hm-note">${escapeHtml(T("Mail.inbox.nothingEnclosed"))}</div>`}
         </div>
-        <div id="hm-letter-actions" style="display:flex; gap:6px"></div>`;
+        <div id="hm-letter-actions" class="ng-row6"></div>`;
 
       const actions = pane.querySelector("#hm-letter-actions");
       if (!m.collected && hasEnclosure && !late) {
@@ -2664,35 +2622,35 @@
       const list = this.win.querySelector("#hm-list");
       const pane = this.win.querySelector("#hm-pane");
       if (!list || !pane) return;
-      list.style.display = "none";
+      list.classList.add("hm-hidden");
       const groups = activeWorld() ? directory() : [];
       if (!groups.length) {
-        pane.innerHTML = `<div style="${HS.card} ${HS.note}">${escapeHtml(T("Mail.compose.noAddresses"))}</div>`;
+        pane.innerHTML = `<div class="hm-card hm-note">${escapeHtml(T("Mail.compose.noAddresses"))}</div>`;
         return;
       }
       const here = activeWorld();
-      pane.innerHTML = `<h2 style="${HS.h}">${escapeHtml(T("Mail.app.folder.book"))}</h2>` +
-        `<div style="${HS.note} margin-bottom:10px">${escapeHtml(T("Mail.app.bookBlurb"))}</div>` +
+      pane.innerHTML = `<h2 class="hm-h">${escapeHtml(T("Mail.app.folder.book"))}</h2>` +
+        `<div class="hm-note hm-mb10">${escapeHtml(T("Mail.app.bookBlurb"))}</div>` +
         groups.map((group) => {
           const steps = dimensionalDistance(here, group.world);
-          return `<div style="${HS.card}">
-            <div style="font-weight:bold">${escapeHtml(group.world)}</div>
-            <div style="${HS.note} margin-bottom:6px">${escapeHtml(group.foreign
+          return `<div class="hm-card">
+            <div class="ng-bold">${escapeHtml(group.world)}</div>
+            <div class="hm-note hm-mb6">${escapeHtml(group.foreign
               ? T("Mail.compose.routeAcross", { world: group.world, steps: steps }) + " " +
                 T("Mail.compose.feeShort", { fee: euroLabel(postage(group.world, null)) })
               : T("Mail.compose.routeHome", { world: group.world }))}</div>
-            <table style="${HS.table}">
+            <table class="hm-table">
               <thead><tr>
-                <th style="${HS.th}">${escapeHtml(T("Mail.app.colParty"))}</th>
-                <th style="${HS.th}">${escapeHtml(T("Mail.app.colMembers"))}</th>
-                <th style="${HS.th}">${escapeHtml(T("Mail.app.colSeen"))}</th>
+                <th class="hm-th">${escapeHtml(T("Mail.app.colParty"))}</th>
+                <th class="hm-th">${escapeHtml(T("Mail.app.colMembers"))}</th>
+                <th class="hm-th">${escapeHtml(T("Mail.app.colSeen"))}</th>
               </tr></thead>
               <tbody>${group.parties.map((card) => `<tr>
-                <td style="${HS.td}">${escapeHtml(partyLabel(card))}${card.isSelf
-                  ? ` <span style="${HS.note}">${escapeHtml(T("Mail.app.thisIsYou"))}</span>` : ""}</td>
-                <td style="${HS.td}">${escapeHtml(T.n("Mail.compose.memberCount",
+                <td class="hm-td">${escapeHtml(partyLabel(card))}${card.isSelf
+                  ? ` <span class="hm-note">${escapeHtml(T("Mail.app.thisIsYou"))}</span>` : ""}</td>
+                <td class="hm-td">${escapeHtml(T.n("Mail.compose.memberCount",
                   (card.members || []).length, { count: (card.members || []).length }))}</td>
-                <td style="${HS.td}">${escapeHtml(T("Mail.compose.seenOn", { date: stampOf(card.minute) }))}</td>
+                <td class="hm-td">${escapeHtml(T("Mail.compose.seenOn", { date: stampOf(card.minute) }))}</td>
               </tr>`).join("")}</tbody>
             </table>
           </div>`;
@@ -2705,9 +2663,9 @@
       const list = this.win.querySelector("#hm-list");
       const pane = this.win.querySelector("#hm-pane");
       if (!list || !pane) return;
-      list.style.display = "none";
+      list.classList.add("hm-hidden");
       if (!activeWorld() || !hasParty()) {
-        pane.innerHTML = `<div style="${HS.card} ${HS.note}">${escapeHtml(T("Mail.ui.noWorld"))}</div>`;
+        pane.innerHTML = `<div class="hm-card hm-note">${escapeHtml(T("Mail.ui.noWorld"))}</div>`;
         return;
       }
       const d = hmReconcile();
@@ -2728,52 +2686,50 @@
       const arrival = addDelay(worldClock(d.world || activeWorld()), d.delay);
 
       pane.innerHTML = `
-        <h2 style="${HS.h}">${escapeHtml(T("Mail.app.newMessage"))}</h2>
-        <div style="${HS.card}">
-          <label style="${HS.label}">${escapeHtml(T("Mail.compose.recipient"))}</label>
-          <select id="hm-to" class="focusable" style="${HS.field}">
+        <h2 class="hm-h">${escapeHtml(T("Mail.app.newMessage"))}</h2>
+        <div class="hm-card">
+          <label class="hm-label">${escapeHtml(T("Mail.compose.recipient"))}</label>
+          <select id="hm-to" class="focusable hm-field" >
             <option value="-1">${escapeHtml(T("Mail.compose.noRecipient"))}</option>
             ${options.map((o, i) => `<option value="${i}" ${i === chosen ? "selected" : ""}>${escapeHtml(o.label)}</option>`).join("")}
           </select>
-          <div style="${HS.note} margin-top:6px" id="hm-route"></div>
+          <div class="hm-note hm-mt6" id="hm-route"></div>
         </div>
-        <div style="${HS.card}">
-          <label style="${HS.label}">${escapeHtml(T("Mail.compose.subject"))}</label>
-          <input id="hm-subject" class="focusable" style="${HS.field}" maxlength="120"
+        <div class="hm-card">
+          <label class="hm-label">${escapeHtml(T("Mail.compose.subject"))}</label>
+          <input id="hm-subject" class="focusable hm-field" maxlength="120"
                  placeholder="${escapeHtml(T("Mail.compose.subjectPlaceholder"))}" value="${escapeHtml(d.subject)}">
-          <label style="${HS.label} margin-top:8px">${escapeHtml(T("Mail.compose.body"))}</label>
-          <textarea id="hm-body" class="focusable" rows="7" spellcheck="false"
-                    style="${HS.field} resize:vertical; line-height:1.5"
-                    placeholder="${escapeHtml(T("Mail.compose.bodyPlaceholder"))}"></textarea>
+          <label class="hm-label hm-mt8">${escapeHtml(T("Mail.compose.body"))}</label>
+          <textarea id="hm-body" class="focusable hm-field hm-textarea" rows="7" spellcheck="false" placeholder="${escapeHtml(T("Mail.compose.bodyPlaceholder"))}"></textarea>
         </div>
-        <div style="${HS.card}">
-          <label style="${HS.label}">${escapeHtml(T("Mail.compose.money"))}</label>
-          <input id="hm-gold" class="focusable" style="${HS.field}" type="number" min="0"
+        <div class="hm-card">
+          <label class="hm-label">${escapeHtml(T("Mail.compose.money"))}</label>
+          <input id="hm-gold" class="focusable hm-field" type="number" min="0"
                  max="${$gameParty.gold()}" step="100" value="${Math.max(0, Number(d.gold) || 0)}">
-          <div style="${HS.note}">${escapeHtml(T("Mail.app.purse", { money: moneyLabel($gameParty.gold()) }))}</div>
-          <label style="${HS.label} margin-top:10px">${escapeHtml(T("Mail.compose.items"))}</label>
+          <div class="hm-note">${escapeHtml(T("Mail.app.purse", { money: moneyLabel($gameParty.gold()) }))}</div>
+          <label class="hm-label hm-mt10">${escapeHtml(T("Mail.compose.items"))}</label>
           <div id="hm-goods"></div>
         </div>
-        <div style="${HS.card}">
-          <label style="${HS.label}">${escapeHtml(T("Mail.app.holdBack"))}</label>
-          <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <div class="hm-card">
+          <label class="hm-label">${escapeHtml(T("Mail.app.holdBack"))}</label>
+          <div class="ng-wrap8">
             ${["days", "months", "years"].map((unit) => `
-              <div style="flex:1; min-width:96px">
-                <div style="${HS.note}">${escapeHtml(T("Mail.compose.delay" + unit.charAt(0).toUpperCase() + unit.slice(1)))}</div>
-                <input id="hm-delay-${unit}" class="focusable" style="${HS.field}" type="number"
+              <div class="ng-grow96">
+                <div class="hm-note">${escapeHtml(T("Mail.compose.delay" + unit.charAt(0).toUpperCase() + unit.slice(1)))}</div>
+                <input id="hm-delay-${unit}" class="focusable hm-field" type="number"
                        min="0" max="${DELAY_LIMITS[unit]}" value="${Math.max(0, Number(d.delay[unit]) || 0)}">
               </div>`).join("")}
           </div>
-          <div style="${HS.note} margin-top:6px">${escapeHtml(T("Mail.compose.arrives", {
+          <div class="hm-note hm-mt6">${escapeHtml(T("Mail.compose.arrives", {
             date: stampOf(arrival), span: hmSpanLabel(d.delay) }))}</div>
         </div>
-        <div style="${HS.card}">
+        <div class="hm-card">
           <div id="hm-postage">${escapeHtml(!d.world ? T("Mail.compose.noRecipient")
             : fee <= 0 ? T("Mail.compose.postageFree")
             : T("Mail.compose.postageLine", { fee: euroLabel(fee), total: moneyLabel(total) }))}</div>
-          ${short > 0 ? `<div style="color:#b00020; margin-top:4px">${escapeHtml(
+          ${short > 0 ? `<div class="ng-error">${escapeHtml(
             T("Mail.compose.cannotAfford", { short: moneyLabel(short) }))}</div>` : ""}
-          <div id="hm-send-row" style="display:flex; gap:6px; margin-top:8px"></div>
+          <div id="hm-send-row" class="ng-actions"></div>
         </div>`;
 
       const body = pane.querySelector("#hm-body");
@@ -2819,7 +2775,7 @@
       this.renderGoods(pane.querySelector("#hm-goods"), d, commit);
 
       const row = pane.querySelector("#hm-send-row");
-      row.appendChild(this.button(T("Mail.compose.send"), HS.btn + "font-weight:bold;", "hm-send",
+      row.appendChild(this.button(T("Mail.compose.send"), HS.btn + " hm-bold", "hm-send",
         () => { commit(); this.trySend(); }));
       row.appendChild(this.button(T("Mail.app.clear"), HS.btn, "hm-clear", () => {
         hmClearDraft();
@@ -2833,7 +2789,7 @@
       if (!holder) return;
       const stock = mailableStock();
       if (!stock.length) {
-        holder.innerHTML = `<div style="${HS.note}">${escapeHtml(T("Mail.compose.nothingToSend"))}</div>`;
+        holder.innerHTML = `<div class="hm-note">${escapeHtml(T("Mail.compose.nothingToSend"))}</div>`;
         return;
       }
       holder.innerHTML = "";
@@ -2849,15 +2805,13 @@
         else d.items.push({ kind, id: Number(id), count: value });
       };
 
-      const box = this.el("div", "max-height:150px; overflow-y:auto; border:1px solid var(--xp-face-4); " +
-        "background:var(--xp-white)");
+      const box = this.el("div", "hm-goods-box");
       stock.forEach((entry) => {
-        const line = this.el("div", "display:flex; align-items:center; gap:8px; padding:3px 6px; " +
-          "border-bottom:1px solid #e6e3d8");
-        const name = this.el("span", "flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap");
+        const line = this.el("div", "hm-goods-line");
+        const name = this.el("span", "hm-ellipsis");
         name.innerHTML = `${hmIcon(entry.item.iconIndex, 16)} ${escapeHtml(entry.item.name)}`;
         line.appendChild(name);
-        line.appendChild(this.el("span", HS.note + "flex-shrink:0",
+        line.appendChild(this.el("span", HS.note + " hm-noshrink",
           T.n("Mail.compose.held", entry.held, { count: entry.held })));
         const step = (delta) => {
           commit();
@@ -2866,11 +2820,11 @@
           if (window.SoundManager) SoundManager.playCursor();
           this.render();
         };
-        line.appendChild(this.button("-", HS.btn + "padding:1px 8px;",
+        line.appendChild(this.button("-", HS.btn + " hm-btn--step",
           `hm-goods-less-${entry.kind}-${entry.id}`, () => step(-1)));
-        line.appendChild(this.el("span", "min-width:22px; text-align:center; font-weight:bold",
+        line.appendChild(this.el("span", "hm-count",
           String(attached(entry.kind, entry.id))));
-        line.appendChild(this.button("+", HS.btn + "padding:1px 8px;",
+        line.appendChild(this.button("+", HS.btn + " hm-btn--step",
           `hm-goods-more-${entry.kind}-${entry.id}`, () => step(1)));
         box.appendChild(line);
       });

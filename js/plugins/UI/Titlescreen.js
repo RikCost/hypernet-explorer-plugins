@@ -5807,6 +5807,14 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     const ERIS_ERROR_LIMIT = 300;    // consecutive failing frames before giving up
     const ERIS_SHADE_ALPHA = 0.35;   // keeps the menu readable over the map
     const ERIS_FALLBACK = { mapId: 1421, x: 9, y: 9 };   // the sandbox's own start
+    // The map's DOM that is allowed over the title: NPC dialogue, meaning the
+    // parchment message box and the NPCs' chatter bubbles. Everything else the
+    // map's plugins put up is held hidden while the camera runs.
+    const ERIS_SHOWN_DOM = ['#html-msg-overlay', '#html-msg-name', '.npc-thought-bubble'];
+
+    function erisShowsElement(el) {
+        return !!(el && el.matches && ERIS_SHOWN_DOM.some(sel => el.matches(sel)));
+    }
 
     // Installed on first use, so the wrappers sit outside whatever the other
     // plugins have already wrapped around the same calls.
@@ -5968,16 +5976,16 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     class Scene_ErisCamera extends Scene_Map {
         createDisplayObjects() {
             super.createDisplayObjects();
-            // Her conversations still run (the autopilot answers them), but
-            // no window of hers is drawn over the title menu. The dialogue
-            // plugin's parchment box is a DOM overlay of its own, outside the
-            // window layer, so it is held hidden the same way; only display
-            // is ever toggled on it, so visibility stays ours.
+            // Her conversations run and are shown (the autopilot answers
+            // them), but no other window of hers is drawn over the title
+            // menu. The dialogue plugin's parchment box is a DOM overlay
+            // outside the window layer: it stays on screen (ERIS_SHOWN_DOM)
+            // and lets every click through to the menu underneath.
             if (this._windowLayer) this._windowLayer.visible = false;
             if (this._menuButton) this._menuButton.visible = false;
             const mw = this._messageWindow;
-            if (mw && mw._htmlMsgRoot) mw._htmlMsgRoot.style.visibility = 'hidden';
-            if (mw && mw._htmlMsgName) mw._htmlMsgName.style.visibility = 'hidden';
+            if (mw && mw._htmlMsgRoot) mw._htmlMsgRoot.style.pointerEvents = 'none';
+            if (mw && mw._htmlMsgName) mw._htmlMsgName.style.pointerEvents = 'none';
         }
         start() {
             super.start();
@@ -6089,7 +6097,8 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         }
 
         // Runs fn as the map scene, and hides whatever DOM the map's plugins
-        // put up or changed while it ran: none of it belongs over the title.
+        // put up or changed while it ran: none of it belongs over the title,
+        // except the NPC dialogue in ERIS_SHOWN_DOM.
         _guarded(scene, fn) {
             const body = document.body;
             const before = new Map();
@@ -6099,6 +6108,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             } finally {
                 if (body) {
                     for (const el of body.children) {
+                        if (erisShowsElement(el)) continue;
                         if (this._hidden.has(el)) {
                             el.style.setProperty('visibility', 'hidden', 'important');
                         } else if (!before.has(el) || before.get(el) !== el.style.cssText) {

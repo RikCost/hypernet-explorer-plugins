@@ -236,7 +236,6 @@
         flex: 0 0 auto;
         height: 185px;
         max-height: 185px;
-        min-height: 185px;
     }
 
     .cc-compact-bust-full {
@@ -320,12 +319,8 @@
 
     .cc-stat-grid {
         gap: 4px;
-        margin-bottom: 4px;
     }
 
-    .cc-stat-box {
-        padding: 3px 4px;
-    }
 
     .cc-stat-label {
         font-size: 0.85rem;
@@ -1014,8 +1009,6 @@
     }
 
     .cc-select-grid.cc-archetype-grid .cc-card-option {
-        padding: 5px 4px;
-        min-height: 48px;
         gap: 1px;
     }
 
@@ -1860,7 +1853,6 @@
        twice this wide; asking for the same on the panel put six thumbnails
        across a strip where four are already small. */
     .fbuild-grid {
-        grid-template-columns: repeat(auto-fill, minmax(96px, max-content));
         padding: 8px;
         gap: 8px;
     }
@@ -2029,9 +2021,6 @@
         margin-bottom: 8px;
     }
 
-    .bio-vital {
-        gap: 5px;
-    }
 
     #biologic-container .card {
         padding: 7px 10px;
@@ -2429,7 +2418,6 @@
     }
 
     .shop-tabs {
-        gap: 6px;
         margin-bottom: 8px;
     }
 
@@ -2882,27 +2870,9 @@
 
     .npc-chat-action-btn {
         padding: 4px 9px;
-        box-sizing: border-box;
-        white-space: nowrap;
-        max-width: 100%;
     }
 
-    .npc-chat-action-btn .npc-opt-label {
-        flex: 1 1 auto;
-        min-width: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
 
-    .npc-chat-action-btn .npc-aside,
-    .npc-chat-action-btn .npc-aside-sm,
-    .npc-chat-action-btn .npc-good,
-    .npc-chat-action-btn .npc-bad,
-    .npc-chat-action-btn [class*="npc-score"] {
-        flex-shrink: 0;
-        white-space: nowrap;
-    }
 
     .npc-chat-elsewhere {
         padding: 7px 12px;
@@ -4688,7 +4658,6 @@
 
     /* --- The tab row. */
     #qb-tabs {
-        gap: 7px;
         padding: 6px 20px 0;
     }
 
@@ -5163,5 +5132,34 @@
        is an empty flex row still spending a gap at the head of every list. */
     body.pad-input .msb-field-only {
         display: none !important;
+    }
+}
+
+/* ==========================================================================
+   The two full-bleed boards --ui-zoom never reaches: the parchment choice list
+   (NPC/DialogueSystem.js) and the sleep menu (Core/TimeDateSystemUI.js). Every
+   px in them is a real px on the panel, so they are tightened here.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    #html-choice-overlay {
+        padding: 6px 4px;
+        max-height: 88vh;
+        overflow-y: auto;
+    }
+
+    #html-choice-overlay .html-choice-item {
+        padding: 4px 14px;
+    }
+
+    #sleep-menu-overlay .army-dialog {
+        width: 320px;
+        padding: 9px 8px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    #sleep-menu-overlay .army-dialog-btn {
+        padding: 4px 14px;
     }
 }

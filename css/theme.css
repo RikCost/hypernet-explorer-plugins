@@ -310,26 +310,6 @@
     box-shadow: none;
 }
 
-.cc-folder-tab,
-.cc-step-tab {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    background: linear-gradient(180deg, var(--bg-panel), var(--bg-surface));
-    border: 1px solid var(--border-gold-amber-30);
-    border-bottom: none;
-    border-radius: 8px 8px 0 0;
-    color: var(--text-card-medium);
-    font-family: var(--font-ui);
-    font-size: var(--fs-chip);
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.2s cubic-bezier(0.2, 0, 0, 1); transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom;
-    box-shadow: inset 0 1px 0 var(--border-parchment-10);
-    margin-bottom: -1px;
-}
 
 /* Where the pad is resting when that is not also the open page: the empty
    party seat, which L1/R1 stop on and Confirm fills. */
@@ -361,17 +341,6 @@
     transform: translateY(-2px);
 }
 
-.cc-folder-tab.active,
-.cc-step-tab.active {
-    background: linear-gradient(180deg, var(--bg-tertiary-focus-translucent-45), var(--bg-panel)) !important;
-    border-color: var(--text-primary-hover) !important;
-    border-bottom: 2px solid transparent;
-    color: var(--text-primary-hover) !important;
-    font-weight: bold;
-    box-shadow: 0 -2px 10px var(--shadow-gold-amber-30), inset 0 1px 0 var(--text-primary-hover);
-    transform: translateY(-3px);
-    z-index: 5;
-}
 
 .cc-folder-tab .cc-tab-dot,
 .cc-step-tab .cc-tab-dot {
@@ -618,22 +587,6 @@
 /* Drawn at the bust art's own 883x1200 shape, so the box IS the picture:
    there is no empty background to either side of it any more. It takes
    whatever height the card was left with and its width follows from that. */
-.cc-compact-bust-full {
-    width: auto;
-    height: auto;
-    min-height: 0;
-    max-height: 100%;
-    max-width: 100%;
-    aspect-ratio: 883 / 1200;
-    flex: 1 1 auto;
-    margin: 0 auto;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center center;
-    cursor: pointer;
-    transition: filter 0.2s ease, transform 0.2s ease;
-    background-color: transparent;
-}
 
 /* The dossier's big portrait. It carries nothing but its background-image
    inline, so with no box of its own it collapsed to nothing and the bust
@@ -875,7 +828,7 @@
 }
 
 .cc-actions-row > .cc-compact-btn {
-    flex: 1;
+    flex: 0 1 auto;
 }
 
 
@@ -892,13 +845,6 @@
     gap: 6px;
 }
 
-.cc-compact-btn.primary,
-.cc-sidebar-btn.primary {
-    background: var(--text-primary-hover);
-    color: var(--bg-secondary-hover);
-    border-color: var(--text-primary-hover);
-    box-shadow: 0 2px 4px var(--shadow-gold-amber-50);
-}
 
 .cc-compact-btn.primary:hover,
 .cc-compact-btn.primary.selected,
@@ -1430,12 +1376,6 @@
    naming the body it would build. The card is a little taller than a plain
    compact card because it carries a part count and a role badge under the
    name, and the corner button that takes it as the second archetype. */
-.cc-select-grid.cc-archetype-grid .cc-card-option {
-    padding: 8px 6px 7px;
-    gap: 2px;
-    justify-content: center;
-    min-height: 62px;
-}
 
 .cc-archetype-card-meta {
     font-size: var(--fs-label);
@@ -2702,6 +2642,14 @@
 
 /* A class row is its name and nothing else, set large enough to read at a
    glance. Flat, like the trait rows, so twice as many fit on the page. */
+
+.cc-class-grid .cc-card-option.cc-class-card.selected::before {
+    content: none;
+}
+
+/* The roster reads as a list of names: only the class the character took is
+   written in gold, and the frame is the cursor, drawn under the pointer rather
+   than left standing around the pick. */
 .cc-class-grid .cc-card-option.cc-class-card {
     display: flex;
     flex-direction: column;
@@ -2713,16 +2661,6 @@
     border-radius: 5px;
     box-shadow: none;
     min-width: 0;
-}
-
-.cc-class-grid .cc-card-option.cc-class-card.selected::before {
-    content: none;
-}
-
-/* The roster reads as a list of names: only the class the character took is
-   written in gold, and the frame is the cursor, drawn under the pointer rather
-   than left standing around the pick. */
-.cc-class-grid .cc-card-option.cc-class-card {
     border-color: transparent;
 }
 
@@ -5447,11 +5385,6 @@
     gap: 10px;
 }
 
-.cc-scenario-brief-head .cc-header-gothic {
-    margin: 0;
-    font-size: var(--fs-title);
-    line-height: 1.15;
-}
 
 /* The scenario screen's own money pill reads at a size that matches the
    bigger text around it, rather than the small badge other screens use. */
@@ -6126,7 +6059,7 @@
     display: flex;
     gap: 4px;
     margin-bottom: 6px;
-    border-bottom: 1px solid var(--border-panel);
+    border-bottom: 1px solid var(--border-subtle);
     padding-bottom: 4px;
     flex-wrap: wrap;
 }
@@ -8861,7 +8794,7 @@
     gap: 10px;
 }
 .forge-piece-spread .inspect-actions--row .inspect-btn {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     text-align: center;
 }
 /* The title takes its rarity colour from the piece, so the head of the spread
@@ -10157,7 +10090,7 @@
 /* A fare the purse cannot cover. The date stays pickable, the lid does not open. */
 .cryo-summary-row--short,
 .cryo-summary-note--short {
-    color: var(--text-danger-hover);
+    color: var(--text-cost-bad);
     opacity: 1;
 }
 
@@ -11778,10 +11711,6 @@
     transform: translateX(-50%);
 }
 
-#band-push-buttons {
-    display: flex;
-    gap: 8px;
-}
 
 .band-btn,
 .utility-btn {
@@ -11834,11 +11763,14 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
-    flex: 1 1 auto;
+    /* The strip, not a button: it takes the free width so its buttons centre in it. */
+    flex: auto;
     min-width: 0;
 }
 
-#band-push-buttons { flex: 0 0 auto; }
+#band-push-buttons {
+    display: flex;
+    gap: 8px; flex: 0 0 auto; }
 
 /* Paste-a-web-radio: a card over the cabinet's own face, not over the map. */
 .radio-modal {
@@ -12116,19 +12048,18 @@
 .help-link {
     color: var(--text-gold-dark);
     cursor: pointer;
-    border-bottom: 1px dotted var(--text-gold-dark);
+    border-bottom: 1px solid transparent;
 }
 
 .help-link:hover,
 .help-link:focus {
     filter: brightness(1.25);
     outline: none;
-    border-bottom-style: solid;
+    border-bottom-color: var(--text-gold-dark);
 }
 
 .help-link--closed {
     opacity: 0.6;
-    border-bottom-style: dashed;
 }
 
 /* A bracketed term inside a manual page: a key, a number, a stat or a menu
@@ -13553,7 +13484,7 @@
 
 #equip-container .equip-commands .backpack-tab.focused {
     border-color: var(--text-primary-hover);
-    box-shadow: 0 0 6px var(--shadow-primary-translucent-30);
+    box-shadow: none;
     color: var(--text-primary-hover);
 }
 
@@ -13717,14 +13648,12 @@
     min-height: 0;
 }
 
-#equip-container .right-page {
-    width: 58%;
-    justify-content: flex-start;
-}
 
 /* The three member columns scroll on their own, so the page around them
    does not scroll as well. */
 #equip-container .right-page {
+    width: 58%;
+    justify-content: flex-start;
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -13937,12 +13866,12 @@
 
 #equip-container .party-paperdolls-stacked .paperdoll-actor-bar { grid-area: bar; }
 #equip-container .party-paperdolls-stacked .paperdoll-slots-grid { grid-area: slots; }
-#equip-container .party-paperdolls-stacked .paperdoll-stats-grid { grid-area: stats; }
 #equip-container .party-paperdolls-stacked .paperdoll-dual-warning { grid-area: warn; }
 
 /* Vitals and the six attributes on one row, the four derived stats on the
    next, every column on a fixed track so the numbers line up member to member. */
 #equip-container .party-paperdolls-stacked .paperdoll-stats-grid {
+    grid-area: stats;
     display: flex;
     flex-direction: column;
     gap: var(--sp-1);
@@ -14017,7 +13946,7 @@
 }
 
 #equip-container .paperdoll-container:not(.active-actor) .slot-header {
-    font-size: 0.64rem;
+    font-size: var(--fs-caption);
 }
 
 #equip-container .paperdoll-container:not(.active-actor):hover {
@@ -14065,7 +13994,7 @@
 
 #equip-container .paperdoll-container.active-actor .paperdoll-actor-name {
     color: var(--text-primary-hover);
-    text-shadow: 0 0 4px var(--shadow-primary-translucent-30);
+    text-shadow: none;
 }
 
 #equip-container .paperdoll-actor-name {
@@ -14159,19 +14088,17 @@
    keeps its box and says what is holding it. */
 #equip-container .paperdoll-slot.is-lent {
     opacity: 0.55;
-    border-style: dashed;
     cursor: default;
 }
 
 #equip-container .slot-penalty-badge {
     flex: 0 0 auto;
     margin-left: 4px;
-    padding: 0 4px;
-    border-radius: 3px;
-    font-size: 0.6rem;
+    padding: 0 2px;
+    font-size: var(--fs-caption);
     font-weight: 700;
-    color: var(--text-cost-bad, #ef4444);
-    background: rgba(239, 68, 68, 0.14);
+    color: var(--text-cost-bad);
+    background: transparent;
 }
 
 #equip-container .paperdoll-dual-warning {
@@ -14207,7 +14134,7 @@
 
 #equip-container .paperdoll-slot.focused {
     border-color: var(--text-primary-hover);
-    box-shadow: 0 0 6px var(--shadow-primary-translucent-30);
+    box-shadow: none;
 }
 
 #equip-container .paperdoll-slot.drag-target-valid {
@@ -14252,7 +14179,7 @@
 }
 
 #equip-container .slot-bodypart {
-    font-size: 0.58rem;
+    font-size: var(--fs-caption);
     opacity: 0.7;
     white-space: nowrap;
     margin-left: 2px;
@@ -14361,7 +14288,7 @@
 }
 
 #equip-container .paperdoll-back-btn {
-    background: var(--bg-subtle-translucent-8);
+    background: transparent;
     border: 1px solid var(--border-secondary-hover-translucent-15);
     color: var(--text-card-dark);
     border-radius: 3px;
@@ -14594,22 +14521,22 @@
 
 #equip-container .equip-type-tab:hover,
 #equip-container .equip-type-tab.focused {
-    background: var(--bg-subtle-translucent-12);
+    background: transparent;
     color: var(--text-card-dark);
     border-color: var(--text-primary-hover);
-    box-shadow: 0 0 5px var(--shadow-primary-translucent-30);
+    box-shadow: none;
 }
 
 #equip-container .equip-type-tab.active {
-    background: var(--bg-primary-translucent-18);
-    border-color: var(--border-primary-translucent-40);
+    background: transparent;
+    border-color: var(--border-focus-hover);
     color: var(--text-primary-hover);
     font-weight: bold;
 }
 
 #equip-container .equip-type-tab.active.focused {
     border-color: var(--text-primary-hover);
-    box-shadow: 0 0 6px var(--shadow-primary-translucent-30);
+    box-shadow: none;
 }
 
 /* Equipment Grid on right page */
@@ -14650,7 +14577,7 @@
 #equip-container .equip-card.active,
 #equip-container .equip-card.focused {
     border-color: var(--text-primary-hover);
-    box-shadow: 0 0 6px var(--shadow-primary-translucent-30);
+    box-shadow: none;
 }
 
 #equip-container .equip-card:active {
@@ -19905,8 +19832,7 @@
     /* The zoom arrives as a custom property, so the stylesheet still owns
        every declaration the stage and its svg are drawn with. */
     .npc-web-sizer { position: relative; margin: auto; width: var(--npc-web-w, 0px); height: var(--npc-web-h, 0px); }
-    .npc-web-svg { display: block; transform-origin: 0 0; transform: scale(var(--npc-web-zoom, 1)); }
-    .npc-web-zoom-controls { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+        .npc-web-zoom-controls { display: flex; align-items: center; gap: 4px; margin-left: auto; }
     .npc-web-zoom-btn {
       display: flex; align-items: center; justify-content: center;
       width: 22px; height: 22px; border-radius: 4px; cursor: pointer;
@@ -19928,6 +19854,9 @@
        meeting tallies are divided back by it: zooming in spreads the web out
        while they keep their size on screen, shrinking against the graph. */
     .npc-web-svg {
+      display: block;
+      transform-origin: 0 0;
+      transform: scale(var(--npc-web-zoom, 1));
       --npc-web-text-scale: max(1, var(--npc-web-zoom, 1));
       /* Derived type tokens for the zoomed stage: the division lives here
          once, so every rule below still sizes from a --fs- token. */
@@ -20046,16 +19975,7 @@
     .npc-bio-missing .npc-bio-part-name { text-decoration: line-through; }
     .npc-bio-missing-lbl { font-style: normal; opacity: 0.8; }
     /* ── Folder-bookmark tab bar ───────────────────────── */
-    .npc-tab-bar {
-      display: flex; gap: 4px;
-      padding: 0 16px 0;
-      /* Nothing behind the labels: they stick out of the panel below them the
-         way the tabs of a folder stick out of the folder. */
-      background: none;
-      border-bottom: none;
-      flex-shrink: 0;
-    }
-    .npc-tab {
+        .npc-tab {
       padding: 7px 18px 8px;
       font-size: var(--fs-body);
       cursor: pointer; user-select: none; -webkit-user-select: none;
@@ -20078,22 +19998,7 @@
     /* "L1 R1" / "TAB" chip in front of the first tab: names the only control
        that changes tab, now that the directions stay inside the open one. Not
        clickable, so it is skipped by every focus ring. */
-    .npc-tab-hint {
-      align-self: flex-end;
-      margin-right: 6px;
-      padding: 5px 9px 6px;
-      font-size: var(--fs-chip);
-      font-weight: bold;
-      letter-spacing: 0.06em;
-      color: var(--text-text-alt-4);
-      border: none;
-      border-radius: 4px;
-      background: transparent;
-      user-select: none; -webkit-user-select: none;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    /* ── Character switcher (which party member is interacting) ──
+        /* ── Character switcher (which party member is interacting) ──
        The names are clickable, and SHIFT / SELECT steps through them; the chip
        at the end of the row names whichever of those two the player is holding
        (NPCEmpathize.js keeps it in step when a pad is plugged in or unplugged).
@@ -20142,7 +20047,7 @@
     }
     /* ── Chat action buttons (former left-column actions) ─ */
     .npc-chat-actions-row {
-      display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 6px;
+      display: flex; flex-direction: column; flex-wrap: nowrap; align-items: flex-start; gap: 6px;
       padding: 10px 14px;
       border-top: none;
       border-left: 1px solid var(--border-primary-hover-translucent-15);
@@ -20190,7 +20095,8 @@
     }
     .npc-chat-action-btn .npc-opt-label {
       color: var(--npc-option-fg);
-      flex: 1 1 auto;
+      flex: 0 1 auto;
+      margin-right: auto;
       min-width: 0;
       white-space: nowrap;
       overflow: hidden;
@@ -23306,7 +23212,7 @@ body, canvas {
 
 .hotbar-tooltip-card .hotbar-tip-title {
     font-weight: bold;
-    color: var(--border-gold-amber);
+    color: var(--text-primary-hover);
 }
 
 .hotbar-tooltip-card .hotbar-tip-cost {
@@ -33529,8 +33435,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 }
 /* The one button that empties the unspent-point purse, on the detail card. */
 .spec-spend-button {
-    display: block;
-    width: 100%;
+    display: inline-block;
     margin-top: var(--sp-2);
     padding: var(--sp-2) var(--sp-3);
     font-family: inherit;
@@ -35683,11 +35588,12 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     flex-direction: column;
     gap: 6px;
     flex: 0 0 auto;
-    align-items: stretch;
+    align-items: flex-start;
 }
 
 .dyn-card-actions .roster-actions {
     flex-direction: column;
+    align-items: flex-start;
     margin-top: 0;
     gap: 6px;
 }
@@ -36056,8 +35962,8 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    border-style: dashed;
     border-color: var(--border-forest-green);
+    opacity: 0.75;
 }
 
 .sm-state-mark {
@@ -36131,6 +36037,7 @@ cursor:pointer; font-size:var(--fs-body); line-height:1.4;
 .sm-skill-detail .sm-teach-actions {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: var(--sp-3);
 }
 
@@ -41407,7 +41314,7 @@ body.pad-input .kb-only {
 }
 
 .travel-dest-item.is-offline .travel-dest-cost {
-    color: var(--text-danger-hover);
+    color: var(--text-cost-bad);
     font-style: italic;
 }
 
@@ -42076,6 +41983,11 @@ body.pad-input .kb-only {
    and standing flush on the panel below, with no gap under it. */
 .npc-tab-bar {
     align-items: flex-end;
+    display: flex;
+    padding: 0 16px 0;
+    background: none;
+    border-bottom: none;
+    flex-shrink: 0;
     gap: 6px;
     margin-bottom: 0;
     padding-bottom: 0;
@@ -42093,6 +42005,19 @@ body.pad-input .kb-only {
     border-bottom-color: transparent;
 }
 .npc-tab-hint {
+    margin-right: 6px;
+    padding: 5px 9px 6px;
+    font-size: var(--fs-chip);
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    color: var(--text-text-alt-4);
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
     align-self: center;
 }
 
@@ -42524,7 +42449,7 @@ body.pad-input .kb-only {
 }
 
 #worldmap-chrome .wm-read-buttons > .inspect-btn {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     margin-top: 0;
     min-width: 0;
 }
@@ -42684,23 +42609,16 @@ body.pad-input .kb-only {
 }
 
 .sm-forged-list--fill { flex: 1 1 0; min-height: 0; }
+.sm-bench-scroll { flex: 1 1 0; overflow-y: auto; padding-right: var(--sp-2); }
 
-/* The Grange site's growth bar (Farming/BrewingSystem.js): the track and its
-   fill are classes so the browser page paints no colour of its own. The
-   greens are the site's own crop inks, not the game palette. */
-.gr-bar {
-    display: inline-block; width: 90px; height: 9px;
-    background: #e3e0d4; border: 1px solid #c9c5b6;
-    border-radius: 2px; vertical-align: middle; margin-right: 6px;
-}
-.gr-bar-fill { display: block; width: var(--gr-w, 0%); height: 100%; }
-.gr-bar-fill--ready { background: #2e7d32; }
-.gr-bar-fill--grow { background: #4c8339; }
-.gr-bar-fill--rest { background: #8a6d3b; }
-.gr-bar-fill--dry { background: #9c8d5f; }
+/* The barrel page's inks (Farming/BrewingSystem.js), off the palette. */
+.brewery-ink--ok { color: var(--text-cost-ok); }
+.brewery-ink--bad { color: var(--text-cost-bad); }
+.brewery-ink--primary { color: var(--accent-orange); font-weight: bold; }
+.brewery-ink--secondary { color: var(--text-primary-hover); font-weight: bold; }
+.brewery-have { font-size: var(--fs-caption); color: var(--text-text-alt-4); }
 
 .sm-action-rail .inspect-btn {
-    width: 100%;
     text-align: center;
     box-sizing: border-box;
     /* A long bench name ("Enchant Equipment") wraps inside the rail instead
@@ -42882,6 +42800,8 @@ body.pad-input .kb-only {
 }
 
 .cc-select-grid.cc-archetype-grid .cc-card-option {
+    gap: 2px;
+    justify-content: center;
     padding: 5px 4px;
     min-height: 40px;
 }
@@ -42916,6 +42836,20 @@ body.pad-input .kb-only {
    the box; the picture inside it sizes itself and falls back to the house
    bust. */
 .cc-compact-bust-full {
+    width: auto;
+    height: auto;
+    min-height: 0;
+    max-height: 100%;
+    max-width: 100%;
+    aspect-ratio: 883 / 1200;
+    flex: 1 1 auto;
+    margin: 0 auto;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    cursor: pointer;
+    transition: filter 0.2s ease, transform 0.2s ease;
+    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42938,6 +42872,9 @@ body.pad-input .kb-only {
    frame; and the two headings under them are headings, in the heading's own
    gold rather than the disabled grey they had drifted into. */
 .cc-scenario-brief-head .cc-header-gothic {
+    margin: 0;
+    font-size: var(--fs-title);
+    line-height: 1.15;
     border-bottom: none;
     padding-bottom: 0;
 }
@@ -42959,11 +42896,35 @@ body.pad-input .kb-only {
    fill and nothing else. */
 .cc-folder-tab,
 .cc-step-tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: linear-gradient(180deg, var(--bg-panel), var(--bg-surface));
+    border: 1px solid var(--border-gold-amber-30);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    color: var(--text-card-medium);
+    font-family: var(--font-ui);
+    font-size: var(--fs-chip);
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s cubic-bezier(0.2, 0, 0, 1);
+    transition-property: background-color, background-image, background-position, border-color, border-radius, border-width, box-shadow, color, filter, letter-spacing, opacity, outline-color, transform, width, height, max-height, min-height, padding, margin, top, left, right, bottom;
+    margin-bottom: -1px;
     box-shadow: none;
 }
 
 .cc-folder-tab.active,
 .cc-step-tab.active {
+    background: linear-gradient(180deg, var(--bg-tertiary-focus-translucent-45), var(--bg-panel)) !important;
+    border-color: var(--text-primary-hover) !important;
+    border-bottom: 2px solid transparent;
+    color: var(--text-primary-hover) !important;
+    font-weight: bold;
+    transform: translateY(-3px);
+    z-index: 5;
     box-shadow: 0 -2px 10px var(--shadow-gold-amber-30);
 }
 
@@ -43056,7 +43017,7 @@ body.pad-input .kb-only {
     align-items: center;
     gap: 4px;
     max-width: 100%;
-    font-size: var(--fs-small);
+    font-size: var(--fs-caption);
     color: var(--text-card-medium);
 }
 

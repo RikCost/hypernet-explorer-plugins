@@ -1,3 +1,12 @@
+0.6.43a
+
+ Maps:
+ - Extended Moderna arcipelago, remade Palamoss, extended Spiral Summers
+ Fixed:
+ - removed cool vibes playing in character creation
+ - Standardized more UI
+ - Story mode dialogues triggering in non story mode
+
 0.6.42a
 Added:
  - story mode Em starts with 1000 KP, teleport cutscene crash fixed
@@ -86,6 +95,7 @@ Changed:
  - default music for title screen and removed music label
 
 Fixed:
+ - eris camera no longer black at start, NPC dialogues displayed
  - option screen shows text on top
  - fix refuel UI bugged rows and pump price
  - fixed alice spawning as follower when starting storymode

@@ -561,12 +561,6 @@
     return desc || "";
   };
 
-  // The wizard's own theme. Started once (settings page) and never restarted:
-  // every later request goes through AudioManager.playBgm, which leaves the
-  // track playing when it is already this one.
-  // bgm file name
-  const CREATION_BGM = "KevinMacLeod/Jazz/Cool Vibes"; // i18n-ignore: bgm file name
-
   // Music tracks for the initial settings step (values must match MusicSelectionSystem.js)
   // i18n-ignore-start: bgm file names. Only the first three carry a label of
   // their own (CharCreate.musicTrack); the rest are shown as the file is named.
@@ -3274,7 +3268,7 @@
         Scene_CharacterCreation.ensureSpriteAndBust(Scene_CharacterCreation.getCurrentActor());
       }
       if (_curStepData.isSettingsStep) {
-        this._settingsPageOpen = true;
+        this._enterSettingsAudio();
         this._refreshSettingsDOM();
         return;
       }
@@ -4550,21 +4544,30 @@
       return new Rectangle(x, y, width, height);
     }
 
-    // ── Leaving the initial settings (options) page ──
+    // ── Entering and leaving the initial settings (options) page ──
     // The page's Battle Music row auditions a track as its value is cycled,
-    // and that preview plays only while the settings tab is open. The channel
-    // is handed back to the wizard's own theme the moment the page is left, no
-    // matter how: setupStep and every overlay render off the settings page call
-    // this, since plenty of routes (tabs, rail, roster, presets, dossier) set
-    // _step and redraw without passing through setupStep. Nothing is stopped
-    // first: AudioManager.playBgm leaves an identical track playing where it
-    // is, so the call is a no-op when the theme already has the channel.
+    // and that preview plays only while the settings tab is open. Entering the
+    // page remembers whatever was playing; leaving it, no matter how, hands the
+    // channel back to that music (or silence). setupStep and every overlay
+    // render off the settings page call the leave check, since plenty of
+    // routes (tabs, rail, roster, presets, dossier) set _step and redraw
+    // without passing through setupStep. replayBgm leaves an identical track
+    // playing where it is, so nothing restarts when no preview was played.
+    _enterSettingsAudio() {
+      if (this._settingsPageOpen) return;
+      this._settingsPageOpen = true;
+      this._settingsSavedBgm = AudioManager.saveBgm();
+    }
+
     _leaveSettingsAudio() {
       if (!this._settingsPageOpen) return;
       const stepData = CharacterCreationData[this._step];
       if (this._step === STEP.SETTINGS || (stepData && stepData.isSettingsStep)) return;
       this._settingsPageOpen = false;
-      AudioManager.playBgm({ name: CREATION_BGM, volume: 90, pitch: 100, pan: 0 });
+      const saved = this._settingsSavedBgm;
+      this._settingsSavedBgm = null;
+      if (saved && saved.name) AudioManager.replayBgm(saved);
+      else AudioManager.stopBgm();
     }
 
     setupStep() {
@@ -4827,8 +4830,8 @@
       // ── Initial Settings: initialize settings state ──
       if (this._step === STEP.SETTINGS) {
         // Marks the page as open so the leave check at the top of setupStep
-        // knows to give the channel back to the creation theme on the way out.
-        this._settingsPageOpen = true;
+        // knows to give the channel back to the music it found on the way out.
+        this._enterSettingsAudio();
         this._settingsRows = this._buildSettingsRows();
         Scene_CharacterCreation._settingsRowIndex = 0;
         this._injectSettingsStyles();
@@ -6336,7 +6339,6 @@
     applyArchetypesToActor,
     STEP,
     pickSettingIcon,
-    CREATION_BGM,
     getCCMusicTracks,
     CharacterCreationData,
     storedCreationMode,
